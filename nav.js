@@ -26,12 +26,15 @@
                     <div class="nav-dropdown-content">
                         <a href="${HOST_URL}/coder/">Base64 & URL 변환기 (CODER)</a>
                         <a href="${HOST_URL}/json-viewer/">JSON 포맷터 & 검사기 (JSON)</a>
+                        <a href="${HOST_URL}/time/">타임스탬프 변환기 (TIME)</a>
+                        <a href="${HOST_URL}/hash/">UUID & 해시 생성기 (HASH)</a>
                         <a href="${HOST_URL}/qrm/">QR 마스터 (QRM)</a>
                     </div>
                 </div>
             </nav>
         </div>
         <div class="nav-right">
+            <a href="${HOST_URL}/about.html" class="nav-link-sub">소개/문의</a>
             <a href="${HOST_URL}/" class="nav-hub-btn">DWK Hub ➔</a>
         </div>
     </header>
@@ -76,7 +79,6 @@
         }
         .nav-menu { display: flex; align-items: center; gap: 10px; }
 
-        /* 드롭다운 스타일 */
         .nav-dropdown { position: relative; display: inline-block; }
         .nav-dropbtn {
             background: transparent;
@@ -121,18 +123,29 @@
         }
         .nav-dropdown:hover .nav-dropdown-content { display: block; }
 
-        .nav-right .nav-hub-btn {
+        .nav-right { display: flex; align-items: center; gap: 18px; }
+        .nav-link-sub {
             color: #9ca3af;
             font-size: 13px;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 500;
             transition: color 0.15s;
         }
-        .nav-right .nav-hub-btn:hover { color: #38bdf8; }
+        .nav-link-sub:hover { color: #ffffff; }
+
+        .nav-right .nav-hub-btn {
+            color: #38bdf8;
+            font-size: 13px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.15s;
+        }
+        .nav-right .nav-hub-btn:hover { color: #7dd3fc; }
 
         @media (max-width: 768px) {
             .dwk-global-nav { padding: 0 14px; }
             .nav-dropbtn { font-size: 12.5px; padding: 12px 6px; }
+            .nav-link-sub { display: none; }
         }
     </style>
     `;
