@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 & URL 변환기 | DevWorKit</title>
+    <style>
+        :root {
+            --primary-blue: #007bff;
+            --primary-blue-hover: #0056b3;
+            --bg-light: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-main: #333333;
+            --text-muted: #666666;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-main);
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-badge { background: var(--primary-blue); color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
+        .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
+
+        .page-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+            max-width: 1600px;
+            margin: 20px auto;
+            padding: 0 10px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .side-ad-box {
+            width: 160px;
+            min-width: 160px;
+            position: sticky;
+            top: 20px;
+        }
+
+        @media (max-width: 1400px) { .side-ad-box { display: none; } }
+
+        .main-container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            flex: 1;
+        }
+
+        /* 탭 버튼 */
+        .tab-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-light);
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.15s;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-blue);
+            color: #ffffff;
+            border-color: var(--primary-blue);
+        }
+
+        /* 2단 패널 (입력 / 출력) */
+        .converter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .converter-grid { grid-template-columns: 1fr; }
+        }
+
+        .panel-box {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .panel-title { font-size: 14px; font-weight: 700; }
+
+        .btn-mini {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-mini:hover { background-color: #e9ecef; }
+        .btn-mini-primary { background-color: var(--primary-blue); color: #fff; border-color: var(--primary-blue); }
+        .btn-mini-primary:hover { background-color: var(--primary-blue-hover); }
+
+        textarea.code-textarea {
+            width: 100%;
+            height: 380px;
+            padding: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+            font-family: "Consolas", "Courier New", monospace;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            resize: vertical;
+            outline: none;
+        }
+
+        textarea.code-textarea:focus { border-color: var(--primary-blue); }
+
+        .bottom-ad-box {
+            max-width: 1200px;
+            width: 100%;
+            margin: 25px auto 10px auto;
+            text-align: center;
+        }
+
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 16px 20px;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            background-color: var(--bg-light);
+            text-align: center;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-area">
+        <span class="logo-badge">CODER</span>
+        <span class="logo-text">Base64 & URL 변환기</span>
+    </div>
+</header>
+
+<div class="page-wrapper">
+    <!-- 좌측 광고 -->
+    <div class="side-ad-box">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-3823705730142714"
+             data-ad-slot="1919264473"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- 중앙 변환기 -->
+    <div class="main-container">
+        <div class="tab-group">
+            <button class="tab-btn active" onclick="setMode('base64-encode', this)">Base64 인코드</button>
+            <button class="tab-btn" onclick="setMode('base64-decode', this)">Base64 디코드</button>
+            <button class="tab-btn" onclick="setMode('url-encode', this)">URL 인코드</button>
+            <button class="tab-btn" onclick="setMode('url-decode', this)">URL 디코드</button>
+            <button class="tab-btn" onclick="setMode('html-encode', this)">HTML 엔티티 변환</button>
+        </div>
+
+        <div class="converter-grid">
+            <!-- 입력창 -->
+            <div class="panel-box">
+                <div class="panel-header">
+                    <span class="panel-title" id="input-title">입력 텍스트 (원본)</span>
+                    <div>
+                        <button class="btn-mini" onclick="clearInput()">지우기</button>
+                    </div>
+                </div>
+                <textarea id="input-text" class="code-textarea" placeholder="변환할 내용을 입력하세요." oninput="processConversion()"></textarea>
+            </div>
+
+            <!-- 출력창 -->
+            <div class="panel-box">
+                <div class="panel-header">
+                    <span class="panel-title" id="output-title">변환 결과 (Base64)</span>
+                    <div>
+                        <button class="btn-mini btn-mini-primary" onclick="copyOutput()">결과 복사</button>
+                    </div>
+                </div>
+                <textarea id="output-text" class="code-textarea" placeholder="변환 결과가 여기에 표시됩니다." readonly></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- 우측 광고 -->
+    <div class="side-ad-box">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-3823705730142714"
+             data-ad-slot="1919264473"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+</div>
+
+<!-- 하단 광고 -->
+<div class="bottom-ad-box">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3823705730142714"
+         data-ad-slot="3894691126"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+
+<footer>
+    한글(UTF-8)을 완벽하게 지원하는 실시간 Base64, URL, HTML 인코더/디코더입니다.
+</footer>
+
+<script>
+    let currentMode = 'base64-encode';
+
+    function setMode(mode, btn) {
+        currentMode = mode;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+
+        const titleMap = {
+            'base64-encode': '변환 결과 (Base64 인코드)',
+            'base64-decode': '변환 결과 (Base64 디코드)',
+            'url-encode': '변환 결과 (URL 인코드)',
+            'url-decode': '변환 결과 (URL 디코드)',
+            'html-encode': '변환 결과 (HTML 엔티티)'
+        };
+        document.getElementById('output-title').innerText = titleMap[mode] || '변환 결과';
+        processConversion();
+    }
+
+    // UTF-8 지원 Base64 인코딩/디코딩
+    function utf8ToBase64(str) {
+        return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => {
+            return String.fromCharCode('0x' + p1);
+        }));
+    }
+
+    function base64ToUtf8(str) {
+        return decodeURIComponent(atob(str).split('').map(c => {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+    }
+
+    function processConversion() {
+        const input = document.getElementById('input-text').value;
+        const outputEl = document.getElementById('output-text');
+
+        if (!input) {
+            outputEl.value = '';
+            return;
+        }
+
+        try {
+            switch (currentMode) {
+                case 'base64-encode':
+                    outputEl.value = utf8ToBase64(input);
+                    break;
+                case 'base64-decode':
+                    outputEl.value = base64ToUtf8(input.trim());
+                    break;
+                case 'url-encode':
+                    outputEl.value = encodeURIComponent(input);
+                    break;
+                case 'url-decode':
+                    outputEl.value = decodeURIComponent(input);
+                    break;
+                case 'html-encode':
+                    outputEl.value = input
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#39;');
+                    break;
+            }
+        } catch (e) {
+            outputEl.value = '변환 오류: 올바른 형식의 데이터가 아닙니다.\n(' + e.message + ')';
+        }
+    }
+
+    function clearInput() {
+        document.getElementById('input-text').value = '';
+        document.getElementById('output-text').value = '';
+        document.getElementById('input-text').focus();
+    }
+
+    function copyOutput() {
+        const output = document.getElementById('output-text').value;
+        if (!output) { alert('복사할 결과가 없습니다.'); return; }
+        navigator.clipboard.writeText(output).then(() => {
+            alert('변환 결과가 클립보드에 복사되었습니다!');
+        });
+    }
+</script>
+<script src="../nav.js"></script>
+</body>
+</html>
