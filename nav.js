@@ -1,42 +1,141 @@
-// nav.js - DWK 공통 네비게이션바 (루트 도메인 맞춤형)
-document.addEventListener("DOMContentLoaded", function() {
-    const BASE_URL = "https://developerworkkit.github.io";
+(function () {
+    const HOST_URL = 'https://developerworkkit.github.io';
 
     const navHTML = `
-        <div id="dwk-common-nav" style="
-            background-color: #121316;
-            border-bottom: 1px solid #282a2e;
-            padding: 9px 24px;
+    <header class="dwk-global-nav">
+        <div class="nav-left">
+            <a href="${HOST_URL}/" class="nav-brand">
+                <span class="dwk-logo-badge">DWK</span>
+                <span class="dwk-brand-text">DevWorKit</span>
+            </a>
+            <nav class="nav-menu">
+                <!-- 1. 텍스트 / 문서 도구 -->
+                <div class="nav-dropdown">
+                    <button class="nav-dropbtn">텍스트/문서 ▾</button>
+                    <div class="nav-dropdown-content">
+                        <a href="${HOST_URL}/strget/">문자열 추출기 (STRGET)</a>
+                        <a href="${HOST_URL}/counter/">글자수 & 바이트 계산기 (COUNT)</a>
+                        <a href="${HOST_URL}/strcmp/">텍스트 문서 비교 (STRCMP)</a>
+                        <a href="${HOST_URL}/fsee/">폴더 구조 엑셀 (FSEE)</a>
+                    </div>
+                </div>
+
+                <!-- 2. 개발 / 데이터 도구 -->
+                <div class="nav-dropdown">
+                    <button class="nav-dropbtn">개발/데이터 ▾</button>
+                    <div class="nav-dropdown-content">
+                        <a href="${HOST_URL}/coder/">Base64 & URL 변환기 (CODER)</a>
+                        <a href="${HOST_URL}/qrc/">QR 마스터 (QRM)</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="nav-right">
+            <a href="${HOST_URL}/" class="nav-hub-btn">DWK Hub ➔</a>
+        </div>
+    </header>
+    `;
+
+    const navCSS = `
+    <style>
+        .dwk-global-nav {
+            background-color: #111827;
+            border-bottom: 1px solid #1f2937;
+            padding: 0 24px;
+            height: 52px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-size: 13px;
-            color: #d1d5db;
-            z-index: 99999;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             position: relative;
+            z-index: 99999;
             box-sizing: border-box;
             width: 100%;
-        ">
-            <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-                <a href="${BASE_URL}/" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
-                    <span style="background-color: #2563eb; color: #ffffff; font-weight: 800; font-size: 11px; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px;">DWK</span>
-                    <span style="font-weight: 700; color: #ffffff; letter-spacing: -0.3px; font-size: 13.5px;">DevWorKit</span>
-                </a>
-                <span style="color: #374151;">|</span>
-                <a href="${BASE_URL}/strget/" style="color: #9ca3af; text-decoration: none; font-weight: 500; transition: color 0.15s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='#9ca3af'">문자열 추출기</a>
-                <span style="color: #374151;">|</span>
-                <a href="${BASE_URL}/fsee/" style="color: #9ca3af; text-decoration: none; font-weight: 500; transition: color 0.15s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='#9ca3af'">폴더 구조 엑셀</a>
-                <span style="color: #374151;">|</span>
-                <a href="${BASE_URL}/strcmp/" style="color: #9ca3af; text-decoration: none; font-weight: 500; transition: color 0.15s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='#9ca3af'">텍스트 비교</a>
-                <span style="color: #374151;">|</span>
-                <a href="${BASE_URL}/zbdkf/" style="color: #9ca3af; text-decoration: none; font-weight: 500; transition: color 0.15s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='#9ca3af'">QR 마스터</a>
-            </div>
-            <div>
-                <a href="${BASE_URL}/" style="color: #6b7280; text-decoration: none; font-size: 12px; font-weight: 500; transition: color 0.15s;" onmouseover="this.style.color='#9ca3af'" onmouseout="this.style.color='#6b7280'">DWK Hub ➔</a>
-            </div>
-        </div>
+        }
+        .nav-left { display: flex; align-items: center; gap: 24px; }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .dwk-logo-badge {
+            background-color: #007bff;
+            color: #ffffff;
+            font-size: 11.5px;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+        .dwk-brand-text {
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+        .nav-menu { display: flex; align-items: center; gap: 10px; }
+
+        /* 드롭다운 스타일 */
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropbtn {
+            background: transparent;
+            color: #9ca3af;
+            border: none;
+            font-size: 13.5px;
+            font-weight: 600;
+            padding: 15px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.15s;
+        }
+        .nav-dropbtn:hover { color: #ffffff; }
+
+        .nav-dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #1f2937;
+            min-width: 220px;
+            box-shadow: 0px 10px 20px rgba(0,0,0,0.3);
+            border-radius: 6px;
+            border: 1px solid #374151;
+            padding: 6px 0;
+            z-index: 100000;
+        }
+        .nav-dropdown-content a {
+            color: #d1d5db;
+            padding: 11px 18px;
+            text-decoration: none;
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+        .nav-dropdown-content a:hover {
+            background-color: #374151;
+            color: #38bdf8;
+        }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; }
+
+        .nav-right .nav-hub-btn {
+            color: #9ca3af;
+            font-size: 13px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.15s;
+        }
+        .nav-right .nav-hub-btn:hover { color: #38bdf8; }
+
+        @media (max-width: 768px) {
+            .dwk-global-nav { padding: 0 14px; }
+            .nav-dropbtn { font-size: 12.5px; padding: 12px 6px; }
+        }
+    </style>
     `;
 
+    document.head.insertAdjacentHTML('beforeend', navCSS);
     document.body.insertAdjacentHTML('afterbegin', navHTML);
-});
+})();
