@@ -34,36 +34,51 @@
         }
 
         .logo-area { display: flex; align-items: center; gap: 8px; }
-        .logo-badge { background: var(--primary-blue); color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
+        .logo-badge { background: #06b6d4; color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
         .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
 
         .page-wrapper {
             display: block;
             max-width: 1100px;
-            margin: 30px auto;
+            margin: 20px auto 40px auto;
             padding: 0 20px;
             box-sizing: border-box;
             width: 100%;
         }
 
-        .main-container {
-            width: 100%;
-            margin: 0 auto;
-            padding: 0;
-            box-sizing: border-box;
+        /* 사용 안내 가이드 */
+        .intro-section { margin-bottom: 25px; }
+        .intro-title { font-size: 22px; font-weight: 800; color: #111827; margin: 0 0 6px 0; letter-spacing: -0.5px; }
+        .intro-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 16px 0; }
+        .guide-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-size: 13.5px;
+            color: #334155;
+            line-height: 1.6;
         }
+        .guide-box strong { display: block; margin-bottom: 8px; color: #0f172a; font-size: 14px; }
+        .guide-list { margin: 0; padding-left: 18px; }
+        .guide-list li { margin-bottom: 4px; }
 
-        /* 탭 버튼 */
+        .main-container { width: 100%; margin: 0 auto; box-sizing: border-box; }
+
         .tab-group {
             display: flex;
             gap: 8px;
             margin-bottom: 15px;
             flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
         }
 
+        .tab-sub-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
         .tab-btn {
-            padding: 10px 18px;
-            font-size: 13.5px;
+            padding: 9px 16px;
+            font-size: 13px;
             font-weight: 700;
             border: 1px solid var(--border-color);
             background-color: var(--bg-light);
@@ -79,16 +94,13 @@
             border-color: var(--primary-blue);
         }
 
-        /* 2단 패널 (입력 / 출력) */
         .converter-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
 
-        @media (max-width: 850px) {
-            .converter-grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 850px) { .converter-grid { grid-template-columns: 1fr; } }
 
         .panel-box {
             border: 1px solid var(--border-color);
@@ -120,8 +132,8 @@
         }
 
         .btn-mini:hover { background-color: #e9ecef; }
-        .btn-mini-primary { background-color: var(--primary-blue); color: #fff; border-color: var(--primary-blue); }
-        .btn-mini-primary:hover { background-color: var(--primary-blue-hover); }
+        .btn-mini-primary { background-color: #10b981; color: #fff; border-color: #10b981; }
+        .btn-mini-primary:hover { background-color: #059669; }
 
         textarea.code-textarea {
             width: 100%;
@@ -129,7 +141,7 @@
             padding: 15px;
             font-size: 14px;
             line-height: 1.5;
-            font-family: "Consolas", "Courier New", monospace;
+            font-family: "Consolas", monospace;
             border: 1px solid var(--border-color);
             border-radius: 6px;
             box-sizing: border-box;
@@ -167,34 +179,49 @@
 </header>
 
 <div class="page-wrapper">
+    <!-- 사용 안내 가이드 -->
+    <div class="intro-section">
+        <h2 class="intro-title">한글(UTF-8) 깨짐 없는 실시간 Base64 및 URL 인코더·디코더입니다.</h2>
+        <p class="intro-desc">웹 개발 및 데이터 전송 시 필수적인 Base64, URL Encoding, HTML 엔티티를 즉시 변환합니다.</p>
+        
+        <div class="guide-box">
+            <strong>Base64 / URL 변환기 사용 방법 안내:</strong>
+            <ol class="guide-list">
+                <li>변환할 내용을 직접 입력하거나 상단의 <b>[샘플 불러오기]</b>를 클릭합니다.</li>
+                <li>상단 탭에서 <b>Base64 인코드/디코드, URL 인코드/디코드, HTML 엔티티</b> 중 원하는 모드를 선택합니다.</li>
+                <li>오른쪽 창에 실시간으로 출력된 변환 결과를 확인하고 <b>[결과 복사]</b>를 클릭하여 클립보드에 담습니다.</li>
+                <li>모든 연산은 브라우저 내부에서 즉시 수행되므로 개인정보나 비밀 토큰도 안전하게 변환할 수 있습니다.</li>
+            </ol>
+        </div>
+    </div>
+
     <div class="main-container">
         <div class="tab-group">
-            <button class="tab-btn active" onclick="setMode('base64-encode', this)">Base64 인코드</button>
-            <button class="tab-btn" onclick="setMode('base64-decode', this)">Base64 디코드</button>
-            <button class="tab-btn" onclick="setMode('url-encode', this)">URL 인코드</button>
-            <button class="tab-btn" onclick="setMode('url-decode', this)">URL 디코드</button>
-            <button class="tab-btn" onclick="setMode('html-encode', this)">HTML 엔티티 변환</button>
+            <div class="tab-sub-group">
+                <button class="tab-btn active" onclick="setMode('base64-encode', this)">Base64 인코드</button>
+                <button class="tab-btn" onclick="setMode('base64-decode', this)">Base64 디코드</button>
+                <button class="tab-btn" onclick="setMode('url-encode', this)">URL 인코드</button>
+                <button class="tab-btn" onclick="setMode('url-decode', this)">URL 디코드</button>
+                <button class="tab-btn" onclick="setMode('html-encode', this)">HTML 엔티티</button>
+            </div>
+            <div class="tab-sub-group">
+                <button class="tab-btn" onclick="loadSampleText()">샘플 불러오기</button>
+                <button class="tab-btn" onclick="clearInput()">초기화</button>
+            </div>
         </div>
 
         <div class="converter-grid">
-            <!-- 입력창 -->
             <div class="panel-box">
                 <div class="panel-header">
                     <span class="panel-title" id="input-title">입력 텍스트 (원본)</span>
-                    <div>
-                        <button class="btn-mini" onclick="clearInput()">지우기</button>
-                    </div>
                 </div>
-                <textarea id="input-text" class="code-textarea" placeholder="변환할 내용을 입력하세요."></textarea>
+                <textarea id="input-text" class="code-textarea" placeholder="변환할 내용을 입력하거나 [샘플 불러오기]를 눌러보세요."></textarea>
             </div>
 
-            <!-- 출력창 -->
             <div class="panel-box">
                 <div class="panel-header">
                     <span class="panel-title" id="output-title">변환 결과 (Base64 인코드)</span>
-                    <div>
-                        <button class="btn-mini btn-mini-primary" onclick="copyOutput()">결과 복사</button>
-                    </div>
+                    <button class="btn-mini btn-mini-primary" onclick="copyOutput()">결과 복사</button>
                 </div>
                 <textarea id="output-text" class="code-textarea" placeholder="변환 결과가 여기에 표시됩니다." readonly></textarea>
             </div>
@@ -202,7 +229,6 @@
     </div>
 </div>
 
-<!-- 하단 광고 영역 -->
 <div class="bottom-ad-box">
     <ins class="adsbygoogle"
          style="display:block"
@@ -226,14 +252,7 @@
     function recordInputHistory() {
         const el = document.getElementById('input-text');
         if (!el) return;
-
-        const state = {
-            val: el.value,
-            selStart: el.selectionStart,
-            selEnd: el.selectionEnd,
-            scrollTop: el.scrollTop
-        };
-
+        const state = { val: el.value, selStart: el.selectionStart, selEnd: el.selectionEnd, scrollTop: el.scrollTop };
         if (inputUndoStack.length === 0 || inputUndoStack[inputUndoStack.length - 1].val !== state.val) {
             inputUndoStack.push(state);
             if (inputUndoStack.length > 50) inputUndoStack.shift();
@@ -244,9 +263,7 @@
     function handleInputEvent() {
         processConversion();
         clearTimeout(inputTimer);
-        inputTimer = setTimeout(() => {
-            recordInputHistory();
-        }, 300);
+        inputTimer = setTimeout(() => { recordInputHistory(); }, 300);
     }
 
     function handleInputKeyDown(e) {
@@ -259,16 +276,13 @@
                 e.preventDefault();
                 const current = inputUndoStack.pop();
                 inputRedoStack.push(current);
-
-                const prev = inputUndoStack[inputUndoStack.length - 1];
-                applyInputState(el, prev);
+                applyInputState(el, inputUndoStack[inputUndoStack.length - 1]);
             }
         } else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
             if (inputRedoStack.length > 0) {
                 e.preventDefault();
                 const next = inputRedoStack.pop();
                 inputUndoStack.push(next);
-
                 applyInputState(el, next);
             }
         }
@@ -277,7 +291,6 @@
     function applyInputState(el, state) {
         el.value = state.val;
         processConversion();
-
         setTimeout(() => {
             el.focus();
             el.setSelectionRange(state.selStart, state.selEnd);
@@ -285,11 +298,22 @@
         }, 0);
     }
 
+    function loadSampleText() {
+        const sample = `안녕하세요! Developer Work Kit (DWK) 개발 유틸리티 도구 모음입니다.
+특수문자 테스트: <script>alert('Hello World!');<\/script>
+URL 테스트: https://developerworkkit.github.io/?tool=coder&category=dev`;
+        const el = document.getElementById('input-text');
+        el.value = sample;
+        recordInputHistory();
+        processConversion();
+    }
+
     function setMode(mode, btn) {
         currentMode = mode;
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        if (btn) btn.classList.add('active');
-
+        if (btn) {
+            document.querySelectorAll('.tab-sub-group .tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
         const titleMap = {
             'base64-encode': '변환 결과 (Base64 인코드)',
             'base64-decode': '변환 결과 (Base64 디코드)',
@@ -302,47 +326,26 @@
     }
 
     function utf8ToBase64(str) {
-        return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => {
-            return String.fromCharCode('0x' + p1);
-        }));
+        return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)));
     }
 
     function base64ToUtf8(str) {
-        return decodeURIComponent(atob(str).split('').map(c => {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
+        return decodeURIComponent(atob(str).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
     }
 
     function processConversion() {
         const input = document.getElementById('input-text').value;
         const outputEl = document.getElementById('output-text');
-
-        if (!input) {
-            outputEl.value = '';
-            return;
-        }
+        if (!input) { outputEl.value = ''; return; }
 
         try {
             switch (currentMode) {
-                case 'base64-encode':
-                    outputEl.value = utf8ToBase64(input);
-                    break;
-                case 'base64-decode':
-                    outputEl.value = base64ToUtf8(input.trim());
-                    break;
-                case 'url-encode':
-                    outputEl.value = encodeURIComponent(input);
-                    break;
-                case 'url-decode':
-                    outputEl.value = decodeURIComponent(input);
-                    break;
+                case 'base64-encode': outputEl.value = utf8ToBase64(input); break;
+                case 'base64-decode': outputEl.value = base64ToUtf8(input.trim()); break;
+                case 'url-encode': outputEl.value = encodeURIComponent(input); break;
+                case 'url-decode': outputEl.value = decodeURIComponent(input); break;
                 case 'html-encode':
-                    outputEl.value = input
-                        .replace(/&/g, '&amp;')
-                        .replace(/</g, '&lt;')
-                        .replace(/>/g, '&gt;')
-                        .replace(/"/g, '&quot;')
-                        .replace(/'/g, '&#39;');
+                    outputEl.value = input.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
                     break;
             }
         } catch (e) {
