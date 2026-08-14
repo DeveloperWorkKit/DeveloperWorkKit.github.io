@@ -42,12 +42,58 @@
         .page-wrapper {
             display: block;
             max-width: 1100px;
-            margin: 30px auto;
+            margin: 20px auto 40px auto;
             padding: 0 20px;
             box-sizing: border-box;
             width: 100%;
         }
 
+        /* 설명 및 사용 방법 안내 박스 (FSEE 스타일) */
+        .intro-section {
+            margin-bottom: 25px;
+        }
+
+        .intro-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 6px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .intro-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin: 0 0 16px 0;
+        }
+
+        .guide-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-size: 13.5px;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .guide-box strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #0f172a;
+            font-size: 14px;
+        }
+
+        .guide-list {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .guide-list li {
+            margin-bottom: 4px;
+        }
+
+        /* 툴 메인 컨테이너 */
         .main-container {
             width: 100%;
             margin: 0 auto;
@@ -90,24 +136,25 @@
         /* 상태 알림 바 */
         .status-bar {
             margin-bottom: 15px;
-            padding: 10px 14px;
+            padding: 12px 16px;
             border-radius: 6px;
-            font-size: 13px;
+            font-size: 13.5px;
             font-weight: 600;
             display: none;
+            word-break: break-all;
         }
 
         .status-bar.valid {
-            display: block;
+            display: block !important;
             background-color: #ecfdf5;
-            color: var(--success-green);
+            color: #065f46;
             border: 1px solid #a7f3d0;
         }
 
         .status-bar.invalid {
-            display: block;
+            display: block !important;
             background-color: #fef2f2;
-            color: var(--error-red);
+            color: #991b1b;
             border: 1px solid #fecaca;
         }
 
@@ -143,7 +190,7 @@
 
         textarea.code-area {
             width: 100%;
-            height: 420px;
+            height: 400px;
             padding: 12px;
             font-size: 13.5px;
             line-height: 1.5;
@@ -186,6 +233,22 @@
 </header>
 
 <div class="page-wrapper">
+    <!-- 사용 안내 가이드 섹션 -->
+    <div class="intro-section">
+        <h2 class="intro-title">복잡하고 엉킨 JSON 데이터를 보기 쉽게 정렬하고 검사하는 도구입니다.</h2>
+        <p class="intro-desc">한 줄로 뭉개진 데이터의 들여쓰기 포맷 정돈, 공백 압축, 문법 오류 실시간 검출을 무료로 제공합니다.</p>
+        
+        <div class="guide-box">
+            <strong>JSON 포맷터 및 검사기 사용 방법 안내:</strong>
+            <ol class="guide-list">
+                <li>좌측 입력창에 검사할 JSON 데이터를 직접 입력하거나 <b>[클립보드 불러오기]</b> 또는 <b>[샘플 불러오기]</b>를 클릭합니다.</li>
+                <li>상단의 <b>[2칸 정렬]</b> 또는 <b>[4칸 정렬]</b> 버튼을 클릭하면 읽기 편한 계단식 들여쓰기 형태로 자동 정렬됩니다.</li>
+                <li>쉼표(,)나 따옴표("") 누락 등 문법 오류가 있을 경우 상단 알림 바에 <b>에러 원인과 발생 위치</b>가 실시간으로 안내됩니다.</li>
+                <li>데이터 전송용 압축이 필요할 때는 <b>[1줄 압축 (Minify)]</b>, 개발 모델이 필요할 때는 <b>[TypeScript 변환]</b>을 활용할 수 있습니다.</li>
+            </ol>
+        </div>
+    </div>
+
     <div class="main-container">
         <!-- 툴바 컨트롤 -->
         <div class="toolbar">
@@ -201,7 +264,7 @@
             </div>
         </div>
 
-        <!-- 상태 알림 메시지 -->
+        <!-- 상태 알림 메시지 바 -->
         <div id="status-bar" class="status-bar"></div>
 
         <!-- 에디터 그리드 -->
@@ -209,7 +272,7 @@
             <div class="editor-box">
                 <div class="editor-header">
                     <span class="editor-title">입력 JSON</span>
-                    <button class="btn-action" style="padding: 3px 8px; font-size: 11.5px;" onclick="pasteInput()">붙여넣기</button>
+                    <button class="btn-action" style="padding: 3px 8px; font-size: 11.5px;" onclick="pasteInput()">클립보드 불러오기</button>
                 </div>
                 <textarea id="json-input" class="code-area" placeholder="포맷을 맞추거나 검사할 JSON 데이터를 여기에 입력하세요."></textarea>
             </div>
@@ -311,20 +374,22 @@
         const bar = document.getElementById('status-bar');
         bar.className = 'status-bar ' + type;
         bar.innerText = msg;
+        bar.style.display = 'block';
     }
 
     function validateJSONSilent() {
         const input = document.getElementById('json-input').value.trim();
         const bar = document.getElementById('status-bar');
         if (!input) {
+            bar.className = 'status-bar';
             bar.style.display = 'none';
             return;
         }
         try {
             JSON.parse(input);
-            setStatus('valid', '✓ 유효한 JSON 형식입니다.');
+            setStatus('valid', '✓ 유효한 JSON 데이터입니다.');
         } catch (e) {
-            setStatus('invalid', '✕ JSON 문법 오류: ' + e.message);
+            setStatus('invalid', '✕ JSON 문법 오류 발생: ' + e.message);
         }
     }
 
@@ -341,10 +406,10 @@
         try {
             const parsed = JSON.parse(input);
             outputEl.value = JSON.stringify(parsed, null, space);
-            setStatus('valid', '✓ 정렬 성공: 유효한 JSON 데이터입니다.');
+            setStatus('valid', '✓ 정렬 완료: 유효한 JSON 데이터입니다.');
         } catch (e) {
             outputEl.value = '';
-            setStatus('invalid', '✕ 포맷 오류: 올바른 JSON 형식이 아닙니다. (' + e.message + ')');
+            setStatus('invalid', '✕ 정렬 실패 (문법 오류): ' + e.message);
         }
     }
 
@@ -361,15 +426,15 @@
         try {
             const parsed = JSON.parse(input);
             outputEl.value = JSON.stringify(parsed);
-            setStatus('valid', '✓ 압축 성공: 공백이 제거된 1줄 데이터입니다.');
+            setStatus('valid', '✓ 1줄 압축 완료: 공백이 모두 제거되었습니다.');
         } catch (e) {
             outputEl.value = '';
-            setStatus('invalid', '✕ 압축 오류: 올바른 JSON 형식이 아닙니다. (' + e.message + ')');
+            setStatus('invalid', '✕ 압축 실패 (문법 오류): ' + e.message);
         }
     }
 
     function convertToTypeScript() {
-        document.getElementById('output-title').innerText = 'TypeScript 인터페이스 변환 결과';
+        document.getElementById('output-title').innerText = 'TypeScript 변환 결과';
         const input = document.getElementById('json-input').value.trim();
         const outputEl = document.getElementById('json-output');
 
@@ -384,7 +449,7 @@
             setStatus('valid', '✓ TypeScript Interface 변환이 완료되었습니다.');
         } catch (e) {
             outputEl.value = '';
-            setStatus('invalid', '✕ 변환 오류: 올바른 JSON 형식이 아닙니다. (' + e.message + ')');
+            setStatus('invalid', '✕ 변환 실패 (문법 오류): ' + e.message);
         }
     }
 
@@ -423,7 +488,9 @@
     function clearAll() {
         document.getElementById('json-input').value = '';
         document.getElementById('json-output').value = '';
-        document.getElementById('status-bar').style.display = 'none';
+        const bar = document.getElementById('status-bar');
+        bar.className = 'status-bar';
+        bar.style.display = 'none';
         recordInputHistory();
         document.getElementById('json-input').focus();
     }
@@ -436,7 +503,7 @@
             recordInputHistory();
             formatJSON(2);
         } catch (e) {
-            alert('클립보드 읽기 권한이 필요합니다.');
+            alert('클립보드 읽기 권한이 필요하거나 브라우저에서 허용되지 않았습니다.');
         }
     }
 
@@ -453,6 +520,9 @@
         inputEl.addEventListener('input', handleInputEvent);
         inputEl.addEventListener('keydown', handleInputKeyDown);
         recordInputHistory();
+        if (inputEl.value.trim()) {
+            validateJSONSilent();
+        }
     };
 </script>
 <script src="../nav.js"></script>
