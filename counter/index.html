@@ -38,36 +38,22 @@
         .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
 
         .page-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            gap: 20px;
-            max-width: 1600px;
-            margin: 20px auto;
-            padding: 0 10px;
+            display: block;
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
             box-sizing: border-box;
             width: 100%;
         }
-
-        .side-ad-box {
-            width: 160px;
-            min-width: 160px;
-            position: sticky;
-            top: 20px;
-        }
-
-        @media (max-width: 1400px) { .side-ad-box { display: none; } }
 
         .main-container {
-            max-width: 1200px;
             width: 100%;
-            margin: 0;
+            margin: 0 auto;
             padding: 0;
             box-sizing: border-box;
-            flex: 1;
         }
 
-        /* 통계 그리드 */
+        /* 통계 그리드 (4단 분할) */
         .stat-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -116,7 +102,7 @@
             margin-left: 2px;
         }
 
-        /* 텍스트 박스 영역 */
+        /* 에디터 박스 */
         .editor-container {
             border: 1px solid var(--border-color);
             border-radius: 8px;
@@ -177,7 +163,7 @@
         }
 
         .bottom-ad-box {
-            max-width: 1200px;
+            max-width: 1100px;
             width: 100%;
             margin: 25px auto 10px auto;
             text-align: center;
@@ -204,18 +190,6 @@
 </header>
 
 <div class="page-wrapper">
-    <!-- 좌측 광고 -->
-    <div class="side-ad-box">
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-3823705730142714"
-             data-ad-slot="1919264473"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
-
-    <!-- 중앙 계산기 -->
     <div class="main-container">
         <div class="stat-grid">
             <div class="stat-card highlight-card">
@@ -250,28 +224,15 @@
             <textarea id="main-textarea" class="counter-textarea" placeholder="여기에 텍스트를 입력하거나 붙여넣으세요. 글자 수와 바이트 수가 실시간으로 계산됩니다."></textarea>
 
             <div class="sub-stats">
-
-            <div class="sub-stats">
                 <span>단어 수: <strong id="cnt-words" style="color: #111;">0</strong>개</span>
                 <span>줄(Line) 수: <strong id="cnt-lines" style="color: #111;">0</strong>줄</span>
                 <span>예상 읽기 시간: 약 <strong id="read-time" style="color: #111;">0</strong>분</span>
             </div>
         </div>
     </div>
-
-    <!-- 우측 광고 -->
-    <div class="side-ad-box">
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-3823705730142714"
-             data-ad-slot="1919264473"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
 </div>
 
-<!-- 하단 광고 -->
+<!-- 하단 광고 영역 -->
 <div class="bottom-ad-box">
     <ins class="adsbygoogle"
          style="display:block"
