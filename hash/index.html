@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UUID & 해시 생성기 | DevWorKit</title>
+    <style>
+        :root {
+            --primary-blue: #007bff;
+            --primary-blue-hover: #0056b3;
+            --bg-light: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-main: #333333;
+            --text-muted: #666666;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-main);
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-badge { background: #4f46e5; color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
+        .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
+
+        .page-wrapper {
+            display: block;
+            max-width: 1100px;
+            margin: 20px auto 40px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .intro-section { margin-bottom: 25px; }
+        .intro-title { font-size: 22px; font-weight: 800; color: #111827; margin: 0 0 6px 0; letter-spacing: -0.5px; }
+        .intro-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 16px 0; }
+        .guide-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-size: 13.5px;
+            color: #334155;
+            line-height: 1.6;
+        }
+        .guide-box strong { display: block; margin-bottom: 8px; color: #0f172a; font-size: 14px; }
+        .guide-list { margin: 0; padding-left: 18px; }
+        .guide-list li { margin-bottom: 4px; }
+
+        .generator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 850px) { .generator-grid { grid-template-columns: 1fr; } }
+
+        .tool-panel {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .panel-title { font-size: 15px; font-weight: 700; color: #111827; }
+
+        .control-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn-action:hover { background-color: var(--primary-blue-hover); }
+
+        .btn-copy {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-copy:hover { background-color: #059669; }
+
+        textarea.code-box {
+            width: 100%;
+            height: 220px;
+            padding: 12px;
+            font-size: 13.5px;
+            line-height: 1.5;
+            font-family: "Consolas", monospace;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            resize: vertical;
+            outline: none;
+        }
+        textarea.code-box:focus { border-color: var(--primary-blue); }
+
+        .hash-result-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .hash-item {
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 8px 10px;
+            font-size: 12.5px;
+            font-family: "Consolas", monospace;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .hash-label { font-size: 11.5px; font-weight: bold; color: var(--text-muted); }
+        .hash-val-row { display: flex; justify-content: space-between; align-items: center; word-break: break-all; }
+
+        .bottom-ad-box {
+            max-width: 1100px;
+            width: 100%;
+            margin: 25px auto 10px auto;
+            text-align: center;
+        }
+
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 16px 20px;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            background-color: var(--bg-light);
+            text-align: center;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-area">
+        <span class="logo-badge">HASH</span>
+        <span class="logo-text">UUID & 해시 생성기</span>
+    </div>
+</header>
+
+<div class="page-wrapper">
+    <div class="intro-section">
+        <h2 class="intro-title">개발 테스트용 UUID 식별자 및 안전한 단방향 암호화 해시 생성기입니다.</h2>
+        <p class="intro-desc">UUID v4 표준 생성 및 SHA-256, SHA-512 해시 값을 브라우저 내부 Web Crypto API로 계산합니다.</p>
+        
+        <div class="guide-box">
+            <strong>UUID & 해시 생성기 사용 방법 안내:</strong>
+            <ol class="guide-list">
+                <li>좌측에서 생성할 개수(1~50개)를 선택하고 <b>[UUID 생성]</b>을 클릭하여 고유 식별자를 발급받습니다.</li>
+                <li>우측에 문자열을 입력하면 <b>SHA-256, SHA-512, SHA-1</b> 암호화 해시가 실시간으로 자동 산출됩니다.</li>
+                <li>모든 연산은 클라이언트 사이드에서 즉시 실행되어 입력 데이터가 외부 서버로 전송되지 않습니다.</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="generator-grid">
+        <!-- 1. UUID v4 생성기 -->
+        <div class="tool-panel">
+            <div class="panel-header">
+                <span class="panel-title">1. UUID v4 생성기</span>
+                <button class="btn-copy" onclick="copyUUIDs()">전체 복사</button>
+            </div>
+            <div class="control-row">
+                <label style="font-size: 13px;">생성 개수:
+                    <select id="uuid-count" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc;">
+                        <option value="1">1개</option>
+                        <option value="5" selected>5개</option>
+                        <option value="10">10개</option>
+                        <option value="30">30개</option>
+                    </select>
+                </label>
+                <label style="font-size: 13px;"><input type="checkbox" id="uuid-upper"> 대문자</label>
+                <label style="font-size: 13px;"><input type="checkbox" id="uuid-nohyphen"> 하이픈 제거</label>
+                <button class="btn-action" style="padding: 5px 12px; margin-left: auto;" onclick="generateUUIDs()">생성 ▶</button>
+            </div>
+            <textarea id="uuid-output" class="code-box" placeholder="생성된 UUID가 여기에 표시됩니다." readonly></textarea>
+        </div>
+
+        <!-- 2. 해시(Hash) 생성기 -->
+        <div class="tool-panel">
+            <div class="panel-header">
+                <span class="panel-title">2. SHA 해시 생성기</span>
+                <button class="btn-action" style="padding: 4px 10px; font-size: 12px;" onclick="loadHashSample()">샘플 불러오기</button>
+            </div>
+            <input type="text" id="hash-input" class="input-text" style="padding: 8px 10px; font-size: 13.5px; border: 1px solid #ccc; border-radius: 5px;" placeholder="해시를 생성할 문자열을 입력하세요." oninput="calculateHashes()">
+            
+            <div class="hash-result-group">
+                <div class="hash-item">
+                    <span class="hash-label">SHA-256 (표준 보안 해시)</span>
+                    <div class="hash-val-row"><span id="res-sha256">-</span> <button class="btn-copy" style="padding: 2px 6px; font-size: 11px;" onclick="copyHashText('res-sha256')">복사</button></div>
+                </div>
+                <div class="hash-item">
+                    <span class="hash-label">SHA-512 (고강도 보안 해시)</span>
+                    <div class="hash-val-row"><span id="res-sha512">-</span> <button class="btn-copy" style="padding: 2px 6px; font-size: 11px;" onclick="copyHashText('res-sha512')">복사</button></div>
+                </div>
+                <div class="hash-item">
+                    <span class="hash-label">SHA-1 (레거시 해시)</span>
+                    <div class="hash-val-row"><span id="res-sha1">-</span> <button class="btn-copy" style="padding: 2px 6px; font-size: 11px;" onclick="copyHashText('res-sha1')">복사</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bottom-ad-box">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3823705730142714"
+         data-ad-slot="3894691126"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+
+<footer>
+    Web Crypto API를 통한 데이터 무단 전송 없는 100% 클라이언트 사이드 해시 도구입니다.
+</footer>
+
+<script>
+    function generateUUIDs() {
+        const count = parseInt(document.getElementById('uuid-count').value, 10);
+        const isUpper = document.getElementById('uuid-upper').checked;
+        const noHyphen = document.getElementById('uuid-nohyphen').checked;
+        const results = [];
+
+        for (let i = 0; i < count; i++) {
+            let u = crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+            if (noHyphen) u = u.replace(/-/g, '');
+            if (isUpper) u = u.toUpperCase();
+            results.push(u);
+        }
+        document.getElementById('uuid-output').value = results.join('\n');
+    }
+
+    async function hashString(algorithm, text) {
+        const msgUint8 = new TextEncoder().encode(text);
+        const hashBuffer = await crypto.subtle.digest(algorithm, msgUint8);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function calculateHashes() {
+        const text = document.getElementById('hash-input').value;
+        if (!text) {
+            document.getElementById('res-sha256').innerText = '-';
+            document.getElementById('res-sha512').innerText = '-';
+            document.getElementById('res-sha1').innerText = '-';
+            return;
+        }
+
+        document.getElementById('res-sha256').innerText = await hashString('SHA-256', text);
+        document.getElementById('res-sha512').innerText = await hashString('SHA-512', text);
+        document.getElementById('res-sha1').innerText = await hashString('SHA-1', text);
+    }
+
+    function loadHashSample() {
+        document.getElementById('hash-input').value = 'DevWorKit-2026-SecretToken';
+        calculateHashes();
+    }
+
+    function copyUUIDs() {
+        const val = document.getElementById('uuid-output').value;
+        if (!val) return;
+        navigator.clipboard.writeText(val).then(() => alert('UUID 목록이 복사되었습니다!'));
+    }
+
+    function copyHashText(id) {
+        const val = document.getElementById(id).innerText;
+        if (!val || val === '-') return;
+        navigator.clipboard.writeText(val).then(() => alert('해시 값이 복사되었습니다!'));
+    }
+
+    window.onload = () => {
+        generateUUIDs();
+    };
+</script>
+<script src="../nav.js"></script>
+</body>
+</html>
