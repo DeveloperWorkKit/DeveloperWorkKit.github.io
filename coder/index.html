@@ -209,7 +209,7 @@
                         <button class="btn-mini" onclick="clearInput()">지우기</button>
                     </div>
                 </div>
-                <textarea id="input-text" class="code-textarea" placeholder="변환할 내용을 입력하세요." oninput="processConversion()"></textarea>
+                <textarea id="input-text" class="code-textarea" placeholder="변환할 내용을 입력하세요."></textarea>
             </div>
 
             <!-- 출력창 -->
@@ -254,6 +254,71 @@
 
 <script>
     let currentMode = 'base64-encode';
+    const inputUndoStack = [];
+    const inputRedoStack = [];
+    let inputTimer = null;
+
+    function recordInputHistory() {
+        const el = document.getElementById('input-text');
+        if (!el) return;
+
+        const state = {
+            val: el.value,
+            selStart: el.selectionStart,
+            selEnd: el.selectionEnd,
+            scrollTop: el.scrollTop
+        };
+
+        if (inputUndoStack.length === 0 || inputUndoStack[inputUndoStack.length - 1].val !== state.val) {
+            inputUndoStack.push(state);
+            if (inputUndoStack.length > 50) inputUndoStack.shift();
+            inputRedoStack.length = 0;
+        }
+    }
+
+    function handleInputEvent() {
+        processConversion();
+        clearTimeout(inputTimer);
+        inputTimer = setTimeout(() => {
+            recordInputHistory();
+        }, 300);
+    }
+
+    function handleInputKeyDown(e) {
+        const isCtrl = e.ctrlKey || e.metaKey;
+        const key = e.key.toLowerCase();
+        const el = document.getElementById('input-text');
+
+        if (isCtrl && key === 'z' && !e.shiftKey) {
+            if (inputUndoStack.length > 1) {
+                e.preventDefault();
+                const current = inputUndoStack.pop();
+                inputRedoStack.push(current);
+
+                const prev = inputUndoStack[inputUndoStack.length - 1];
+                applyInputState(el, prev);
+            }
+        } else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
+            if (inputRedoStack.length > 0) {
+                e.preventDefault();
+                const next = inputRedoStack.pop();
+                inputUndoStack.push(next);
+
+                applyInputState(el, next);
+            }
+        }
+    }
+
+    function applyInputState(el, state) {
+        el.value = state.val;
+        processConversion();
+
+        setTimeout(() => {
+            el.focus();
+            el.setSelectionRange(state.selStart, state.selEnd);
+            el.scrollTop = state.scrollTop;
+        }, 0);
+    }
 
     function setMode(mode, btn) {
         currentMode = mode;
@@ -271,7 +336,6 @@
         processConversion();
     }
 
-    // UTF-8 지원 Base64 인코딩/디코딩
     function utf8ToBase64(str) {
         return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => {
             return String.fromCharCode('0x' + p1);
@@ -322,9 +386,12 @@
     }
 
     function clearInput() {
-        document.getElementById('input-text').value = '';
+        const inputEl = document.getElementById('input-text');
+        if (!inputEl.value) return;
+        inputEl.value = '';
         document.getElementById('output-text').value = '';
-        document.getElementById('input-text').focus();
+        recordInputHistory();
+        inputEl.focus();
     }
 
     function copyOutput() {
@@ -334,6 +401,13 @@
             alert('변환 결과가 클립보드에 복사되었습니다!');
         });
     }
+
+    window.onload = () => {
+        const inputEl = document.getElementById('input-text');
+        inputEl.addEventListener('input', handleInputEvent);
+        inputEl.addEventListener('keydown', handleInputKeyDown);
+        recordInputHistory();
+    };
 </script>
 <script src="../nav.js"></script>
 </body>
