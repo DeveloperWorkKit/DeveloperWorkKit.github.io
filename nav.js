@@ -14,7 +14,7 @@
                     <button class="nav-dropbtn">텍스트/문서 ▾</button>
                     <div class="nav-dropdown-content">
                         <a href="${HOST_URL}/strget/">문자열 추출기 (STRGET)</a>
-                        <a href="${HOST_URL}/counter/">글자수 & 바이트 계산기 (COUNT)</a>
+                        <a href="${HOST_URL}/counter/">글자수 & 바이트 계산기 (COUNTER)</a>
                         <a href="${HOST_URL}/strcmp/">텍스트 문서 비교 (STRCMP)</a>
                         <a href="${HOST_URL}/fsee/">폴더 구조 엑셀 (FSEE)</a>
                     </div>
@@ -25,7 +25,8 @@
                     <button class="nav-dropbtn">개발/데이터 ▾</button>
                     <div class="nav-dropdown-content">
                         <a href="${HOST_URL}/coder/">Base64 & URL 변환기 (CODER)</a>
-                        <a href="${HOST_URL}/qrc/">QR 마스터 (QRM)</a>
+                        <a href="${HOST_URL}/json-viewer/">JSON 포맷터 & 검사기 (JSON)</a>
+                        <a href="${HOST_URL}/qrm/">QR 마스터 (QRM)</a>
                     </div>
                 </div>
             </nav>
@@ -98,7 +99,7 @@
             top: 100%;
             left: 0;
             background-color: #1f2937;
-            min-width: 220px;
+            min-width: 230px;
             box-shadow: 0px 10px 20px rgba(0,0,0,0.3);
             border-radius: 6px;
             border: 1px solid #374151;
