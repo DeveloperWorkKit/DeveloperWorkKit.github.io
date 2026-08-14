@@ -1,6 +1,6 @@
-// nav.js - DWK 공통 네비게이션바 (GitHub Pages 맞춤형)
+// nav.js - DWK 공통 네비게이션바 (루트 도메인 맞춤형)
 document.addEventListener("DOMContentLoaded", function() {
-    const BASE_URL = "https://developerworkkit.github.io/DWK";
+    const BASE_URL = "https://developerworkkit.github.io";
 
     const navHTML = `
         <div id="dwk-common-nav" style="
