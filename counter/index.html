@@ -247,7 +247,9 @@
                 </div>
             </div>
 
-            <textarea id="main-textarea" class="counter-textarea" placeholder="여기에 텍스트를 입력하거나 붙여넣으세요. 글자 수와 바이트 수가 실시간으로 계산됩니다." oninput="updateStats()"></textarea>
+            <textarea id="main-textarea" class="counter-textarea" placeholder="여기에 텍스트를 입력하거나 붙여넣으세요. 글자 수와 바이트 수가 실시간으로 계산됩니다."></textarea>
+
+            <div class="sub-stats">
 
             <div class="sub-stats">
                 <span>단어 수: <strong id="cnt-words" style="color: #111;">0</strong>개</span>
@@ -285,14 +287,80 @@
 </footer>
 
 <script>
+    const textUndoStack = [];
+    const textRedoStack = [];
+    let textTimer = null;
+
+    function recordTextHistory() {
+        const el = document.getElementById('main-textarea');
+        if (!el) return;
+
+        const state = {
+            val: el.value,
+            selStart: el.selectionStart,
+            selEnd: el.selectionEnd,
+            scrollTop: el.scrollTop
+        };
+
+        if (textUndoStack.length === 0 || textUndoStack[textUndoStack.length - 1].val !== state.val) {
+            textUndoStack.push(state);
+            if (textUndoStack.length > 50) textUndoStack.shift();
+            textRedoStack.length = 0;
+        }
+    }
+
+    function handleTextInput() {
+        updateStats();
+        clearTimeout(textTimer);
+        textTimer = setTimeout(() => {
+            recordTextHistory();
+        }, 300);
+    }
+
+    function handleTextKeyDown(e) {
+        const isCtrl = e.ctrlKey || e.metaKey;
+        const key = e.key.toLowerCase();
+        const el = document.getElementById('main-textarea');
+
+        if (isCtrl && key === 'z' && !e.shiftKey) {
+            if (textUndoStack.length > 1) {
+                e.preventDefault();
+                const current = textUndoStack.pop();
+                textRedoStack.push(current);
+
+                const prev = textUndoStack[textUndoStack.length - 1];
+                applyTextState(el, prev);
+            }
+        } else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
+            if (textRedoStack.length > 0) {
+                e.preventDefault();
+                const next = textRedoStack.pop();
+                textUndoStack.push(next);
+
+                applyTextState(el, next);
+            }
+        }
+    }
+
+    function applyTextState(el, state) {
+        el.value = state.val;
+        updateStats();
+
+        setTimeout(() => {
+            el.focus();
+            el.setSelectionRange(state.selStart, state.selEnd);
+            el.scrollTop = state.scrollTop;
+        }, 0);
+    }
+
     function getEucKrBytes(str) {
         let bytes = 0;
         for (let i = 0; i < str.length; i++) {
             const code = str.charCodeAt(i);
             if (code <= 0x007f) {
-                bytes += (code === 10 || code === 13) ? 2 : 1; // 줄바꿈 2바이트 계산
+                bytes += (code === 10 || code === 13) ? 2 : 1;
             } else {
-                bytes += 2; // 한글/한자 2바이트
+                bytes += 2;
             }
         }
         return bytes;
@@ -305,18 +373,15 @@
     function updateStats() {
         const text = document.getElementById('main-textarea').value;
 
-        // 글자 수
         const withSpace = text.length;
         const withoutSpace = text.replace(/\s/g, '').length;
 
-        // 바이트 수
         const euckrBytes = getEucKrBytes(text);
         const utf8Bytes = getUtf8Bytes(text);
 
-        // 단어/줄 수
         const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
         const lines = text === '' ? 0 : text.split('\n').length;
-        const readTime = Math.ceil(withSpace / 500); // 분당 500자 기준
+        const readTime = Math.ceil(withSpace / 500);
 
         document.getElementById('cnt-with-space').innerHTML = `${withSpace.toLocaleString()}<span class="stat-unit">자</span>`;
         document.getElementById('cnt-without-space').innerHTML = `${withoutSpace.toLocaleString()}<span class="stat-unit">자</span>`;
@@ -330,18 +395,22 @@
     function removeExtraSpaces() {
         const textarea = document.getElementById('main-textarea');
         textarea.value = textarea.value.replace(/[ \t]+/g, ' ');
+        recordTextHistory();
         updateStats();
     }
 
     function removeBlankLines() {
         const textarea = document.getElementById('main-textarea');
         textarea.value = textarea.value.split('\n').filter(line => line.trim() !== '').join('\n');
+        recordTextHistory();
         updateStats();
     }
 
     function clearText() {
         const textarea = document.getElementById('main-textarea');
+        if (!textarea.value) return;
         textarea.value = '';
+        recordTextHistory();
         updateStats();
         textarea.focus();
     }
@@ -353,6 +422,14 @@
             alert('본문 텍스트가 클립보드에 복사되었습니다!');
         });
     }
+
+    window.onload = () => {
+        const textarea = document.getElementById('main-textarea');
+        textarea.addEventListener('input', handleTextInput);
+        textarea.addEventListener('keydown', handleTextKeyDown);
+        recordTextHistory();
+        updateStats();
+    };
 </script>
 <script src="../nav.js"></script>
 </body>
