@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>글자수 & 바이트 계산기 | DevWorKit</title>
+    <style>
+        :root {
+            --primary-blue: #007bff;
+            --primary-blue-hover: #0056b3;
+            --bg-light: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-main: #333333;
+            --text-muted: #666666;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-main);
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-badge { background: var(--primary-blue); color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
+        .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
+
+        .page-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+            max-width: 1600px;
+            margin: 20px auto;
+            padding: 0 10px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .side-ad-box {
+            width: 160px;
+            min-width: 160px;
+            position: sticky;
+            top: 20px;
+        }
+
+        @media (max-width: 1400px) { .side-ad-box { display: none; } }
+
+        .main-container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            flex: 1;
+        }
+
+        /* 통계 그리드 */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 800px) {
+            .stat-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .stat-card {
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-card.highlight-card {
+            background-color: #e7f5ff;
+            border-color: #74c0fc;
+        }
+
+        .stat-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #111111;
+        }
+
+        .stat-card.highlight-card .stat-value {
+            color: var(--primary-blue);
+        }
+
+        .stat-unit {
+            font-size: 13px;
+            font-weight: normal;
+            color: var(--text-muted);
+            margin-left: 2px;
+        }
+
+        /* 텍스트 박스 영역 */
+        .editor-container {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        .btn-action {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            font-size: 12.5px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: all 0.15s;
+        }
+
+        .btn-action:hover { background-color: #e9ecef; }
+        .btn-primary { background-color: var(--primary-blue); color: white; border-color: var(--primary-blue); }
+        .btn-primary:hover { background-color: var(--primary-blue-hover); }
+
+        textarea.counter-textarea {
+            width: 100%;
+            height: 380px;
+            padding: 15px;
+            font-size: 15px;
+            line-height: 1.6;
+            font-family: inherit;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        textarea.counter-textarea:focus { border-color: var(--primary-blue); }
+
+        .sub-stats {
+            margin-top: 15px;
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+
+        .bottom-ad-box {
+            max-width: 1200px;
+            width: 100%;
+            margin: 25px auto 10px auto;
+            text-align: center;
+        }
+
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 16px 20px;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            background-color: var(--bg-light);
+            text-align: center;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-area">
+        <span class="logo-badge">COUNT</span>
+        <span class="logo-text">글자수 & 바이트 계산기</span>
+    </div>
+</header>
+
+<div class="page-wrapper">
+    <!-- 좌측 광고 -->
+    <div class="side-ad-box">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-3823705730142714"
+             data-ad-slot="1919264473"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- 중앙 계산기 -->
+    <div class="main-container">
+        <div class="stat-grid">
+            <div class="stat-card highlight-card">
+                <div class="stat-title">공백 포함 글자수</div>
+                <div class="stat-value" id="cnt-with-space">0<span class="stat-unit">자</span></div>
+            </div>
+            <div class="stat-card highlight-card">
+                <div class="stat-title">공백 제외 글자수</div>
+                <div class="stat-value" id="cnt-without-space">0<span class="stat-unit">자</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">EUC-KR (자소서/공공기관)</div>
+                <div class="stat-value" id="cnt-bytes-euckr">0<span class="stat-unit">Byte</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">UTF-8 (웹/모바일 표준)</div>
+                <div class="stat-value" id="cnt-bytes-utf8">0<span class="stat-unit">Byte</span></div>
+            </div>
+        </div>
+
+        <div class="editor-container">
+            <div class="editor-header">
+                <span style="font-size: 14px; font-weight: 700;">본문 내용 입력</span>
+                <div class="btn-group">
+                    <button class="btn-action" onclick="removeExtraSpaces()">연속 공백 정리</button>
+                    <button class="btn-action" onclick="removeBlankLines()">빈 줄 제거</button>
+                    <button class="btn-action" onclick="clearText()">지우기</button>
+                    <button class="btn-action btn-primary" onclick="copyText()">본문 복사</button>
+                </div>
+            </div>
+
+            <textarea id="main-textarea" class="counter-textarea" placeholder="여기에 텍스트를 입력하거나 붙여넣으세요. 글자 수와 바이트 수가 실시간으로 계산됩니다." oninput="updateStats()"></textarea>
+
+            <div class="sub-stats">
+                <span>단어 수: <strong id="cnt-words" style="color: #111;">0</strong>개</span>
+                <span>줄(Line) 수: <strong id="cnt-lines" style="color: #111;">0</strong>줄</span>
+                <span>예상 읽기 시간: 약 <strong id="read-time" style="color: #111;">0</strong>분</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 우측 광고 -->
+    <div class="side-ad-box">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-3823705730142714"
+             data-ad-slot="1919264473"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+</div>
+
+<!-- 하단 광고 -->
+<div class="bottom-ad-box">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3823705730142714"
+         data-ad-slot="3894691126"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+
+<footer>
+    한글 자소서 및 웹/데이터 실무에 맞춘 실시간 글자수 & 바이트 계산 도구입니다.
+</footer>
+
+<script>
+    function getEucKrBytes(str) {
+        let bytes = 0;
+        for (let i = 0; i < str.length; i++) {
+            const code = str.charCodeAt(i);
+            if (code <= 0x007f) {
+                bytes += (code === 10 || code === 13) ? 2 : 1; // 줄바꿈 2바이트 계산
+            } else {
+                bytes += 2; // 한글/한자 2바이트
+            }
+        }
+        return bytes;
+    }
+
+    function getUtf8Bytes(str) {
+        return new TextEncoder().encode(str).length;
+    }
+
+    function updateStats() {
+        const text = document.getElementById('main-textarea').value;
+
+        // 글자 수
+        const withSpace = text.length;
+        const withoutSpace = text.replace(/\s/g, '').length;
+
+        // 바이트 수
+        const euckrBytes = getEucKrBytes(text);
+        const utf8Bytes = getUtf8Bytes(text);
+
+        // 단어/줄 수
+        const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+        const lines = text === '' ? 0 : text.split('\n').length;
+        const readTime = Math.ceil(withSpace / 500); // 분당 500자 기준
+
+        document.getElementById('cnt-with-space').innerHTML = `${withSpace.toLocaleString()}<span class="stat-unit">자</span>`;
+        document.getElementById('cnt-without-space').innerHTML = `${withoutSpace.toLocaleString()}<span class="stat-unit">자</span>`;
+        document.getElementById('cnt-bytes-euckr').innerHTML = `${euckrBytes.toLocaleString()}<span class="stat-unit">Byte</span>`;
+        document.getElementById('cnt-bytes-utf8').innerHTML = `${utf8Bytes.toLocaleString()}<span class="stat-unit">Byte</span>`;
+        document.getElementById('cnt-words').innerText = words.toLocaleString();
+        document.getElementById('cnt-lines').innerText = lines.toLocaleString();
+        document.getElementById('read-time').innerText = readTime;
+    }
+
+    function removeExtraSpaces() {
+        const textarea = document.getElementById('main-textarea');
+        textarea.value = textarea.value.replace(/[ \t]+/g, ' ');
+        updateStats();
+    }
+
+    function removeBlankLines() {
+        const textarea = document.getElementById('main-textarea');
+        textarea.value = textarea.value.split('\n').filter(line => line.trim() !== '').join('\n');
+        updateStats();
+    }
+
+    function clearText() {
+        const textarea = document.getElementById('main-textarea');
+        textarea.value = '';
+        updateStats();
+        textarea.focus();
+    }
+
+    function copyText() {
+        const text = document.getElementById('main-textarea').value;
+        if (!text) { alert('복사할 텍스트가 없습니다.'); return; }
+        navigator.clipboard.writeText(text).then(() => {
+            alert('본문 텍스트가 클립보드에 복사되었습니다!');
+        });
+    }
+</script>
+<script src="../nav.js"></script>
+</body>
+</html>
