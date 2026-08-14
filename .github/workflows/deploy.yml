@@ -1,0 +1,42 @@
+name: Deploy with Automatic Cache-Busting
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Auto Add Cache Version to Local JS/CSS Links
+        run: |
+          TIMESTAMP=$(date +%s)
+          # src="..." 또는 href="..." 내부의 .js / .css 파일만 정확히 찾아서 ?v=타임스탬프 주입
+          find . -name "*.html" -exec sed -i -E "s/(src|href)=[\"']([^\"']+\.(js|css))(\?[^\"']*)?[\"']/\1=\"\2?v=$TIMESTAMP\"/g" {} +
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
