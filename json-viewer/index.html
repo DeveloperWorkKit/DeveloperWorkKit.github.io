@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON 포맷터 & 오류 검사기 | DevWorKit</title>
+    <style>
+        :root {
+            --primary-blue: #007bff;
+            --primary-blue-hover: #0056b3;
+            --bg-light: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --error-red: #ef4444;
+            --success-green: #10b981;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-main);
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-badge { background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
+        .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
+
+        .page-wrapper {
+            display: block;
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .main-container {
+            width: 100%;
+            margin: 0 auto;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 상단 컨트롤 툴바 */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-color);
+            padding: 12px 16px;
+            border-radius: 8px;
+        }
+
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        .btn-action {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 7px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: all 0.15s;
+        }
+
+        .btn-action:hover { background-color: #e9ecef; }
+        .btn-primary { background-color: var(--primary-blue); color: white; border-color: var(--primary-blue); }
+        .btn-primary:hover { background-color: var(--primary-blue-hover); }
+
+        /* 상태 알림 바 */
+        .status-bar {
+            margin-bottom: 15px;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .status-bar.valid {
+            display: block;
+            background-color: #ecfdf5;
+            color: var(--success-green);
+            border: 1px solid #a7f3d0;
+        }
+
+        .status-bar.invalid {
+            display: block;
+            background-color: #fef2f2;
+            color: var(--error-red);
+            border: 1px solid #fecaca;
+        }
+
+        /* 2단 에디터 영역 */
+        .editor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 850px) {
+            .editor-grid { grid-template-columns: 1fr; }
+        }
+
+        .editor-box {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .editor-title { font-size: 14px; font-weight: 700; }
+
+        textarea.code-area {
+            width: 100%;
+            height: 420px;
+            padding: 12px;
+            font-size: 13.5px;
+            line-height: 1.5;
+            font-family: "Consolas", "Courier New", monospace;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            resize: vertical;
+            outline: none;
+            tab-size: 2;
+        }
+
+        textarea.code-area:focus { border-color: var(--primary-blue); }
+
+        .bottom-ad-box {
+            max-width: 1100px;
+            width: 100%;
+            margin: 25px auto 10px auto;
+            text-align: center;
+        }
+
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 16px 20px;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            background-color: var(--bg-light);
+            text-align: center;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-area">
+        <span class="logo-badge">JSON</span>
+        <span class="logo-text">JSON 포맷터 & 유효성 검사기</span>
+    </div>
+</header>
+
+<div class="page-wrapper">
+    <div class="main-container">
+        <!-- 툴바 컨트롤 -->
+        <div class="toolbar">
+            <div class="btn-group">
+                <button class="btn-action btn-primary" onclick="formatJSON(2)">2칸 정렬 (Prettify)</button>
+                <button class="btn-action" onclick="formatJSON(4)">4칸 정렬</button>
+                <button class="btn-action" onclick="minifyJSON()">1줄 압축 (Minify)</button>
+                <button class="btn-action" onclick="convertToTypeScript()">TypeScript 변환</button>
+            </div>
+            <div class="btn-group">
+                <button class="btn-action" onclick="loadSample()">샘플 불러오기</button>
+                <button class="btn-action" onclick="clearAll()">지우기</button>
+            </div>
+        </div>
+
+        <!-- 상태 알림 메시지 -->
+        <div id="status-bar" class="status-bar"></div>
+
+        <!-- 에디터 그리드 -->
+        <div class="editor-grid">
+            <div class="editor-box">
+                <div class="editor-header">
+                    <span class="editor-title">입력 JSON</span>
+                    <button class="btn-action" style="padding: 3px 8px; font-size: 11.5px;" onclick="pasteInput()">붙여넣기</button>
+                </div>
+                <textarea id="json-input" class="code-area" placeholder="포맷을 맞추거나 검사할 JSON 데이터를 여기에 입력하세요."></textarea>
+            </div>
+
+            <div class="editor-box">
+                <div class="editor-header">
+                    <span class="editor-title" id="output-title">정렬 결과</span>
+                    <button class="btn-action btn-primary" style="padding: 3px 8px; font-size: 11.5px;" onclick="copyOutput()">결과 복사</button>
+                </div>
+                <textarea id="json-output" class="code-area" placeholder="정렬 및 변환 결과가 여기에 표시됩니다." readonly></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 하단 광고 영역 -->
+<div class="bottom-ad-box">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3823705730142714"
+         data-ad-slot="3894691126"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+
+<footer>
+    클라이언트 사이드에서 즉시 처리되어 데이터 유출 없는 안전하고 빠른 무료 JSON 포맷터입니다.
+</footer>
+
+<script>
+    const inputUndoStack = [];
+    const inputRedoStack = [];
+    let inputTimer = null;
+
+    function recordInputHistory() {
+        const el = document.getElementById('json-input');
+        if (!el) return;
+
+        const state = {
+            val: el.value,
+            selStart: el.selectionStart,
+            selEnd: el.selectionEnd,
+            scrollTop: el.scrollTop
+        };
+
+        if (inputUndoStack.length === 0 || inputUndoStack[inputUndoStack.length - 1].val !== state.val) {
+            inputUndoStack.push(state);
+            if (inputUndoStack.length > 50) inputUndoStack.shift();
+            inputRedoStack.length = 0;
+        }
+    }
+
+    function handleInputEvent() {
+        validateJSONSilent();
+        clearTimeout(inputTimer);
+        inputTimer = setTimeout(() => {
+            recordInputHistory();
+        }, 300);
+    }
+
+    function handleInputKeyDown(e) {
+        const isCtrl = e.ctrlKey || e.metaKey;
+        const key = e.key.toLowerCase();
+        const el = document.getElementById('json-input');
+
+        if (isCtrl && key === 'z' && !e.shiftKey) {
+            if (inputUndoStack.length > 1) {
+                e.preventDefault();
+                const current = inputUndoStack.pop();
+                inputRedoStack.push(current);
+
+                const prev = inputUndoStack[inputUndoStack.length - 1];
+                applyInputState(el, prev);
+            }
+        } else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
+            if (inputRedoStack.length > 0) {
+                e.preventDefault();
+                const next = inputRedoStack.pop();
+                inputUndoStack.push(next);
+
+                applyInputState(el, next);
+            }
+        }
+    }
+
+    function applyInputState(el, state) {
+        el.value = state.val;
+        validateJSONSilent();
+
+        setTimeout(() => {
+            el.focus();
+            el.setSelectionRange(state.selStart, state.selEnd);
+            el.scrollTop = state.scrollTop;
+        }, 0);
+    }
+
+    function setStatus(type, msg) {
+        const bar = document.getElementById('status-bar');
+        bar.className = 'status-bar ' + type;
+        bar.innerText = msg;
+    }
+
+    function validateJSONSilent() {
+        const input = document.getElementById('json-input').value.trim();
+        const bar = document.getElementById('status-bar');
+        if (!input) {
+            bar.style.display = 'none';
+            return;
+        }
+        try {
+            JSON.parse(input);
+            setStatus('valid', '✓ 유효한 JSON 형식입니다.');
+        } catch (e) {
+            setStatus('invalid', '✕ JSON 문법 오류: ' + e.message);
+        }
+    }
+
+    function formatJSON(space) {
+        document.getElementById('output-title').innerText = '정렬 결과 (' + space + '칸)';
+        const input = document.getElementById('json-input').value.trim();
+        const outputEl = document.getElementById('json-output');
+
+        if (!input) {
+            alert('JSON 데이터를 먼저 입력해주세요.');
+            return;
+        }
+
+        try {
+            const parsed = JSON.parse(input);
+            outputEl.value = JSON.stringify(parsed, null, space);
+            setStatus('valid', '✓ 정렬 성공: 유효한 JSON 데이터입니다.');
+        } catch (e) {
+            outputEl.value = '';
+            setStatus('invalid', '✕ 포맷 오류: 올바른 JSON 형식이 아닙니다. (' + e.message + ')');
+        }
+    }
+
+    function minifyJSON() {
+        document.getElementById('output-title').innerText = '압축 결과 (1줄)';
+        const input = document.getElementById('json-input').value.trim();
+        const outputEl = document.getElementById('json-output');
+
+        if (!input) {
+            alert('JSON 데이터를 먼저 입력해주세요.');
+            return;
+        }
+
+        try {
+            const parsed = JSON.parse(input);
+            outputEl.value = JSON.stringify(parsed);
+            setStatus('valid', '✓ 압축 성공: 공백이 제거된 1줄 데이터입니다.');
+        } catch (e) {
+            outputEl.value = '';
+            setStatus('invalid', '✕ 압축 오류: 올바른 JSON 형식이 아닙니다. (' + e.message + ')');
+        }
+    }
+
+    function convertToTypeScript() {
+        document.getElementById('output-title').innerText = 'TypeScript 인터페이스 변환 결과';
+        const input = document.getElementById('json-input').value.trim();
+        const outputEl = document.getElementById('json-output');
+
+        if (!input) {
+            alert('JSON 데이터를 먼저 입력해주세요.');
+            return;
+        }
+
+        try {
+            const parsed = JSON.parse(input);
+            outputEl.value = jsonToTs(parsed, 'RootObject');
+            setStatus('valid', '✓ TypeScript Interface 변환이 완료되었습니다.');
+        } catch (e) {
+            outputEl.value = '';
+            setStatus('invalid', '✕ 변환 오류: 올바른 JSON 형식이 아닙니다. (' + e.message + ')');
+        }
+    }
+
+    function jsonToTs(obj, interfaceName) {
+        if (Array.isArray(obj)) {
+            return `export type ${interfaceName} = ${typeof obj[0] || 'any'}[];`;
+        }
+        let result = `export interface ${interfaceName} {\n`;
+        for (const [key, value] of Object.entries(obj)) {
+            let type = typeof value;
+            if (value === null) type = 'any';
+            else if (Array.isArray(value)) type = value.length ? `${typeof value[0]}[]` : 'any[]';
+            else if (type === 'object') type = 'Record<string, any>';
+            result += `  ${key}: ${type};\n`;
+        }
+        result += `}`;
+        return result;
+    }
+
+    function loadSample() {
+        const sample = {
+            site: "Developer Work Kit",
+            author: "DWK Team",
+            tools: ["STRGET", "COUNT", "CODER", "FSEE", "STRCMP", "QRM", "JSON"],
+            config: {
+                darkMode: false,
+                version: 1.2
+            }
+        };
+        const inputEl = document.getElementById('json-input');
+        inputEl.value = JSON.stringify(sample);
+        recordInputHistory();
+        formatJSON(2);
+    }
+
+    function clearAll() {
+        document.getElementById('json-input').value = '';
+        document.getElementById('json-output').value = '';
+        document.getElementById('status-bar').style.display = 'none';
+        recordInputHistory();
+        document.getElementById('json-input').focus();
+    }
+
+    async function pasteInput() {
+        try {
+            const text = await navigator.clipboard.readText();
+            const inputEl = document.getElementById('json-input');
+            inputEl.value = text;
+            recordInputHistory();
+            formatJSON(2);
+        } catch (e) {
+            alert('클립보드 읽기 권한이 필요합니다.');
+        }
+    }
+
+    function copyOutput() {
+        const output = document.getElementById('json-output').value;
+        if (!output) { alert('복사할 결과가 없습니다.'); return; }
+        navigator.clipboard.writeText(output).then(() => {
+            alert('결과가 클립보드에 복사되었습니다!');
+        });
+    }
+
+    window.onload = () => {
+        const inputEl = document.getElementById('json-input');
+        inputEl.addEventListener('input', handleInputEvent);
+        inputEl.addEventListener('keydown', handleInputKeyDown);
+        recordInputHistory();
+    };
+</script>
+<script src="../nav.js"></script>
+</body>
+</html>
