@@ -6,8 +6,8 @@
     <title>문자열 추출기</title>
     <style>
         :root {
-            --primary-red: #dc3545;
-            --primary-red-hover: #bd2130;
+            --primary-red: #007bff; /* DWK 브랜드 파란색으로 변경 */
+            --primary-red-hover: #0056b3; /* 파란색 호버 스타일 */
             --primary-blue: #007bff;
             --primary-blue-hover: #0056b3;
             --bg-light: #f8f9fa;
@@ -36,7 +36,7 @@
         }
 
         .logo-area { display: flex; align-items: center; gap: 8px; }
-        .logo-badge { background: var(--primary-red); color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
+        .logo-badge { background: var(--primary-blue); color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
         .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
 
         /* 3단 레이아웃 (좌측광고 / 중앙앱 / 우측광고) */
@@ -121,9 +121,9 @@
         }
 
         .btn-preset:hover, .btn-preset.active {
-            border-color: var(--primary-red);
-            color: var(--primary-red);
-            background-color: #fff5f5;
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+            background-color: #e7f5ff;
         }
 
         .btn-preset-custom {
@@ -135,9 +135,9 @@
 
         .btn-preset-custom:hover, .btn-preset-custom.active {
             border-style: solid;
-            border-color: var(--primary-red);
-            color: var(--primary-red);
-            background-color: #fff5f5;
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+            background-color: #e7f5ff;
         }
 
         .regex-input-wrapper {
@@ -170,7 +170,7 @@
         .regex-input-wrapper input:not([readonly]) {
             color: #111111;
             background-color: #ffffff;
-            box-shadow: inset 0 0 0 1px var(--primary-red);
+            box-shadow: inset 0 0 0 1px var(--primary-blue);
             padding: 4px 8px;
             border-radius: 3px;
         }
@@ -213,8 +213,8 @@
             white-space: nowrap;
         }
         .btn-sub-action:hover { background-color: #e9ecef; }
-        .btn-sub-danger { color: var(--primary-red); }
-        .btn-sub-danger:hover { background-color: #fff5f5; border-color: var(--primary-red); }
+        .btn-sub-danger { color: #dc3545; }
+        .btn-sub-danger:hover { background-color: #fff5f5; border-color: #dc3545; }
 
         .option-toggle-group {
             margin-top: 12px;
@@ -237,7 +237,7 @@
         .opt-label input[type="checkbox"] {
             width: 15px;
             height: 15px;
-            accent-color: var(--primary-red);
+            accent-color: var(--primary-blue);
             cursor: pointer;
         }
 
@@ -384,7 +384,7 @@
         .copy-group { display: flex; gap: 8px; }
 
         .btn-copy-matches {
-            background-color: var(--primary-red);
+            background-color: var(--primary-blue);
             color: white;
             border: none;
             padding: 8px 16px;
@@ -394,7 +394,7 @@
             cursor: pointer;
             transition: background 0.15s;
         }
-        .btn-copy-matches:hover { background-color: var(--primary-red-hover); }
+        .btn-copy-matches:hover { background-color: var(--primary-blue-hover); }
 
         .btn-copy-excel {
             background-color: #198754;
