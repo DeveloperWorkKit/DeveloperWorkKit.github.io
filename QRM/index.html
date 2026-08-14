@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR 마스터</title>
+    <style>
+        :root {
+            --primary-blue: #007bff;
+            --primary-blue-hover: #0056b3;
+            --primary-green: #28a745;
+            --primary-green-hover: #1e7e34;
+            --bg-light: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-main: #333333;
+            --text-muted: #666666;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Malgun Gothic", sans-serif;
+            color: var(--text-main);
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-badge {
+            background: var(--primary-blue);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #111111;
+        }
+
+        .main-container {
+            max-width: 960px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            flex: 1;
+        }
+
+        .tab-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-blue);
+            border-bottom: 3px solid var(--primary-blue);
+            margin-bottom: -13px;
+        }
+
+        .view-panel { display: none; }
+        .view-panel.active { display: block; }
+
+        .panel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .control-box {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 25px;
+            background-color: #ffffff;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #111111;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn-green { background-color: var(--primary-green); }
+        .btn-green:hover { background-color: var(--primary-green-hover); }
+        .btn-blue { background-color: var(--primary-blue); }
+        .btn-blue:hover { background-color: var(--primary-blue-hover); }
+
+        .display-box {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 25px;
+            background-color: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+        }
+
+        #qrcode-output {
+            background-color: white;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        #qrcode-output img {
+            display: block;
+        }
+
+        #scan-preview-zone {
+            width: 100%;
+            max-width: 400px;
+            border: 2px dashed #adb5bd;
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+            background: white;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        #result-display {
+            width: 100%;
+            padding: 15px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+            font-weight: bold;
+            word-break: break-all;
+            text-align: center;
+            min-height: 50px;
+        }
+
+        #status-bar {
+            margin-top: 30px;
+            padding: 15px;
+            background: var(--bg-light);
+            border-radius: 4px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 20px 40px;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/davidshimjs-qrcodejs@0.0.2/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+</head>
+<body>
+
+<header>
+    <div class="logo-area">
+        <span class="logo-badge">QRM</span>
+        <span class="logo-text">QR 마스터</span>
+    </div>
+</header>
+
+<div class="main-container">
+    <div class="tab-group">
+        <button class="tab-btn active" onclick="switchTab('gen-panel', this)">QR코드 실시간 생성</button>
+        <button class="tab-btn" onclick="switchTab('scan-panel', this)">QR코드 이미지 스캔</button>
+    </div>
+
+    <div id="gen-panel" class="view-panel active">
+        <div class="panel-grid">
+            <div class="control-box">
+                <div class="form-group">
+                    <label>변환할 웹 주소(URL) 또는 텍스트 입력:</label>
+                    <input type="text" id="qr-input-text" class="form-control" placeholder="텍스트를 입력하면 실시간으로 변합니다." value="https://google.com" oninput="generateQRCodeRealtime()">
+                </div>
+                <div class="form-group">
+                    <label>중앙 로고 텍스트 (선택사항):</label>
+                    <input type="text" id="qr-logo-text" class="form-control" placeholder="QR" maxlength="6" oninput="generateQRCodeRealtime()">
+                </div>
+                <div style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-top: 15px;">
+                    ※ 텍스트를 타이핑 시 QR코드가 실시간으로 변경됩니다.
+                </div>
+            </div>
+            <div class="display-box">
+                <div id="qrcode-output"></div>
+                <button class="btn btn-green" id="btn-download-qr" style="max-width:200px;" onclick="downloadQRImage()">QR코드 다운로드</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="scan-panel" class="view-panel">
+        <div class="panel-grid">
+            <div class="control-box" style="display: flex; flex-direction: column; justify-content: center;">
+                <h3 style="margin: 0 0 10px 0; font-size: 16px;">파일 업로드 및 인식</h3>
+                <p style="margin: 0 0 20px 0; font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+                    스캔하고 싶은 QR코드 캡처본이나 이미지 파일을 우측 영역에 올리면 주소를 판독합니다.
+                </p>
+                <input type="file" id="qr-file-input" accept="image/*" style="display: none;" onchange="scanQRFile(this)">
+                <button class="btn btn-blue" onclick="document.getElementById('qr-file-input').click()">QR 이미지 파일 선택</button>
+            </div>
+            <div class="display-box">
+                <div id="scan-preview-zone" onclick="document.getElementById('qr-file-input').click()">
+                    <span style="font-size:14px; color:var(--text-muted);" id="preview-text">여기를 클릭하여 QR 이미지를 로드하세요.</span>
+                    <canvas id="scan-canvas" style="display: none; width: 100%; max-height: 200px; object-fit: contain; margin-top: 10px;"></canvas>
+                </div>
+                <div style="width: 100%;">
+                    <div style="font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:5px;">스캔 판독 결과:</div>
+                    <div id="result-display">대기 중...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="status-bar">실시간 모니터링 엔진 가동 중</div>
+</div>
+
+<footer>
+    Disclaimer: 본 도구는 완전한 클라이언트 사이드 엔진으로 구동되므로 입력되거나 스캔된 QR 정보가 외부 서버로 절대 유출되지 않는 사내 보안 준수 유틸리티입니다.
+</footer>
+
+<script>
+    let currentQrCanvas = null;
+
+    function switchTab(panelId, btnElement) {
+        document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(panelId).classList.add('active');
+        btnElement.classList.add('active');
+    }
+
+    function generateQRCodeRealtime() {
+        const text = document.getElementById('qr-input-text').value;
+        const logo = document.getElementById('qr-logo-text').value.trim();
+        const outputDiv = document.getElementById('qrcode-output');
+        const dlBtn = document.getElementById('btn-download-qr');
+        
+        if (!text.trim()) {
+            outputDiv.innerHTML = "<div style='padding:40px; color:#aaa; font-size:13px;'>내용을 입력하세요</div>";
+            dlBtn.style.display = "none";
+            currentQrCanvas = null;
+            return;
+        }
+
+        outputDiv.innerHTML = "";
+        dlBtn.style.display = "block";
+
+        // 1. 순수 QR 객체 1차 동적 렌더링 배정
+        const qrcode = new QRCode(outputDiv, {
+            text: text,
+            width: 200,
+            height: 200,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+
+        // 2. 모바일 비동기 스레드 추적을 위한 폴링/체크 프로토콜 가동
+        const checkInterval = setInterval(() => {
+            const qrImg = outputDiv.querySelector('img');
+            
+            // 이미지 태그가 노드에 안착했고, 실제 Base64 데이터 소스가 할당되었는지 무결성 체크
+            if (qrImg && qrImg.src && qrImg.src.startsWith('data:image')) {
+                clearInterval(checkInterval); // 폴링 중지
+
+                // 레이스 컨디션을 막기 위해 완전히 로드된 이벤트를 캐치하여 2차 합성 트랙 기동
+                qrImg.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 200;
+                    canvas.height = 200;
+                    const ctx = canvas.getContext('2d');
+
+                    // 순수 QR코드 원본 복제 드로우
+                    ctx.drawImage(qrImg, 0, 0);
+
+                    // 로고 합성 레이어 오버레이
+                    if (logo) {
+                        ctx.fillStyle = "#ffffff";
+                        ctx.fillRect(75, 75, 50, 50);
+                        ctx.strokeStyle = "var(--primary-blue)";
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(75, 75, 50, 50);
+
+                        ctx.fillStyle = "#111111";
+                        ctx.font = "bold 11px -apple-system, sans-serif";
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.fillText(logo, 100, 100);
+                        
+                        // 화면 뷰어 이미지 소스를 로고가 포함된 고품질 최종본으로 강제 치환
+                        qrImg.src = canvas.toDataURL("image/png");
+                    }
+
+                    // 글로벌 참조 변수에 완성된 가상 캔버스를 안정적으로 동기화 바인딩
+                    currentQrCanvas = canvas;
+                    document.getElementById('status-bar').innerText = "실시간 QR 패턴 무결성 동기화 완료";
+                };
+
+                // 일부 구형 브라우저에서 onload 캐시 스킵 현상을 막기 위해 강제 트리거 트리 유도
+                if (qrImg.complete) {
+                    qrImg.onload();
+                }
+            }
+        }, 30); // 30ms 단위 정밀 트랙 폴링
+    }
+
+    function downloadQRImage() {
+        if (!currentQrCanvas) {
+            alert("QR 패턴 생성이 완료되지 않았습니다. 잠시 후 다시 시도해 주세요.");
+            return;
+        }
+        
+        const userAgreement = confirm(
+            "무료 사이트 유지 및 블로그 광고 조회 지원을 위해\n" +
+            "확인 클릭 시 다운로드와 함께 공식 블로그로 연결됩니다."
+        );
+
+        if (userAgreement) {
+            window.open("https://srhs.tistory.com/", "_blank");
+
+            const link = document.createElement('a');
+            link.download = 'QR_CODE.png'; 
+            link.href = currentQrCanvas.toDataURL('image/png');
+            link.click();
+        } else {
+            document.getElementById('status-bar').innerText = "다운로드가 취소되었습니다.";
+        }
+    }
+
+    function scanQRFile(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        const canvas = document.getElementById('scan-canvas');
+        const ctx = canvas.getContext('2d');
+        const previewText = document.getElementById('preview-text');
+        const resultDisplay = document.getElementById('result-display');
+
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                canvas.style.display = "block";
+                previewText.style.display = "none";
+
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                    inversionAttempts: "dontInvert",
+                });
+
+                if (code) {
+                    if(code.data.startsWith('http')) {
+                        resultDisplay.innerHTML = `<a href="${code.data}" target="_blank" style="color:var(--primary-blue);">${code.data} [이동하기]</a>`;
+                    } else {
+                        resultDisplay.innerText = code.data;
+                    }
+                    document.getElementById('status-bar').innerText = "스캔 완료";
+                } else {
+                    resultDisplay.innerText = "인식 실패";
+                }
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    window.onload = () => { generateQRCodeRealtime(); };
+</script>
+<script src="https://developerworkkit.github.io/DWK/nav.js"></script>
+</body>
+</html>
