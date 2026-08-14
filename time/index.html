@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>타임스탬프 변환기 | DevWorKit</title>
+    <style>
+        :root {
+            --primary-blue: #007bff;
+            --primary-blue-hover: #0056b3;
+            --bg-light: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-main: #333333;
+            --text-muted: #666666;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-main);
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-badge { background: #059669; color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
+        .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
+
+        .page-wrapper {
+            display: block;
+            max-width: 1100px;
+            margin: 20px auto 40px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .intro-section { margin-bottom: 25px; }
+        .intro-title { font-size: 22px; font-weight: 800; color: #111827; margin: 0 0 6px 0; letter-spacing: -0.5px; }
+        .intro-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 16px 0; }
+        .guide-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-size: 13.5px;
+            color: #334155;
+            line-height: 1.6;
+        }
+        .guide-box strong { display: block; margin-bottom: 8px; color: #0f172a; font-size: 14px; }
+        .guide-list { margin: 0; padding-left: 18px; }
+        .guide-list li { margin-bottom: 4px; }
+
+        /* 실시간 시계 배너 */
+        .live-clock-card {
+            background-color: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .live-clock-title { font-size: 13px; font-weight: 700; color: #065f46; }
+        .live-clock-val { font-size: 22px; font-weight: 800; font-family: "Consolas", monospace; color: #047857; }
+
+        .converter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 850px) { .converter-grid { grid-template-columns: 1fr; } }
+
+        .tool-panel {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .panel-title { font-size: 15px; font-weight: 700; color: #111827; }
+
+        .form-row { display: flex; flex-direction: column; gap: 6px; }
+        .form-row label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+        .input-text {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 14px;
+            font-family: "Consolas", monospace;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .input-text:focus { border-color: var(--primary-blue); }
+
+        .btn-action {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 13.5px;
+            font-weight: 700;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn-action:hover { background-color: var(--primary-blue-hover); }
+
+        .result-box {
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 13px;
+            line-height: 1.7;
+            font-family: "Consolas", monospace;
+        }
+
+        .result-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .result-item:last-child { margin-bottom: 0; }
+        .btn-copy-mini {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 2px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-copy-mini:hover { background-color: #e9ecef; }
+
+        .bottom-ad-box {
+            max-width: 1100px;
+            width: 100%;
+            margin: 25px auto 10px auto;
+            text-align: center;
+        }
+
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 16px 20px;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            background-color: var(--bg-light);
+            text-align: center;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-area">
+        <span class="logo-badge">TIME</span>
+        <span class="logo-text">타임스탬프 변환기</span>
+    </div>
+</header>
+
+<div class="page-wrapper">
+    <div class="intro-section">
+        <h2 class="intro-title">유닉스 타임스탬프(Epoch Time)와 한국 표준시(KST)를 실시간 변환하는 도구입니다.</h2>
+        <p class="intro-desc">초 단위(10자리) 및 밀리초 단위(13자리) 타임스탬프를 직관적으로 상호 변환할 수 있습니다.</p>
+        
+        <div class="guide-box">
+            <strong>타임스탬프 변환기 사용 방법 안내:</strong>
+            <ol class="guide-list">
+                <li>상단 배너에서 실시간으로 흐르는 현재 Unix Timestamp(초/밀리초)를 확인할 수 있습니다.</li>
+                <li>좌측 창에 변환할 타임스탬프 숫자를 입력하고 <b>[날짜로 변환]</b>을 누르면 KST/UTC/ISO 포맷으로 출력됩니다.</li>
+                <li>우측 창에 특정 날짜/시간을 선택하고 <b>[타임스탬프로 변환]</b>을 누르면 10자리/13자리 정수가 생성됩니다.</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- 실시간 현재 타임스탬프 -->
+    <div class="live-clock-card">
+        <div>
+            <div class="live-clock-title">현재 Unix Timestamp (초 단위)</div>
+            <div class="live-clock-val" id="current-timestamp-sec">0000000000</div>
+        </div>
+        <div>
+            <div class="live-clock-title">현재 Unix Timestamp (밀리초 단위)</div>
+            <div class="live-clock-val" id="current-timestamp-ms">0000000000000</div>
+        </div>
+    </div>
+
+    <div class="converter-grid">
+        <!-- 1. 타임스탬프 -> 날짜 -->
+        <div class="tool-panel">
+            <div class="panel-title">1. 타임스탬프 ➔ 날짜 변환</div>
+            <div class="form-row">
+                <label>Unix Timestamp (10자리 초 또는 13자리 밀리초)</label>
+                <input type="number" id="input-ts" class="input-text" placeholder="예: 1773000000">
+            </div>
+            <button class="btn-action" onclick="convertTimestampToDate()">날짜로 변환 실행 ▶</button>
+            <div class="result-box" id="ts-result-box">
+                <div class="result-item"><span>한국 시간 (KST):</span> <strong id="res-kst">-</strong> <button class="btn-copy-mini" onclick="copyVal('res-kst')">복사</button></div>
+                <div class="result-item"><span>표준시 (UTC):</span> <strong id="res-utc">-</strong> <button class="btn-copy-mini" onclick="copyVal('res-utc')">복사</button></div>
+                <div class="result-item"><span>ISO 8601:</span> <strong id="res-iso">-</strong> <button class="btn-copy-mini" onclick="copyVal('res-iso')">복사</button></div>
+            </div>
+        </div>
+
+        <!-- 2. 날짜 -> 타임스탬프 -->
+        <div class="tool-panel">
+            <div class="panel-title">2. 날짜/시간 ➔ 타임스탬프 변환</div>
+            <div class="form-row">
+                <label>날짜 및 시간 선택 (KST 기준)</label>
+                <input type="datetime-local" id="input-datetime" class="input-text">
+            </div>
+            <button class="btn-action" onclick="convertDateToTimestamp()">타임스탬프로 변환 실행 ▶</button>
+            <div class="result-box" id="date-result-box">
+                <div class="result-item"><span>초 (Seconds - 10자리):</span> <strong id="res-sec">-</strong> <button class="btn-copy-mini" onclick="copyVal('res-sec')">복사</button></div>
+                <div class="result-item"><span>밀리초 (ms - 13자리):</span> <strong id="res-ms">-</strong> <button class="btn-copy-mini" onclick="copyVal('res-ms')">복사</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bottom-ad-box">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3823705730142714"
+         data-ad-slot="3894691126"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+
+<footer>
+    클라이언트 환경에서 즉시 연산되는 안전한 무료 타임스탬프 변환 도구입니다.
+</footer>
+
+<script>
+    function updateLiveClock() {
+        const now = new Date();
+        document.getElementById('current-timestamp-sec').innerText = Math.floor(now.getTime() / 1000);
+        document.getElementById('current-timestamp-ms').innerText = now.getTime();
+    }
+    setInterval(updateLiveClock, 1000);
+    updateLiveClock();
+
+    function convertTimestampToDate() {
+        let val = document.getElementById('input-ts').value.trim();
+        if (!val) {
+            val = Math.floor(Date.now() / 1000).toString();
+            document.getElementById('input-ts').value = val;
+        }
+        let num = parseInt(val, 10);
+        if (isNaN(num)) { alert('올바른 숫자를 입력해주세요.'); return; }
+        if (val.length <= 11) num = num * 1000;
+
+        const date = new Date(num);
+        if (isNaN(date.getTime())) { alert('유효하지 않은 타임스탬프입니다.'); return; }
+
+        document.getElementById('res-kst').innerText = date.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+        document.getElementById('res-utc').innerText = date.toUTCString();
+        document.getElementById('res-iso').innerText = date.toISOString();
+    }
+
+    function convertDateToTimestamp() {
+        const val = document.getElementById('input-datetime').value;
+        if (!val) { alert('날짜와 시간을 먼저 선택해주세요.'); return; }
+        const date = new Date(val);
+        const ms = date.getTime();
+        const sec = Math.floor(ms / 1000);
+
+        document.getElementById('res-sec').innerText = sec;
+        document.getElementById('res-ms').innerText = ms;
+    }
+
+    function copyVal(id) {
+        const text = document.getElementById(id).innerText;
+        if (!text || text === '-') return;
+        navigator.clipboard.writeText(text).then(() => alert('복사되었습니다: ' + text));
+    }
+
+    window.onload = () => {
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        document.getElementById('input-datetime').value = now.toISOString().slice(0, 16);
+        document.getElementById('input-ts').value = Math.floor(Date.now() / 1000);
+        convertTimestampToDate();
+        convertDateToTimestamp();
+    };
+</script>
+<script src="../nav.js"></script>
+</body>
+</html>
