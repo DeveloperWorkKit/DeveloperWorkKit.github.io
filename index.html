@@ -3,176 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DWK | Developer Work Kit</title>
-    <!-- 구글 애드센스 승인용 스크립트 -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3823705730142714" crossorigin="anonymous"></script>
+    <title>Developer Work Kit | 직장인 & 개발자 생산성 툴킷</title>
     <style>
         :root {
-            --bg-color: #f8f9fa;
-            --card-bg: #ffffff;
-            --border-color: #e9ecef;
-            --text-main: #111827;
+            --primary-blue: #007bff;
+            --bg-light: #f8f9fa;
+            --border-color: #e5e7eb;
+            --text-main: #1f2937;
             --text-muted: #6b7280;
-            --primary-blue: #2563eb;
         }
 
         body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-main);
+            background-color: #fdfdfd;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        .container {
-            max-width: 960px;
-            margin: 50px auto;
-            padding: 0 20px;
-        }
-
-        .header-section {
+        /* 메인 히어로 섹션 */
+        .hero-section {
             text-align: center;
-            margin-bottom: 48px;
+            padding: 60px 20px 40px 20px;
         }
 
-        .brand-badge {
-            display: inline-block;
-            background-color: var(--primary-blue);
+        .hub-badge {
+            background-color: #1d4ed8;
             color: #ffffff;
             font-size: 12px;
             font-weight: 800;
-            padding: 4px 10px;
+            padding: 4px 12px;
             border-radius: 20px;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-bottom: 16px;
         }
 
-        .header-section h1 {
-            font-size: 32px;
-            font-weight: 800;
-            margin: 0 0 10px 0;
-            letter-spacing: -0.5px;
+        .hero-title {
+            font-size: 38px;
+            font-weight: 900;
+            letter-spacing: -1px;
+            color: #111827;
+            margin: 0 0 12px 0;
         }
 
-        .header-section p {
+        .hero-desc {
+            font-size: 16px;
             color: var(--text-muted);
-            font-size: 15px;
-            margin: 0;
+            margin: 0 auto;
+            max-width: 600px;
         }
 
-        .grid-container {
+        /* 툴 카드 그리드 */
+        .hub-container {
+            max-width: 1160px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 20px 60px 20px;
+            box-sizing: border-box;
+            flex: 1;
+        }
+
+        .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width: 960px) {
+            .card-grid { grid-template-columns: repeat(2, 1fr); }
+            .hero-title { font-size: 30px; }
+        }
+
+        @media (max-width: 600px) {
+            .card-grid { grid-template-columns: 1fr; }
+        }
+
+        .tool-link {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
         }
 
         .tool-card {
-            background: var(--card-bg);
+            background-color: #ffffff;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 24px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.2s ease;
+            border-radius: 12px;
+            padding: 28px 24px;
+            width: 100%;
+            box-sizing: border-box;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
         }
 
         .tool-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.06);
-            border-color: var(--primary-blue);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
+            border-color: #cbd5e1;
         }
 
         .card-badge {
             display: inline-block;
-            padding: 3px 8px;
-            border-radius: 4px;
             font-size: 11px;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 12px;
-            width: fit-content;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 5px;
+            color: #ffffff;
+            margin-bottom: 16px;
+            align-self: flex-start;
+            letter-spacing: 0.5px;
         }
 
-        .bg-strget { background-color: #dc3545; }
-        .bg-fsee { background-color: #0d6efd; }
-        .bg-strcmp { background-color: #198754; }
-        .bg-zbdkf { background-color: #6f42c1; }
+        /* 뱃지별 전용 컬러 */
+        .badge-red    { background-color: #ef4444; }
+        .badge-blue   { background-color: #2563eb; }
+        .badge-green  { background-color: #10b981; }
+        .badge-purple { background-color: #8b5cf6; }
+        .badge-orange { background-color: #f59e0b; }
+        .badge-cyan   { background-color: #06b6d4; }
 
         .tool-card h3 {
-            margin: 0 0 8px 0;
-            font-size: 17px;
+            font-size: 19px;
             font-weight: 700;
+            color: #111827;
+            margin: 0 0 10px 0;
+            letter-spacing: -0.4px;
         }
 
         .tool-card p {
-            margin: 0;
-            font-size: 13px;
+            font-size: 13.5px;
             color: var(--text-muted);
-            line-height: 1.5;
+            line-height: 1.6;
+            margin: 0;
         }
 
         footer {
-            margin-top: 60px;
-            text-align: center;
+            border-top: 1px solid var(--border-color);
+            padding: 24px 20px;
             font-size: 13px;
             color: var(--text-muted);
-            padding-bottom: 40px;
+            background-color: #ffffff;
+            text-align: center;
+            margin-top: auto;
         }
     </style>
 </head>
 <body>
 
-    <!-- DWK 공통 네비게이션바 연결 -->
-    <script src="./nav.js"></script>
+<section class="hero-section">
+    <span class="hub-badge">DWK HUB</span>
+    <h1 class="hero-title">Developer Work Kit</h1>
+    <p class="hero-desc">직장인과 개발자의 야근을 줄여주는 무료 IT 생산성 툴킷 세트</p>
+</section>
 
-    <div class="container">
-        <div class="header-section">
-            <span class="brand-badge">DWK HUB</span>
-            <h1>Developer Work Kit</h1>
-            <p>직장인과 개발자의 야근을 줄여주는 무료 IT 생산성 툴킷 세트</p>
-        </div>
+<main class="hub-container">
+    <div class="card-grid">
+        <!-- 1. STRGET -->
+        <a href="./strget/" class="tool-link">
+            <div class="tool-card">
+                <span class="card-badge badge-red">STRGET</span>
+                <h3>문자열 추출기</h3>
+                <p>텍스트 뭉치에서 이메일, 전화번호, 패턴 데이터를 1초 만에 추출하고 엑셀 표 형태로 복사합니다.</p>
+            </div>
+        </a>
 
-        <div class="grid-container">
-            <a href="./strget/" class="tool-card">
-                <div>
-                    <span class="card-badge bg-strget">STRGET</span>
-                    <h3>문자열 추출기</h3>
-                    <p>텍스트 뭉치에서 이메일, 전화번호, 패턴 데이터를 1초 만에 추출하고 엑셀 표 형태로 복사합니다.</p>
-                </div>
-            </a>
+        <!-- 2. COUNT (신규 추가) -->
+        <a href="./counter/" class="tool-link">
+            <div class="tool-card">
+                <span class="card-badge badge-orange">COUNT</span>
+                <h3>글자수 & 바이트 계산기</h3>
+                <p>공백 포함/제외 글자 수와 EUC-KR(자소서/공공기관), UTF-8 바이트를 실시간으로 정확하게 측정합니다.</p>
+            </div>
+        </a>
 
-            <a href="./fsee/" class="tool-card">
-                <div>
-                    <span class="card-badge bg-fsee">FSEE</span>
-                    <h3>폴더 구조 엑셀</h3>
-                    <p>로컬 폴더나 ZIP 압축 파일의 계층 구조를 인덴트가 정돈된 엑셀 파일로 출력합니다.</p>
-                </div>
-            </a>
+        <!-- 3. CODER (신규 추가) -->
+        <a href="./coder/" class="tool-link">
+            <div class="tool-card">
+                <span class="card-badge badge-cyan">CODER</span>
+                <h3>Base64 & URL 변환기</h3>
+                <p>한글(UTF-8) 깨짐 없는 실시간 Base64 인코딩/디코딩 및 URL, HTML 엔티티 변환을 지원합니다.</p>
+            </div>
+        </a>
 
-            <a href="./strcmp/" class="tool-card">
-                <div>
-                    <span class="card-badge bg-strcmp">STRCMP</span>
-                    <h3>텍스트 문서 비교</h3>
-                    <p>두 개의 텍스트나 소스 코드 간의 차이점을 실시간으로 비교하고 차이점을 시각화합니다.</p>
-                </div>
-            </a>
+        <!-- 4. FSEE -->
+        <a href="./fsee/" class="tool-link">
+            <div class="tool-card">
+                <span class="card-badge badge-blue">FSEE</span>
+                <h3>폴더 구조 엑셀</h3>
+                <p>로컬 폴더나 ZIP 압축 파일의 계층 구조를 인덴트가 정돈된 엑셀 파일로 1초 만에 출력합니다.</p>
+            </div>
+        </a>
 
-            <a href="./zbdkf/" class="tool-card">
-                <div>
-                    <span class="card-badge bg-zbdkf">QRM</span>
-                    <h3>QR 마스터</h3>
-                    <p>원하는 URL 및 텍스트 데이터를 고화질 QR 코드로 즉시 생성하고 다운로드합니다.</p>
-                </div>
-            </a>
-        </div>
+        <!-- 5. STRCMP -->
+        <a href="./strcmp/" class="tool-link">
+            <div class="tool-card">
+                <span class="card-badge badge-green">STRCMP</span>
+                <h3>텍스트 문서 비교</h3>
+                <p>두 개의 텍스트나 소스 코드 간의 차이점(Diff)을 실시간으로 비교하고 차이점을 시각화합니다.</p>
+            </div>
+        </a>
 
-        <footer>
-            © DevWorKit (DWK) - All Tools Built for Productivity
-        </footer>
+        <!-- 6. QRM -->
+        <a href="./qrc/" class="tool-link">
+            <div class="tool-card">
+                <span class="card-badge badge-purple">QRM</span>
+                <h3>QR 마스터</h3>
+                <p>원하는 URL 및 텍스트 데이터를 고화질 QR 코드로 즉시 생성하고 PNG 이미지로 다운로드합니다.</p>
+            </div>
+        </a>
     </div>
+</main>
 
+<footer>
+    © DevWorkKit (DWK) - All Tools Built for Productivity
+</footer>
+
+<script src="./nav.js"></script>
 </body>
 </html>
