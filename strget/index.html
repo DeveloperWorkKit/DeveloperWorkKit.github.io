@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>문자열 추출기</title>
+    <title>문자열 추출기 | DevWorKit</title>
     <style>
         :root {
-            --primary-red: #007bff; /* DWK 브랜드 파란색으로 변경 */
-            --primary-red-hover: #0056b3; /* 파란색 호버 스타일 */
             --primary-blue: #007bff;
             --primary-blue-hover: #0056b3;
             --bg-light: #f8f9fa;
@@ -36,48 +34,46 @@
         }
 
         .logo-area { display: flex; align-items: center; gap: 8px; }
-        .logo-badge { background: var(--primary-blue); color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
+        .logo-badge { background: #ef4444; color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
         .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
 
-        /* 3단 레이아웃 (좌측광고 / 중앙앱 / 우측광고) */
         .page-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            gap: 20px;
-            max-width: 1600px;
-            margin: 20px auto;
-            padding: 0 10px;
+            display: block;
+            max-width: 1100px;
+            margin: 20px auto 40px auto;
+            padding: 0 20px;
             box-sizing: border-box;
             width: 100%;
         }
 
-        .side-ad-box {
-            width: 160px;
-            min-width: 160px;
-            position: sticky;
-            top: 20px;
+        /* 가이드 안내 섹션 */
+        .intro-section { margin-bottom: 25px; }
+        .intro-title { font-size: 22px; font-weight: 800; color: #111827; margin: 0 0 6px 0; letter-spacing: -0.5px; }
+        .intro-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 16px 0; }
+        .guide-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-size: 13.5px;
+            color: #334155;
+            line-height: 1.6;
         }
-
-        @media (max-width: 1400px) {
-            .side-ad-box {
-                display: none;
-            }
-        }
+        .guide-box strong { display: block; margin-bottom: 8px; color: #0f172a; font-size: 14px; }
+        .guide-list { margin: 0; padding-left: 18px; }
+        .guide-list li { margin-bottom: 4px; }
 
         .main-container {
-            max-width: 1200px;
             width: 100%;
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            flex: 1;
         }
 
         .panel-grid {
             display: grid;
-            grid-template-columns: 420px 1fr;
-            gap: 30px;
+            grid-template-columns: 400px 1fr;
+            gap: 24px;
         }
 
         @media (max-width: 900px) {
@@ -86,34 +82,35 @@
 
         .control-box {
             border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 25px;
+            border-radius: 8px;
+            padding: 20px;
             background-color: #ffffff;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            gap: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
 
         .form-group label {
             display: block;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 10px;
+            font-size: 13.5px;
+            font-weight: 700;
+            margin-bottom: 8px;
             color: #111111;
         }
 
         .preset-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
+            gap: 6px;
         }
 
         .btn-preset {
-            padding: 10px;
+            padding: 8px 6px;
             background-color: var(--bg-light);
             border: 1px solid var(--border-color);
             border-radius: 4px;
-            font-size: 13px;
+            font-size: 12.5px;
             font-weight: 600;
             cursor: pointer;
             text-align: center;
@@ -144,10 +141,10 @@
             display: flex;
             align-items: center;
             background: var(--bg-light);
-            padding: 8px 12px;
+            padding: 6px 10px;
             border: 1px solid var(--border-color);
             border-radius: 4px;
-            margin-top: 6px;
+            margin-top: 4px;
             transition: all 0.2s;
         }
 
@@ -157,7 +154,7 @@
             width: 100%;
             padding: 4px 0;
             font-family: "Consolas", "Courier New", Courier, monospace;
-            font-size: 13.5px;
+            font-size: 13px;
             font-weight: 700;
             color: #495057;
         }
@@ -180,9 +177,9 @@
         .custom-save-zone {
             display: none;
             flex-direction: column;
-            gap: 8px;
-            margin-top: 10px;
-            padding: 12px;
+            gap: 6px;
+            margin-top: 8px;
+            padding: 10px;
             background-color: var(--bg-light);
             border: 1px solid var(--border-color);
             border-radius: 4px;
@@ -195,7 +192,7 @@
 
         .save-input-row input, .saved-select-row select {
             flex: 1;
-            padding: 6px 10px;
+            padding: 5px 8px;
             font-size: 12px;
             border: 1px solid var(--border-color);
             border-radius: 4px;
@@ -205,8 +202,8 @@
         .btn-sub-action {
             background-color: #ffffff;
             border: 1px solid var(--border-color);
-            padding: 5px 10px;
-            font-size: 12px;
+            padding: 4px 8px;
+            font-size: 11.5px;
             font-weight: 600;
             border-radius: 4px;
             cursor: pointer;
@@ -217,7 +214,7 @@
         .btn-sub-danger:hover { background-color: #fff5f5; border-color: #dc3545; }
 
         .option-toggle-group {
-            margin-top: 12px;
+            margin-top: 10px;
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -227,7 +224,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            font-size: 13px;
+            font-size: 12.5px;
             font-weight: 600;
             color: #495057;
             cursor: pointer;
@@ -235,19 +232,20 @@
         }
 
         .opt-label input[type="checkbox"] {
-            width: 15px;
-            height: 15px;
+            width: 14px;
+            height: 14px;
             accent-color: var(--primary-blue);
             cursor: pointer;
         }
 
         .display-box {
             border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 25px;
-            background-color: var(--bg-light);
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #ffffff;
             display: flex;
             flex-direction: column;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
 
         .display-header {
@@ -285,7 +283,7 @@
         .btn-mini-action {
             background-color: #ffffff;
             border: 1px solid var(--border-color);
-            padding: 4px 8px;
+            padding: 4px 10px;
             font-size: 12px;
             font-weight: 600;
             border-radius: 4px;
@@ -301,7 +299,7 @@
             min-height: 380px;
             background: #ffffff;
             border: 1px solid var(--border-color);
-            border-radius: 4px;
+            border-radius: 6px;
             overflow: hidden;
         }
 
@@ -313,7 +311,7 @@
             height: 100%;
             margin: 0;
             box-sizing: border-box;
-            font-size: 14px;
+            font-size: 13.5px;
             line-height: 1.6;
             font-family: "Consolas", "Courier New", Courier, monospace;
             white-space: pre-wrap;
@@ -328,11 +326,10 @@
             border: none;
             z-index: 2;
             overflow-y: scroll;
-            padding: 15px 0px 15px 15px;
+            padding: 12px;
             cursor: auto;
+            outline: none;
         }
-
-        .test-textarea:focus { outline: none; }
 
         .backdrop {
             color: transparent;
@@ -341,7 +338,7 @@
             z-index: 1;
             background-color: #ffffff;
             border: none;
-            padding: 15px 0px 15px 15px;
+            padding: 12px;
         }
 
         .test-textarea::-webkit-scrollbar { width: 14px; }
@@ -387,7 +384,7 @@
             background-color: var(--primary-blue);
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 8px 14px;
             font-size: 13px;
             font-weight: 600;
             border-radius: 4px;
@@ -400,7 +397,7 @@
             background-color: #198754;
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 8px 14px;
             font-size: 13px;
             font-weight: 600;
             border-radius: 4px;
@@ -433,7 +430,7 @@
         }
 
         .bottom-ad-box {
-            max-width: 1200px;
+            max-width: 1100px;
             width: 100%;
             margin: 25px auto 10px auto;
             text-align: center;
@@ -460,22 +457,25 @@
 </header>
 
 <div class="page-wrapper">
-    <!-- 좌측 사이드 수직 광고 -->
-    <div class="side-ad-box">
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-3823705730142714"
-             data-ad-slot="1919264473"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>
-             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+    <!-- 사용 안내 가이드 -->
+    <div class="intro-section">
+        <h2 class="intro-title">긴 텍스트에서 원하는 패턴의 데이터만 고속으로 추출하는 도구입니다.</h2>
+        <p class="intro-desc">이메일, 전화번호, 숫자, 날짜 및 커스텀 정규식 패턴을 실시간으로 매칭하고 엑셀 표로 복사합니다.</p>
+        
+        <div class="guide-box">
+            <strong>문자열 추출기 사용 방법 안내:</strong>
+            <ol class="guide-list">
+                <li>우측 본문 입력창에 데이터를 입력하거나 <b>[샘플 불러오기]</b>를 클릭하여 테스트 데이터를 로드합니다.</li>
+                <li>좌측에서 <b>[이메일 매칭], [전화번호], [숫자]</b> 등 원하는 추출 프리셋 버튼을 클릭합니다.</li>
+                <li>본문에서 실시간으로 형광펜 강조된 단어를 확인하고, 하단의 <b>[엑셀/CSV용 표 형태로 복사]</b>를 눌러 클립보드에 저장합니다.</li>
+                <li>원하는 특정 서식이 있는 경우 <b>[사용자 지정 패턴 입력]</b>을 통해 정규식을 직접 작성하고 브라우저에 영구 저장할 수 있습니다.</li>
+            </ol>
+        </div>
     </div>
 
-    <!-- 중앙 메인 추출기 영역 -->
     <div class="main-container">
         <div class="panel-grid">
+            <!-- 좌측 컨트롤 영역 -->
             <div class="control-box">
                 <div class="form-group">
                     <label>추출 프리셋</label>
@@ -492,8 +492,8 @@
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-top: 15px;">
-                    <label for="regex-pattern">추출 형식 :</label>
+                <div class="form-group">
+                    <label for="regex-pattern">추출 정규식 형식 :</label>
                     <div class="regex-input-wrapper">
                         <input type="text" id="regex-pattern" value="[가-힣ㄱ-ㅎㅏ-ㅣ]+" placeholder="[사용자 지정] 선택 시 수정 가능" readonly>
                     </div>
@@ -535,11 +535,13 @@
                 </div>
             </div>
 
+            <!-- 우측 본문 디스플레이 영역 -->
             <div class="display-box">
                 <div class="display-header">
-                    <div style="font-size: 14px; font-weight: 600; color: #111111;">테스트 대상 본문 데이터 입력:</div>
-                    <div>
-                        <button class="btn-mini-action" onclick="clearInputText()">지우기</button>
+                    <span style="font-size: 14px; font-weight: 700; color: #111111;">본문 데이터 입력</span>
+                    <div style="display: flex; gap: 6px;">
+                        <button class="btn-mini-action" onclick="loadSampleText()">샘플 불러오기</button>
+                        <button class="btn-mini-action" onclick="clearInputText()">초기화</button>
                     </div>
                 </div>
 
@@ -550,7 +552,7 @@
                 
                 <div class="text-area-container">
                     <div class="backdrop" id="backdrop-view"></div>
-                    <textarea id="test-text-input" class="test-textarea" placeholder="여기에 테스트할 텍스트를 입력하거나, 본문 단어를 마우스로 드래그해 보세요." onscroll="syncScroll()"></textarea>
+                    <textarea id="test-text-input" class="test-textarea" placeholder="여기에 테스트할 텍스트를 입력하거나, [샘플 불러오기]를 눌러보세요." onscroll="syncScroll()"></textarea>
                 </div>
 
                 <div class="bottom-action-zone">
@@ -568,22 +570,9 @@
             </div>
         </div>
     </div>
-
-    <!-- 우측 사이드 수직 광고 -->
-    <div class="side-ad-box">
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-3823705730142714"
-             data-ad-slot="1919264473"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>
-             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-    </div>
 </div>
 
-<!-- 하단 수평 광고 -->
+<!-- 하단 광고 영역 -->
 <div class="bottom-ad-box">
     <ins class="adsbygoogle"
          style="display:block"
@@ -591,9 +580,7 @@
          data-ad-slot="3894691126"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 
 <footer>
@@ -848,6 +835,18 @@
         }, 0);
     }
 
+    function loadSampleText() {
+        const sample = `[샘플 업무 데이터 안내]
+안녕하세요. DevWorKit 프로젝트 지원팀 담당자 홍길동(hong@workkit.io)입니다.
+신규 프로젝트 문의는 010-1234-5678 또는 대표번호 02-987-6543으로 연락 부탁드립니다.
+프로젝트 시작일은 2026-03-01이며, 최종 납품 기한은 2026-08-31까지입니다.
+추가 문의: support@developerworkkit.github.io, contact@workkit.io`;
+        const el = document.getElementById('test-text-input');
+        el.value = sample;
+        recordTextHistory();
+        handleTextProcess();
+    }
+
     function getStoredPatterns() {
         const data = localStorage.getItem('strget_custom_patterns_v2');
         return data ? JSON.parse(data) : {};
@@ -1083,11 +1082,11 @@
                 let filteredMatches = [];
                 let filteredPositions = [];
 
-                rawMatches.forEach((m, idx) => {
-                    const checkKey = isCaseSensitive ? m : m.toLowerCase();
+                rawAllPositions.forEach((pos, idx) => {
+                    const checkKey = isCaseSensitive ? pos.raw : pos.raw.toLowerCase();
                     if (!seen.has(checkKey)) {
                         seen.add(checkKey);
-                        filteredMatches.push(m);
+                        filteredMatches.push(pos.raw);
                         filteredPositions.push(rawAllPositions[idx]);
                     }
                 });
@@ -1207,10 +1206,6 @@
         }, 10);
 
         document.getElementById('match-status').innerText = `매칭: ${currentMatchIndex + 1} / ${matchPositions.length}건`;
-    }
-
-    function escapeHtmlText(escapedText) {
-        return escapedText.replace(/\n/g, '<br>') + (document.getElementById('test-text-input').value.endsWith('\n') ? '<br>&nbsp;' : '');
     }
 
     function copyMatchedResults(format) {
