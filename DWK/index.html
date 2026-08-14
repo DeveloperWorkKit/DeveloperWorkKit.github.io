@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DWK | Developer Work Kit</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --border-color: #e9ecef;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --primary-blue: #2563eb;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .brand-badge {
+            display: inline-block;
+            background-color: var(--primary-blue);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .header-section h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .header-section p {
+            color: var(--text-muted);
+            font-size: 15px;
+            margin: 0;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 20px;
+        }
+
+        .tool-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 24px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.06);
+            border-color: var(--primary-blue);
+        }
+
+        .card-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 12px;
+            width: fit-content;
+        }
+
+        .bg-strget { background-color: #dc3545; }
+        .bg-fsee { background-color: #0d6efd; }
+        .bg-strcmp { background-color: #198754; }
+        .bg-zbdkf { background-color: #6f42c1; }
+
+        .tool-card h3 {
+            margin: 0 0 8px 0;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .tool-card p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        footer {
+            margin-top: 60px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            padding-bottom: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 로컬 테스트용 스크립트 연결 -->
+    <script src="./nav.js"></script>
+
+    <div class="container">
+        <div class="header-section">
+            <span class="brand-badge">DWK HUB</span>
+            <h1>Developer Work Kit</h1>
+            <p>직장인과 개발자의 야근을 줄여주는 무료 IT 생산성 툴킷 세트</p>
+        </div>
+
+        <div class="grid-container">
+            <a href="https://strget.netlify.app" class="tool-card">
+                <div>
+                    <span class="card-badge bg-strget">STRGET</span>
+                    <h3>문자열 추출기</h3>
+                    <p>텍스트 뭉치에서 이메일, 전화번호, 패턴 데이터를 1초 만에 추출하고 엑셀 표 형태로 복사합니다.</p>
+                </div>
+            </a>
+
+            <a href="https://fsee.netlify.app" class="tool-card">
+                <div>
+                    <span class="card-badge bg-fsee">FILE</span>
+                    <h3>폴더 구조 엑셀</h3>
+                    <p>로컬 폴더나 ZIP 압축 파일의 계층 구조를 인덴트가 정돈된 엑셀 파일로 출력합니다.</p>
+                </div>
+            </a>
+
+            <a href="https://strcmp.netlify.app" class="tool-card">
+                <div>
+                    <span class="card-badge bg-strcmp">DIFF</span>
+                    <h3>텍스트 문서 비교</h3>
+                    <p>두 개의 텍스트나 소스 코드 간의 차이점(Diff)을 실시간으로 비교하고 차이점을 시각화합니다.</p>
+                </div>
+            </a>
+
+            <a href="https://zbdkf.netlify.app" class="tool-card">
+                <div>
+                    <span class="card-badge bg-zbdkf">QR</span>
+                    <h3>QR 마스터</h3>
+                    <p>원하는 URL 및 텍스트 데이터를 고화질 QR 코드로 즉시 생성하고 다운로드합니다.</p>
+                </div>
+            </a>
+        </div>
+
+        <footer>
+            © DevWorKit (DWK) - All Tools Built for Productivity
+        </footer>
+    </div>
+
+</body>
+</html>

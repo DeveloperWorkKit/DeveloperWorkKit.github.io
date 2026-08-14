@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문자열 비교기</title>
+    <style>
+        :root {
+            --primary-blue: #007bff;
+            --primary-blue-hover: #0056b3;
+            --bg-light: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --diff-ins: #e6ffed;
+            --diff-ins-text: #22863a;
+            --diff-del: #ffeef0;
+            --diff-del-text: #cb2431;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, "Malgun Gothic", sans-serif;
+            color: var(--text-main);
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 40px;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-badge { background: var(--primary-blue); color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
+        .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
+
+        .main-container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 30px 20px;
+            box-sizing: border-box;
+            flex: 1;
+        }
+
+        .intro-section { margin-bottom: 25px; }
+        .intro-section h1 { font-size: 24px; font-weight: 700; margin: 0 0 8px 0; }
+        .intro-section p { font-size: 14px; color: var(--text-muted); margin: 0; }
+
+        .diff-grid-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .diff-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 20px;
+        }
+
+        .btn-center-swap {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            width: 38px;
+            height: 38px;
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #495057;
+            font-size: 16px;
+        }
+
+        .btn-center-swap:hover {
+            background-color: var(--primary-blue);
+            color: #ffffff;
+            border-color: var(--primary-blue);
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.25);
+        }
+
+        .btn-center-swap:active {
+            transform: translate(-50%, -50%) scale(0.95);
+        }
+
+        @media (max-width: 960px) {
+            .btn-center-swap {
+                position: relative;
+                top: auto;
+                left: auto;
+                transform: none;
+                margin: 10px auto;
+            }
+            .btn-center-swap:hover {
+                transform: scale(1.1);
+            }
+            .btn-center-swap:active {
+                transform: scale(0.95);
+            }
+            .btn-center-swap::before {
+                content: "⇅";
+            }
+            .btn-center-swap span {
+                display: none;
+            }
+        }
+
+        .input-panel { display: flex; flex-direction: column; position: relative; }
+        
+        .panel-header-zone {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .panel-title-area { display: flex; align-items: center; gap: 8px; }
+        .panel-label { font-size: 14px; font-weight: 600; color: #111111; }
+        
+        .panel-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .char-counter {
+            font-size: 12px;
+            font-weight: 600;
+            color: #868e96;
+            margin-right: 4px;
+        }
+
+        .btn-mini {
+            background-color: #f1f3f5;
+            color: #495057;
+            border: 1px solid #ced4da;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-mini:hover { background-color: #e9ecef; }
+        .btn-mini-danger { color: #d9534f; }
+        .btn-mini-danger:hover { background-color: #fdf2f2; border-color: #d9534f; }
+
+        textarea {
+            width: 100%;
+            height: 240px;
+            padding: 15px;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: "Consolas", monospace;
+            font-size: 13px;
+            resize: vertical;
+            background-color: #ffffff;
+            line-height: 1.6;
+        }
+        textarea:focus { outline: none; border-color: var(--primary-blue); }
+
+        .action-bar {
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .action-left { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        
+        .btn-compare {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn-compare:hover { background-color: var(--primary-blue-hover); }
+
+        .filter-opt-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-opt {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+            color: #333;
+        }
+
+        .similarity-dashboard {
+            display: none;
+            background-color: #f1f3f5;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 18px 24px;
+            margin-bottom: 20px;
+            align-items: center;
+            gap: 15px;
+        }
+        .sim-info { display: flex; flex-direction: column; gap: 2px; }
+        .sim-title { font-size: 13px; color: var(--text-muted); font-weight: 600; }
+        .sim-value { font-size: 20px; font-weight: 800; color: #111111; }
+        .sim-value span { color: var(--primary-blue); font-size: 22px; }
+        .sim-desc { font-size: 12px; color: #868e96; margin-left: auto; }
+
+        .copy-btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
+        .btn-copy-action {
+            border: none;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.1s;
+            display: none;
+        }
+        .btn-orange-mode { background-color: #ff9800; color: white; }
+        .btn-orange-mode:hover { background-color: #e68a00; }
+        .btn-red-mode { background-color: #cb2431; color: white; }
+        .btn-red-mode:hover { background-color: #b31f2c; }
+        .btn-teal-mode { background-color: #009688; color: white; }
+        .btn-teal-mode:hover { background-color: #00796b; }
+        .btn-green-mode { background-color: #2ea44f; color: white; }
+        .btn-green-mode:hover { background-color: #2c974b; }
+        .btn-all-mode { background-color: #6c757d; color: white; display: block !important; }
+        .btn-all-mode:hover { background-color: #5a6268; }
+
+        .result-panel {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: #ffffff;
+            overflow: hidden;
+        }
+
+        .result-header {
+            background-color: var(--bg-light);
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .diff-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: "Consolas", monospace;
+            font-size: 14px;
+            line-height: 1.8;
+            background-color: #ffffff;
+        }
+
+        .diff-row { display: table-row; }
+        .diff-row.hide { display: none !important; }
+
+        .diff-num {
+            width: 60px;
+            min-width: 60px;
+            text-align: right;
+            padding-right: 15px;
+            color: #adb5bd;
+            user-select: none;
+            background-color: #fafafa;
+            border-right: 1px solid var(--border-color);
+            display: table-cell;
+            vertical-align: top;
+        }
+
+        .diff-text {
+            padding-left: 15px;
+            padding-right: 15px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            display: table-cell;
+        }
+
+        ins { background-color: var(--diff-ins); color: var(--diff-ins-text); text-decoration: none; padding: 2px 3px; border-radius: 3px; font-weight: 600; border-bottom: 2px solid #34d058; }
+        del { background-color: var(--diff-del); color: var(--diff-del-text); text-decoration: line-through; padding: 2px 3px; border-radius: 3px; }
+        
+        .row-modified { background-color: #fcfcfc; }
+        .row-empty { color: #aaa; padding: 20px !important; display: block; }
+
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 16px 20px;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            background-color: var(--bg-light);
+            text-align: center;
+            margin-top: auto;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script>
+</head>
+<body>
+
+<header>
+    <div class="logo-area">
+        <span class="logo-badge">STRCMP</span>
+        <span class="logo-text">문자열 비교기</span>
+    </div>
+</header>
+
+<div class="main-container">
+    <div class="intro-section">
+        <h1>문자열을 비교하여 차이점을 보여주는 사이트입니다.</h1>
+        <p>'변경된 줄만 필터링해서 보기'를 선택하면 변경된 내용만 따로 확인하고 복사할 수 있습니다.</p>
+    </div>
+
+    <div class="diff-grid-wrapper">
+        <div class="diff-grid">
+            <div class="input-panel">
+                <div class="panel-header-zone">
+                    <div class="panel-title-area">
+                        <span class="panel-label">원본 텍스트 (Original)</span>
+                    </div>
+                    <div class="panel-controls">
+                        <span id="counter-left" class="char-counter">0자 (0줄)</span>
+                        <button class="btn-mini" onclick="copyInputSource('text-left', '원본')">복사</button>
+                        <button class="btn-mini btn-mini-danger" onclick="clearTextSource('text-left', 'left')">지우기</button>
+                    </div>
+                </div>
+                <textarea id="text-left" placeholder="비교할 원본 글이나 이전 코드를 입력하세요."></textarea>
+            </div>
+
+            <div class="input-panel">
+                <div class="panel-header-zone">
+                    <div class="panel-title-area">
+                        <span class="panel-label">수정된 텍스트 (Modified)</span>
+                    </div>
+                    <div class="panel-controls">
+                        <span id="counter-right" class="char-counter">0자 (0줄)</span>
+                        <button class="btn-mini" onclick="copyInputSource('text-right', '수정본')">복사</button>
+                        <button class="btn-mini btn-mini-danger" onclick="clearTextSource('text-right', 'right')">지우기</button>
+                    </div>
+                </div>
+                <textarea id="text-right" placeholder="수정 후의 글이나 새로운 코드를 입력하세요."></textarea>
+            </div>
+        </div>
+
+        <button class="btn-center-swap" onclick="swapTextContents()" title="좌우 텍스트 맞바꾸기">
+            <span>⇄</span>
+        </button>
+    </div>
+
+    <div class="action-bar">
+        <div class="action-left">
+            <button class="btn-compare" onclick="executeDiffCheckerEngine()">비교하기</button>
+            <div class="filter-opt-group">
+                <!-- ✨ 이모지 제거 및 깔끔한 텍스트 라벨 적용 -->
+                <label class="filter-opt">
+                    <input type="checkbox" id="chk-only-changes" onchange="toggleChangesFilter()"> 변경된 줄만 필터링해서 보기
+                </label>
+                <label class="filter-opt">
+                    <input type="checkbox" id="chk-ignore-space" onchange="triggerDiffEngineIfActive()"> 공백 무시
+                </label>
+                <label class="filter-opt">
+                    <input type="checkbox" id="chk-ignore-case" onchange="triggerDiffEngineIfActive()"> 대소문자 무시
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div id="similarity-dashboard" class="similarity-dashboard">
+        <div class="sim-info">
+            <div class="sim-title">두 문서의 최종 일치율</div>
+            <div class="sim-value" id="val-match-percentage">0.00%</div>
+        </div>
+        <div class="sim-desc" id="val-match-detail">공통 글자 수: 0자 / 최대 분량: 0자</div>
+    </div>
+
+    <div class="result-panel">
+        <div class="result-header">
+            <span>차이점 비교 결과 (Diff Result)</span>
+            <div class="copy-btn-group">
+                <button id="btn-copy-del" class="btn-copy-action btn-orange-mode" onclick="copySelectiveDiffResult('del')">[원본] 변경된 줄 전체 복사</button>
+                <button id="btn-copy-del-only" class="btn-copy-action btn-red-mode" onclick="copySelectiveDiffResult('del-only')">[원본] 지워진 글자만 복사</button>
+                <button id="btn-copy-ins" class="btn-copy-action btn-teal-mode" onclick="copySelectiveDiffResult('ins')">[수정본] 변경된 줄 전체 복사</button>
+                <button id="btn-copy-ins-only" class="btn-copy-action btn-green-mode" onclick="copySelectiveDiffResult('ins-only')">[수정본] 추가된 글자만 복사</button>
+                <button class="btn-copy-action btn-all-mode" onclick="copySelectiveDiffResult('all')">비교 결과 전체 복사</button>
+            </div>
+        </div>
+        <div id="diff-table-body" class="diff-table">
+            <div class="diff-row"><div class="diff-num">-</div><div class="diff-text row-empty">좌우 박스에 대조할 내용을 입력하고 [비교하기] 버튼을 누르세요.</div></div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    각 입력 창에서 Ctrl+Z(실행 취소) / Ctrl+Y(다시 실행)를 눌러 이전 / 다음 상태로 되돌릴 수 있습니다.
+</footer>
+
+<script>
+    const undoStacks = { left: [], right: [] };
+    const redoStacks = { left: [], right: [] };
+    
+    let typingTimer = { left: null, right: null };
+
+    function recordHistory(side, force = false) {
+        const leftEl = document.getElementById('text-left');
+        const rightEl = document.getElementById('text-right');
+        if (!leftEl || !rightEl) return;
+
+        const val = document.getElementById(`text-${side}`).value;
+        const stack = undoStacks[side];
+        
+        if (stack.length === 0 || stack[stack.length - 1] !== val) {
+            stack.push(val);
+            if (stack.length > 50) stack.shift();
+            redoStacks[side] = [];
+        }
+    }
+
+    function handleInputHistory(side) {
+        updateTextStats(side);
+        
+        clearTimeout(typingTimer[side]);
+        typingTimer[side] = setTimeout(() => {
+            recordHistory(side);
+        }, 300);
+    }
+
+    function handleCustomHistoryKeys(e, side) {
+        const isCtrl = e.ctrlKey || e.metaKey;
+        const key = e.key.toLowerCase();
+
+        if (isCtrl && key === 'z' && !e.shiftKey) {
+            const uStack = undoStacks[side];
+            const rStack = redoStacks[side];
+            const textarea = document.getElementById(`text-${side}`);
+            const currentVal = textarea.value;
+
+            if (uStack[uStack.length - 1] !== currentVal) {
+                recordHistory(side, true);
+            }
+
+            if (uStack.length > 1) {
+                e.preventDefault();
+                
+                const popped = uStack.pop();
+                rStack.push(popped);
+                
+                const previousState = uStack[uStack.length - 1];
+                textarea.value = previousState;
+                
+                updateTextStats(side);
+            }
+        }
+        else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
+            const uStack = undoStacks[side];
+            const rStack = redoStacks[side];
+
+            if (rStack.length > 0) {
+                e.preventDefault();
+                
+                const nextState = rStack.pop();
+                uStack.push(nextState);
+                
+                const textarea = document.getElementById(`text-${side}`);
+                textarea.value = nextState;
+                
+                updateTextStats(side);
+            }
+        }
+    }
+
+    function triggerDiffEngineIfActive() {
+        const dashboard = document.getElementById('similarity-dashboard');
+        if (dashboard && dashboard.style.display === 'flex') {
+            executeDiffCheckerEngine();
+        }
+    }
+
+    function initApp() {
+        const leftArea = document.getElementById('text-left');
+        const rightArea = document.getElementById('text-right');
+
+        if (!leftArea || !rightArea) return;
+
+        leftArea.addEventListener('input', () => handleInputHistory('left'));
+        rightArea.addEventListener('input', () => handleInputHistory('right'));
+
+        leftArea.addEventListener('keydown', (e) => handleCustomHistoryKeys(e, 'left'));
+        rightArea.addEventListener('keydown', (e) => handleCustomHistoryKeys(e, 'right'));
+
+        recordHistory('left', true);
+        recordHistory('right', true);
+    }
+
+    if (document.readyState === 'loading') {
+        window.addEventListener('DOMContentLoaded', initApp);
+    } else {
+        initApp();
+    }
+
+    function updateTextStats(side) {
+        const textarea = document.getElementById(`text-${side}`);
+        const counter = document.getElementById(`counter-${side}`);
+        if (!textarea || !counter) return;
+
+        const val = textarea.value;
+        const charCount = val.length;
+        const lineCount = val ? val.split('\n').length : 0;
+        
+        counter.innerText = `${charCount.toLocaleString()}자 (${lineCount.toLocaleString()}줄)`;
+    }
+
+    function clearTextSource(targetId, side) {
+        const textarea = document.getElementById(targetId);
+        if (!textarea || !textarea.value) return;
+        
+        textarea.value = '';
+        recordHistory(side, true);
+        updateTextStats(side);
+        textarea.focus();
+    }
+
+    function swapTextContents() {
+        const leftArea = document.getElementById('text-left');
+        const rightArea = document.getElementById('text-right');
+        if (!leftArea || !rightArea) return;
+        
+        recordHistory('left', true);
+        recordHistory('right', true);
+
+        const tempVal = leftArea.value;
+        leftArea.value = rightArea.value;
+        rightArea.value = tempVal;
+
+        const tempUndo = [...undoStacks.left];
+        undoStacks.left = [...undoStacks.right];
+        undoStacks.right = tempUndo;
+
+        const tempRedo = [...redoStacks.left];
+        redoStacks.left = [...redoStacks.right];
+        redoStacks.right = tempRedo;
+
+        updateTextStats('left');
+        updateTextStats('right');
+
+        triggerDiffEngineIfActive();
+    }
+
+    function copyInputSource(targetId, label) {
+        const text = document.getElementById(targetId).value;
+        if (!text) {
+            alert(`${label} 텍스트 박스가 비어 있습니다.`);
+            return;
+        }
+        navigator.clipboard.writeText(text).then(() => {
+            alert(`${label} 텍스트가 클립보드에 복사되었습니다.`);
+        });
+    }
+
+    function executeDiffCheckerEngine() {
+        let sourceLeft = document.getElementById('text-left').value;
+        let sourceRight = document.getElementById('text-right').value;
+        const tableBody = document.getElementById('diff-table-body');
+        const dashboard = document.getElementById('similarity-dashboard');
+
+        if (!sourceLeft && !sourceRight) {
+            tableBody.innerHTML = '<div class="diff-row"><div class="diff-num">-</div><div class="diff-text row-empty">입력된 데이터가 없습니다.</div></div>';
+            dashboard.style.display = 'none';
+            return;
+        }
+
+        const EngineClass = window.diff_match_patch || (typeof diff_match_patch !== 'undefined' ? diff_match_patch : null);
+        if (!EngineClass) {
+            alert("엔진 로드 중입니다. 잠시 후 다시 시도해 주세요.");
+            return;
+        }
+
+        const ignoreSpace = document.getElementById('chk-ignore-space').checked;
+        const ignoreCase = document.getElementById('chk-ignore-case').checked;
+
+        let cleanLeft = sourceLeft.replace(/\\n/g, '\n').replace(/\r/g, '');
+        let cleanRight = sourceRight.replace(/\\n/g, '\n').replace(/\r/g, '');
+
+        if (ignoreSpace) {
+            cleanLeft = cleanLeft.replace(/[ \t]+/g, ' ');
+            cleanRight = cleanRight.replace(/[ \t]+/g, ' ');
+        }
+
+        if (ignoreCase) {
+            cleanLeft = cleanLeft.toLowerCase();
+            cleanRight = cleanRight.toLowerCase();
+        }
+
+        try {
+            const dmp = new EngineClass();
+            const diffs = dmp.diff_main(cleanLeft, cleanRight);
+            dmp.diff_cleanupSemantic(diffs);
+            dmp.diff_cleanupEfficiency(diffs);
+
+            let commonChars = 0;
+            let deletedChars = 0;
+            let insertedChars = 0;
+
+            diffs.forEach(part => {
+                const op = part[0];
+                const length = part[1].length;
+                if (op === 0) commonChars += length;
+                else if (op === -1) deletedChars += length;
+                else if (op === 1) insertedChars += length;
+            });
+
+            const totalLeftLen = commonChars + deletedChars;
+            const totalRightLen = commonChars + insertedChars;
+            const maxLen = Math.max(totalLeftLen, totalRightLen);
+
+            const unifiedRatio = maxLen > 0 ? ((commonChars / maxLen) * 100).toFixed(2) : "0.00";
+
+            document.getElementById('val-match-percentage').innerHTML = `<span>${unifiedRatio}%</span>`;
+            document.getElementById('val-match-detail').innerText = `공통 글자 수: ${commonChars.toLocaleString()}자 / 최대 분량: ${maxLen.toLocaleString()}자`;
+            dashboard.style.display = 'flex';
+
+            let lines = [""], currentLineIdx = 0;
+            let lineChangeStatus = [false];
+
+            diffs.forEach((part) => {
+                const op = part[0];
+                const segments = part[1].split('\n');
+
+                segments.forEach((segment, sIdx) => {
+                    if (sIdx > 0) {
+                        currentLineIdx++;
+                        lines[currentLineIdx] = "";
+                        lineChangeStatus[currentLineIdx] = false;
+                    }
+
+                    if (!segment) return;
+
+                    const text = segment.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    
+                    if (op === 0) {
+                        lines[currentLineIdx] += text;
+                    } else {
+                        lineChangeStatus[currentLineIdx] = true;
+                        if (op === 1) {
+                            lines[currentLineIdx] += "<ins>" + text + "</ins>";
+                        } else if (op === -1) {
+                            lines[currentLineIdx] += "<del>" + text + "</del>";
+                        }
+                    }
+                });
+            });
+
+            let tableHtml = "";
+            lines.forEach((lineContent, idx) => {
+                const isChanged = lineChangeStatus[idx];
+                const rowClass = isChanged ? "diff-row row-modified" : "diff-row";
+                
+                tableHtml += `<div class="${rowClass}" data-changed="${isChanged}">
+                    <div class="diff-num">${idx + 1}</div>
+                    <div class="diff-text">${lineContent || " "}</div>
+                </div>`;
+            });
+
+            tableBody.innerHTML = tableHtml;
+            toggleChangesFilter();
+
+        } catch (err) {
+            tableBody.innerHTML = '<div class="diff-row"><div class="diff-num">-</div><div class="diff-text row-empty" style="color:var(--primary-red);">연산 오류가 발생했습니다. 입력 창을 확인해 주세요.</div></div>';
+            dashboard.style.display = 'none';
+        }
+    }
+
+    function toggleChangesFilter() {
+        const showOnlyChanges = document.getElementById('chk-only-changes').checked;
+        const rows = document.querySelectorAll('#diff-table-body .diff-row');
+        
+        rows.forEach(row => {
+            const isChanged = row.getAttribute('data-changed') === 'true';
+            if (showOnlyChanges && !isChanged && row.querySelector('.diff-num').innerText !== '-') {
+                row.classList.add('hide');
+            } else {
+                row.classList.remove('hide');
+            }
+        });
+
+        const subButtons = document.querySelectorAll('.btn-orange-mode, .btn-red-mode, .btn-teal-mode, .btn-green-mode');
+        subButtons.forEach(btn => {
+            btn.style.display = showOnlyChanges ? 'block' : 'none';
+        });
+
+        const allCopyBtn = document.querySelector('.btn-all-mode');
+        if (allCopyBtn) {
+            if (showOnlyChanges) {
+                allCopyBtn.innerText = "변경된 줄 비교 결과만 복사";
+                allCopyBtn.title = "변경된 줄에 대해서만 원본/수정본이 섞인 결과가 복사됩니다.";
+            } else {
+                allCopyBtn.innerText = "비교 결과 전체 복사";
+                allCopyBtn.title = "문서 전체(변경되지 않은 줄 포함) 결과가 복사됩니다.";
+            }
+        }
+    }
+
+    function copySelectiveDiffResult(mode) {
+        const rows = document.querySelectorAll('#diff-table-body .diff-row');
+        const isFiltered = document.getElementById('chk-only-changes').checked;
+        let textAccumulator = [];
+
+        rows.forEach(row => {
+            if (row.classList.contains('hide')) return;
+
+            const textNode = row.querySelector('.diff-text');
+            if (textNode && !textNode.classList.contains('row-empty')) {
+                const cloneNode = textNode.cloneNode(true);
+
+                if (isFiltered) {
+                    if (mode === 'ins') {
+                        const deletes = cloneNode.querySelectorAll('del');
+                        deletes.forEach(d => d.remove());
+                        textAccumulator.push(cloneNode.innerText);
+                    } else if (mode === 'del') {
+                        const inserts = cloneNode.querySelectorAll('ins');
+                        inserts.forEach(i => i.remove());
+                        textAccumulator.push(cloneNode.innerText);
+                    } else if (mode === 'ins-only') {
+                        const insElements = cloneNode.querySelectorAll('ins');
+                        let pieces = [];
+                        insElements.forEach(ins => pieces.push(ins.innerText));
+                        if (pieces.length > 0) textAccumulator.push(pieces.join(' '));
+                    } else if (mode === 'del-only') {
+                        const delElements = cloneNode.querySelectorAll('del');
+                        let pieces = [];
+                        delElements.forEach(del => pieces.push(del.innerText));
+                        if (pieces.length > 0) textAccumulator.push(pieces.join(' '));
+                    } else {
+                        textAccumulator.push(cloneNode.innerText);
+                    }
+                } else {
+                    if (mode === 'ins') {
+                        const deletes = cloneNode.querySelectorAll('del');
+                        deletes.forEach(d => d.remove());
+                    } else if (mode === 'del') {
+                        const inserts = cloneNode.querySelectorAll('ins');
+                        inserts.forEach(i => i.remove());
+                    }
+                    textAccumulator.push(cloneNode.innerText);
+                }
+            }
+        });
+
+        if (textAccumulator.length === 0) {
+            alert("복사할 대상 텍스트 내역이 존재하지 않습니다.");
+            return;
+        }
+
+        const finalOutputString = textAccumulator.join('\n');
+        navigator.clipboard.writeText(finalOutputString).then(() => {
+            let logMsg = "";
+            if (mode === 'all') logMsg = "비교 결과 전체 복사가 완료되었습니다.";
+            else if (mode === 'ins') logMsg = isFiltered ? "변경된 줄의 [수정 후 줄 복사]가 완료되었습니다." : "수정본 기준 전체 내용이 복사되었습니다.";
+            else if (mode === 'del') logMsg = isFiltered ? "변경된 줄의 [수정 전 줄 복사]가 완료되었습니다." : "원본 기준 전체 내용이 복사되었습니다.";
+            else if (mode === 'ins-only') logMsg = "변경된 줄 내의 [수정된 글자만 복사]가 완료되었습니다!";
+            else if (mode === 'del-only') logMsg = "변경된 줄 내의 [삭제된 글자만 복사]가 완료되었습니다!";
+            
+            alert(logMsg);
+        }).catch(() => {
+            alert("복사 실패. 브라우저 보안 설정을 확인하세요.");
+        });
+    }
+</script>
+<script src="https://developerworkkit.github.io/DWK/nav.js"></script>
+</body>
+</html>

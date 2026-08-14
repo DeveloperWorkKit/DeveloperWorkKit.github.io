@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문자열 추출기</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3823705730142714" crossorigin="anonymous"></script>
+    <style>
+        :root {
+            --primary-red: #dc3545;
+            --primary-red-hover: #bd2130;
+            --primary-blue: #007bff;
+            --primary-blue-hover: #0056b3;
+            --bg-light: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-main: #333333;
+            --text-muted: #666666;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-main);
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-badge { background: var(--primary-red); color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
+        .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
+
+        /* 3단 레이아웃 (좌측광고 / 중앙앱 / 우측광고) */
+        .page-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+            max-width: 1600px;
+            margin: 20px auto;
+            padding: 0 10px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .side-ad-box {
+            width: 160px;
+            min-width: 160px;
+            position: sticky;
+            top: 20px;
+        }
+
+        @media (max-width: 1400px) {
+            .side-ad-box {
+                display: none;
+            }
+        }
+
+        .main-container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            flex: 1;
+        }
+
+        .panel-grid {
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .panel-grid { grid-template-columns: 1fr; }
+        }
+
+        .control-box {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 25px;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #111111;
+        }
+
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .btn-preset {
+            padding: 10px;
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s;
+        }
+
+        .btn-preset:hover, .btn-preset.active {
+            border-color: var(--primary-red);
+            color: var(--primary-red);
+            background-color: #fff5f5;
+        }
+
+        .btn-preset-custom {
+            grid-column: span 2;
+            background-color: #e9ecef;
+            border-style: dashed;
+            color: #495057;
+        }
+
+        .btn-preset-custom:hover, .btn-preset-custom.active {
+            border-style: solid;
+            border-color: var(--primary-red);
+            color: var(--primary-red);
+            background-color: #fff5f5;
+        }
+
+        .regex-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: var(--bg-light);
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-top: 6px;
+            transition: all 0.2s;
+        }
+
+        .regex-input-wrapper input {
+            border: none;
+            background: transparent;
+            width: 100%;
+            padding: 4px 0;
+            font-family: "Consolas", "Courier New", Courier, monospace;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #495057;
+        }
+
+        .regex-input-wrapper input[readonly] {
+            cursor: not-allowed;
+            color: #6c757d;
+        }
+
+        .regex-input-wrapper input:not([readonly]) {
+            color: #111111;
+            background-color: #ffffff;
+            box-shadow: inset 0 0 0 1px var(--primary-red);
+            padding: 4px 8px;
+            border-radius: 3px;
+        }
+
+        .regex-input-wrapper input:focus { outline: none; }
+
+        .custom-save-zone {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+            padding: 12px;
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+
+        .save-input-row, .saved-select-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .save-input-row input, .saved-select-row select {
+            flex: 1;
+            padding: 6px 10px;
+            font-size: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: #fff;
+        }
+
+        .btn-sub-action {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-sub-action:hover { background-color: #e9ecef; }
+        .btn-sub-danger { color: var(--primary-red); }
+        .btn-sub-danger:hover { background-color: #fff5f5; border-color: var(--primary-red); }
+
+        .option-toggle-group {
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .opt-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #495057;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .opt-label input[type="checkbox"] {
+            width: 15px;
+            height: 15px;
+            accent-color: var(--primary-red);
+            cursor: pointer;
+        }
+
+        .display-box {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 25px;
+            background-color: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .display-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .drag-sample-bar {
+            display: none;
+            background-color: #e7f5ff;
+            border: 1px solid #74c0fc;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin-bottom: 10px;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #1864ab;
+        }
+
+        .btn-drag-apply {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-drag-apply:hover { background-color: var(--primary-blue-hover); }
+
+        .btn-mini-action {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 4px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            color: var(--text-main);
+        }
+        .btn-mini-action:hover { background-color: #e9ecef; }
+
+        .text-area-container {
+            position: relative;
+            width: 100%;
+            flex: 1;
+            min-height: 380px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .backdrop, .test-textarea {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            box-sizing: border-box;
+            font-size: 14px;
+            line-height: 1.6;
+            font-family: "Consolas", "Courier New", Courier, monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+            letter-spacing: 0px;
+        }
+
+        .test-textarea {
+            background: transparent;
+            color: #111111;
+            resize: none;
+            border: none;
+            z-index: 2;
+            overflow-y: scroll;
+            padding: 15px 0px 15px 15px;
+            cursor: auto;
+        }
+
+        .test-textarea:focus { outline: none; }
+
+        .backdrop {
+            color: transparent;
+            pointer-events: none;
+            overflow-y: scroll;
+            z-index: 1;
+            background-color: #ffffff;
+            border: none;
+            padding: 15px 0px 15px 15px;
+        }
+
+        .test-textarea::-webkit-scrollbar { width: 14px; }
+        .test-textarea::-webkit-scrollbar-thumb { background-color: #cdcdcd; border-radius: 4px; border: 3px solid #ffffff; }
+        .test-textarea::-webkit-scrollbar-track { background-color: #f1f1f1; }
+
+        .backdrop::-webkit-scrollbar { width: 14px; }
+        .backdrop::-webkit-scrollbar-thumb { background-color: transparent; }
+        .backdrop::-webkit-scrollbar-track { background-color: transparent; }
+
+        .highlight {
+            background-color: #ffeb3b;
+            color: transparent;
+            border-radius: 2px;
+        }
+
+        .highlight-duplicate {
+            background-color: #e0e0e0;
+            border-bottom: 2px solid #ff9800;
+            color: transparent;
+            border-radius: 2px;
+        }
+
+        .highlight-active {
+            background-color: #ff9800 !important;
+            color: transparent;
+            border-radius: 2px;
+            box-shadow: 0 0 0 2px #e65100;
+        }
+
+        .bottom-action-zone {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .copy-group { display: flex; gap: 8px; }
+
+        .btn-copy-matches {
+            background-color: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn-copy-matches:hover { background-color: var(--primary-red-hover); }
+
+        .btn-copy-excel {
+            background-color: #198754;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn-copy-excel:hover { background-color: #157347; }
+
+        .match-nav-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-nav-match {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 3px 8px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-nav-match:hover { background-color: #e9ecef; }
+
+        .match-count-badge {
+            font-size: 13px;
+            font-weight: bold;
+            color: var(--text-muted);
+        }
+
+        .bottom-ad-box {
+            max-width: 1200px;
+            width: 100%;
+            margin: 25px auto 10px auto;
+            text-align: center;
+        }
+
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 16px 20px;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            background-color: var(--bg-light);
+            text-align: center;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-area">
+        <span class="logo-badge">STRGET</span>
+        <span class="logo-text">문자열 추출기</span>
+    </div>
+</header>
+
+<div class="page-wrapper">
+    <!-- 좌측 사이드 수직 광고 -->
+    <div class="side-ad-box">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-3823705730142714"
+             data-ad-slot="1919264473"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+
+    <!-- 중앙 메인 추출기 영역 -->
+    <div class="main-container">
+        <div class="panel-grid">
+            <div class="control-box">
+                <div class="form-group">
+                    <label>추출 프리셋</label>
+                    <div class="preset-grid">
+                        <button class="btn-preset" onclick="applyPreset('\\d+', this)">숫자만 추출</button>
+                        <button class="btn-preset" id="preset-kor" onclick="applyPreset('[가-힣ㄱ-ㅎㅏ-ㅣ]+', this)">한글만 추출</button>
+                        <button class="btn-preset" onclick="applyPreset('[a-zA-Z]+', this)">영문자만 추출</button>
+                        <button class="btn-preset" onclick="applyPreset('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}', this)">이메일 매칭</button>
+                        <button class="btn-preset" onclick="applyPreset('\\d{2,3}-\\d{3,4}-\\d{4}', this)">전화번호 매칭</button>
+                        <button class="btn-preset" onclick="applyPreset('[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s]+', this)">특수문자만 추출</button>
+                        <button class="btn-preset" onclick="applyPreset('\\s+', this)">공백(스페이스) 추출</button>
+                        <button class="btn-preset" onclick="applyPreset('\\d{4}-\\d{2}-\\d{2}', this)">날짜(YYYY-MM-DD)</button>
+                        <button class="btn-preset btn-preset-custom" id="preset-custom" onclick="enableCustomMode(this)">사용자 지정 패턴 입력</button>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="regex-pattern">추출 형식 :</label>
+                    <div class="regex-input-wrapper">
+                        <input type="text" id="regex-pattern" value="[가-힣ㄱ-ㅎㅏ-ㅣ]+" placeholder="[사용자 지정] 선택 시 수정 가능" readonly>
+                    </div>
+
+                    <div class="custom-save-zone" id="custom-save-zone">
+                        <div class="save-input-row">
+                            <input type="text" id="custom-pattern-name" placeholder="저장할 패턴 이름 입력">
+                            <button class="btn-sub-action" onclick="saveUserPattern()">저장</button>
+                        </div>
+                        <div class="saved-select-row">
+                            <select id="saved-pattern-select" onchange="loadSelectedPattern()">
+                                <option value="">-- 저장된 패턴 목록 --</option>
+                            </select>
+                            <button class="btn-sub-action btn-sub-danger" onclick="deleteSelectedPattern()">삭제</button>
+                        </div>
+                    </div>
+                    
+                    <div class="option-toggle-group">
+                        <label class="opt-label">
+                            <input type="checkbox" id="chk-group-words" checked onchange="toggleWordGrouping()">
+                            연속 단어 단위로 묶어서 추출
+                        </label>
+
+                        <label class="opt-label">
+                            <input type="checkbox" id="chk-unique-matches" onchange="handleTextProcess()">
+                            중복 데이터 제거 후 추출 (중복은 회색 표시)
+                        </label>
+
+                        <label class="opt-label">
+                            <input type="checkbox" id="chk-case-sensitive" onchange="handleTextProcess()">
+                            영문 대소문자 구분 (Case Sensitive)
+                        </label>
+
+                        <label class="opt-label">
+                            <input type="checkbox" id="chk-masking-data" onchange="handleTextProcess()">
+                            복사 시 추출 데이터 개인정보 마스킹 (***)
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="display-box">
+                <div class="display-header">
+                    <div style="font-size: 14px; font-weight: 600; color: #111111;">테스트 대상 본문 데이터 입력:</div>
+                    <div>
+                        <button class="btn-mini-action" onclick="clearInputText()">지우기</button>
+                    </div>
+                </div>
+
+                <div class="drag-sample-bar" id="drag-sample-bar">
+                    <span>선택한 샘플: <strong id="drag-sample-text"></strong></span>
+                    <button class="btn-drag-apply" onclick="applyDraggedPattern()">이 모양 패턴 전체 찾기</button>
+                </div>
+                
+                <div class="text-area-container">
+                    <div class="backdrop" id="backdrop-view"></div>
+                    <textarea id="test-text-input" class="test-textarea" placeholder="여기에 테스트할 텍스트를 입력하거나, 본문 단어를 마우스로 드래그해 보세요." onscroll="syncScroll()"></textarea>
+                </div>
+
+                <div class="bottom-action-zone">
+                    <div class="copy-group">
+                        <button class="btn-copy-matches" onclick="copyMatchedResults('text')">추출 데이터 모아서 복사</button>
+                        <button class="btn-copy-excel" onclick="copyMatchedResults('excel')">엑셀/CSV용 표 형태로 복사</button>
+                    </div>
+
+                    <div class="match-nav-group">
+                        <button class="btn-nav-match" onmousedown="event.preventDefault()" onclick="navigateMatch(-1)" title="이전 매칭 위치로 이동">▲ 이전</button>
+                        <button class="btn-nav-match" onmousedown="event.preventDefault()" onclick="navigateMatch(1)" title="다음 매칭 위치로 이동">▼ 다음</button>
+                        <div class="match-count-badge" id="match-status">매칭 데이터: 0건</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 우측 사이드 수직 광고 -->
+    <div class="side-ad-box">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-3823705730142714"
+             data-ad-slot="1919264473"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+</div>
+
+<!-- 하단 수평 광고 -->
+<div class="bottom-ad-box">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3823705730142714"
+         data-ad-slot="3894691126"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</div>
+
+<footer>
+    본문 글자를 마우스로 드래그하면 동일한 패턴을 자동으로 찾아주며, 형광펜 글자를 클릭하면 해당 순번으로 바로 연동됩니다.
+</footer>
+
+<script>
+    let currentMatchedList = [];
+    let rawAllPositions = []; 
+    let matchPositions = [];  
+    let currentMatchIndex = -1; 
+    let isCustomMode = false;
+
+    const textUndoStack = [];
+    const textRedoStack = [];
+    let textTimer = null;
+
+    function recordTextHistory() {
+        const el = document.getElementById('test-text-input');
+        if (!el) return;
+
+        const state = {
+            val: el.value,
+            selStart: el.selectionStart,
+            selEnd: el.selectionEnd,
+            scrollTop: el.scrollTop
+        };
+
+        if (textUndoStack.length === 0 || textUndoStack[textUndoStack.length - 1].val !== state.val) {
+            textUndoStack.push(state);
+            if (textUndoStack.length > 50) textUndoStack.shift();
+            textRedoStack.length = 0;
+        }
+    }
+
+    function handleTextInput() {
+        handleTextProcess();
+        clearTimeout(textTimer);
+        textTimer = setTimeout(() => {
+            recordTextHistory();
+        }, 300);
+    }
+
+    function handleTextKeyDown(e) {
+        const isCtrl = e.ctrlKey || e.metaKey;
+        const key = e.key.toLowerCase();
+        const el = document.getElementById('test-text-input');
+
+        if (isCtrl && key === 'z' && !e.shiftKey) {
+            if (textUndoStack.length > 1) {
+                e.preventDefault();
+                const current = textUndoStack.pop();
+                textRedoStack.push(current);
+
+                const prev = textUndoStack[textUndoStack.length - 1];
+                applyTextState(el, prev);
+            }
+        }
+        else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
+            if (textRedoStack.length > 0) {
+                e.preventDefault();
+                const next = textRedoStack.pop();
+                textUndoStack.push(next);
+
+                applyTextState(el, next);
+            }
+        }
+    }
+
+    function applyTextState(el, state) {
+        el.value = state.val;
+        handleTextProcess();
+
+        setTimeout(() => {
+            el.focus();
+            el.setSelectionRange(state.selStart, state.selEnd);
+            el.scrollTop = state.scrollTop;
+            syncScroll();
+        }, 0);
+    }
+
+    let generatedDragPattern = "";
+
+    function handleTextClickOrMouseUp(e) {
+        const textarea = document.getElementById('test-text-input');
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const selectedText = textarea.value.substring(start, end).trim();
+
+        const sampleBar = document.getElementById('drag-sample-bar');
+        const sampleTextEl = document.getElementById('drag-sample-text');
+
+        if (start === end && matchPositions.length > 0) {
+            const clickPos = start;
+            
+            let foundIdx = matchPositions.findIndex(p => clickPos >= p.start && clickPos <= p.end);
+            
+            if (foundIdx !== -1) {
+                currentMatchIndex = foundIdx;
+                highlightActiveMatchInBackdrop();
+                document.getElementById('match-status').innerText = `매칭: ${currentMatchIndex + 1} / ${matchPositions.length}건`;
+            } else {
+                let rawIdx = rawAllPositions.findIndex(p => clickPos >= p.start && clickPos <= p.end);
+                if (rawIdx !== -1) {
+                    const clickedWord = rawAllPositions[rawIdx].raw;
+                    let targetUniqueIdx = matchPositions.findIndex(p => p.raw === clickedWord);
+                    if (targetUniqueIdx !== -1) {
+                        currentMatchIndex = targetUniqueIdx;
+                        navigateMatch(0);
+                    }
+                }
+            }
+            sampleBar.style.display = 'none';
+            return;
+        }
+
+        if (selectedText.length > 0 && selectedText.length < 100) {
+            generatedDragPattern = analyzeTextPattern(selectedText);
+            sampleTextEl.innerText = selectedText.length > 25 ? selectedText.substring(0, 25) + '...' : selectedText;
+            sampleBar.style.display = 'flex';
+        } else {
+            sampleBar.style.display = 'none';
+        }
+    }
+
+    function analyzeTextPattern(str) {
+        let patternResult = "";
+        let currentType = null;
+        let count = 0;
+
+        function getType(char) {
+            if (/[0-9]/.test(char)) return 'digit';
+            if (/[a-zA-Z]/.test(char)) return 'alpha';
+            if (/[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(char)) return 'kor';
+            if (/\s/.test(char)) return 'space';
+            return 'special';
+        }
+
+        function appendPattern(type, cnt, charSegment) {
+            if (type === 'digit') patternResult += `\\d+`;
+            else if (type === 'alpha') patternResult += `[a-zA-Z]+`;
+            else if (type === 'kor') patternResult += `[가-힣ㄱ-ㅎㅏ-ㅣ]+`;
+            else if (type === 'space') patternResult += `\\s*`;
+            else if (type === 'special') {
+                for (let c of charSegment) {
+                    patternResult += c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                }
+            }
+        }
+
+        let charSegment = "";
+
+        for (let i = 0; i < str.length; i++) {
+            const char = str[i];
+            const type = getType(char);
+
+            if (type !== currentType) {
+                if (currentType !== null) {
+                    appendPattern(currentType, count, charSegment);
+                }
+                currentType = type;
+                count = 1;
+                charSegment = char;
+            } else {
+                count++;
+                charSegment += char;
+            }
+        }
+        if (currentType !== null) {
+            appendPattern(currentType, count, charSegment);
+        }
+
+        return patternResult;
+    }
+
+    function applyDraggedPattern() {
+        if (!generatedDragPattern) return;
+        
+        enableCustomMode(document.getElementById('preset-custom'));
+        
+        const patternInput = document.getElementById('regex-pattern');
+        patternInput.value = generatedDragPattern;
+        
+        handleTextProcess();
+        document.getElementById('drag-sample-bar').style.display = 'none';
+    }
+
+    const patternUndoStack = [];
+    const patternRedoStack = [];
+    let patternTimer = null;
+
+    function recordPatternHistory() {
+        const el = document.getElementById('regex-pattern');
+        if (!el || el.readOnly) return;
+
+        const state = {
+            val: el.value,
+            selStart: el.selectionStart,
+            selEnd: el.selectionEnd
+        };
+
+        if (patternUndoStack.length === 0 || patternUndoStack[patternUndoStack.length - 1].val !== state.val) {
+            patternUndoStack.push(state);
+            if (patternUndoStack.length > 50) patternUndoStack.shift();
+            patternRedoStack.length = 0;
+        }
+    }
+
+    function handlePatternInput() {
+        handleTextProcess();
+        clearTimeout(patternTimer);
+        patternTimer = setTimeout(() => {
+            recordPatternHistory();
+        }, 300);
+    }
+
+    function handlePatternKeyDown(e) {
+        const el = document.getElementById('regex-pattern');
+        if (el.readOnly) return;
+
+        const isCtrl = e.ctrlKey || e.metaKey;
+        const key = e.key.toLowerCase();
+
+        if (isCtrl && key === 'z' && !e.shiftKey) {
+            if (patternUndoStack.length > 1) {
+                e.preventDefault();
+                const current = patternUndoStack.pop();
+                patternRedoStack.push(current);
+
+                const prev = patternUndoStack[patternUndoStack.length - 1];
+                applyPatternState(el, prev);
+            }
+        }
+        else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
+            if (patternRedoStack.length > 0) {
+                e.preventDefault();
+                const next = patternRedoStack.pop();
+                patternUndoStack.push(next);
+
+                applyPatternState(el, next);
+            }
+        }
+    }
+
+    function applyPatternState(el, state) {
+        el.value = state.val;
+        handleTextProcess();
+
+        setTimeout(() => {
+            el.focus();
+            el.setSelectionRange(state.selStart, state.selEnd);
+        }, 0);
+    }
+
+    function getStoredPatterns() {
+        const data = localStorage.getItem('strget_custom_patterns_v2');
+        return data ? JSON.parse(data) : {};
+    }
+
+    function refreshPatternSelect() {
+        const patterns = getStoredPatterns();
+        const select = document.getElementById('saved-pattern-select');
+        select.innerHTML = '<option value="">-- 저장된 패턴 목록 --</option>';
+
+        for (let name in patterns) {
+            const option = document.createElement('option');
+            option.value = name;
+            option.textContent = name;
+            select.appendChild(option);
+        }
+    }
+
+    function saveUserPattern() {
+        const nameInput = document.getElementById('custom-pattern-name');
+        const name = nameInput.value.trim();
+        const pattern = document.getElementById('regex-pattern').value;
+
+        if (!name) {
+            alert('저장할 패턴의 이름을 입력해 주세요.');
+            nameInput.focus();
+            return;
+        }
+        if (!pattern) {
+            alert('저장할 패턴 내용이 없습니다.');
+            return;
+        }
+
+        const patternData = {
+            pattern: pattern,
+            groupWords: document.getElementById('chk-group-words').checked,
+            uniqueMatches: document.getElementById('chk-unique-matches').checked,
+            caseSensitive: document.getElementById('chk-case-sensitive').checked,
+            maskingData: document.getElementById('chk-masking-data').checked
+        };
+
+        const patterns = getStoredPatterns();
+        patterns[name] = patternData;
+        localStorage.setItem('strget_custom_patterns_v2', JSON.stringify(patterns));
+
+        nameInput.value = '';
+        refreshPatternSelect();
+        alert(`'${name}' 패턴과 설정 옵션이 함께 저장되었습니다!`);
+    }
+
+    function loadSelectedPattern() {
+        const select = document.getElementById('saved-pattern-select');
+        const selectedName = select.value;
+        if (!selectedName) return;
+
+        const patterns = getStoredPatterns();
+        const data = patterns[selectedName];
+        if (!data) return;
+
+        const patternInput = document.getElementById('regex-pattern');
+        patternInput.value = data.pattern;
+
+        document.getElementById('chk-group-words').checked = !!data.groupWords;
+        document.getElementById('chk-unique-matches').checked = !!data.uniqueMatches;
+        document.getElementById('chk-case-sensitive').checked = !!data.caseSensitive;
+        document.getElementById('chk-masking-data').checked = !!data.maskingData;
+
+        patternUndoStack.length = 0;
+        patternRedoStack.length = 0;
+        recordPatternHistory();
+
+        handleTextProcess();
+    }
+
+    function deleteSelectedPattern() {
+        const select = document.getElementById('saved-pattern-select');
+        const selectedName = select.value;
+        
+        if (!selectedName) {
+            alert('삭제할 패턴을 목록에서 선택해 주세요.');
+            return;
+        }
+
+        if (confirm(`'${selectedName}' 패턴을 정말 삭제하시겠습니까?`)) {
+            const patterns = getStoredPatterns();
+            delete patterns[selectedName];
+            localStorage.setItem('strget_custom_patterns_v2', JSON.stringify(patterns));
+
+            refreshPatternSelect();
+            alert('패턴이 삭제되었습니다.');
+        }
+    }
+
+    function applyPreset(pattern, btn) {
+        isCustomMode = false;
+        document.getElementById('custom-save-zone').style.display = 'none';
+        
+        document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
+        if(btn) btn.classList.add('active');
+        
+        const patternInput = document.getElementById('regex-pattern');
+        patternInput.readOnly = true;
+
+        const isGrouped = document.getElementById('chk-group-words').checked;
+        const isStructured = /@|\\d\{|\\s\+/.test(pattern);
+
+        if (!isStructured) {
+            let cleanPattern = pattern.replace(/\+$/, '');
+            patternInput.value = isGrouped ? cleanPattern + '+' : cleanPattern;
+        } else {
+            patternInput.value = pattern;
+        }
+
+        handleTextProcess();
+    }
+
+    function enableCustomMode(btn) {
+        isCustomMode = true;
+        document.getElementById('custom-save-zone').style.display = 'flex';
+        refreshPatternSelect();
+        
+        document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
+        if(btn) btn.classList.add('active');
+
+        const patternInput = document.getElementById('regex-pattern');
+        patternInput.readOnly = false;
+        
+        patternUndoStack.length = 0;
+        patternRedoStack.length = 0;
+        recordPatternHistory();
+
+        patternInput.focus();
+        patternInput.select();
+
+        handleTextProcess();
+    }
+
+    function toggleWordGrouping() {
+        if (isCustomMode) {
+            handleTextProcess();
+            return;
+        }
+
+        const patternInput = document.getElementById('regex-pattern');
+        let currentPattern = patternInput.value;
+        const isGrouped = document.getElementById('chk-group-words').checked;
+
+        if (/@|\\d\{/.test(currentPattern)) {
+            handleTextProcess();
+            return;
+        }
+
+        if (isGrouped) {
+            if (!currentPattern.endsWith('+') && !currentPattern.endsWith('}')) {
+                patternInput.value = currentPattern + '+';
+            }
+        } else {
+            if (currentPattern.endsWith('+')) {
+                patternInput.value = currentPattern.slice(0, -1);
+            }
+        }
+
+        handleTextProcess();
+    }
+
+    function applyMasking(text) {
+        if (text.includes('@')) {
+            return text.replace(/(^[^@]{1,3})[^@]*(@.*$)/, '$1***$2');
+        }
+        if (/^\d{2,3}-\d{3,4}-\d{4}$/.test(text)) {
+            return text.replace(/(\d{2,3}-)\d{3,4}(-\d{4})/, '$1****$2');
+        }
+        if (text.length > 2) {
+            return text.substring(0, 1) + '*'.repeat(text.length - 2) + text.substring(text.length - 1);
+        }
+        return text.substring(0, 1) + '*';
+    }
+
+    function handleTextProcess() {
+        let pattern = document.getElementById('regex-pattern').value;
+        const inputTextArea = document.getElementById('test-text-input');
+        const backdrop = document.getElementById('backdrop-view');
+        const statusBadge = document.getElementById('match-status');
+
+        const isUnique = document.getElementById('chk-unique-matches').checked;
+        const isCaseSensitive = document.getElementById('chk-case-sensitive').checked;
+        const isMasked = document.getElementById('chk-masking-data').checked;
+
+        const flags = isCaseSensitive ? 'g' : 'gi';
+
+        let savedPos = (currentMatchIndex >= 0 && matchPositions && matchPositions[currentMatchIndex]) 
+            ? matchPositions[currentMatchIndex] 
+            : null;
+
+        let text = inputTextArea.value;
+        currentMatchedList = [];
+        rawAllPositions = [];
+        matchPositions = [];
+
+        if (!pattern || !text) {
+            backdrop.innerHTML = escapeHtml(text);
+            statusBadge.innerText = "매칭 데이터: 0건";
+            currentMatchIndex = -1;
+            return;
+        }
+
+        try {
+            let safePattern = pattern;
+            if (isCustomMode) {
+                try {
+                    new RegExp(pattern, flags);
+                } catch (e) {
+                    safePattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                }
+            }
+
+            const regex = new RegExp(safePattern, flags);
+            let rawMatches = [];
+
+            let match;
+            while ((match = regex.exec(text)) !== null) {
+                rawAllPositions.push({
+                    start: match.index,
+                    end: match.index + match[0].length,
+                    raw: match[0]
+                });
+                rawMatches.push(match[0]);
+                if (!regex.global) break;
+            }
+
+            if (isUnique) {
+                let seen = new Set();
+                let filteredMatches = [];
+                let filteredPositions = [];
+
+                rawMatches.forEach((m, idx) => {
+                    const checkKey = isCaseSensitive ? m : m.toLowerCase();
+                    if (!seen.has(checkKey)) {
+                        seen.add(checkKey);
+                        filteredMatches.push(m);
+                        filteredPositions.push(rawAllPositions[idx]);
+                    }
+                });
+
+                currentMatchedList = isMasked ? filteredMatches.map(m => applyMasking(m)) : filteredMatches;
+                matchPositions = filteredPositions;
+            } else {
+                currentMatchedList = isMasked ? rawMatches.map(m => applyMasking(m)) : rawMatches;
+                matchPositions = rawAllPositions;
+            }
+
+            if (savedPos && matchPositions.length > 0) {
+                let newIdx = matchPositions.findIndex(p => p.start === savedPos.start);
+                if (newIdx === -1) {
+                    newIdx = matchPositions.findIndex(p => p.raw === savedPos.raw);
+                }
+                currentMatchIndex = newIdx !== -1 ? newIdx : 0;
+            } else if (matchPositions.length > 0 && currentMatchIndex !== -1) {
+                currentMatchIndex = 0;
+            } else {
+                currentMatchIndex = -1;
+            }
+
+            let htmlResult = "";
+            let lastIndex = 0;
+            let seenWords = new Set();
+
+            rawAllPositions.forEach((pos, idx) => {
+                htmlResult += escapeHtml(text.substring(lastIndex, pos.start));
+
+                const checkKey = isCaseSensitive ? pos.raw : pos.raw.toLowerCase();
+                const isDup = isUnique && seenWords.has(checkKey);
+                seenWords.add(checkKey);
+
+                let matchId = `match-tag-raw-${idx}`;
+                let uniqueIdx = matchPositions.findIndex(p => p.start === pos.start && p.end === pos.end);
+                if (uniqueIdx !== -1) {
+                    matchId = `match-tag-${uniqueIdx}`;
+                }
+
+                let className = isDup ? "highlight-duplicate" : "highlight";
+                if (uniqueIdx !== -1 && uniqueIdx === currentMatchIndex) {
+                    className += " highlight-active";
+                }
+
+                htmlResult += `<span class="${className}" id="${matchId}">${escapeHtml(pos.raw)}</span>`;
+                lastIndex = pos.end;
+            });
+            htmlResult += escapeHtml(text.substring(lastIndex));
+
+            backdrop.innerHTML = htmlResult.replace(/\n/g, '<br>') + (text.endsWith('\n') ? '<br>&nbsp;' : '');
+            
+            if (currentMatchIndex !== -1 && matchPositions[currentMatchIndex]) {
+                const target = matchPositions[currentMatchIndex];
+                setTimeout(() => {
+                    inputTextArea.setSelectionRange(target.start, target.end);
+                }, 0);
+                statusBadge.innerText = `매칭: ${currentMatchIndex + 1} / ${matchPositions.length}건`;
+            } else {
+                statusBadge.innerText = `매칭 데이터: ${currentMatchedList.length}건`;
+            }
+
+        } catch (err) {
+            backdrop.innerHTML = escapeHtml(text).replace(/\n/g, '<br>');
+            statusBadge.innerText = "매칭 데이터: 0건";
+        }
+        syncScroll();
+    }
+
+    function highlightActiveMatchInBackdrop() {
+        document.querySelectorAll('.highlight-active').forEach(el => {
+            el.classList.remove('highlight-active');
+        });
+
+        if (currentMatchIndex !== -1) {
+            const activeTag = document.getElementById(`match-tag-${currentMatchIndex}`);
+            if (activeTag) {
+                activeTag.classList.add('highlight-active');
+            }
+        }
+    }
+
+    function navigateMatch(direction) {
+        if (!matchPositions || matchPositions.length === 0) {
+            alert("이동할 매칭 데이터가 없습니다.");
+            return;
+        }
+
+        if (currentMatchIndex === -1) {
+            currentMatchIndex = 0;
+        } else {
+            currentMatchIndex += direction;
+        }
+
+        if (currentMatchIndex >= matchPositions.length) currentMatchIndex = 0;
+        if (currentMatchIndex < 0) currentMatchIndex = matchPositions.length - 1;
+
+        const target = matchPositions[currentMatchIndex];
+        const textarea = document.getElementById('test-text-input');
+
+        if (!target) return;
+
+        highlightActiveMatchInBackdrop();
+
+        setTimeout(() => {
+            textarea.focus();
+            textarea.setSelectionRange(target.start, target.end);
+
+            const activeTag = document.getElementById(`match-tag-${currentMatchIndex}`);
+            if (activeTag) {
+                const containerHeight = textarea.clientHeight;
+                const targetY = activeTag.offsetTop;
+                textarea.scrollTop = Math.max(0, targetY - (containerHeight / 2) + 20);
+            }
+
+            syncScroll();
+        }, 10);
+
+        document.getElementById('match-status').innerText = `매칭: ${currentMatchIndex + 1} / ${matchPositions.length}건`;
+    }
+
+    function escapeHtmlText(escapedText) {
+        return escapedText.replace(/\n/g, '<br>') + (document.getElementById('test-text-input').value.endsWith('\n') ? '<br>&nbsp;' : '');
+    }
+
+    function copyMatchedResults(format) {
+        if (currentMatchedList.length === 0) {
+            alert("추출할 매칭 데이터가 없습니다.");
+            return;
+        }
+
+        let textToCopy = "";
+
+        if (format === 'excel') {
+            textToCopy = "번호\t추출 데이터\n" + currentMatchedList.map((item, idx) => `${idx + 1}\t${item}`).join('\n');
+        } else {
+            textToCopy = currentMatchedList.join('\n');
+        }
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            alert(format === 'excel' ? "엑셀 붙여넣기용(Tab 구분) 데이터가 복사되었습니다!" : `총 ${currentMatchedList.length}건의 데이터가 복사되었습니다!`);
+        });
+    }
+
+    function clearInputText() {
+        const textarea = document.getElementById('test-text-input');
+        if (!textarea.value) return;
+
+        textarea.value = '';
+        recordTextHistory();
+        handleTextProcess();
+        textarea.focus();
+        document.getElementById('drag-sample-bar').style.display = 'none';
+    }
+
+    function syncScroll() {
+        const inputTextArea = document.getElementById('test-text-input');
+        const backdrop = document.getElementById('backdrop-view');
+        backdrop.scrollTop = inputTextArea.scrollTop;
+        backdrop.scrollLeft = inputTextArea.scrollLeft;
+    }
+
+    function escapeHtml(string) {
+        return string
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    window.onload = () => {
+        const textEl = document.getElementById('test-text-input');
+        const patternEl = document.getElementById('regex-pattern');
+
+        textEl.addEventListener('input', handleTextInput);
+        textEl.addEventListener('keydown', handleTextKeyDown);
+        textEl.addEventListener('mouseup', handleTextClickOrMouseUp);
+        textEl.addEventListener('keyup', handleTextClickOrMouseUp);
+        recordTextHistory();
+
+        patternEl.addEventListener('input', handlePatternInput);
+        patternEl.addEventListener('keydown', handlePatternKeyDown);
+
+        document.getElementById('preset-kor').classList.add('active');
+        handleTextProcess();
+    };
+</script>
+<script src="https://devworkit.netlify.app/nav.js"></script>
+</body>
+</html>
