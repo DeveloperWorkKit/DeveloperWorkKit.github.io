@@ -1,30 +1,132 @@
-<!-- blog/index.html -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>DevWorkKit 기술 가이드 & 블로그</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevWorkKit 실무 기술 가이드</title>
   <meta name="description" content="개발자와 직장인을 위한 웹 도구 활용법 및 실무 데이터 처리 가이드">
   <link rel="stylesheet" href="../style.css">
+  <style>
+    /* 블로그 목록 전용 스타일 (외부 이미지 필요 없음) */
+    .blog-container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .blog-header {
+      margin-bottom: 30px;
+      border-bottom: 2px solid #f1f3f5;
+      padding-bottom: 15px;
+    }
+    .blog-header h1 {
+      font-size: 26px;
+      color: #111827;
+      margin: 10px 0 0 0;
+    }
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .blog-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+    }
+    .blog-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+      border-color: #cbd5e1;
+    }
+    .card-badge {
+      align-self: flex-start;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+    }
+    .badge-coder { background-color: #3b82f6; }
+    .badge-json { background-color: #8b5cf6; }
+    .badge-strget { background-color: #ef4444; }
+    
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1f2937;
+      margin: 0 0 10px 0;
+      line-height: 1.4;
+    }
+    .card-desc {
+      font-size: 14px;
+      color: #4b5563;
+      line-height: 1.6;
+      margin: 0 0 18px 0;
+      flex-grow: 1;
+    }
+    .card-link-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: #2563eb;
+      display: inline-flex;
+      align-items: center;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <a href="../index.html">← DevWorkKit 홈으로</a>
-    <h1>DWK 실무 기술 가이드</h1>
-  </header>
-  <main class="blog-list">
-    <article>
-      <h2><a href="base64-guide.html">Base64 인코딩 원리와 실무 한글 깨짐 해결법</a></h2>
-      <p>Base64의 동작 원리와 웹 통신 중 발생하는 UTF-8 한글 깨짐 문제의 원인 및 해결 코드를 정리합니다.</p>
-    </article>
-    <article>
-      <h2><a href="json-format-guide.html">JSON 유효성 검사와 구조적 데이터 파싱 팁</a></h2>
-      <p>대용량 JSON 트러블슈팅과 구문 오류(Syntax Error)를 빠르게 진단하는 실무 노하우를 알아봅니다.</p>
-    </article>
-    <article>
-      <h2><a href="regex-extract-guide.html">정규표현식(Regex)을 이용한 이메일·전화번호 추출 가이드</a></h2>
-      <p>비정형 텍스트 뭉치에서 원하는 패턴의 문자열만 정규식으로 정확히 파싱하는 방법을 설명합니다.</p>
-    </article>
-  </main>
+
+  <!-- 상단 공통 네비게이션이 주입되는 위치 -->
+  <div id="dwk-nav"></div>
+
+  <div class="blog-container">
+    <div class="blog-header">
+      <a href="../index.html" style="color: #64748b; font-size: 13px; text-decoration: none;">← DevWorkKit 홈으로</a>
+      <h1>DWK 실무 기술 가이드</h1>
+    </div>
+
+    <div class="blog-grid">
+      <!-- 1번 글 -->
+      <a href="base64-guide.html" class="blog-card">
+        <div>
+          <span class="card-badge badge-coder">CODER</span>
+          <h2 class="card-title">Base64 인코딩 원리와 실무 한글 깨짐 해결법</h2>
+          <p class="card-desc">Base64의 내부 동작 원리와 웹 통신 중 발생하는 UTF-8 한글 깨짐 문제의 원인 및 해결 코드를 정리합니다.</p>
+        </div>
+        <span class="card-link-text">가이드 읽기 →</span>
+      </a>
+
+      <!-- 2번 글 -->
+      <a href="json-format-guide.html" class="blog-card">
+        <div>
+          <span class="card-badge badge-json">JSON</span>
+          <h2 class="card-title">JSON 유효성 검사와 구조적 데이터 파싱 팁</h2>
+          <p class="card-desc">대용량 JSON 트러블슈팅과 구문 오류(Syntax Error)를 빠르게 진단하는 실무 노하우를 알아봅니다.</p>
+        </div>
+        <span class="card-link-text">가이드 읽기 →</span>
+      </a>
+
+      <!-- 3번 글 -->
+      <a href="regex-extract-guide.html" class="blog-card">
+        <div>
+          <span class="card-badge badge-strget">STRGET</span>
+          <h2 class="card-title">정규표현식(Regex)을 이용한 이메일·전화번호 추출 가이드</h2>
+          <p class="card-desc">비정형 텍스트 뭉치에서 원하는 패턴의 문자열만 정규식으로 정확히 파싱하는 실전 패턴을 설명합니다.</p>
+        </div>
+        <span class="card-link-text">가이드 읽기 →</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- 공통 네비게이션 스크립트 연결 -->
+  <script src="../nav.js"></script>
 </body>
 </html>
