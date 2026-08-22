@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unix Epoch Timestamp 개념과 KST/UTC 시간대 변환 완벽 가이드 - DevWorkKit</title>
+  <meta name="description" content="서버 개발과 데이터베이스에서 필수적인 유닉스 타임스탬프의 원리와 타임존 변환 팁을 정리합니다.">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    body {
+      background-color: #f8fafc;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #334155;
+    }
+    .article-container {
+      max-width: 860px;
+      margin: 40px auto 80px auto;
+      padding: 0 20px;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .back-link:hover { color: #2563eb; }
+    .article-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 40px 48px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .article-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+      background-color: #10b981;
+      margin-bottom: 16px;
+    }
+    .article-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.35;
+      margin: 0 0 24px 0;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 20px;
+    }
+    .article-section { margin-bottom: 32px; }
+    .article-section h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0 0 12px 0;
+    }
+    .article-section p {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #475569;
+      margin: 0 0 12px 0;
+    }
+    .code-block {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: Consolas, Monaco, "Courier New", Courier, monospace;
+      font-size: 13px;
+      overflow-x: auto;
+      margin: 14px 0;
+      line-height: 1.5;
+    }
+    .tool-banner {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin-top: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .tool-banner-text {
+      font-size: 14px;
+      color: #065f46;
+      font-weight: 600;
+    }
+    .tool-banner-btn {
+      background: #10b981;
+      color: #ffffff;
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .tool-banner-btn:hover { background: #059669; }
+  </style>
+</head>
+<body>
+
+  <div id="dwk-nav"></div>
+
+  <main class="article-container">
+    <a href="index.html" class="back-link">← 블로그 목록으로 돌아가기</a>
+    
+    <article class="article-card">
+      <span class="article-badge">TIME</span>
+      <h1 class="article-title">Unix Epoch Timestamp 개념과 KST/UTC 시간대 변환 완벽 가이드</h1>
+
+      <section class="article-section">
+        <h2>1. Unix Epoch Timestamp란 무엇인가?</h2>
+        <p>유닉스 타임스탬프(Unix Timestamp)는 1970년 1월 1일 00:00:00 UTC(협정 세계시)를 기점으로 현재까지 경과한 시간을 '초(Seconds)' 또는 '밀리초(Milliseconds)' 단위의 정수로 나타낸 표기법입니다. 전 세계의 서버와 데이터베이스 간 시간 데이터를 일관되게 동기화하고 연산할 때 사용됩니다.</p>
+      </section>
+
+      <section class="article-section">
+        <h2>2. 실무에서 시간 계산 시 주의할 점 (초 vs 밀리초)</h2>
+        <p>백엔드 시스템(Python, PHP, C 언어 등)은 일반적으로 10자리 단위의 '초(Seconds)'를 반환하는 반면, 프론트엔드 자바스크립트의 <code>Date.now()</code>나 Java 시스템은 13자리 단위의 '밀리초(Milliseconds)'를 기본으로 사용합니다. 자릿수를 혼동할 경우 1970년대로 계산되는 오류가 발생하므로 변환 전 반드시 자릿수를 확인해야 합니다.</p>
+        <div class="code-block">
+// 자바스크립트 초/밀리초 단위 타임스탬프 변환 예제
+const currentEpochMs = Date.now(); // 13자리 밀리초
+const currentEpochSec = Math.floor(currentEpochMs / 1000); // 10자리 초
+
+// 타임스탬프를 한국 시간(KST, UTC+9) 문자열로 변환
+const kstDateString = new Date(currentEpochMs).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>3. 무료 온라인 타임스탬프 변환기 활용</h2>
+        <p>복잡한 계산식 없이 10자리 초와 13자리 밀리초 타임스탬프를 한국 표준시(KST) 및 UTC 표준시로 1초 만에 상호 변환할 수 있습니다.</p>
+        <div class="tool-banner">
+          <span class="tool-banner-text">🛠️ DevWorkKit 실시간 타임스탬프 변환기 사용해보기</span>
+          <a href="../time/" class="tool-banner-btn">도구로 이동 →</a>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script src="../nav.js"></script>
+</body>
+</html>
