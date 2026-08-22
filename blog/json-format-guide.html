@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON 유효성 검사와 구조적 데이터 파싱 팁 - DevWorkKit</title>
+  <meta name="description" content="대용량 JSON 트러블슈팅과 구문 오류(Syntax Error)를 빠르게 진단하고 포맷팅하는 실무 노하우를 알아봅니다.">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    body {
+      background-color: #f8fafc;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #334155;
+    }
+    .article-container {
+      max-width: 860px;
+      margin: 40px auto 80px auto;
+      padding: 0 20px;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .back-link:hover { color: #2563eb; }
+    .article-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 40px 48px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .article-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+      background-color: #8b5cf6;
+      margin-bottom: 16px;
+    }
+    .article-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.35;
+      margin: 0 0 24px 0;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 20px;
+    }
+    .article-section { margin-bottom: 32px; }
+    .article-section h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0 0 12px 0;
+    }
+    .article-section p {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #475569;
+      margin: 0 0 12px 0;
+    }
+    .code-block {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: Consolas, Monaco, "Courier New", Courier, monospace;
+      font-size: 13px;
+      overflow-x: auto;
+      margin: 14px 0;
+      line-height: 1.5;
+    }
+    .tool-banner {
+      background: #f5f3ff;
+      border: 1px solid #ddd6fe;
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin-top: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .tool-banner-text {
+      font-size: 14px;
+      color: #5b21b6;
+      font-weight: 600;
+    }
+    .tool-banner-btn {
+      background: #8b5cf6;
+      color: #ffffff;
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .tool-banner-btn:hover { background: #7c3aed; }
+  </style>
+</head>
+<body>
+
+  <div id="dwk-nav"></div>
+
+  <main class="article-container">
+    <a href="index.html" class="back-link">← 블로그 목록으로 돌아가기</a>
+    
+    <article class="article-card">
+      <span class="article-badge">JSON</span>
+      <h1 class="article-title">JSON 유효성 검사와 구조적 데이터 파싱 팁</h1>
+
+      <section class="article-section">
+        <h2>1. JSON(JavaScript Object Notation)이란?</h2>
+        <p>JSON은 경량의 데이터 교환 형식으로, 사람이 읽고 쓰기 쉬우며 기계가 분석하고 생성하기 용이합니다. RESTful API 통신, 설정 파일(`.json`), NoSQL 데이터베이스 등 최신 웹 애플리케이션 전반에서 표준 규격으로 채택되어 사용됩니다.</p>
+      </section>
+
+      <section class="article-section">
+        <h2>2. 실무에서 가장 흔히 발생하는 JSON 문법 오류 Top 3</h2>
+        <p>서버 통신 시 <code>JSON.parse()</code>에서 <code>SyntaxError: Unexpected token</code> 예외가 발생하는 대표적인 원인은 다음과 같습니다:</p>
+        <p><strong>① 마지막 쉼표(Trailing Comma):</strong> 객체나 배열의 마지막 요소 뒤에 불필요한 쉼표(<code>,</code>)가 남아 있는 경우.</p>
+        <p><strong>② 따옴표 규칙 위반:</strong> JSON 표준 규격에서는 키(Key)와 문자열 값에 반드시 큰따옴표(<code>"</code>)만을 허용하며, 작은따옴표(<code>'</code>)는 문법 오류로 처리됩니다.</p>
+        <p><strong>③ 이스케이프 누락:</strong> 문자열 내부에 큰따옴표나 백슬래시가 포함될 때 역슬래시(<code>\"</code>) 처리가 누락된 경우.</p>
+        <div class="code-block">
+// 안전한 JSON 파싱 트라이-캐치 패턴 예시
+function parseJSONSafely(jsonString) {
+  try {
+    return { success: true, data: JSON.parse(jsonString) };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>3. 무료 온라인 JSON 포맷터 & 검사기 활용</h2>
+        <p>줄바꿈이 깨진 한 줄짜리 Minified JSON을 들여쓰기 2칸/4칸으로 자동 정렬하고 문법 오류 위치를 즉시 찾아낼 수 있습니다.</p>
+        <div class="tool-banner">
+          <span class="tool-banner-text">🛠️ DevWorkKit 실시간 JSON 포맷터 & 검사기 사용해보기</span>
+          <a href="../json-viewer/" class="tool-banner-btn">도구로 이동 →</a>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script src="../nav.js"></script>
+</body>
+</html>
