@@ -35,6 +35,7 @@
         </div>
         <div class="nav-right">
             <a href="${HOST_URL}/about.html" class="nav-link-sub">소개/문의</a>
+            <a href="${HOST_URL}/blog/" class="nav-link-sub">가이드/블로그</a>
             <a href="${HOST_URL}/" class="nav-hub-btn">DWK Hub ➔</a>
         </div>
     </header>
