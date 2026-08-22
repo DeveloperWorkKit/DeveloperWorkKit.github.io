@@ -1,0 +1,31 @@
+<!-- blog/base64-guide.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Base64 인코딩 원리와 실무 활용 팁 - DevWorkKit</title>
+  <meta name="description" content="Base64 인코딩과 디코딩의 기본 원리, UTF-8 인코딩과의 차이점 및 실무 적용 사례를 다룹니다.">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <div class="content-container">
+    <a href="index.html">← 블로그 목록</a>
+    <h1>Base64 인코딩 원리와 실무 한글 깨짐 해결법</h1>
+    
+    <section>
+      <h2>1. Base64 인코딩이란 무엇인가?</h2>
+      <p>Base64는 8비트 이진 데이터(Binary Data)를 64개의 출력 가능한 문자(ASCII 문자셋)로 변환하는 인코딩 방식입니다. 주로 전자메일(MIME), 웹 데이터 전송, Data URI Scheme 등에서 바이너리 데이터 손실을 방지하기 위해 널리 사용됩니다.</p>
+    </section>
+
+    <section>
+      <h2>2. 실무에서 한글(UTF-8) 깨짐이 발생하는 이유</h2>
+      <p>브라우저 기본 내장 함수인 btoa()는 ASCII 문자만을 처리할 수 있도록 설계되어 있어 2바이트 이상을 사용하는 UTF-8 한글 문자열을 전달할 경우 InvalidCharacterError 예외가 발생합니다. 이를 방지하기 위해서는 텍스트 인코더(TextEncoder)를 거쳐 바이트 배열로 변환한 후 변환해야 합니다.</p>
+    </section>
+
+    <section>
+      <h2>3. 무료 온라인 변환 도구 활용</h2>
+      <p>간편하게 인코딩/디코딩 결과를 확인하고 싶다면 DevWorkKit의 <a href="../coder.html">Base64 & URL 변환기</a>를 활용하여 안전하게 클라이언트 사이드에서 즉시 변환할 수 있습니다.</p>
+    </section>
+  </div>
+</body>
+</html>
