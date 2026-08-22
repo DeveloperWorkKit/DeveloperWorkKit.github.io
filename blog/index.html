@@ -8,35 +8,34 @@
   <link rel="stylesheet" href="../style.css">
   <style>
     html, body {
-    margin: 0;
-    padding: 0;
-    background-color: #f8fafc;
-  }
-    /* 블로그 목록 전용 스타일 (외부 이미지 필요 없음) */
+      margin: 0;
+      padding: 0;
+      background-color: #f8fafc;
+    }
     .blog-container {
-      max-width: 1000px;
-      margin: 40px auto;
+      max-width: 1080px;
+      margin: 40px auto 80px auto;
       padding: 0 20px;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     .blog-header {
       margin-bottom: 30px;
-      border-bottom: 2px solid #f1f3f5;
+      border-bottom: 2px solid #e2e8f0;
       padding-bottom: 15px;
     }
     .blog-header h1 {
       font-size: 26px;
-      color: #111827;
+      color: #0f172a;
       margin: 10px 0 0 0;
     }
     .blog-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 24px;
     }
     .blog-card {
       background: #ffffff;
-      border: 1px solid #e5e7eb;
+      border: 1px solid #e2e8f0;
       border-radius: 12px;
       padding: 24px;
       display: flex;
@@ -63,17 +62,19 @@
     .badge-coder { background-color: #3b82f6; }
     .badge-json { background-color: #8b5cf6; }
     .badge-strget { background-color: #ef4444; }
+    .badge-time { background-color: #10b981; }
+    .badge-hash { background-color: #6366f1; }
     
     .card-title {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
-      color: #1f2937;
+      color: #1e293b;
       margin: 0 0 10px 0;
       line-height: 1.4;
     }
     .card-desc {
       font-size: 14px;
-      color: #4b5563;
+      color: #64748b;
       line-height: 1.6;
       margin: 0 0 18px 0;
       flex-grow: 1;
@@ -89,7 +90,6 @@
 </head>
 <body>
 
-  <!-- 상단 공통 네비게이션이 주입되는 위치 -->
   <div id="dwk-nav"></div>
 
   <div class="blog-container">
@@ -128,10 +128,29 @@
         </div>
         <span class="card-link-text">가이드 읽기 →</span>
       </a>
+
+      <!-- 4번 글 -->
+      <a href="timestamp-guide.html" class="blog-card">
+        <div>
+          <span class="card-badge badge-time">TIME</span>
+          <h2 class="card-title">Unix Epoch Timestamp 개념과 시간대 변환 가이드</h2>
+          <p class="card-desc">10자리 초와 13자리 밀리초의 차이점, 그리고 KST/UTC 시간대 상호 변환 시 주의사항을 정리합니다.</p>
+        </div>
+        <span class="card-link-text">가이드 읽기 →</span>
+      </a>
+
+      <!-- 5번 글 -->
+      <a href="hash-guide.html" class="blog-card">
+        <div>
+          <span class="card-badge badge-hash">HASH</span>
+          <h2 class="card-title">단방향 암호화 해시(SHA-256)와 UUID v4 원리 정리</h2>
+          <p class="card-desc">데이터 무결성 검증을 위한 SHA-256 해시 알고리즘과 고유 식별자 생성을 위한 UUID v4 원리를 설명합니다.</p>
+        </div>
+        <span class="card-link-text">가이드 읽기 →</span>
+      </a>
     </div>
   </div>
 
-  <!-- 공통 네비게이션 스크립트 연결 -->
   <script src="../nav.js"></script>
 </body>
 </html>
