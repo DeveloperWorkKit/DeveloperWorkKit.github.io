@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>코드 뷰티파이어 & 웹 뷰어 | DevWorKit</title>
+    <style>
+        :root {
+            --primary-blue: #007bff;
+            --primary-blue-hover: #0056b3;
+            --bg-light: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-main: #333333;
+            --text-muted: #666666;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-main);
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-badge { background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
+        .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
+
+        .page-wrapper {
+            display: block;
+            max-width: 1100px;
+            margin: 20px auto 40px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .intro-section { margin-bottom: 25px; }
+        .intro-title { font-size: 22px; font-weight: 800; color: #111827; margin: 0 0 6px 0; letter-spacing: -0.5px; }
+        .intro-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 16px 0; }
+        .guide-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-size: 13.5px;
+            color: #334155;
+            line-height: 1.6;
+        }
+        .guide-box strong { display: block; margin-bottom: 8px; color: #0f172a; font-size: 14px; }
+        .guide-list { margin: 0; padding-left: 18px; }
+        .guide-list li { margin-bottom: 4px; }
+
+        .main-container { width: 100%; margin: 0 auto; box-sizing: border-box; }
+
+        .tab-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .tab-sub-group { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+
+        .tab-btn {
+            padding: 9px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-light);
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.15s;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-blue);
+            color: #ffffff;
+            border-color: var(--primary-blue);
+        }
+
+        .select-indent {
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: #ffffff;
+            color: #334155;
+            outline: none;
+        }
+
+        .converter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 850px) { .converter-grid { grid-template-columns: 1fr; } }
+
+        .panel-box {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .panel-title { font-size: 14px; font-weight: 700; }
+
+        .btn-mini {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-mini:hover { background-color: #e9ecef; }
+        .btn-mini-primary { background-color: #10b981; color: #fff; border-color: #10b981; }
+        .btn-mini-primary:hover { background-color: #059669; }
+
+        textarea.code-textarea {
+            width: 100%;
+            height: 420px;
+            padding: 15px;
+            font-size: 13.5px;
+            line-height: 1.5;
+            font-family: "Consolas", monospace;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            resize: vertical;
+            outline: none;
+        }
+
+        textarea.code-textarea:focus { border-color: var(--primary-blue); }
+
+        #preview-frame {
+            width: 100%;
+            height: 420px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: #ffffff;
+            box-sizing: border-box;
+            display: none;
+        }
+
+        .view-switch-btn {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 4px 8px;
+            font-size: 11.5px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #475569;
+        }
+
+        .view-switch-btn.active {
+            background: #2563eb;
+            color: #ffffff;
+            border-color: #2563eb;
+        }
+
+        .bottom-ad-box {
+            max-width: 1100px;
+            width: 100%;
+            margin: 25px auto 10px auto;
+            text-align: center;
+        }
+
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 16px 20px;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            background-color: var(--bg-light);
+            text-align: center;
+            margin-top: auto;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.8/beautify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.8/beautify-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.8/beautify-html.min.js"></script>
+</head>
+<body>
+
+<header>
+    <div class="logo-area">
+        <span class="logo-badge">BEAUTIFY</span>
+        <span class="logo-text">코드 뷰티파이어 & 뷰어</span>
+    </div>
+</header>
+
+<div class="page-wrapper">
+    <div class="intro-section">
+        <h2 class="intro-title">HTML, CSS, JS 실시간 코드 정렬 및 웹 렌더링 미리보기 도구입니다.</h2>
+        <p class="intro-desc">줄바꿈이 엉망인 코드를 가독성 높게 정리하고, HTML 코드는 실제 웹 브라우저 화면으로 즉시 미리 볼 수 있습니다.</p>
+        
+        <div class="guide-box">
+            <strong>코드 뷰티파이어 사용 방법 안내:</strong>
+            <ol class="guide-list">
+                <li>정렬할 소스 코드를 좌측 창에 입력하거나 <b>[샘플 불러오기]</b>를 클릭합니다.</li>
+                <li>상단에서 <b>HTML, JavaScript, CSS</b> 언어 모드와 <b>들여쓰기(2칸/4칸/탭)</b> 옵션을 선택합니다.</li>
+                <li>우측 상단 <b>[화면 미리보기]</b>를 누르면 작성한 HTML 코드가 실제 브라우저 화면으로 렌더링됩니다.</li>
+                <li>모든 연산은 브라우저 내부에서 즉시 처리되므로 소스코드가 외부 서버로 유출되지 않습니다.</li>
+            </ol>
+            
+            <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #cbd5e1; display: flex; justify-content: space-between; align-items: center; white-space: nowrap;">
+                <span style="font-size: 13px; color: #334155; display: inline-block;">📘 <span style="font-weight: 700; color: #0f172a;">코드 포맷터의 동작 원리와 들여쓰기 표준 규칙</span>이 궁금하신가요?</span>
+                <a href="../blog/code-formatter-guide.html" style="color: #2563eb; font-weight: 700; text-decoration: none; background: #eff6ff; border: 1px solid #bfdbfe; padding: 5px 12px; border-radius: 6px; font-size: 12.5px; margin-left: 12px; flex-shrink: 0; display: inline-block;">실무 가이드 보기 →</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="tab-group">
+            <div class="tab-sub-group">
+                <button class="tab-btn active" onclick="setLang('html', this)">HTML</button>
+                <button class="tab-btn" onclick="setLang('js', this)">JavaScript</button>
+                <button class="tab-btn" onclick="setLang('css', this)">CSS</button>
+                
+                <select id="indent-select" class="select-indent" onchange="runFormat()">
+                    <option value="2">들여쓰기: 2칸 (Spaces)</option>
+                    <option value="4" selected>들여쓰기: 4칸 (Spaces)</option>
+                    <option value="tab">들여쓰기: Tab</option>
+                </select>
+            </div>
+            <div class="tab-sub-group">
+                <button class="tab-btn" onclick="loadSample()">샘플 불러오기</button>
+                <button class="tab-btn" onclick="clearAll()">초기화</button>
+            </div>
+        </div>
+
+        <div class="converter-grid">
+            <div class="panel-box">
+                <div class="panel-header">
+                    <span class="panel-title">정렬할 원본 소스 코드</span>
+                </div>
+                <textarea id="raw-code" class="code-textarea" placeholder="여기에 들여쓰기가 엉망이거나 압축된 소스 코드를 붙여넣으세요..."></textarea>
+            </div>
+
+            <div class="panel-box">
+                <div class="panel-header">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="panel-title" id="output-title">정렬된 결과 (HTML)</span>
+                        <div id="view-mode-toggle" style="display: flex; gap: 4px;">
+                            <button class="view-switch-btn active" id="btn-view-code" onclick="switchOutputMode('code')">코드</button>
+                            <button class="view-switch-btn" id="btn-view-preview" onclick="switchOutputMode('preview')">화면 미리보기</button>
+                        </div>
+                    </div>
+                    <button class="btn-mini btn-mini-primary" id="btn-copy" onclick="copyResult()">결과 복사</button>
+                </div>
+                <textarea id="formatted-code" class="code-textarea" placeholder="정렬된 깔끔한 코드가 여기에 실시간으로 표시됩니다." readonly></textarea>
+                <iframe id="preview-frame" sandbox="allow-scripts"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bottom-ad-box">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3823705730142714"
+         data-ad-slot="3894691126"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+
+<footer>
+    클라이언트 사이드에서 즉시 실행되는 오픈소스 기반 초고속 코드 정렬 및 실시간 뷰어입니다.
+</footer>
+
+<script>
+    let currentLang = 'html';
+    let outputMode = 'code';
+
+    const samples = {
+        html: '<div style="font-family:sans-serif; padding:20px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px;">\n<h2 style="color:#166534; margin:0 0 10px 0;">🎉 실시간 미리보기 성공!</h2>\n<p style="color:#15803d; margin:0;">HTML 코드를 입력하면 이렇게 실제 브라우저 렌더링 화면을 즉시 확인할 수 있습니다.</p>\n<button style="margin-top:12px; padding:8px 16px; background:#16a34a; color:#fff; border:none; border-radius:4px; cursor:pointer;" onclick="alert(\'버튼 동작 확인!\')">클릭 테스트</button>\n</div>',
+        js: 'function calculateSum(a,b){if(a>0&&b>0){return a+b;}else{console.log("invalid parameters");return 0;}}const result=calculateSum(10,20);',
+        css: '.container{width:100%;max-width:1200px;margin:0 auto;padding:0 20px;}.card{background:#fff;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.1);}'
+    };
+
+    function setLang(lang, btn) {
+        currentLang = lang;
+        if (btn) {
+            document.querySelectorAll('.tab-sub-group .tab-btn').forEach(b => {
+                if (b.innerText === 'HTML' || b.innerText === 'JavaScript' || b.innerText === 'CSS') {
+                    b.classList.remove('active');
+                }
+            });
+            btn.classList.add('active');
+        }
+        
+        const toggleBox = document.getElementById('view-mode-toggle');
+        if (lang === 'html') {
+            toggleBox.style.display = 'flex';
+        } else {
+            toggleBox.style.display = 'none';
+            switchOutputMode('code');
+        }
+
+        runFormat();
+    }
+
+    function switchOutputMode(mode) {
+        outputMode = mode;
+        const codeArea = document.getElementById('formatted-code');
+        const previewFrame = document.getElementById('preview-frame');
+        const btnCode = document.getElementById('btn-view-code');
+        const btnPreview = document.getElementById('btn-view-preview');
+        const copyBtn = document.getElementById('btn-copy');
+
+        if (mode === 'code') {
+            codeArea.style.display = 'block';
+            previewFrame.style.display = 'none';
+            btnCode.classList.add('active');
+            btnPreview.classList.remove('active');
+            copyBtn.style.display = 'block';
+            document.getElementById('output-title').innerText = '정렬된 결과 (' + currentLang.toUpperCase() + ')';
+        } else {
+            codeArea.style.display = 'none';
+            previewFrame.style.display = 'block';
+            btnCode.classList.remove('active');
+            btnPreview.classList.add('active');
+            copyBtn.style.display = 'none';
+            document.getElementById('output-title').innerText = '실시간 웹 화면 미리보기';
+            updatePreview();
+        }
+    }
+
+    function updatePreview() {
+        const raw = document.getElementById('raw-code').value;
+        const iframe = document.getElementById('preview-frame');
+        iframe.srcdoc = raw || '<p style="color:#94a3b8; padding:20px; font-family:sans-serif;">좌측에 HTML 코드를 입력하면 실시간으로 렌더링됩니다.</p>';
+    }
+
+    function runFormat() {
+        const raw = document.getElementById('raw-code').value;
+        const out = document.getElementById('formatted-code');
+        if (!raw.trim()) { 
+            out.value = ''; 
+            updatePreview();
+            return; 
+        }
+
+        const indentVal = document.getElementById('indent-select').value;
+        const opts = {
+            indent_size: indentVal === 'tab' ? 1 : parseInt(indentVal),
+            indent_char: indentVal === 'tab' ? '\t' : ' ',
+            max_preserve_newlines: 2,
+            preserve_newlines: true,
+            wrap_line_length: 0
+        };
+
+        try {
+            if (currentLang === 'html' && window.html_beautify) {
+                out.value = html_beautify(raw, opts);
+            } else if (currentLang === 'js' && window.js_beautify) {
+                out.value = js_beautify(raw, opts);
+            } else if (currentLang === 'css' && window.css_beautify) {
+                out.value = css_beautify(raw, opts);
+            }
+        } catch (e) {
+            out.value = '코드 정렬 오류:\n' + e.message;
+        }
+
+        if (outputMode === 'preview') {
+            updatePreview();
+        }
+    }
+
+    function loadSample() {
+        document.getElementById('raw-code').value = samples[currentLang] || '';
+        runFormat();
+    }
+
+    function clearAll() {
+        document.getElementById('raw-code').value = '';
+        document.getElementById('formatted-code').value = '';
+        updatePreview();
+        document.getElementById('raw-code').focus();
+    }
+
+    function copyResult() {
+        const out = document.getElementById('formatted-code').value;
+        if (!out) { alert('복사할 결과가 없습니다.'); return; }
+        navigator.clipboard.writeText(out).then(() => {
+            alert('정렬된 코드가 클립보드에 복사되었습니다!');
+        });
+    }
+
+    document.getElementById('raw-code').addEventListener('input', runFormat);
+</script>
+<script src="../nav.js"></script>
+</body>
+</html>
