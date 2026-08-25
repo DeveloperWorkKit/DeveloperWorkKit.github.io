@@ -397,6 +397,9 @@
     let currentLang = 'html';
     let outputMode = 'code';
 
+    let lastRawLineCount = -1;
+    let lastOutLineCount = -1;
+
     // ===== Undo / Redo History Stack Engine =====
     const codeUndoStack = [];
     const codeRedoStack = [];
@@ -429,7 +432,7 @@
             el.setSelectionRange(state.selStart, state.selEnd);
             el.scrollTop = state.scrollTop;
             syncScroll('raw-code', 'input-line-numbers');
-            updateStatusBars();
+            updateInputStatus();
         }, 0);
     }
 
@@ -462,7 +465,7 @@
         if (document.getElementById('auto-update').checked) {
             runFormat();
         } else {
-            updateStatusBars();
+            updateInputStatus();
         }
 
         clearTimeout(codeHistoryTimer);
@@ -478,12 +481,20 @@
         css: '.container {\n    width: 100%;\n    max-width: 1200px;\n    margin: 0 auto;\n    padding: 0 20px;\n}\n.card {\n    background: #ffffff;\n    border: 1px solid #e2e8f0;\n    border-radius: 10px;\n    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);\n    padding: 24px;\n}\n.title {\n    font-size: 18px;\n    font-weight: 700;\n    color: #0f172a;\n    margin-bottom: 8px;\n}'
     };
 
-    function updateLineNumbers(textareaId, lineNumberId) {
+    function updateLineNumbers(textareaId, lineNumberId, isRaw) {
         const textarea = document.getElementById(textareaId);
         const lineNumContainer = document.getElementById(lineNumberId);
         const lines = textarea.value.split('\n').length;
+
+        if (isRaw && lines === lastRawLineCount) return;
+        if (!isRaw && lines === lastOutLineCount) return;
+
+        if (isRaw) lastRawLineCount = lines;
+        else lastOutLineCount = lines;
+
         let lineNumbersHTML = '';
-        for (let i = 1; i <= Math.max(lines, 1); i++) {
+        const total = Math.max(lines, 1);
+        for (let i = 1; i <= total; i++) {
             lineNumbersHTML += i + '\n';
         }
         lineNumContainer.textContent = lineNumbersHTML;
@@ -576,11 +587,8 @@
         return (bytes / 1024).toFixed(1) + ' KB';
     }
 
-    function updateStatusBars() {
+    function updateInputStatus() {
         const raw = document.getElementById('raw-code');
-        const out = document.getElementById('formatted-code');
-
-        // 좌측 Input 상태 (Ln, Col, Size)
         const selStart = raw.selectionStart || 0;
         const textBefore = raw.value.substring(0, selStart);
         const line = textBefore.split('\n').length;
@@ -588,8 +596,11 @@
         const inputBytes = new Blob([raw.value]).size;
         document.getElementById('input-status').innerText = `Ln: ${line}, Col: ${col}`;
         document.getElementById('input-size').innerText = `Size: ${formatBytes(inputBytes)}`;
+        updateLineNumbers('raw-code', 'input-line-numbers', true);
+    }
 
-        // 우측 Output 상태 (Ln, Col, Size)
+    function updateOutputStatus() {
+        const out = document.getElementById('formatted-code');
         const outSelStart = out.selectionStart || 0;
         const outTextBefore = out.value.substring(0, outSelStart);
         const outLine = outTextBefore.split('\n').length;
@@ -597,16 +608,13 @@
         const outBytes = new Blob([out.value]).size;
         document.getElementById('output-status').innerText = `Ln: ${outLine}, Col: ${outCol}`;
         document.getElementById('output-size').innerText = `Size: ${formatBytes(outBytes)}`;
-
-        updateLineNumbers('raw-code', 'input-line-numbers');
-        updateLineNumbers('formatted-code', 'output-line-numbers');
+        updateLineNumbers('formatted-code', 'output-line-numbers', false);
     }
 
     function runFormat() {
         const raw = document.getElementById('raw-code').value;
         const out = document.getElementById('formatted-code');
         
-        // 정렬 시 우측 타이틀을 무조건 '정렬된 결과'로 원복
         if (outputMode === 'code') {
             document.getElementById('output-title').innerText = '정렬된 결과 (' + currentLang.toUpperCase() + ')';
         }
@@ -614,7 +622,8 @@
         if (!raw.trim()) { 
             out.value = ''; 
             updatePreview();
-            updateStatusBars();
+            updateInputStatus();
+            updateOutputStatus();
             return; 
         }
 
@@ -640,7 +649,8 @@
         }
 
         updatePreview();
-        updateStatusBars();
+        updateInputStatus();
+        updateOutputStatus();
     }
 
     function runMinify() {
@@ -663,7 +673,8 @@
         switchOutputMode('code');
         out.value = minified;
         document.getElementById('output-title').innerText = '압축된 결과 (' + currentLang.toUpperCase() + ')';
-        updateStatusBars();
+        updateInputStatus();
+        updateOutputStatus();
     }
 
     function handleFileUpload(e) {
@@ -719,7 +730,8 @@
         document.getElementById('formatted-code').value = '';
         recordCodeHistory();
         updatePreview();
-        updateStatusBars();
+        updateInputStatus();
+        updateOutputStatus();
         el.focus();
     }
 
@@ -738,17 +750,18 @@
         rawInputEl.addEventListener('input', handleCodeInput);
         rawInputEl.addEventListener('keydown', handleCodeKeyDown);
         rawInputEl.addEventListener('scroll', () => syncScroll('raw-code', 'input-line-numbers'));
-        rawInputEl.addEventListener('click', updateStatusBars);
-        rawInputEl.addEventListener('keyup', updateStatusBars);
+        rawInputEl.addEventListener('click', updateInputStatus);
+        rawInputEl.addEventListener('keyup', updateInputStatus);
+        rawInputEl.addEventListener('mouseup', updateInputStatus);
 
         outEl.addEventListener('scroll', () => syncScroll('formatted-code', 'output-line-numbers'));
-        outEl.addEventListener('click', updateStatusBars);
-        outEl.addEventListener('keyup', updateStatusBars);
-        outEl.addEventListener('select', updateStatusBars);
-        outEl.addEventListener('focus', updateStatusBars);
+        outEl.addEventListener('click', updateOutputStatus);
+        outEl.addEventListener('keyup', updateOutputStatus);
+        outEl.addEventListener('mouseup', updateOutputStatus);
+        outEl.addEventListener('focus', updateOutputStatus);
 
         recordCodeHistory();
-        updateStatusBars();
+        loadSample();
     };
 </script>
 <script src="../nav.js"></script>
