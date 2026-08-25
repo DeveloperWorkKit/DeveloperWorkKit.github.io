@@ -761,7 +761,8 @@
         outEl.addEventListener('focus', updateOutputStatus);
 
         recordCodeHistory();
-        loadSample();
+        updateInputStatus();
+        updateOutputStatus();
     };
 </script>
 <script src="../nav.js"></script>
