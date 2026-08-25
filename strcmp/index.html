@@ -39,19 +39,18 @@
         .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
 
         .main-container {
-            max-width: 1200px;
+            max-width: 1280px;
             width: 100%;
             margin: 0 auto;
-            padding: 30px 20px;
+            padding: 20px 20px 40px 20px;
             box-sizing: border-box;
             flex: 1;
         }
 
-        .intro-section { margin-bottom: 25px; }
-        .intro-section h1 { font-size: 24px; font-weight: 700; margin: 0 0 8px 0; }
+        .intro-section { margin-bottom: 20px; }
+        .intro-section h1 { font-size: 22px; font-weight: 800; color: #111827; margin: 0 0 6px 0; letter-spacing: -0.5px; }
         .intro-section p { font-size: 14px; color: var(--text-muted); margin: 0 0 16px 0; }
 
-        /* 가이드 안내 박스 */
         .guide-box {
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -72,8 +71,12 @@
 
         .diff-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 20px;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 900px) {
+            .diff-grid { grid-template-columns: 1fr; }
         }
 
         .btn-center-swap {
@@ -105,11 +108,9 @@
             box-shadow: 0 4px 12px rgba(0, 123, 255, 0.25);
         }
 
-        .btn-center-swap:active {
-            transform: translate(-50%, -50%) scale(0.95);
-        }
+        .btn-center-swap:active { transform: translate(-50%, -50%) scale(0.95); }
 
-        @media (max-width: 960px) {
+        @media (max-width: 900px) {
             .btn-center-swap {
                 position: relative;
                 top: auto;
@@ -117,21 +118,20 @@
                 transform: none;
                 margin: 10px auto;
             }
-            .btn-center-swap:hover {
-                transform: scale(1.1);
-            }
-            .btn-center-swap:active {
-                transform: scale(0.95);
-            }
-            .btn-center-swap::before {
-                content: "⇅";
-            }
-            .btn-center-swap span {
-                display: none;
-            }
+            .btn-center-swap:hover { transform: scale(1.1); }
+            .btn-center-swap::before { content: "⇅"; }
+            .btn-center-swap span { display: none; }
         }
 
-        .input-panel { display: flex; flex-direction: column; position: relative; }
+        .input-panel {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
         
         .panel-header-zone {
             display: flex;
@@ -140,20 +140,12 @@
             margin-bottom: 8px;
         }
         
-        .panel-title-area { display: flex; align-items: center; gap: 8px; }
-        .panel-label { font-size: 14px; font-weight: 600; color: #111111; }
+        .panel-label { font-size: 13.5px; font-weight: 700; color: #1e293b; }
         
         .panel-controls {
             display: flex;
             align-items: center;
             gap: 6px;
-        }
-
-        .char-counter {
-            font-size: 12px;
-            font-weight: 600;
-            color: #868e96;
-            margin-right: 4px;
         }
 
         .btn-mini {
@@ -171,23 +163,79 @@
         .btn-mini-danger { color: #d9534f; }
         .btn-mini-danger:hover { background-color: #fdf2f2; border-color: #d9534f; }
 
-        textarea {
-            width: 100%;
-            height: 240px;
-            padding: 15px;
-            box-sizing: border-box;
+        /* 고성능 에디터 래퍼 & 거터 */
+        .editor-wrapper {
+            display: flex;
+            height: 320px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
-            font-family: "Consolas", monospace;
-            font-size: 13px;
-            resize: vertical;
             background-color: #ffffff;
-            line-height: 1.6;
+            overflow: hidden;
+            position: relative;
         }
-        textarea:focus { outline: none; border-color: var(--primary-blue); }
+
+        .gutter-container {
+            width: 48px;
+            background-color: #f8fafc;
+            border-right: 1px solid #e2e8f0;
+            overflow: hidden;
+            position: relative;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .line-numbers {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 12px 8px 0 0;
+            box-sizing: border-box;
+            color: #94a3b8;
+            font-family: Consolas, "Courier New", monospace !important;
+            font-size: 13px !important;
+            line-height: 21px !important;
+            text-align: right;
+            transform: translateY(0);
+            will-change: transform;
+        }
+
+        .line-num-item {
+            height: 21px;
+            line-height: 21px;
+            box-sizing: border-box;
+        }
+
+        textarea.code-area {
+            flex: 1;
+            height: 100%;
+            padding: 12px;
+            font-family: Consolas, "Courier New", monospace !important;
+            font-size: 13px !important;
+            line-height: 21px !important;
+            border: none;
+            box-sizing: border-box;
+            resize: none;
+            outline: none;
+            background-color: #ffffff;
+            white-space: pre !important;
+            overflow-wrap: normal;
+            overflow: auto;
+        }
+
+        .editor-status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
+            font-size: 11.5px;
+            color: #64748b;
+            font-family: "Consolas", monospace;
+            padding: 0 4px;
+        }
 
         .action-bar {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -201,10 +249,10 @@
             background-color: var(--primary-blue);
             color: white;
             border: none;
-            padding: 12px 35px;
-            font-size: 15px;
-            font-weight: 600;
-            border-radius: 4px;
+            padding: 10px 28px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 6px;
             cursor: pointer;
             transition: background 0.15s;
         }
@@ -221,7 +269,7 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            font-size: 13.5px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             user-select: none;
@@ -233,22 +281,22 @@
             background-color: #f1f3f5;
             border: 1px solid var(--border-color);
             border-radius: 6px;
-            padding: 18px 24px;
+            padding: 16px 20px;
             margin-bottom: 20px;
             align-items: center;
             gap: 15px;
         }
         .sim-info { display: flex; flex-direction: column; gap: 2px; }
-        .sim-title { font-size: 13px; color: var(--text-muted); font-weight: 600; }
-        .sim-value { font-size: 20px; font-weight: 800; color: #111111; }
-        .sim-value span { color: var(--primary-blue); font-size: 22px; }
+        .sim-title { font-size: 12.5px; color: var(--text-muted); font-weight: 600; }
+        .sim-value { font-size: 19px; font-weight: 800; color: #111111; }
+        .sim-value span { color: var(--primary-blue); font-size: 21px; }
         .sim-desc { font-size: 12px; color: #868e96; margin-left: auto; }
 
         .copy-btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
         .btn-copy-action {
             border: none;
-            padding: 8px 14px;
-            font-size: 13px;
+            padding: 6px 12px;
+            font-size: 12.5px;
             font-weight: 600;
             border-radius: 4px;
             cursor: pointer;
@@ -268,17 +316,17 @@
 
         .result-panel {
             border: 1px solid var(--border-color);
-            border-radius: 6px;
+            border-radius: 8px;
             background-color: #ffffff;
             overflow: hidden;
         }
 
         .result-header {
             background-color: var(--bg-light);
-            padding: 12px 20px;
+            padding: 12px 16px;
             border-bottom: 1px solid var(--border-color);
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 13.5px;
+            font-weight: 700;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -289,8 +337,8 @@
         .diff-table {
             width: 100%;
             border-collapse: collapse;
-            font-family: "Consolas", monospace;
-            font-size: 14px;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 13px;
             line-height: 1.8;
             background-color: #ffffff;
         }
@@ -299,10 +347,10 @@
         .diff-row.hide { display: none !important; }
 
         .diff-num {
-            width: 60px;
-            min-width: 60px;
+            width: 52px;
+            min-width: 52px;
             text-align: right;
-            padding-right: 15px;
+            padding-right: 12px;
             color: #adb5bd;
             user-select: none;
             background-color: #fafafa;
@@ -312,8 +360,8 @@
         }
 
         .diff-text {
-            padding-left: 15px;
-            padding-right: 15px;
+            padding-left: 14px;
+            padding-right: 14px;
             white-space: pre-wrap;
             word-break: break-all;
             display: table-cell;
@@ -357,40 +405,58 @@
                 <li>좌측에 <b>[원본 문서]</b>, 우측에 <b>[수정된 문서]</b>를 입력하거나 <b>[샘플 불러오기]</b>를 클릭합니다.</li>
                 <li>하단의 <b>[비교하기]</b> 버튼을 누르면 두 텍스트의 최종 일치율(%)과 줄 번호별 차이점이 시각화됩니다.</li>
                 <li>수정된 내용만 정밀하게 확인하고 싶다면 <b>[변경된 줄만 필터링해서 보기]</b> 옵션을 체크하세요.</li>
-                <li>변경된 줄 전용 복사 버튼을 활용해 <b>[지워진 글자만 복사]</b> 또는 <b>[추가된 글자만 복사]</b>할 수 있습니다.</li>
+                <li>양쪽 에디터 내에서 <b>Ctrl + Z (실행 취소)</b> 및 <b>Ctrl + Y (다시 실행)</b>를 완벽하게 지원합니다.</li>
             </ol>
         </div>
     </div>
 
     <div class="diff-grid-wrapper">
         <div class="diff-grid">
+            <!-- 좌측 원본 에디터 -->
             <div class="input-panel">
                 <div class="panel-header-zone">
-                    <div class="panel-title-area">
-                        <span class="panel-label">원본 텍스트 (Original)</span>
-                    </div>
+                    <span class="panel-label">원본 텍스트 (Original)</span>
                     <div class="panel-controls">
-                        <span id="counter-left" class="char-counter">0자 (0줄)</span>
                         <button class="btn-mini" onclick="loadSampleText()">샘플 불러오기</button>
                         <button class="btn-mini" onclick="copyInputSource('text-left', '원본')">복사</button>
                         <button class="btn-mini btn-mini-danger" onclick="clearTextSource('text-left', 'left')">지우기</button>
                     </div>
                 </div>
-                <textarea id="text-left" placeholder="비교할 원본 글이나 이전 코드를 입력하세요."></textarea>
+                <div class="editor-wrapper">
+                    <div class="gutter-container">
+                        <div class="line-numbers" id="left-line-numbers">
+                            <div class="line-num-item">1</div>
+                        </div>
+                    </div>
+                    <textarea id="text-left" class="code-area" placeholder="비교할 원본 글이나 이전 코드를 입력하세요..." spellcheck="false"></textarea>
+                </div>
+                <div class="editor-status-bar">
+                    <span id="left-status">Ln: 1, Col: 1</span>
+                    <span id="left-size">Size: 0 B</span>
+                </div>
             </div>
 
+            <!-- 우측 수정본 에디터 -->
             <div class="input-panel">
                 <div class="panel-header-zone">
-                    <div class="panel-title-area">
-                        <span class="panel-label">수정된 텍스트 (Modified)</span>
-                    </div>
+                    <span class="panel-label">수정된 텍스트 (Modified)</span>
                     <div class="panel-controls">
-                        <span id="counter-right" class="char-counter">0자 (0줄)</span>
                         <button class="btn-mini" onclick="copyInputSource('text-right', '수정본')">복사</button>
                         <button class="btn-mini btn-mini-danger" onclick="clearTextSource('text-right', 'right')">지우기</button>
                     </div>
                 </div>
-                <textarea id="text-right" placeholder="수정 후의 글이나 새로운 코드를 입력하세요."></textarea>
+                <div class="editor-wrapper">
+                    <div class="gutter-container">
+                        <div class="line-numbers" id="right-line-numbers">
+                            <div class="line-num-item">1</div>
+                        </div>
+                    </div>
+                    <textarea id="text-right" class="code-area" placeholder="수정 후의 글이나 새로운 코드를 입력하세요..." spellcheck="false"></textarea>
+                </div>
+                <div class="editor-status-bar">
+                    <span id="right-status">Ln: 1, Col: 1</span>
+                    <span id="right-size">Size: 0 B</span>
+                </div>
             </div>
         </div>
 
@@ -448,15 +514,15 @@
 <script>
     const undoStacks = { left: [], right: [] };
     const redoStacks = { left: [], right: [] };
-    
     let typingTimer = { left: null, right: null };
+    let lastLeftLines = -1;
+    let lastRightLines = -1;
 
-    function recordHistory(side, force = false) {
-        const leftEl = document.getElementById('text-left');
-        const rightEl = document.getElementById('text-right');
-        if (!leftEl || !rightEl) return;
+    function recordHistory(side) {
+        const el = document.getElementById(`text-${side}`);
+        if (!el) return;
 
-        const val = document.getElementById(`text-${side}`).value;
+        const val = el.value;
         const stack = undoStacks[side];
         
         if (stack.length === 0 || stack[stack.length - 1] !== val) {
@@ -467,8 +533,7 @@
     }
 
     function handleInputHistory(side) {
-        updateTextStats(side);
-        
+        updateSideStatus(side);
         clearTimeout(typingTimer[side]);
         typingTimer[side] = setTimeout(() => {
             recordHistory(side);
@@ -486,37 +551,76 @@
             const currentVal = textarea.value;
 
             if (uStack[uStack.length - 1] !== currentVal) {
-                recordHistory(side, true);
+                recordHistory(side);
             }
 
             if (uStack.length > 1) {
                 e.preventDefault();
-                
                 const popped = uStack.pop();
                 rStack.push(popped);
                 
                 const previousState = uStack[uStack.length - 1];
                 textarea.value = previousState;
-                
-                updateTextStats(side);
+                updateSideStatus(side);
             }
-        }
-        else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
+        } else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
             const uStack = undoStacks[side];
             const rStack = redoStacks[side];
 
             if (rStack.length > 0) {
                 e.preventDefault();
-                
                 const nextState = rStack.pop();
                 uStack.push(nextState);
                 
                 const textarea = document.getElementById(`text-${side}`);
                 textarea.value = nextState;
-                
-                updateTextStats(side);
+                updateSideStatus(side);
             }
         }
+    }
+
+    function updateLineNumbers(textareaId, lineNumberId, side) {
+        const textarea = document.getElementById(textareaId);
+        const lineNumContainer = document.getElementById(lineNumberId);
+        const lines = textarea.value ? textarea.value.split('\n').length : 1;
+
+        if (side === 'left' && lines === lastLeftLines) return;
+        if (side === 'right' && lines === lastRightLines) return;
+
+        if (side === 'left') lastLeftLines = lines;
+        else lastRightLines = lines;
+
+        let html = '';
+        for (let i = 1; i <= lines; i++) {
+            html += `<div class="line-num-item">${i}</div>`;
+        }
+        lineNumContainer.innerHTML = html;
+    }
+
+    function syncScroll(textareaId, lineNumberId) {
+        const textarea = document.getElementById(textareaId);
+        const lineNumContainer = document.getElementById(lineNumberId);
+        if (textarea && lineNumContainer) {
+            lineNumContainer.style.transform = `translateY(-${textarea.scrollTop}px)`;
+        }
+    }
+
+    function formatBytes(bytes) {
+        if (bytes === 0) return '0 B';
+        if (bytes < 1024) return bytes + ' B';
+        return (bytes / 1024).toFixed(1) + ' KB';
+    }
+
+    function updateSideStatus(side) {
+        const raw = document.getElementById(`text-${side}`);
+        const selStart = raw.selectionStart || 0;
+        const textBefore = raw.value.substring(0, selStart);
+        const line = textBefore.split('\n').length;
+        const col = textBefore.length - textBefore.lastIndexOf('\n');
+        const inputBytes = new Blob([raw.value]).size;
+        document.getElementById(`${side}-status`).innerText = `Ln: ${line}, Col: ${col}`;
+        document.getElementById(`${side}-size`).innerText = `Size: ${formatBytes(inputBytes)}`;
+        updateLineNumbers(`text-${side}`, `${side}-line-numbers`, side);
     }
 
     function loadSampleText() {
@@ -539,61 +643,19 @@ async function authenticateUser(username, passwordHash) {
 }`;
         document.getElementById('text-left').value = sampleLeft;
         document.getElementById('text-right').value = sampleRight;
-        recordHistory('left', true);
-        recordHistory('right', true);
-        updateTextStats('left');
-        updateTextStats('right');
+        recordHistory('left');
+        recordHistory('right');
+        updateSideStatus('left');
+        updateSideStatus('right');
         executeDiffCheckerEngine();
-    }
-
-    function triggerDiffEngineIfActive() {
-        const dashboard = document.getElementById('similarity-dashboard');
-        if (dashboard && dashboard.style.display === 'flex') {
-            executeDiffCheckerEngine();
-        }
-    }
-
-    function initApp() {
-        const leftArea = document.getElementById('text-left');
-        const rightArea = document.getElementById('text-right');
-
-        if (!leftArea || !rightArea) return;
-
-        leftArea.addEventListener('input', () => handleInputHistory('left'));
-        rightArea.addEventListener('input', () => handleInputHistory('right'));
-
-        leftArea.addEventListener('keydown', (e) => handleCustomHistoryKeys(e, 'left'));
-        rightArea.addEventListener('keydown', (e) => handleCustomHistoryKeys(e, 'right'));
-
-        recordHistory('left', true);
-        recordHistory('right', true);
-    }
-
-    if (document.readyState === 'loading') {
-        window.addEventListener('DOMContentLoaded', initApp);
-    } else {
-        initApp();
-    }
-
-    function updateTextStats(side) {
-        const textarea = document.getElementById(`text-${side}`);
-        const counter = document.getElementById(`counter-${side}`);
-        if (!textarea || !counter) return;
-
-        const val = textarea.value;
-        const charCount = val.length;
-        const lineCount = val ? val.split('\n').length : 0;
-        
-        counter.innerText = `${charCount.toLocaleString()}자 (${lineCount.toLocaleString()}줄)`;
     }
 
     function clearTextSource(targetId, side) {
         const textarea = document.getElementById(targetId);
         if (!textarea || !textarea.value) return;
-        
         textarea.value = '';
-        recordHistory(side, true);
-        updateTextStats(side);
+        recordHistory(side);
+        updateSideStatus(side);
         textarea.focus();
     }
 
@@ -602,8 +664,8 @@ async function authenticateUser(username, passwordHash) {
         const rightArea = document.getElementById('text-right');
         if (!leftArea || !rightArea) return;
         
-        recordHistory('left', true);
-        recordHistory('right', true);
+        recordHistory('left');
+        recordHistory('right');
 
         const tempVal = leftArea.value;
         leftArea.value = rightArea.value;
@@ -617,9 +679,8 @@ async function authenticateUser(username, passwordHash) {
         redoStacks.left = [...redoStacks.right];
         redoStacks.right = tempRedo;
 
-        updateTextStats('left');
-        updateTextStats('right');
-
+        updateSideStatus('left');
+        updateSideStatus('right');
         triggerDiffEngineIfActive();
     }
 
@@ -632,6 +693,13 @@ async function authenticateUser(username, passwordHash) {
         navigator.clipboard.writeText(text).then(() => {
             alert(`${label} 텍스트가 클립보드에 복사되었습니다.`);
         });
+    }
+
+    function triggerDiffEngineIfActive() {
+        const dashboard = document.getElementById('similarity-dashboard');
+        if (dashboard && dashboard.style.display === 'flex') {
+            executeDiffCheckerEngine();
+        }
     }
 
     function executeDiffCheckerEngine() {
@@ -815,9 +883,11 @@ async function authenticateUser(username, passwordHash) {
                     if (mode === 'ins') {
                         const deletes = cloneNode.querySelectorAll('del');
                         deletes.forEach(d => d.remove());
+                        textAccumulator.push(cloneNode.innerText);
                     } else if (mode === 'del') {
                         const inserts = cloneNode.querySelectorAll('ins');
                         inserts.forEach(i => i.remove());
+                        textAccumulator.push(cloneNode.innerText);
                     }
                     textAccumulator.push(cloneNode.innerText);
                 }
@@ -837,12 +907,38 @@ async function authenticateUser(username, passwordHash) {
             else if (mode === 'del') logMsg = isFiltered ? "변경된 줄의 [수정 전 줄 복사]가 완료되었습니다." : "원본 기준 전체 내용이 복사되었습니다.";
             else if (mode === 'ins-only') logMsg = "변경된 줄 내의 [수정된 글자만 복사]가 완료되었습니다!";
             else if (mode === 'del-only') logMsg = "변경된 줄 내의 [삭제된 글자만 복사]가 완료되었습니다!";
-            
             alert(logMsg);
         }).catch(() => {
             alert("복사 실패. 브라우저 보안 설정을 확인하세요.");
         });
     }
+
+    window.onload = () => {
+        const leftArea = document.getElementById('text-left');
+        const rightArea = document.getElementById('text-right');
+
+        leftArea.addEventListener('input', () => handleInputHistory('left'));
+        rightArea.addEventListener('input', () => handleInputHistory('right'));
+
+        leftArea.addEventListener('keydown', (e) => handleCustomHistoryKeys(e, 'left'));
+        rightArea.addEventListener('keydown', (e) => handleCustomHistoryKeys(e, 'right'));
+
+        leftArea.addEventListener('scroll', () => syncScroll('text-left', 'left-line-numbers'));
+        rightArea.addEventListener('scroll', () => syncScroll('text-right', 'right-line-numbers'));
+
+        leftArea.addEventListener('click', () => updateSideStatus('left'));
+        leftArea.addEventListener('keyup', () => updateSideStatus('left'));
+        leftArea.addEventListener('mouseup', () => updateSideStatus('left'));
+
+        rightArea.addEventListener('click', () => updateSideStatus('right'));
+        rightArea.addEventListener('keyup', () => updateSideStatus('right'));
+        rightArea.addEventListener('mouseup', () => updateSideStatus('right'));
+
+        recordHistory('left');
+        recordHistory('right');
+        updateSideStatus('left');
+        updateSideStatus('right');
+    };
 </script>
 <script src="../nav.js"></script>
 </body>
