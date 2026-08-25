@@ -7,9 +7,10 @@
     <meta name="description" content="리눅스 crontab 스케줄러 표현식을 실시간 자연어 한국어로 해석하고 클릭으로 생성하는 개발자 도구">
     <style>
         :root {
-            --primary: #e11d48;
-            --primary-hover: #be123c;
-            --bg-light: #f8fafc;
+            --badge-rose: #e11d48;
+            --primary-accent: #059669;
+            --primary-accent-hover: #047857;
+            --bg-light: #f8f9fa;
             --border-color: #dee2e6;
             --text-main: #333333;
             --text-muted: #666666;
@@ -36,7 +37,7 @@
         }
 
         .logo-area { display: flex; align-items: center; gap: 8px; }
-        .logo-badge { background: var(--primary); color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
+        .logo-badge { background: var(--badge-rose); color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
         .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
 
         .page-wrapper {
@@ -75,9 +76,10 @@
             width: 100%;
         }
 
+        /* 배너: 정상(그린톤) / 타이핑(뉴트럴) / 에러(레드) */
         .cron-banner {
-            background: #fff1f2;
-            border: 2px dashed #fecdd3;
+            background: #f0fdf4;
+            border: 2px dashed #86efac;
             border-radius: 8px;
             padding: 20px;
             text-align: center;
@@ -89,23 +91,33 @@
             justify-content: center;
             transition: all 0.2s;
         }
-        .cron-banner.invalid { background: #fef2f2; border-color: #fecaca; }
-        .cron-banner.typing { background: #f8fafc; border-color: #cbd5e1; }
+        .cron-banner.invalid {
+            background: #fef2f2 !important;
+            border-color: #fecaca !important;
+        }
+        .cron-banner.typing {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
 
         .cron-val-box {
             font-family: Consolas, monospace;
             font-size: 32px;
             font-weight: 800;
-            color: var(--primary);
+            color: var(--primary-accent);
             letter-spacing: 2px;
             margin-bottom: 8px;
             user-select: all;
         }
-        .cron-banner.invalid .cron-val-box { color: var(--error-red); }
+        .cron-banner.invalid .cron-val-box { color: var(--error-red) !important; }
         .cron-banner.typing .cron-val-box { color: #64748b; }
 
-        .cron-desc-box { font-size: 17px; font-weight: 700; color: #0f172a; }
-        .cron-banner.invalid .cron-desc-box { color: var(--error-red); }
+        .cron-desc-box {
+            font-size: 17px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .cron-banner.invalid .cron-desc-box { color: var(--error-red) !important; }
         .cron-banner.typing .cron-desc-box { color: #64748b; }
 
         .preset-title { font-size: 13px; font-weight: 700; color: #64748b; margin-bottom: 8px; }
@@ -145,8 +157,12 @@
             border-radius: 8px;
             box-sizing: border-box;
             min-width: 0;
+            transition: border-color 0.15s;
         }
-        .field-box.error { border-color: var(--error-red); background: #fff5f5; }
+        .field-box.error {
+            border-color: var(--error-red) !important;
+            background: #fff5f5 !important;
+        }
         .field-box label { font-size: 12.5px; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .field-box span { font-size: 11px; color: #94a3b8; }
         .field-box input {
@@ -161,9 +177,10 @@
             outline: none;
             background: #ffffff;
             box-sizing: border-box;
+            transition: border-color 0.15s;
         }
-        .field-box input:focus { border-color: var(--primary); }
-        .field-box.error input { border-color: var(--error-red); color: var(--error-red); }
+        .field-box input:focus { border-color: #007bff; }
+        .field-box.error input { border-color: var(--error-red) !important; color: var(--error-red) !important; }
 
         .schedule-preview {
             background: #f8fafc;
@@ -184,7 +201,7 @@
         }
 
         .copy-action-btn {
-            background: var(--primary);
+            background: #007bff;
             color: #ffffff;
             border: none;
             padding: 8px 16px;
@@ -195,8 +212,9 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
+            transition: background 0.15s;
         }
-        .copy-action-btn:hover { background: var(--primary-hover); }
+        .copy-action-btn:hover { background: #0056b3; }
 
         footer {
             border-top: 1px solid var(--border-color);
