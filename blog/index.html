@@ -43,53 +43,59 @@
       justify-content: space-between;
       transition: transform 0.2s, box-shadow 0.2s;
       text-decoration: none;
+      box-sizing: border-box;
     }
     .blog-card:hover {
       transform: translateY(-4px);
       box-shadow: 0 10px 20px rgba(0,0,0,0.06);
       border-color: #cbd5e1;
     }
-    .card-badge {
-      align-self: flex-start;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: 0.5px;
-      margin-bottom: 20px; /* 뱃지(STRGET, CODER 등)와 제목 사이 여백 확보 */
-    }
-    .badge-coder { background-color: #3b82f6; }
-    .badge-json { background-color: #8b5cf6; }
-    .badge-strget { background-color: #ef4444; }
-    .badge-time { background-color: #10b981; }
-    .badge-hash { background-color: #6366f1; }
-    .badge-beautify { background-color: #0d9488; }
-    .badge-cron { background-color: #e11d48; }
     
-    .card-title {
-      font-size: 17px;
-      font-weight: 700;
-      color: #1e293b;
-      margin: 0 0 10px 0; /* 제목-본문 간격 기존 10px로 롤백 */
-      line-height: 1.4;
-      min-height: 48px;
-      display: flex;
-      align-items: flex-start;
+    /* 뱃지와 제목 사이 간격 강제 확장 */
+    .blog-card .card-badge {
+      display: inline-block !important;
+      align-self: flex-start !important;
+      padding: 4px 10px !important;
+      border-radius: 6px !important;
+      font-size: 11px !important;
+      font-weight: 700 !important;
+      color: #fff !important;
+      letter-spacing: 0.5px !important;
+      margin: 0 0 24px 0 !important; /* 뱃지 아래 공간을 확실하게 24px 확보 */
+      line-height: 1.2 !important;
     }
-    .card-desc {
-      font-size: 14px;
-      color: #64748b;
-      line-height: 1.6;
-      margin: 0 0 18px 0;
-      flex-grow: 1;
+
+    .badge-coder { background-color: #3b82f6 !important; }
+    .badge-json { background-color: #8b5cf6 !important; }
+    .badge-strget { background-color: #ef4444 !important; }
+    .badge-time { background-color: #10b981 !important; }
+    .badge-hash { background-color: #6366f1 !important; }
+    .badge-beautify { background-color: #0d9488 !important; }
+    .badge-cron { background-color: #e11d48 !important; }
+    
+    .blog-card .card-title {
+      font-size: 17px !important;
+      font-weight: 700 !important;
+      color: #1e293b !important;
+      margin: 0 0 10px 0 !important;
+      line-height: 1.4 !important;
+      min-height: 48px !important;
+      display: flex !important;
+      align-items: flex-start !important;
     }
-    .card-link-text {
-      font-size: 13px;
-      font-weight: 600;
-      color: #2563eb;
-      display: inline-flex;
-      align-items: center;
+    .blog-card .card-desc {
+      font-size: 14px !important;
+      color: #64748b !important;
+      line-height: 1.6 !important;
+      margin: 0 0 18px 0 !important;
+      flex-grow: 1 !important;
+    }
+    .blog-card .card-link-text {
+      font-size: 13px !important;
+      font-weight: 600 !important;
+      color: #2563eb !important;
+      display: inline-flex !important;
+      align-items: center !important;
     }
   </style>
 </head>
