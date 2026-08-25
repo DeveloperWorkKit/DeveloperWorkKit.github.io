@@ -296,7 +296,7 @@
                 <li>코드를 직접 입력하거나 <b>[📂 파일 열기]</b> 또는 <b>[샘플 불러오기]</b>를 클릭합니다.</li>
                 <li>상단에서 <b>HTML, JavaScript, CSS</b> 언어 모드와 <b>들여쓰기(2칸/4칸/탭)</b> 옵션을 선택합니다.</li>
                 <li><b>[⚡ 압축 (Minify)]</b> 버튼을 누르면 즉시 한 줄로 압축되며, <b>[⛶ 전체화면]</b>으로 새 탭에서 전체 웹페이지로 실행할 수 있습니다.</li>
-                <li>에디터 내에서 <b>Ctrl + Z (실행 취소)</b> 및 <b>Ctrl + Y (다시 실행)</b> 히스토리를 완벽하게 지원합니다.</li>
+                <li>양쪽 에디터 어디든 마우스로 클릭하면 실시간 행/열 번호(<b>Ln, Col</b>)와 파일 크기를 즉시 확인할 수 있습니다.</li>
             </ol>
             
             <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #cbd5e1; display: flex; justify-content: space-between; align-items: center; white-space: nowrap;">
@@ -332,7 +332,7 @@
         </div>
 
         <div class="converter-grid">
-            <!-- 좌측 입력 패널 -->
+            <!-- 좌측 원본 입력 패널 -->
             <div class="panel-box">
                 <div class="panel-header">
                     <span class="panel-title">원본 소스 코드</span>
@@ -350,7 +350,7 @@
                 </div>
             </div>
 
-            <!-- 우측 출력 패널 -->
+            <!-- 우측 변환 결과 패널 -->
             <div class="panel-box">
                 <div class="panel-header">
                     <div style="display: flex; align-items: center; gap: 8px;">
@@ -371,7 +371,7 @@
                     <iframe id="preview-frame"></iframe>
                 </div>
                 <div class="editor-status-bar">
-                    <span id="output-status">Lines: 0</span>
+                    <span id="output-status">Ln: 1, Col: 1</span>
                     <span id="output-size">Size: 0 B</span>
                 </div>
             </div>
@@ -438,7 +438,6 @@
         const key = e.key.toLowerCase();
         const el = document.getElementById('raw-code');
 
-        // Ctrl + Z (Undo)
         if (isCtrl && key === 'z' && !e.shiftKey) {
             if (codeUndoStack.length > 1) {
                 e.preventDefault();
@@ -448,9 +447,7 @@
                 const prev = codeUndoStack[codeUndoStack.length - 1];
                 applyCodeState(el, prev);
             }
-        }
-        // Ctrl + Y 또는 Ctrl + Shift + Z (Redo)
-        else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
+        } else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
             if (codeRedoStack.length > 0) {
                 e.preventDefault();
                 const next = codeRedoStack.pop();
@@ -583,6 +580,7 @@
         const raw = document.getElementById('raw-code');
         const out = document.getElementById('formatted-code');
 
+        // 좌측 Input 상태 (Ln, Col, Size)
         const selStart = raw.selectionStart || 0;
         const textBefore = raw.value.substring(0, selStart);
         const line = textBefore.split('\n').length;
@@ -591,9 +589,13 @@
         document.getElementById('input-status').innerText = `Ln: ${line}, Col: ${col}`;
         document.getElementById('input-size').innerText = `Size: ${formatBytes(inputBytes)}`;
 
-        const outLines = out.value ? out.value.split('\n').length : 0;
+        // 우측 Output 상태 (Ln, Col, Size)
+        const outSelStart = out.selectionStart || 0;
+        const outTextBefore = out.value.substring(0, outSelStart);
+        const outLine = outTextBefore.split('\n').length;
+        const outCol = outTextBefore.length - outTextBefore.lastIndexOf('\n');
         const outBytes = new Blob([out.value]).size;
-        document.getElementById('output-status').innerText = `Lines: ${outLines}`;
+        document.getElementById('output-status').innerText = `Ln: ${outLine}, Col: ${outCol}`;
         document.getElementById('output-size').innerText = `Size: ${formatBytes(outBytes)}`;
 
         updateLineNumbers('raw-code', 'input-line-numbers');
@@ -603,6 +605,12 @@
     function runFormat() {
         const raw = document.getElementById('raw-code').value;
         const out = document.getElementById('formatted-code');
+        
+        // 정렬 시 우측 타이틀을 무조건 '정렬된 결과'로 원복
+        if (outputMode === 'code') {
+            document.getElementById('output-title').innerText = '정렬된 결과 (' + currentLang.toUpperCase() + ')';
+        }
+
         if (!raw.trim()) { 
             out.value = ''; 
             updatePreview();
@@ -730,9 +738,14 @@
         rawInputEl.addEventListener('input', handleCodeInput);
         rawInputEl.addEventListener('keydown', handleCodeKeyDown);
         rawInputEl.addEventListener('scroll', () => syncScroll('raw-code', 'input-line-numbers'));
-        outEl.addEventListener('scroll', () => syncScroll('formatted-code', 'output-line-numbers'));
         rawInputEl.addEventListener('click', updateStatusBars);
         rawInputEl.addEventListener('keyup', updateStatusBars);
+
+        outEl.addEventListener('scroll', () => syncScroll('formatted-code', 'output-line-numbers'));
+        outEl.addEventListener('click', updateStatusBars);
+        outEl.addEventListener('keyup', updateStatusBars);
+        outEl.addEventListener('select', updateStatusBars);
+        outEl.addEventListener('focus', updateStatusBars);
 
         recordCodeHistory();
         updateStatusBars();
