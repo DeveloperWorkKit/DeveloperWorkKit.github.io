@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Base64 & URL 변환기 | DevWorKit</title>
+    <title>Base64 & URL 변환기 | DevWorkKit</title>
     <style>
         :root {
             --primary-blue: #007bff;
@@ -17,7 +17,7 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             color: var(--text-main);
-            background-color: #ffffff;
+            background-color: #f8fafc;
             margin: 0;
             padding: 0;
             display: flex;
@@ -25,22 +25,10 @@
             min-height: 100vh;
         }
 
-        header {
-            border-bottom: 1px solid var(--border-color);
-            padding: 20px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo-area { display: flex; align-items: center; gap: 8px; }
-        .logo-badge { background: #06b6d4; color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
-        .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
-
         .page-wrapper {
             display: block;
             max-width: 1100px;
-            margin: 20px auto 40px auto;
+            margin: 30px auto 40px auto;
             padding: 0 20px;
             box-sizing: border-box;
             width: 100%;
@@ -51,13 +39,14 @@
         .intro-title { font-size: 22px; font-weight: 800; color: #111827; margin: 0 0 6px 0; letter-spacing: -0.5px; }
         .intro-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 16px 0; }
         .guide-box {
-            background-color: #f8fafc;
+            background-color: #ffffff;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
-            padding: 16px 20px;
+            padding: 18px 22px;
             font-size: 13.5px;
             color: #334155;
             line-height: 1.6;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
         }
         .guide-box strong { display: block; margin-bottom: 8px; color: #0f172a; font-size: 14px; }
         .guide-list { margin: 0; padding-left: 18px; }
@@ -81,7 +70,7 @@
             font-size: 13px;
             font-weight: 700;
             border: 1px solid var(--border-color);
-            background-color: var(--bg-light);
+            background-color: #ffffff;
             border-radius: 6px;
             cursor: pointer;
             color: var(--text-muted);
@@ -103,7 +92,7 @@
         @media (max-width: 850px) { .converter-grid { grid-template-columns: 1fr; } }
 
         .panel-box {
-            border: 1px solid var(--border-color);
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
             padding: 20px;
             background-color: #ffffff;
@@ -142,7 +131,7 @@
             font-size: 14px;
             line-height: 1.5;
             font-family: "Consolas", monospace;
-            border: 1px solid var(--border-color);
+            border: 1px solid #cbd5e1;
             border-radius: 6px;
             box-sizing: border-box;
             resize: vertical;
@@ -159,11 +148,11 @@
         }
 
         footer {
-            border-top: 1px solid var(--border-color);
+            border-top: 1px solid #e2e8f0;
             padding: 16px 20px;
             font-size: 12.5px;
             color: var(--text-muted);
-            background-color: var(--bg-light);
+            background-color: #ffffff;
             text-align: center;
             margin-top: auto;
         }
@@ -171,12 +160,8 @@
 </head>
 <body>
 
-<header>
-    <div class="logo-area">
-        <span class="logo-badge">CODER</span>
-        <span class="logo-text">Base64 & URL 변환기</span>
-    </div>
-</header>
+<!-- 상단 공통 네비게이션이 자동으로 주입되는 곳 -->
+<div id="dwk-nav"></div>
 
 <div class="page-wrapper">
     <!-- 사용 안내 가이드 -->
@@ -192,10 +177,12 @@
                 <li>오른쪽 창에 실시간으로 출력된 변환 결과를 확인하고 <b>[결과 복사]</b>를 클릭하여 클립보드에 담습니다.</li>
                 <li>모든 연산은 브라우저 내부에서 즉시 수행되므로 개인정보나 비밀 토큰도 안전하게 변환할 수 있습니다.</li>
             </ol>
+            
+            <!-- 가이드 바로가기 인라인 배너 -->
             <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #cbd5e1; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #475569;">
-  <span>📖 <strong>Base64 동작 원리와 한글 깨짐 해결법</strong>이 궁금하신가요?</span>
-  <a href="../blog/base64-guide.html" style="color: #2563eb; font-weight: 700; text-decoration: none; background: #eff6ff; border: 1px solid #bfdbfe; padding: 4px 10px; border-radius: 6px; white-space: nowrap; margin-left: 12px;">실무 가이드 보기 →</a>
-</div>
+                <span style="white-space: nowrap;">📖 <strong>Base64 동작 원리와 한글 깨짐 해결법</strong>이 궁금하신가요?</span>
+                <a href="../blog/base64-guide.html" style="color: #2563eb; font-weight: 700; text-decoration: none; background: #eff6ff; border: 1px solid #bfdbfe; padding: 5px 12px; border-radius: 6px; white-space: nowrap; margin-left: 12px;">실무 가이드 보기 →</a>
+            </div>
         </div>
     </div>
 
@@ -303,9 +290,7 @@
     }
 
     function loadSampleText() {
-        const sample = `안녕하세요! Developer Work Kit (DWK) 개발 유틸리티 도구 모음입니다.
-특수문자 테스트: <script>alert('Hello World!');<\/script>
-URL 테스트: https://developerworkkit.github.io/?tool=coder&category=dev`;
+        const sample = `안녕하세요! Developer Work Kit (DWK) 개발 유틸리티 도구 모음입니다.\n특수문자 테스트: <script>alert('Hello World!');<\/script>\nURL 테스트: https://developerworkkit.github.io/?tool=coder&category=dev`;
         const el = document.getElementById('input-text');
         el.value = sample;
         recordInputHistory();
