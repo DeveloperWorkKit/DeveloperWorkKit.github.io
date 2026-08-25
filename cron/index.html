@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>크론탭 주기 생성기 & 한글 해석기 | DevWorKit</title>
+    <meta name="description" content="리눅스 crontab 스케줄러 표현식을 실시간 자연어 한국어로 해석하고 클릭으로 생성하는 개발자 도구">
+    <style>
+        :root {
+            --primary: #e11d48;
+            --primary-hover: #be123c;
+            --bg-light: #f8fafc;
+            --border-color: #dee2e6;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --error-red: #ef4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-main);
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-badge { background: var(--primary); color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
+        .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
+
+        .page-wrapper {
+            max-width: 1080px;
+            margin: 20px auto 40px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .intro-section { margin-bottom: 20px; }
+        .intro-title { font-size: 22px; font-weight: 800; color: #111827; margin: 0 0 6px 0; }
+        .intro-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 16px 0; }
+
+        .guide-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-size: 13.5px;
+            color: #334155;
+            line-height: 1.6;
+        }
+        .guide-box strong { display: block; margin-bottom: 8px; color: #0f172a; font-size: 14px; }
+        .guide-list { margin: 0; padding-left: 18px; }
+        .guide-list li { margin-bottom: 4px; }
+
+        .card {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 24px;
+            background: #ffffff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .cron-banner {
+            background: #fff1f2;
+            border: 2px dashed #fecdd3;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            min-height: 110px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .cron-banner.invalid { background: #fef2f2; border-color: #fecaca; }
+        .cron-banner.typing { background: #f8fafc; border-color: #cbd5e1; }
+
+        .cron-val-box {
+            font-family: Consolas, monospace;
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            user-select: all;
+        }
+        .cron-banner.invalid .cron-val-box { color: var(--error-red); }
+        .cron-banner.typing .cron-val-box { color: #64748b; }
+
+        .cron-desc-box { font-size: 17px; font-weight: 700; color: #0f172a; }
+        .cron-banner.invalid .cron-desc-box { color: var(--error-red); }
+        .cron-banner.typing .cron-desc-box { color: #64748b; }
+
+        .preset-title { font-size: 13px; font-weight: 700; color: #64748b; margin-bottom: 8px; }
+        .preset-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+        .preset-btn {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .preset-btn:hover { background: #e2e8f0; color: #0f172a; }
+
+        .inputs-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        @media(max-width: 768px) {
+            .inputs-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .field-box {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            border-radius: 8px;
+            box-sizing: border-box;
+            min-width: 0;
+        }
+        .field-box.error { border-color: var(--error-red); background: #fff5f5; }
+        .field-box label { font-size: 12.5px; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .field-box span { font-size: 11px; color: #94a3b8; }
+        .field-box input {
+            width: 100%;
+            padding: 8px 4px;
+            font-family: Consolas, monospace;
+            font-size: 15px;
+            font-weight: 700;
+            text-align: center;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            outline: none;
+            background: #ffffff;
+            box-sizing: border-box;
+        }
+        .field-box input:focus { border-color: var(--primary); }
+        .field-box.error input { border-color: var(--error-red); color: var(--error-red); }
+
+        .schedule-preview {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            min-height: 195px;
+            box-sizing: border-box;
+        }
+        .schedule-title { font-size: 13.5px; font-weight: 700; color: #1e293b; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+        .schedule-list {
+            margin: 0;
+            padding-left: 20px;
+            font-family: Consolas, monospace;
+            font-size: 13.5px;
+            color: #334155;
+            line-height: 1.8;
+        }
+
+        .copy-action-btn {
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .copy-action-btn:hover { background: var(--primary-hover); }
+
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 16px 20px;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            background-color: var(--bg-light);
+            text-align: center;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-area">
+        <span class="logo-badge">CRON</span>
+        <span class="logo-text">크론탭 주기 생성기 & 한글 번역기</span>
+    </div>
+</header>
+
+<div class="page-wrapper">
+    <div class="intro-section">
+        <h2 class="intro-title">리눅스 crontab 주기 설정 및 스케줄링 표현식 한글 해석기</h2>
+        <p class="intro-desc">5개 필드(분, 시, 일, 월, 요일)의 복합 주기 표현식을 실시간 자연어 한국어로 파싱하고 향후 실행 일정을 미리 계산합니다.</p>
+        
+        <div class="guide-box">
+            <strong>크론탭(Cron) 주요 문법 안내:</strong>
+            <ul class="guide-list">
+                <li><b>* (모든 값)</b>: 해당 시간 단위마다 항상 실행 (예: <code>*</code>)</li>
+                <li><b>*/N (주기 단위)</b>: N 단위마다 반복 실행 (예: <code>*/10</code> = 10분/10시간마다)</li>
+                <li><b>A,B,C (목록 지정)</b>: 특정 시간에만 실행 (예: <code>1,15,30</code> = 1일, 15일, 30일)</li>
+                <li><b>A-B (범위 지정)</b>: 특정 범위 동안 실행 (예: <code>9-18</code> = 9시~18시)</li>
+            </ul>
+            <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #cbd5e1; display: flex; justify-content: space-between; align-items: center; white-space: nowrap;">
+                <span style="font-size: 13px; color: #334155; display: inline-block;">📘 <span style="font-weight: 700; color: #0f172a;">크론탭 주기 문법과 실무 스케줄러 등록 팁</span>이 궁금하신가요?</span>
+                <a href="../blog/cron-guide.html" style="color: #2563eb; font-weight: 700; text-decoration: none; background: #eff6ff; border: 1px solid #bfdbfe; padding: 5px 12px; border-radius: 6px; font-size: 12.5px; margin-left: 12px; flex-shrink: 0; display: inline-block;">실무 가이드 보기 →</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="cron-banner" id="cron-banner">
+            <div class="cron-val-box" id="cron-val">* * * * *</div>
+            <div class="cron-desc-box" id="cron-desc">매 1분마다 실행</div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="preset-title">자주 쓰는 추천 프리셋:</span>
+            <button class="copy-action-btn" onclick="copyCron()">크론식 복사</button>
+        </div>
+        <div class="preset-group">
+            <button class="preset-btn" onclick="applyPreset('* * * * *')">매분</button>
+            <button class="preset-btn" onclick="applyPreset('*/5 * * * *')">5분마다</button>
+            <button class="preset-btn" onclick="applyPreset('*/10 * * * *')">10분마다</button>
+            <button class="preset-btn" onclick="applyPreset('0 * * * *')">매시간 정각</button>
+            <button class="preset-btn" onclick="applyPreset('0 */2 * * *')">2시간마다</button>
+            <button class="preset-btn" onclick="applyPreset('0 9 * * 1-5')">평일 아침 9시</button>
+            <button class="preset-btn" onclick="applyPreset('0 0 * * 1')">매주 월요일 자정</button>
+            <button class="preset-btn" onclick="applyPreset('0 0 1 * *')">매월 1일 자정</button>
+            <button class="preset-btn" onclick="applyPreset('0 0 1 1 *')">매년 1월 1일</button>
+        </div>
+
+        <div class="inputs-grid">
+            <div class="field-box" id="box-min">
+                <label>분 (Minute)</label>
+                <span>0 - 59</span>
+                <input id="f-min" value="*" oninput="onFieldChange()" placeholder="*">
+            </div>
+            <div class="field-box" id="box-hour">
+                <label>시 (Hour)</label>
+                <span>0 - 23</span>
+                <input id="f-hour" value="*" oninput="onFieldChange()" placeholder="*">
+            </div>
+            <div class="field-box" id="box-day">
+                <label>일 (Day)</label>
+                <span>1 - 31</span>
+                <input id="f-day" value="*" oninput="onFieldChange()" placeholder="*">
+            </div>
+            <div class="field-box" id="box-mon">
+                <label>월 (Month)</label>
+                <span>1 - 12</span>
+                <input id="f-mon" value="*" oninput="onFieldChange()" placeholder="*">
+            </div>
+            <div class="field-box" id="box-week">
+                <label>요일 (Day of Week)</label>
+                <span>0(일) - 6(토)</span>
+                <input id="f-week" value="*" oninput="onFieldChange()" placeholder="*">
+            </div>
+        </div>
+
+        <div class="schedule-preview">
+            <div class="schedule-title">📅 다음 예상 실행 시각 (향후 5회 기준)</div>
+            <ol class="schedule-list" id="schedule-list">
+                <li>계산 중...</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<footer>
+    클라이언트 사이드에서 즉시 실행되는 오픈소스 기반 크론탭 표현식 시뮬레이터입니다.
+</footer>
+
+<script>
+    const DAY_NAMES = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
+
+    function isTypingState(val) {
+        if (!val) return false;
+        return val.endsWith('-') || val.endsWith('/') || val.endsWith(',') || val === '*/';
+    }
+
+    function validateField(val, min, max, isWeek = false) {
+        if (!val || val === '*') return true;
+        
+        if (/^\*\/\d+$/.test(val)) {
+            const step = parseInt(val.replace('*/', ''));
+            return step > 0 && step <= max;
+        }
+
+        if (/^\d+-\d+$/.test(val)) {
+            const [start, end] = val.split('-').map(Number);
+            return start >= min && end <= (isWeek ? 7 : max) && start <= end;
+        }
+
+        const parts = val.split(',');
+        return parts.every(p => {
+            const trimmed = p.trim();
+            if (!/^\d+$/.test(trimmed)) return false;
+            const num = parseInt(trimmed);
+            return num >= min && num <= (isWeek ? 7 : max);
+        });
+    }
+
+    function parseFieldUnit(val, unitName, isDayOfWeek = false) {
+        if (!val || val === '*') return null;
+
+        if (val.startsWith('*/')) {
+            const step = val.replace('*/', '').trim();
+            return `매 ${step}${unitName}마다`;
+        }
+
+        if (val.includes('-')) {
+            const [start, end] = val.split('-').map(Number);
+            if (start === end) {
+                if (isDayOfWeek) return `${DAY_NAMES[start]}에`;
+                return `${start}${unitName}`;
+            }
+            if (isDayOfWeek) {
+                return `${DAY_NAMES[start]}~${DAY_NAMES[end]}`;
+            }
+            return `${start}~${end}${unitName}`;
+        }
+
+        if (val.includes(',')) {
+            const list = val.split(',').map(v => v.trim());
+            if (isDayOfWeek) {
+                return list.map(v => DAY_NAMES[parseInt(v)] || v).join(', ');
+            }
+            return list.map(v => v + unitName).join(', ');
+        }
+
+        if (isDayOfWeek) {
+            return `매주 ${DAY_NAMES[parseInt(val)] || val}에`;
+        }
+        return `${val}${unitName}`;
+    }
+
+    function interpretFullCron(m, h, d, mo, w) {
+        let dateParts = [];
+
+        const monthText = parseFieldUnit(mo, '월');
+        if (monthText) dateParts.push(monthText);
+
+        const dayText = parseFieldUnit(d, '일');
+        const weekText = parseFieldUnit(w, '', true);
+
+        if (dayText && weekText) {
+            dateParts.push(`${dayText} (${weekText})`);
+        } else if (dayText) {
+            dateParts.push(dayText);
+        } else if (weekText) {
+            dateParts.push(weekText);
+        }
+
+        let timeParts = [];
+        if (h === '*' && m === '*') {
+            timeParts.push('매 1분마다');
+        } else if (h === '*' && m !== '*') {
+            if (m.startsWith('*/')) {
+                timeParts.push(`${m.replace('*/', '')}분마다`);
+            } else {
+                const minVal = parseFieldUnit(m, '분');
+                timeParts.push(`매시간 ${minVal}`);
+            }
+        } else if (h !== '*' && m === '*') {
+            if (h.startsWith('*/')) {
+                timeParts.push(`${h.replace('*/', '')}시간마다 매분`);
+            } else {
+                const hourVal = parseFieldUnit(h, '시');
+                timeParts.push(`${hourVal} 매분`);
+            }
+        } else {
+            const cleanHour = parseFieldUnit(h, '시');
+            const cleanMin = parseFieldUnit(m, '분');
+            timeParts.push(`${cleanHour} ${cleanMin}`);
+        }
+
+        const fullDate = dateParts.length > 0 ? dateParts.join(' ') + ' ' : '';
+        const fullTime = timeParts.join(' ');
+        
+        return `${fullDate}${fullTime}에 실행`.replace(/\s+/g, ' ');
+    }
+
+    function matchField(pattern, currentVal) {
+        if (!pattern || pattern === '*') return true;
+        if (pattern.startsWith('*/')) {
+            const step = parseInt(pattern.replace('*/', ''));
+            return step ? (currentVal % step === 0) : true;
+        }
+        if (pattern.includes(',')) {
+            return pattern.split(',').map(v => parseInt(v.trim())).includes(currentVal);
+        }
+        if (pattern.includes('-')) {
+            const [start, end] = pattern.split('-').map(v => parseInt(v.trim()));
+            return currentVal >= start && currentVal <= end;
+        }
+        return parseInt(pattern) === currentVal;
+    }
+
+    function calculateNextRuns(m, h, d, mo, w) {
+        const list = document.getElementById('schedule-list');
+        list.innerHTML = '';
+        
+        let now = new Date();
+        let results = [];
+        let cursor = new Date(now.getTime() + 60000);
+        cursor.setSeconds(0, 0);
+
+        let safetyCount = 0;
+        while (results.length < 5 && safetyCount < 2000000) {
+            safetyCount++;
+
+            const curMo = cursor.getMonth() + 1;
+            if (!matchField(mo, curMo)) {
+                cursor.setMonth(cursor.getMonth() + 1, 1);
+                cursor.setHours(0, 0, 0, 0);
+                continue;
+            }
+
+            const curD = cursor.getDate();
+            const curW = cursor.getDay();
+            if (!matchField(d, curD) || !matchField(w, curW)) {
+                cursor.setDate(cursor.getDate() + 1);
+                cursor.setHours(0, 0, 0, 0);
+                continue;
+            }
+
+            const curH = cursor.getHours();
+            if (!matchField(h, curH)) {
+                cursor.setHours(cursor.getHours() + 1, 0, 0, 0);
+                continue;
+            }
+
+            const curM = cursor.getMinutes();
+            if (matchField(m, curM)) {
+                results.push(new Date(cursor));
+            }
+
+            cursor.setMinutes(cursor.getMinutes() + 1);
+        }
+
+        if (results.length === 0) {
+            list.innerHTML = '<li>설정된 조건에 맞는 향후 실행 일정을 찾을 수 없습니다.</li>';
+            return;
+        }
+
+        results.forEach(dateObj => {
+            const yyyy = dateObj.getFullYear();
+            const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const dd = String(dateObj.getDate()).padStart(2, '0');
+            const hh = String(dateObj.getHours()).padStart(2, '0');
+            const min = String(dateObj.getMinutes()).padStart(2, '0');
+            const dayName = DAY_NAMES[dateObj.getDay()];
+            
+            const li = document.createElement('li');
+            li.innerText = `${yyyy}-${mm}-${dd} (${dayName}) ${hh}:${min}:00`;
+            list.appendChild(li);
+        });
+    }
+
+    function onFieldChange() {
+        const m = document.getElementById('f-min').value.trim();
+        const h = document.getElementById('f-hour').value.trim();
+        const d = document.getElementById('f-day').value.trim();
+        const mo = document.getElementById('f-mon').value.trim();
+        const w = document.getElementById('f-week').value.trim();
+
+        const banner = document.getElementById('cron-banner');
+        const fullExp = `${m || '*'} ${h || '*'} ${d || '*'} ${mo || '*'} ${w || '*'}`;
+        document.getElementById('cron-val').innerText = fullExp;
+
+        const isTyping = isTypingState(m) || isTypingState(h) || isTypingState(d) || isTypingState(mo) || isTypingState(w);
+        if (isTyping) {
+            banner.className = 'cron-banner typing';
+            document.getElementById('cron-desc').innerText = '✍️ 크론 표현식을 입력하는 중입니다...';
+            document.getElementById('schedule-list').innerHTML = '<li style="color:#64748b;">입력이 완료되면 다음 실행 시각이 계산됩니다.</li>';
+            return;
+        }
+
+        const validM = validateField(m, 0, 59);
+        const validH = validateField(h, 0, 23);
+        const validD = validateField(d, 1, 31);
+        const validMo = validateField(mo, 1, 12);
+        const validW = validateField(w, 0, 6, true);
+
+        document.getElementById('box-min').classList.toggle('error', !validM);
+        document.getElementById('box-hour').classList.toggle('error', !validH);
+        document.getElementById('box-day').classList.toggle('error', !validD);
+        document.getElementById('box-mon').classList.toggle('error', !validMo);
+        document.getElementById('box-week').classList.toggle('error', !validW);
+
+        if (!validM || !validH || !validD || !validMo || !validW) {
+            banner.className = 'cron-banner invalid';
+            document.getElementById('cron-desc').innerText = '❌ 올바르지 않은 크론 표현식입니다. (숫자 범위 및 기호를 확인하세요)';
+            document.getElementById('schedule-list').innerHTML = '<li style="color:var(--error-red);">문법 오류로 인해 일정을 계산할 수 없습니다.</li>';
+            return;
+        }
+
+        banner.className = 'cron-banner';
+        document.getElementById('cron-desc').innerText = interpretFullCron(m || '*', h || '*', d || '*', mo || '*', w || '*');
+        calculateNextRuns(m || '*', h || '*', d || '*', mo || '*', w || '*');
+    }
+
+    function applyPreset(exp) {
+        const parts = exp.split(' ');
+        document.getElementById('f-min').value = parts[0];
+        document.getElementById('f-hour').value = parts[1];
+        document.getElementById('f-day').value = parts[2];
+        document.getElementById('f-mon').value = parts[3];
+        document.getElementById('f-week').value = parts[4];
+        onFieldChange();
+    }
+
+    function copyCron() {
+        const val = document.getElementById('cron-val').innerText;
+        navigator.clipboard.writeText(val).then(() => alert('크론 표현식이 클립보드에 복사되었습니다: ' + val));
+    }
+
+    window.onload = () => {
+        onFieldChange();
+    };
+</script>
+<script src="../nav.js"></script>
+</body>
+</html>
