@@ -148,7 +148,6 @@
 
         .panel-title { font-size: 13.5px; font-weight: 700; color: #1e293b; }
 
-        /* 줄 번호와 에디터 높이/폰트/행간을 완벽히 일치시키는 컨테이너 */
         .editor-wrapper {
             display: flex;
             height: 580px;
@@ -159,29 +158,45 @@
             position: relative;
         }
 
-        .line-numbers {
-            width: 44px;
-            padding: 14px 6px 14px 0;
-            box-sizing: border-box;
+        .gutter-container {
+            width: 52px;
             background-color: #f8fafc;
             border-right: 1px solid #e2e8f0;
+            overflow: hidden;
+            position: relative;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .line-numbers {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 12px 8px 0 0;
+            box-sizing: border-box;
             color: #94a3b8;
             font-family: Consolas, "Courier New", monospace !important;
             font-size: 13px !important;
-            line-height: 20px !important;
+            line-height: 21px !important;
             text-align: right;
-            user-select: none;
-            overflow: hidden;
-            white-space: pre !important;
+            transform: translateY(0);
+            will-change: transform;
+        }
+
+        .line-num-item {
+            height: 21px;
+            line-height: 21px;
+            box-sizing: border-box;
         }
 
         textarea.code-textarea {
             flex: 1;
             height: 100%;
-            padding: 14px;
+            padding: 12px;
             font-family: Consolas, "Courier New", monospace !important;
             font-size: 13px !important;
-            line-height: 20px !important;
+            line-height: 21px !important;
             border: none;
             box-sizing: border-box;
             resize: none;
@@ -342,7 +357,11 @@
                     </label>
                 </div>
                 <div class="editor-wrapper">
-                    <div class="line-numbers" id="input-line-numbers">1</div>
+                    <div class="gutter-container">
+                        <div class="line-numbers" id="input-line-numbers">
+                            <div class="line-num-item">1</div>
+                        </div>
+                    </div>
                     <textarea id="raw-code" class="code-textarea" placeholder="여기에 소스 코드를 입력하거나 [📂 파일 열기]를 눌러보세요..." spellcheck="false"></textarea>
                 </div>
                 <div class="editor-status-bar">
@@ -367,7 +386,11 @@
                     </div>
                 </div>
                 <div class="editor-wrapper">
-                    <div class="line-numbers" id="output-line-numbers">1</div>
+                    <div class="gutter-container" id="output-gutter-container">
+                        <div class="line-numbers" id="output-line-numbers">
+                            <div class="line-num-item">1</div>
+                        </div>
+                    </div>
                     <textarea id="formatted-code" class="code-textarea" placeholder="정렬 또는 압축된 코드가 여기에 표시됩니다." readonly spellcheck="false"></textarea>
                     <iframe id="preview-frame"></iframe>
                 </div>
@@ -493,19 +516,19 @@
         if (isRaw) lastRawLineCount = lines;
         else lastOutLineCount = lines;
 
-        let lineNumbersHTML = '';
+        let html = '';
         const total = Math.max(lines, 1);
         for (let i = 1; i <= total; i++) {
-            lineNumbersHTML += i + '\n';
+            html += `<div class="line-num-item">${i}</div>`;
         }
-        lineNumContainer.textContent = lineNumbersHTML;
+        lineNumContainer.innerHTML = html;
     }
 
     function syncScroll(textareaId, lineNumberId) {
         const textarea = document.getElementById(textareaId);
         const lineNumContainer = document.getElementById(lineNumberId);
         if (textarea && lineNumContainer) {
-            lineNumContainer.scrollTop = textarea.scrollTop;
+            lineNumContainer.style.transform = `translateY(-${textarea.scrollTop}px)`;
         }
     }
 
@@ -534,7 +557,7 @@
     function switchOutputMode(mode) {
         outputMode = mode;
         const codeArea = document.getElementById('formatted-code');
-        const outputGutter = document.getElementById('output-line-numbers');
+        const outputGutter = document.getElementById('output-gutter-container');
         const previewFrame = document.getElementById('preview-frame');
         const btnCode = document.getElementById('btn-view-code');
         const btnPreview = document.getElementById('btn-view-preview');
