@@ -64,14 +64,18 @@
     .badge-strget { background-color: #ef4444; }
     .badge-time { background-color: #10b981; }
     .badge-hash { background-color: #6366f1; }
-    .badge-beautify { background-color: #06b6d4; }
+    .badge-beautify { background-color: #0d9488; }
     
+    /* 제목 영역의 높이를 2줄 기준으로 고정하여 본문 시작 라인을 100% 일치 */
     .card-title {
       font-size: 17px;
       font-weight: 700;
       color: #1e293b;
       margin: 0 0 10px 0;
       line-height: 1.4;
+      min-height: 48px;
+      display: flex;
+      align-items: flex-start;
     }
     .card-desc {
       font-size: 14px;
