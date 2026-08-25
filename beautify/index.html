@@ -148,6 +148,7 @@
 
         .panel-title { font-size: 13.5px; font-weight: 700; color: #1e293b; }
 
+        /* 줄 번호와 에디터 높이/폰트/행간을 완벽히 일치시키는 컨테이너 */
         .editor-wrapper {
             display: flex;
             height: 580px;
@@ -165,28 +166,28 @@
             background-color: #f8fafc;
             border-right: 1px solid #e2e8f0;
             color: #94a3b8;
-            font-family: "Consolas", monospace;
-            font-size: 13px;
-            line-height: 20px;
+            font-family: Consolas, "Courier New", monospace !important;
+            font-size: 13px !important;
+            line-height: 20px !important;
             text-align: right;
             user-select: none;
             overflow: hidden;
-            white-space: pre-line;
+            white-space: pre !important;
         }
 
         textarea.code-textarea {
             flex: 1;
             height: 100%;
             padding: 14px;
-            font-size: 13px;
-            line-height: 20px;
-            font-family: "Consolas", monospace;
+            font-family: Consolas, "Courier New", monospace !important;
+            font-size: 13px !important;
+            line-height: 20px !important;
             border: none;
             box-sizing: border-box;
             resize: none;
             outline: none;
             background-color: #ffffff;
-            white-space: pre;
+            white-space: pre !important;
             overflow-wrap: normal;
             overflow: auto;
         }
