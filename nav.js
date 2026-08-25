@@ -25,6 +25,7 @@
                     <button class="nav-dropbtn">개발/데이터 ▾</button>
                     <div class="nav-dropdown-content">
                         <a href="${HOST_URL}/coder/">Base64 & URL 변환기 (CODER)</a>
+                        <a href="${HOST_URL}/beautify/">코드 뷰티파이어 & 뷰어 (BEAUTIFY)</a>
                         <a href="${HOST_URL}/json-viewer/">JSON 포맷터 & 검사기 (JSON)</a>
                         <a href="${HOST_URL}/time/">타임스탬프 변환기 (TIME)</a>
                         <a href="${HOST_URL}/hash/">UUID & 해시 생성기 (HASH)</a>
