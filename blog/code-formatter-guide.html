@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>코드 뷰티파이어(Beautifier)의 동작 원리와 들여쓰기 표준 가이드 | DevWorKit 기술 블로그</title>
+    <meta name="description" content="코드 뷰티파이어의 AST 파싱 원리와 2칸 vs 4칸 들여쓰기 표준 가이드">
+    <link rel="stylesheet" href="../style.css">
     <style>
         :root {
-            --primary: #2563eb;
+            --primary: #0d9488;
             --text-main: #1e293b;
             --text-muted: #64748b;
             --border: #e2e8f0;
@@ -25,14 +27,19 @@
             max-width: 820px;
             margin: 40px auto 60px auto;
             padding: 0 20px;
+            box-sizing: border-box;
         }
         .back-link {
             display: inline-block;
             margin-bottom: 20px;
-            color: var(--primary);
+            color: #64748b;
             text-decoration: none;
             font-size: 14px;
             font-weight: 600;
+            transition: color 0.15s;
+        }
+        .back-link:hover {
+            color: var(--primary);
         }
         .article-card {
             background-color: var(--bg-card);
@@ -40,16 +47,18 @@
             border-radius: 12px;
             padding: 36px 40px;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            box-sizing: border-box;
         }
         .badge {
-            background: #8b5cf6;
+            background: #0d9488;
             color: white;
             padding: 3px 10px;
             border-radius: 4px;
             font-size: 12px;
-            font-weight: bold;
+            font-weight: 800;
             display: inline-block;
             margin-bottom: 12px;
+            letter-spacing: 0.5px;
         }
         h1 {
             font-size: 26px;
@@ -72,28 +81,44 @@
             color: #334155;
             margin: 0 0 14px 0;
         }
+        ul {
+            color: #334155;
+            font-size: 14.5px;
+            padding-left: 20px;
+            margin: 8px 0 16px 0;
+        }
+        li {
+            margin-bottom: 6px;
+        }
         pre {
             background: #0f172a;
             color: #f8fafc;
             padding: 16px;
             border-radius: 8px;
-            font-family: "Consolas", monospace;
+            font-family: Consolas, monospace;
             font-size: 13.5px;
             overflow-x: auto;
             margin: 16px 0;
+            line-height: 1.6;
         }
         .tool-banner {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
+            background: #f0fdfa;
+            border: 1px solid #99f6e4;
             border-radius: 8px;
             padding: 16px 20px;
             margin-top: 32px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 12px;
+        }
+        .tool-banner-text {
+            font-size: 14px;
+            color: #0f766e;
+            font-weight: 600;
         }
         .tool-btn {
-            background: var(--primary);
+            background: #0d9488;
             color: white;
             padding: 8px 16px;
             border-radius: 6px;
@@ -101,13 +126,19 @@
             font-size: 13px;
             font-weight: 700;
             white-space: nowrap;
+            transition: background 0.15s;
+        }
+        .tool-btn:hover {
+            background: #0f766e;
         }
     </style>
 </head>
 <body>
 
+<div id="dwk-nav"></div>
+
 <div class="container">
-    <a href="./index.html" class="back-link">← DWK 가이드 목록으로 돌아가기</a>
+    <a href="./index.html" class="back-link">← 블로그 목록으로 돌아가기</a>
     
     <article class="article-card">
         <span class="badge">BEAUTIFY</span>
@@ -139,7 +170,7 @@ function test(a, b) {
         <p>별도의 확장 프로그램 설치 없이 브라우저에서 HTML, CSS, JavaScript 코드를 즉시 2칸/4칸/Tab 단위로 정렬하고, 작성된 HTML 화면을 실시간으로 미리 볼 수 있습니다.</p>
 
         <div class="tool-banner">
-            <span>🛠️ <strong>DevWorKit 실시간 코드 뷰티파이어</strong> 바로 사용해보기</span>
+            <span class="tool-banner-text">🛠️ DevWorKit 실시간 코드 뷰티파이어 사용해보기</span>
             <a href="../beautify/" class="tool-btn">도구로 이동 →</a>
         </div>
     </article>
