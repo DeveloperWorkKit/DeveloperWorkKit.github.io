@@ -10,29 +10,29 @@
                 <span class="dwk-brand-text">DevWorKit</span>
             </a>
             <nav class="nav-menu">
-                <!-- 1. 텍스트 / 문서 도구 -->
+                <!-- 1. 텍스트 / 문서 도구 (메인 그리드 순서와 1:1 완벽 일치) -->
                 <div class="nav-dropdown" id="dropdown-text">
                     <button class="nav-dropbtn" onclick="toggleMobileNav(event, 'dropdown-text')">텍스트/문서 ▾</button>
                     <div class="nav-dropdown-content">
-                        <a href="${HOST_URL}/markdown/">마크다운 실시간 에디터 (MARKDOWN)</a>
                         <a href="${HOST_URL}/strget/">문자열 추출기 (STRGET)</a>
                         <a href="${HOST_URL}/counter/">글자수 & 바이트 계산기 (COUNTER)</a>
                         <a href="${HOST_URL}/strcmp/">텍스트 문서 비교 (STRCMP)</a>
+                        <a href="${HOST_URL}/markdown/">마크다운 실시간 에디터 (MARKDOWN)</a>
                         <a href="${HOST_URL}/fsee/">폴더 구조 엑셀 (FSEE)</a>
                     </div>
                 </div>
 
-                <!-- 2. 개발 / 데이터 도구 -->
+                <!-- 2. 개발 / 데이터 도구 (메인 그리드 순서와 1:1 완벽 일치) -->
                 <div class="nav-dropdown" id="dropdown-dev">
                     <button class="nav-dropbtn" onclick="toggleMobileNav(event, 'dropdown-dev')">개발/데이터 ▾</button>
                     <div class="nav-dropdown-content">
                         <a href="${HOST_URL}/coder/">Base64 & URL 변환기 (CODER)</a>
                         <a href="${HOST_URL}/beautify/">코드 뷰티파이어 & 뷰어 (BEAUTIFY)</a>
                         <a href="${HOST_URL}/json-viewer/">JSON 포맷터 & 검사기 (JSON)</a>
-                        <a href="${HOST_URL}/cron/">크론탭 주기 생성기 (CRON)</a>
                         <a href="${HOST_URL}/time/">타임스탬프 변환기 (TIME)</a>
                         <a href="${HOST_URL}/hash/">UUID & 해시 생성기 (HASH)</a>
                         <a href="${HOST_URL}/qrm/">QR 마스터 (QRM)</a>
+                        <a href="${HOST_URL}/cron/">크론탭 주기 생성기 (CRON)</a>
                         <a href="${HOST_URL}/color/">웹 색상 스튜디오 (COLOR)</a>
                     </div>
                 </div>
