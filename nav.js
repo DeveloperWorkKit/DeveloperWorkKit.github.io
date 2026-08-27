@@ -14,6 +14,7 @@
                 <div class="nav-dropdown" id="dropdown-text">
                     <button class="nav-dropbtn" onclick="toggleMobileNav(event, 'dropdown-text')">텍스트/문서 ▾</button>
                     <div class="nav-dropdown-content">
+                        <a href="${HOST_URL}/markdown/">마크다운 실시간 에디터 (MARKDOWN)</a>
                         <a href="${HOST_URL}/strget/">문자열 추출기 (STRGET)</a>
                         <a href="${HOST_URL}/counter/">글자수 & 바이트 계산기 (COUNTER)</a>
                         <a href="${HOST_URL}/strcmp/">텍스트 문서 비교 (STRCMP)</a>
@@ -108,7 +109,7 @@
             top: 100%;
             left: 0;
             background-color: #1f2937;
-            min-width: 230px;
+            min-width: 240px;
             box-shadow: 0px 10px 20px rgba(0,0,0,0.3);
             border-radius: 6px;
             border: 1px solid #374151;
@@ -158,17 +159,16 @@
         }
         .nav-right .nav-hub-btn:hover { color: #7dd3fc; }
 
-        /* 모바일 최적화 (사진 문제 해결) */
+        /* 모바일 최적화 */
         @media (max-width: 768px) {
             .dwk-global-nav { padding: 0 12px; height: 50px; }
             .nav-left { gap: 10px; }
             .nav-brand { gap: 6px; }
             .dwk-brand-text { font-size: 14px; }
             .nav-dropbtn { font-size: 12px; padding: 12px 4px; }
-            .nav-link-sub { display: none; } /* 모바일에서 텍스트 숨겨 가로폭 확보 */
+            .nav-link-sub { display: none; }
             .nav-hub-btn { font-size: 12px; }
 
-            /* 모바일에서 화면 밖으로 나가지 않도록 꽉 찬 너비로 고정 */
             .nav-dropdown-content {
                 position: fixed;
                 top: 50px;
