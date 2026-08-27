@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹 색상 스튜디오 & UI 가독성 인스펙터 | DevWorKit</title>
+    <meta name="description" content="주 텍스트, 보조 텍스트, 배경색을 한 화면에서 설계하고 WCAG 2.1 가독성 명도 대비비를 실시간으로 검증하는 올인원 컬러 스튜디오">
+    <style>
+        :root {
+            --badge-color: #db2777;
+            --primary-blue: #007bff;
+            --bg-light: #f8fafc;
+            --border-color: #dee2e6;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --error-red: #ef4444;
+            --success-green: #10b981;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-main);
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-badge { background: var(--badge-color); color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
+        .logo-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #111111; }
+
+        .dashboard-wrapper {
+            max-width: 1280px;
+            margin: 20px auto 40px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .intro-header {
+            margin-bottom: 16px;
+        }
+        .intro-title { font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0; }
+        .intro-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 16px 0; }
+
+        /* 직관적 사용 안내 박스 */
+        .guide-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-bottom: 16px;
+        }
+        .guide-title { font-size: 13.5px; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
+        .guide-list { margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.6; }
+        .guide-link-row {
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px dashed #cbd5e1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12.5px;
+        }
+        .guide-btn-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 700;
+            border: 1px solid #bfdbfe;
+            background: #eff6ff;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11.5px;
+        }
+        .guide-btn-link:hover { background: #dbeafe; }
+
+        /* 상단 툴바 버튼: 우측 정렬 완료 */
+        .quick-action-bar {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .action-tool-btn {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .action-tool-btn:hover { background: #e2e8f0; }
+        .action-tool-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .action-tool-btn.primary { background: #0f172a; color: #ffffff; border-color: #0f172a; }
+        .action-tool-btn.primary:hover { background: #1e293b; }
+
+        /* 2x2 대칭 그리드 */
+        .studio-grid {
+            display: grid;
+            grid-template-columns: 460px 1fr;
+            grid-template-rows: auto auto;
+            gap: 20px;
+            align-items: stretch;
+        }
+        @media (max-width: 992px) {
+            .studio-grid { grid-template-columns: 1fr; }
+            .quick-action-bar { justify-content: flex-start; }
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 18px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .panel-title { font-size: 14px; font-weight: 800; color: #0f172a; }
+
+        .channel-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .channel-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: all 0.15s;
+            height: 78px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .channel-card.active {
+            border-color: var(--primary-blue);
+            background: #ffffff;
+            box-shadow: 0 0 0 1px var(--primary-blue), 0 3px 6px rgba(0,123,255,0.08);
+        }
+
+        .channel-top-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .channel-label-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .channel-swatch {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            border: 1px solid rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+        .channel-name { font-size: 13px; font-weight: 800; color: #1e293b; }
+        .channel-role { font-size: 10.5px; color: #64748b; }
+
+        .channel-hex-badge {
+            font-family: Consolas, monospace;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #0f172a;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* 4열 고정 그리드 */
+        .quick-chips-wrap {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            padding-top: 6px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .quick-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 2px 4px;
+            font-size: 10.5px;
+            font-weight: 700;
+            color: #334155;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: all 0.1s;
+        }
+        .quick-chip:hover { border-color: #94a3b8; background: #f1f5f9; }
+        .chip-dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.15); flex-shrink: 0; }
+
+        .picker-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .sat-val-box {
+            position: relative;
+            width: 100%;
+            height: 135px;
+            border-radius: 6px;
+            cursor: crosshair;
+            user-select: none;
+            overflow: hidden;
+            background-color: #ff0000;
+            touch-action: none;
+        }
+        .sat-white-layer { position: absolute; inset: 0; background: linear-gradient(to right, #fff, rgba(255,255,255,0)); }
+        .val-black-layer { position: absolute; inset: 0; background: linear-gradient(to top, #000, rgba(0,0,0,0)); }
+        .picker-handle {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 3px rgba(0,0,0,0.8);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .hue-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 12px;
+            border-radius: 6px;
+            outline: none;
+            background: linear-gradient(to right, 
+                hsl(0, 100%, 50%) 0%, 
+                hsl(60, 100%, 50%) 20%, 
+                hsl(120, 100%, 50%) 40%, 
+                hsl(180, 100%, 50%) 60%, 
+                hsl(240, 100%, 50%) 80%, 
+                hsl(300, 100%, 50%) 100%
+            );
+            cursor: pointer;
+        }
+        .hue-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid #334155;
+            cursor: pointer;
+        }
+
+        .picker-inputs-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+        .mini-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .mini-input-group label { font-size: 10px; font-weight: 700; color: #64748b; }
+        .mini-input-group input {
+            border: 1px solid #cbd5e1;
+            padding: 5px 8px;
+            border-radius: 4px;
+            font-family: Consolas, monospace;
+            font-size: 12px;
+            font-weight: 700;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .mini-input-group input:focus { border-color: var(--primary-blue); }
+
+        .template-tabs {
+            display: flex;
+            gap: 6px;
+        }
+        .tab-btn {
+            background: #e2e8f0;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #475569;
+            cursor: pointer;
+        }
+        .tab-btn.active {
+            background: #0f172a;
+            color: #ffffff;
+        }
+
+        .ui-canvas {
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            transition: background-color 0.15s;
+            height: 100%;
+            min-height: 220px;
+            box-sizing: border-box;
+        }
+
+        .canvas-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid rgba(128,128,128,0.2);
+            padding-bottom: 12px;
+        }
+
+        .canvas-components {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .demo-btn {
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 2px solid;
+            cursor: default;
+        }
+
+        .demo-tag {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 800;
+            border: 1px solid;
+        }
+
+        .contrast-inspector-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .contrast-score-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 12px 14px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .score-label { font-size: 11px; font-weight: 700; color: #64748b; }
+        .score-row { display: flex; justify-content: space-between; align-items: center; }
+        .score-val { font-size: 20px; font-weight: 800; font-family: Consolas, monospace; color: #0f172a; }
+
+        .status-badge {
+            font-size: 10.5px;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+        .status-pass { background: #dcfce7; color: #15803d; }
+        .status-warn { background: #fef9c3; color: #854d0e; }
+        .status-fail { background: #fee2e2; color: #b91c1c; }
+
+        .wcag-matrix-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 11px;
+            text-align: center;
+        }
+        .matrix-item { display: flex; flex-direction: column; gap: 2px; }
+        .matrix-title { font-weight: 700; color: #64748b; font-size: 10px; }
+        .matrix-status { font-weight: 800; }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: #ffffff;
+            border-radius: 8px;
+            width: 480px;
+            max-width: 90%;
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .modal-title { font-size: 16px; font-weight: 800; margin: 0 0 12px 0; }
+        .code-snippet {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 14px;
+            border-radius: 6px;
+            font-family: Consolas, monospace;
+            font-size: 12.5px;
+            line-height: 1.6;
+            white-space: pre;
+            overflow-x: auto;
+            margin-bottom: 16px;
+        }
+
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 16px 20px;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            background-color: #ffffff;
+            text-align: center;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-area">
+        <span class="logo-badge">COLOR</span>
+        <span class="logo-text">웹 색상 스튜디오 & UI 가독성 인스펙터</span>
+    </div>
+</header>
+
+<div class="dashboard-wrapper">
+    <div class="intro-header">
+        <h1 class="intro-title">원스톱 UI 색상 계층 설계 & WCAG 가독성 검증</h1>
+        <p class="intro-desc">주 텍스트, 본문 텍스트, 배경색을 실시간으로 조율하고 가독성 대비비를 검증합니다.</p>
+        
+        <!-- 미사여구를 모두 제거한 3줄 명료 사용 안내 박스 -->
+        <div class="guide-box">
+            <div class="guide-title">웹 색상 스튜디오 사용 방법 안내:</div>
+            <ol class="guide-list">
+                <li>바꿀 항목(주 텍스트 / 본문 / 배경색)을 선택한 뒤, <strong>추천 색상</strong>을 클릭하거나 <strong>피커</strong>로 색을 지정합니다.</li>
+                <li>우측 <strong>컴포넌트 화면</strong>에서 글자가 잘 보이는지 확인하고, 하단 <strong>대비비(4.5:1 이상 AA 적합)</strong>를 확인할 수 있습니다.</li>
+                <li><strong>[⚡ 톤 최적화]</strong>나 <strong>[☀️ 라이트 / 🌙 다크]</strong>로 배색을 완성한 후 <strong>[📋 코드 내보내기]</strong>로 복사합니다.</li>
+            </ol>
+            <div class="guide-link-row">
+                <span style="color: #334155; font-weight: 600;">웹 접근성(WCAG) 명도 대비비 기준과 실무 UI 배색 팁이 궁금하신가요?</span>
+                <a href="../blog/wcag-color-contrast-guide.html" class="guide-btn-link">실무 가이드 보기 →</a>
+            </div>
+        </div>
+
+        <!-- 우측 정렬 툴바 -->
+        <div class="quick-action-bar">
+            <button class="action-tool-btn" id="btn-undo" onclick="undo()" title="단축키: Ctrl + Z">↩ 되돌리기 (Ctrl+Z)</button>
+            <button class="action-tool-btn" id="btn-redo" onclick="redo()" title="단축키: Ctrl + Y 또는 Ctrl + Shift + Z">↪ 다시실행 (Ctrl+Y)</button>
+            <button class="action-tool-btn" onclick="applyThemeMode('light')">☀️ 라이트</button>
+            <button class="action-tool-btn" onclick="applyThemeMode('dark')">🌙 다크</button>
+            <button class="action-tool-btn" onclick="swapColors()">⇄ 반전</button>
+            <button class="action-tool-btn primary" onclick="autoFixCurrentTone()">⚡ 톤 최적화</button>
+            <button class="action-tool-btn" onclick="openExportModal()">📋 코드 내보내기</button>
+        </div>
+    </div>
+
+    <!-- 2x2 대칭 그리드 -->
+    <div class="studio-grid">
+        <!-- 1. [상단 좌측] 3채널 상호 동적 추천 -->
+        <div class="card">
+            <div class="card-header-row" style="margin-bottom: 8px;">
+                <span class="panel-title">🎛️ 3채널 상호 동적 추천</span>
+            </div>
+            
+            <div class="channel-list">
+                <div class="channel-card active" id="card-fg1" onclick="selectChannel('fg1')">
+                    <div class="channel-top-row">
+                        <div class="channel-label-group">
+                            <div class="channel-swatch" id="swatch-fg1" style="background: #2563eb;"></div>
+                            <div>
+                                <div class="channel-name">주 텍스트 / 브랜드 (Primary)</div>
+                                <div class="channel-role">타이틀 및 핵심 버튼</div>
+                            </div>
+                        </div>
+                        <div class="channel-hex-badge" id="badge-hex-fg1">#2563EB</div>
+                    </div>
+                    <div class="quick-chips-wrap" id="chips-fg1"></div>
+                </div>
+
+                <div class="channel-card" id="card-fg2" onclick="selectChannel('fg2')">
+                    <div class="channel-top-row">
+                        <div class="channel-label-group">
+                            <div class="channel-swatch" id="swatch-fg2" style="background: #64748b;"></div>
+                            <div>
+                                <div class="channel-name">보조 텍스트 (Secondary)</div>
+                                <div class="channel-role">설명 문장 및 서브 버튼</div>
+                            </div>
+                        </div>
+                        <div class="channel-hex-badge" id="badge-hex-fg2">#64748B</div>
+                    </div>
+                    <div class="quick-chips-wrap" id="chips-fg2"></div>
+                </div>
+
+                <div class="channel-card" id="card-bg" onclick="selectChannel('bg')">
+                    <div class="channel-top-row">
+                        <div class="channel-label-group">
+                            <div class="channel-swatch" id="swatch-bg" style="background: #ffffff;"></div>
+                            <div>
+                                <div class="channel-name">배경색 (Background)</div>
+                                <div class="channel-role">컨테이너 및 캔버스 배경</div>
+                            </div>
+                        </div>
+                        <div class="channel-hex-badge" id="badge-hex-bg">#FFFFFF</div>
+                    </div>
+                    <div class="quick-chips-wrap" id="chips-bg"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. [상단 우측] 실전 UI 컴포넌트 렌더링 -->
+        <div class="card">
+            <div class="card-header-row">
+                <span class="panel-title">🖥️ 실전 UI 컴포넌트 렌더링</span>
+                <div class="template-tabs">
+                    <button class="tab-btn active" onclick="setTemplate('card')">카드형</button>
+                    <button class="tab-btn" onclick="setTemplate('banner')">알림 배너</button>
+                    <button class="tab-btn" onclick="setTemplate('login')">입력 폼</button>
+                </div>
+            </div>
+            <div class="ui-canvas" id="ui-canvas"></div>
+        </div>
+
+        <!-- 3. [하단 좌측] 정밀 색상 피커 -->
+        <div class="card">
+            <div class="card-header-row">
+                <span class="panel-title" id="active-picker-title">🎨 [주 텍스트] 정밀 조절</span>
+                <button class="action-tool-btn" style="padding: 3px 8px; font-size: 11px;" onclick="copyActiveHex()">HEX 복사</button>
+            </div>
+            <div class="picker-container">
+                <div class="sat-val-box" id="sat-val-box">
+                    <div class="sat-white-layer"></div>
+                    <div class="val-black-layer"></div>
+                    <div class="picker-handle" id="picker-handle"></div>
+                </div>
+
+                <input type="range" min="0" max="300" value="220" class="hue-slider" id="hue-range" oninput="onHueChange(this.value)">
+
+                <div class="picker-inputs-row">
+                    <div class="mini-input-group">
+                        <label>HEX</label>
+                        <input type="text" id="input-hex" value="#2563eb" oninput="updateFromHex(this.value)">
+                    </div>
+                    <div class="mini-input-group">
+                        <label>RGB</label>
+                        <input type="text" id="input-rgb" value="37, 99, 235" oninput="updateFromRgb(this.value)">
+                    </div>
+                    <div class="mini-input-group">
+                        <label>HSL</label>
+                        <input type="text" id="input-hsl" value="220, 83%, 53%" oninput="updateFromHsl(this.value)">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. [하단 우측] WCAG 2.1 가독성 명도 대비비 인스펙터 -->
+        <div class="card">
+            <div class="card-header-row">
+                <span class="panel-title">📊 WCAG 2.1 가독성 명도 대비비 인스펙터</span>
+                <span style="font-size: 11px; font-weight: 700; color: #64748b;">피커 조절 실시간 연동</span>
+            </div>
+            
+            <div class="contrast-inspector-grid">
+                <div class="contrast-score-card">
+                    <span class="score-label">주 텍스트 ↔ 배경색 대비비</span>
+                    <div class="score-row">
+                        <span class="score-val" id="ratio-val-fg1">8.5 : 1</span>
+                        <span class="status-badge status-pass" id="badge-status-fg1">AAA 최우수</span>
+                    </div>
+                </div>
+
+                <div class="contrast-score-card">
+                    <span class="score-label">보조 텍스트 ↔ 배경색 대비비</span>
+                    <div class="score-row">
+                        <span class="score-val" id="ratio-val-fg2">5.0 : 1</span>
+                        <span class="status-badge status-pass" id="badge-status-fg2">AA 적합</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wcag-matrix-row">
+                <div class="matrix-item">
+                    <span class="matrix-title">일반 텍스트 (AA ≥ 4.5)</span>
+                    <span class="matrix-status" id="matrix-normal" style="color: #15803d;">적합 통과</span>
+                </div>
+                <div class="matrix-item">
+                    <span class="matrix-title">대형 텍스트 (AA ≥ 3.0)</span>
+                    <span class="matrix-status" id="matrix-large" style="color: #15803d;">적합 통과</span>
+                </div>
+                <div class="matrix-item">
+                    <span class="matrix-title">최고 수준 (AAA ≥ 7.0)</span>
+                    <span class="matrix-status" id="matrix-aaa" style="color: #15803d;">AAA 달성</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Export 모달 -->
+<div class="modal-overlay" id="export-modal" onclick="closeExportModal(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <h3 class="modal-title">📋 디자인 토큰 & CSS 코드 내보내기</h3>
+        <div class="code-snippet" id="export-code"></div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+            <button class="action-tool-btn primary" onclick="copyExportCode()">클립보드 전체 복사</button>
+            <button class="action-tool-btn" onclick="closeExportModal()">닫기</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    클라이언트 사이드에서 즉시 실행되는 웹 표준 다중 색상 및 접근성 분석기입니다.
+</footer>
+
+<script>
+    let activeChannel = 'fg1';
+    let fg1Hex = '#2563eb';
+    let fg2Hex = '#64748b';
+    let bgHex = '#ffffff';
+    let curTemplate = 'card';
+    let preservedBrandHue = 220; 
+
+    let curH = 220, curS = 0.84, curV = 0.92;
+
+    const undoStack = [];
+    const redoStack = [];
+    let isRestoringHistory = false;
+
+    function getCurrentState() {
+        return {
+            fg1Hex,
+            fg2Hex,
+            bgHex,
+            activeChannel,
+            preservedBrandHue,
+            curH,
+            curS,
+            curV
+        };
+    }
+
+    function isStateEqual(s1, s2) {
+        if (!s1 || !s2) return false;
+        return s1.fg1Hex === s2.fg1Hex &&
+               s1.fg2Hex === s2.fg2Hex &&
+               s1.bgHex === s2.bgHex &&
+               s1.activeChannel === s2.activeChannel;
+    }
+
+    function pushState() {
+        if (isRestoringHistory) return;
+        const cur = getCurrentState();
+        if (undoStack.length > 0) {
+            const last = undoStack[undoStack.length - 1];
+            if (isStateEqual(last, cur)) {
+                return;
+            }
+        }
+        undoStack.push(cur);
+        redoStack.length = 0;
+        updateHistoryButtons();
+    }
+
+    function undo() {
+        if (undoStack.length === 0) return;
+        isRestoringHistory = true;
+        
+        const current = getCurrentState();
+        let target = undoStack.pop();
+        
+        while (target && isStateEqual(target, current) && undoStack.length > 0) {
+            target = undoStack.pop();
+        }
+
+        if (target && !isStateEqual(target, current)) {
+            redoStack.push(current);
+            applyRestoredState(target);
+        }
+
+        isRestoringHistory = false;
+        updateHistoryButtons();
+    }
+
+    function redo() {
+        if (redoStack.length === 0) return;
+        isRestoringHistory = true;
+
+        const current = getCurrentState();
+        let target = redoStack.pop();
+
+        while (target && isStateEqual(target, current) && redoStack.length > 0) {
+            target = redoStack.pop();
+        }
+
+        if (target && !isStateEqual(target, current)) {
+            undoStack.push(current);
+            applyRestoredState(target);
+        }
+
+        isRestoringHistory = false;
+        updateHistoryButtons();
+    }
+
+    function applyRestoredState(state) {
+        fg1Hex = state.fg1Hex;
+        fg2Hex = state.fg2Hex;
+        bgHex = state.bgHex;
+        activeChannel = state.activeChannel;
+        preservedBrandHue = state.preservedBrandHue;
+        curH = state.curH;
+        curS = state.curS;
+        curV = state.curV;
+
+        selectChannel(activeChannel, false);
+        let targetHex = fg1Hex;
+        if (activeChannel === 'fg2') targetHex = fg2Hex;
+        if (activeChannel === 'bg') targetHex = bgHex;
+        updateFromHex(targetHex, false);
+    }
+
+    function updateHistoryButtons() {
+        document.getElementById('btn-undo').disabled = (undoStack.length === 0);
+        document.getElementById('btn-redo').disabled = (redoStack.length === 0);
+    }
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeExportModal();
+            return;
+        }
+
+        if (e.target.tagName === 'INPUT') return;
+
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+            if (e.shiftKey) {
+                e.preventDefault();
+                redo();
+            } else {
+                e.preventDefault();
+                undo();
+            }
+        } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
+            e.preventDefault();
+            redo();
+        }
+    });
+
+    let preFocusState = null;
+    let hasModifiedInput = false;
+
+    document.querySelectorAll('.mini-input-group input').forEach(input => {
+        input.addEventListener('focus', () => {
+            if (isRestoringHistory) return;
+            preFocusState = getCurrentState();
+            hasModifiedInput = false;
+        });
+
+        input.addEventListener('blur', () => {
+            preFocusState = null;
+            hasModifiedInput = false;
+        });
+    });
+
+    function ensureInputHistory() {
+        if (isRestoringHistory) return;
+        if (!hasModifiedInput && preFocusState) {
+            undoStack.push(preFocusState);
+            redoStack.length = 0;
+            updateHistoryButtons();
+            hasModifiedInput = true;
+        }
+    }
+
+    function selectChannel(ch, isUserAction = true) {
+        if (isUserAction && !isRestoringHistory && ch !== activeChannel) {
+            pushState();
+        }
+        activeChannel = ch;
+        document.getElementById('card-fg1').classList.toggle('active', ch === 'fg1');
+        document.getElementById('card-fg2').classList.toggle('active', ch === 'fg2');
+        document.getElementById('card-bg').classList.toggle('active', ch === 'bg');
+
+        const titleMap = {
+            'fg1': '🎨 [주 텍스트 / 브랜드] 정밀 조절',
+            'fg2': '🎨 [보조 텍스트] 정밀 조절',
+            'bg': '🎨 [배경색] 정밀 조절'
+        };
+        document.getElementById('active-picker-title').innerText = titleMap[ch];
+
+        let hex = fg1Hex;
+        if (ch === 'fg2') hex = fg2Hex;
+        if (ch === 'bg') hex = bgHex;
+
+        updateFromHex(hex, false);
+    }
+
+    function setTemplate(tpl) {
+        curTemplate = tpl;
+        const btns = document.querySelectorAll('.tab-btn');
+        btns.forEach((b, idx) => {
+            b.classList.toggle('active', (idx === 0 && tpl === 'card') || (idx === 1 && tpl === 'banner') || (idx === 2 && tpl === 'login'));
+        });
+        refreshDashboard();
+    }
+
+    function applyThemeMode(mode) {
+        const h = preservedBrandHue;
+        let newBg, newFg1, newFg2;
+
+        if (mode === 'light') {
+            newBg = '#ffffff';
+            const optFg1 = hsvToRgb(h, 0.85, 0.55);
+            newFg1 = rgbToHex(optFg1.r, optFg1.g, optFg1.b);
+            newFg2 = '#475569';
+        } else {
+            newBg = '#09090b';
+            const optFg1 = hsvToRgb(h, 0.70, 0.96);
+            newFg1 = rgbToHex(optFg1.r, optFg1.g, optFg1.b);
+            newFg2 = '#94a3b8';
+        }
+
+        if (bgHex === newBg && fg1Hex === newFg1 && fg2Hex === newFg2) {
+            return;
+        }
+
+        pushState();
+        bgHex = newBg;
+        fg1Hex = newFg1;
+        fg2Hex = newFg2;
+
+        let targetHex = fg1Hex;
+        if (activeChannel === 'fg2') targetHex = fg2Hex;
+        if (activeChannel === 'bg') targetHex = bgHex;
+
+        curH = h;
+        const rgb = hexToRgb(targetHex);
+        const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+        curS = hsv.s;
+        curV = hsv.v;
+        syncPickerUI('theme');
+    }
+
+    function autoFixCurrentTone() {
+        pushState();
+        let baseHex = fg1Hex;
+        if (activeChannel === 'fg2') baseHex = fg2Hex;
+        if (activeChannel === 'bg') baseHex = bgHex;
+
+        const rgb = hexToRgb(baseHex) || { r: 37, g: 99, b: 235 };
+        const lum = getLuminance(rgb.r, rgb.g, rgb.b);
+        const h = preservedBrandHue;
+
+        const ratioWithWhite = (1.0 + 0.05) / (lum + 0.05);
+        const ratioWithBlack = (lum + 0.05) / (0.0 + 0.05);
+
+        if (activeChannel === 'bg') {
+            if (ratioWithBlack >= ratioWithWhite) {
+                const rgbFg1 = hsvToRgb(h, 0.85, 0.15);
+                const rgbFg2 = hsvToRgb(h, 0.40, 0.35);
+                fg1Hex = rgbToHex(rgbFg1.r, rgbFg1.g, rgbFg1.b);
+                fg2Hex = rgbToHex(rgbFg2.r, rgbFg2.g, rgbFg2.b);
+            } else {
+                const rgbFg1 = hsvToRgb(h, 0.15, 0.98);
+                const rgbFg2 = hsvToRgb(h, 0.25, 0.85);
+                fg1Hex = rgbToHex(rgbFg1.r, rgbFg1.g, rgbFg1.b);
+                fg2Hex = rgbToHex(rgbFg2.r, rgbFg2.g, rgbFg2.b);
+            }
+        } else if (activeChannel === 'fg1') {
+            if (ratioWithBlack >= 4.5 || (lum >= 0.18 && ratioWithWhite < 5.0)) {
+                const rgbBg = hsvToRgb(h, 0.50, 0.09);
+                const rgbFg2 = hsvToRgb(h, 0.15, 0.82);
+                bgHex = rgbToHex(rgbBg.r, rgbBg.g, rgbBg.b);
+                fg2Hex = rgbToHex(rgbFg2.r, rgbFg2.g, rgbFg2.b);
+            } else {
+                const rgbBg = hsvToRgb(h, 0.04, 0.98);
+                const rgbFg2 = hsvToRgb(h, 0.40, 0.38);
+                bgHex = rgbToHex(rgbBg.r, rgbBg.g, rgbBg.b);
+                fg2Hex = rgbToHex(rgbFg2.r, rgbFg2.g, rgbFg2.b);
+            }
+        } else {
+            if (ratioWithBlack >= 3.5 || (lum >= 0.3 && ratioWithWhite < 4.0)) {
+                const rgbBg = hsvToRgb(h, 0.50, 0.09);
+                const rgbFg1 = hsvToRgb(h, 0.10, 0.98);
+                bgHex = rgbToHex(rgbBg.r, rgbBg.g, rgbBg.b);
+                fg1Hex = rgbToHex(rgbFg1.r, rgbFg1.g, rgbFg1.b);
+            } else {
+                const rgbBg = hsvToRgb(h, 0.04, 0.98);
+                const rgbFg1 = hsvToRgb(h, 0.85, 0.12);
+                bgHex = rgbToHex(rgbBg.r, rgbBg.g, rgbBg.b);
+                fg1Hex = rgbToHex(rgbFg1.r, rgbFg1.g, rgbFg1.b);
+            }
+        }
+
+        let targetHex = fg1Hex;
+        if (activeChannel === 'fg2') targetHex = fg2Hex;
+        if (activeChannel === 'bg') targetHex = bgHex;
+        updateFromHex(targetHex, false);
+    }
+
+    function swapColors() {
+        pushState();
+        const temp = fg1Hex;
+        fg1Hex = bgHex;
+        bgHex = temp;
+        
+        const rgbFg = hexToRgb(fg1Hex);
+        const rgbBg = hexToRgb(bgHex);
+        const r = Math.round(rgbFg.r * 0.65 + rgbBg.r * 0.35);
+        const g = Math.round(rgbFg.g * 0.65 + rgbBg.r * 0.35);
+        const b = Math.round(rgbFg.b * 0.65 + rgbBg.b * 0.35);
+        fg2Hex = rgbToHex(r, g, b);
+
+        let targetHex = fg1Hex;
+        if (activeChannel === 'fg2') targetHex = fg2Hex;
+        if (activeChannel === 'bg') targetHex = bgHex;
+        updateFromHex(targetHex, false);
+    }
+
+    function hsvToRgb(h, s, v) {
+        let r, g, b;
+        let i = Math.floor((h / 60) % 6);
+        let f = (h / 60) - Math.floor(h / 60);
+        let p = v * (1 - s);
+        let q = v * (1 - f * s);
+        let t = v * (1 - (1 - f) * s);
+        switch (i) {
+            case 0: r = v; g = t; b = p; break;
+            case 1: r = q; g = v; b = p; break;
+            case 2: r = p; g = v; b = t; break;
+            case 3: r = p; g = q; b = v; break;
+            case 4: r = t; g = p; b = v; break;
+            case 5: r = v; g = p; b = q; break;
+        }
+        return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+    }
+
+    function rgbToHsv(r, g, b) {
+        r /= 255; g /= 255; b /= 255;
+        let max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h, s, v = max;
+        let d = max - min;
+        s = max === 0 ? 0 : d / max;
+        if (max === min) h = preservedBrandHue;
+        else {
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h *= 60;
+        }
+        return { h, s, v };
+    }
+
+    function hexToRgb(hex) {
+        hex = hex.replace(/^#/, '');
+        if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+        if (hex.length !== 6) return null;
+        const num = parseInt(hex, 16);
+        return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+    }
+
+    function rgbToHex(r, g, b) {
+        return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+    }
+
+    function rgbToHsl(r, g, b) {
+        r /= 255; g /= 255; b /= 255;
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h = preservedBrandHue, s = 0, l = (max + min) / 2;
+
+        if (max !== min) {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r: h = ((g - b) / d + (g < b ? 6 : 0)) * 60; break;
+                case g: h = ((b - r) / d + 2) * 60; break;
+                case b: h = ((r - g) / d + 4) * 60; break;
+            }
+        }
+
+        return { 
+            h: Math.round(Math.min(300, Math.max(0, h))), 
+            s: Math.round(s * 100), 
+            l: Math.round(l * 100) 
+        };
+    }
+
+    function getLuminance(r, g, b) {
+        const a = [r, g, b].map(v => {
+            v /= 255;
+            return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+        });
+        return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+    }
+
+    function calcContrastRatio(lum1, lum2) {
+        const l1 = Math.max(lum1, lum2);
+        const l2 = Math.min(lum1, lum2);
+        return (l1 + 0.05) / (l2 + 0.05);
+    }
+
+    function refreshDashboard() {
+        document.getElementById('swatch-fg1').style.backgroundColor = fg1Hex;
+        document.getElementById('swatch-fg2').style.backgroundColor = fg2Hex;
+        document.getElementById('swatch-bg').style.backgroundColor = bgHex;
+
+        document.getElementById('badge-hex-fg1').innerText = fg1Hex.toUpperCase();
+        document.getElementById('badge-hex-fg2').innerText = fg2Hex.toUpperCase();
+        document.getElementById('badge-hex-bg').innerText = bgHex.toUpperCase();
+
+        const canvas = document.getElementById('ui-canvas');
+        canvas.style.backgroundColor = bgHex;
+
+        const rgbFg1 = hexToRgb(fg1Hex) || { r: 37, g: 99, b: 235 };
+        const lumFg1 = getLuminance(rgbFg1.r, rgbFg1.g, rgbFg1.b);
+        const btnTextColor = lumFg1 > 0.45 ? '#0f172a' : '#ffffff';
+
+        if (curTemplate === 'card') {
+            canvas.innerHTML = `
+                <div class="canvas-header">
+                    <div>
+                        <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: ${fg1Hex};">실시간 디자인 주 타이틀 (Primary Title)</h3>
+                        <p style="margin: 6px 0 0 0; font-size: 13.5px; line-height: 1.5; color: ${fg2Hex};">보조 텍스트(Secondary Body)로 렌더링된 설명 문장입니다. 계층 간의 시각적 분리감과 가독성을 확인하세요.</p>
+                    </div>
+                    <span class="demo-tag" style="border-color: ${fg1Hex}; color: ${fg1Hex};">ACTIVE</span>
+                </div>
+                <div class="canvas-components">
+                    <button class="demo-btn" style="background: ${fg1Hex}; color: ${btnTextColor}; border-color: ${fg1Hex};">주 실행 버튼</button>
+                    <button class="demo-btn" style="background: transparent; border-color: ${fg2Hex}; color: ${fg2Hex};">보조 액션 버튼</button>
+                </div>
+            `;
+        } else if (curTemplate === 'banner') {
+            canvas.innerHTML = `
+                <div style="border-left: 4px solid ${fg1Hex}; padding-left: 14px;">
+                    <div style="font-size: 16px; font-weight: 800; color: ${fg1Hex};">시스템 업데이트 알림</div>
+                    <div style="font-size: 13px; margin-top: 4px; color: ${fg2Hex};">보조 텍스트로 표기된 세부 공지사항 내용입니다. 배경 대비 또렷하게 보이는지 확인하세요.</div>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="demo-btn" style="background: ${fg1Hex}; color: ${btnTextColor}; border-color: ${fg1Hex}; padding: 6px 14px; font-size: 12.5px;">확인 완료</button>
+                </div>
+            `;
+        } else {
+            canvas.innerHTML = `
+                <div style="display: flex; flex-direction: column; gap: 10px; max-width: 320px;">
+                    <label style="font-size: 13px; font-weight: 800; color: ${fg1Hex};">이메일 계정 입력</label>
+                    <input type="text" value="user@domain.com" readonly style="padding: 8px 12px; border: 1px solid ${fg2Hex}; border-radius: 6px; background: transparent; color: ${fg1Hex}; font-family: Consolas;">
+                    <span style="font-size: 11.5px; color: ${fg2Hex};">계정 정보는 암호화되어 안전하게 보관됩니다.</span>
+                </div>
+            `;
+        }
+
+        const rgbFg2 = hexToRgb(fg2Hex) || { r: 100, g: 116, b: 139 };
+        const rgbBg = hexToRgb(bgHex) || { r: 255, g: 255, b: 255 };
+
+        const lumFg2 = getLuminance(rgbFg2.r, rgbFg2.g, rgbFg2.b);
+        const lumBg = getLuminance(rgbBg.r, rgbBg.g, rgbBg.b);
+
+        const ratio1 = calcContrastRatio(lumFg1, lumBg);
+        const ratio2 = calcContrastRatio(lumFg2, lumBg);
+
+        document.getElementById('ratio-val-fg1').innerText = `${ratio1.toFixed(2)} : 1`;
+        const b1 = document.getElementById('badge-status-fg1');
+        if (ratio1 >= 7.0) { b1.className = 'status-badge status-pass'; b1.innerText = 'AAA 최우수'; }
+        else if (ratio1 >= 4.5) { b1.className = 'status-badge status-pass'; b1.innerText = 'AA 적합'; }
+        else if (ratio1 >= 3.0) { b1.className = 'status-badge status-warn'; b1.innerText = '대형만 적합'; }
+        else { b1.className = 'status-badge status-fail'; b1.innerText = '가독성 불량'; }
+
+        document.getElementById('ratio-val-fg2').innerText = `${ratio2.toFixed(2)} : 1`;
+        const b2 = document.getElementById('badge-status-fg2');
+        if (ratio2 >= 4.5) { b2.className = 'status-badge status-pass'; b2.innerText = 'AA 적합'; }
+        else if (ratio2 >= 3.0) { b2.className = 'status-badge status-warn'; b2.innerText = '캡션 수준'; }
+        else { b2.className = 'status-badge status-fail'; b2.innerText = '가독성 미달'; }
+
+        const mNormal = document.getElementById('matrix-normal');
+        const mLarge = document.getElementById('matrix-large');
+        const mAaa = document.getElementById('matrix-aaa');
+
+        if (ratio1 >= 4.5) {
+            mNormal.innerText = '적합 통과'; mNormal.style.color = '#15803d';
+        } else {
+            mNormal.innerText = '가독성 미달'; mNormal.style.color = '#b91c1c';
+        }
+
+        if (ratio1 >= 3.0) {
+            mLarge.innerText = '적합 통과'; mLarge.style.color = '#15803d';
+        } else {
+            mLarge.innerText = '가독성 미달'; mLarge.style.color = '#b91c1c';
+        }
+
+        if (ratio1 >= 7.0) {
+            mAaa.innerText = 'AAA 달성'; mAaa.style.color = '#15803d';
+        } else {
+            mAaa.innerText = '미달 (AA권장)'; mAaa.style.color = '#854d0e';
+        }
+
+        renderDynamicMutualChips(lumBg, lumFg1, rgbBg, rgbFg1);
+        updateHistoryButtons();
+    }
+
+    function renderDynamicMutualChips(lumBg, lumFg1, rgbBg, rgbFg1) {
+        const whiteRatio = (1.0 + 0.05) / (lumBg + 0.05);
+        const blackRatio = (lumBg + 0.05) / (0.0 + 0.05);
+        const preferDarkText = blackRatio >= whiteRatio;
+
+        const h = preservedBrandHue;
+        const compHue = (h + 180) % 360;
+
+        let fg1Chips = [];
+        if (preferDarkText) {
+            fg1Chips = [
+                { name: '딥 브랜드', rgb: hsvToRgb(h, 0.90, 0.35) },
+                { name: '보색 딥톤', rgb: hsvToRgb(compHue, 0.85, 0.30) },
+                { name: '다크 차콜', hex: '#0f172a' },
+                { name: '클래식 블랙', hex: '#111827' }
+            ];
+        } else {
+            fg1Chips = [
+                { name: '선명한 브랜드', rgb: hsvToRgb(h, 0.70, 0.96) },
+                { name: '보색 파스텔', rgb: hsvToRgb(compHue, 0.50, 0.95) },
+                { name: '퓨어 화이트', hex: '#ffffff' },
+                { name: '크림 옐로우', hex: '#fef08a' }
+            ];
+        }
+
+        let fg2Chips = [];
+        if (preferDarkText) {
+            fg2Chips = [
+                { name: '슬레이트 그레이', hex: '#475569' },
+                { name: '뮤트 차콜', hex: '#334155' },
+                { name: '브랜드 미디엄', rgb: hsvToRgb(h, 0.40, 0.45) },
+                { name: '뉴트럴 쿨', hex: '#64748b' }
+            ];
+        } else {
+            fg2Chips = [
+                { name: '라이트 슬레이트', hex: '#cbd5e1' },
+                { name: '소프트 실버', hex: '#94a3b8' },
+                { name: '소프트 틴트', rgb: hsvToRgb(h, 0.25, 0.85) },
+                { name: '페일 앰버', hex: '#fed7aa' }
+            ];
+        }
+
+        let bgChips = [];
+        if (lumFg1 < 0.20) {
+            bgChips = [
+                { name: '퓨어 화이트', hex: '#ffffff' },
+                { name: '페일 틴트', rgb: hsvToRgb(h, 0.05, 0.98) },
+                { name: '보색 틴트', rgb: hsvToRgb(compHue, 0.05, 0.98) },
+                { name: '라이트 그레이', hex: '#f8fafc' }
+            ];
+        } else {
+            bgChips = [
+                { name: '옵시디언 블랙', hex: '#09090b' },
+                { name: '딥 다크', rgb: hsvToRgb(h, 0.50, 0.10) },
+                { name: '보색 딥 나이트', rgb: hsvToRgb(compHue, 0.45, 0.12) },
+                { name: '미드나잇 네이비', hex: '#0f172a' }
+            ];
+        }
+
+        buildChipsHtml('chips-fg1', fg1Chips, 'fg1');
+        buildChipsHtml('chips-fg2', fg2Chips, 'fg2');
+        buildChipsHtml('chips-bg', bgChips, 'bg');
+    }
+
+    function buildChipsHtml(containerId, list, target) {
+        const wrap = document.getElementById(containerId);
+        wrap.innerHTML = '';
+        list.forEach(item => {
+            let hex = item.hex;
+            if (!hex && item.rgb) hex = rgbToHex(item.rgb.r, item.rgb.g, item.rgb.b);
+
+            const btn = document.createElement('span');
+            btn.className = 'quick-chip';
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                pushState();
+                if (target === 'fg1') fg1Hex = hex;
+                if (target === 'fg2') fg2Hex = hex;
+                if (target === 'bg') bgHex = hex;
+                selectChannel(target, false);
+                updateFromHex(hex, false);
+            };
+            btn.innerHTML = `<span class="chip-dot" style="background:${hex};"></span>${item.name}`;
+            wrap.appendChild(btn);
+        });
+    }
+
+    function syncPickerUI(caller) {
+        const rgb = hsvToRgb(curH, curS, curV);
+        const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+        const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+
+        if (caller !== 'theme') {
+            if (activeChannel === 'fg1') fg1Hex = hex;
+            else if (activeChannel === 'fg2') fg2Hex = hex;
+            else bgHex = hex;
+        }
+
+        if (caller !== 'hex') document.getElementById('input-hex').value = hex;
+        if (caller !== 'rgb') document.getElementById('input-rgb').value = `${rgb.r}, ${rgb.g}, ${rgb.b}`;
+        if (caller !== 'hsl') document.getElementById('input-hsl').value = `${hsl.h}, ${hsl.s}%, ${hsl.l}%`;
+        document.getElementById('hue-range').value = curH;
+
+        const pureRgb = hsvToRgb(curH, 1, 1);
+        document.getElementById('sat-val-box').style.backgroundColor = `rgb(${pureRgb.r}, ${pureRgb.g}, ${pureRgb.b})`;
+
+        const handle = document.getElementById('picker-handle');
+        handle.style.left = `${curS * 100}%`;
+        handle.style.top = `${(1 - curV) * 100}%`;
+
+        refreshDashboard();
+    }
+
+    function onHueChange(val) {
+        ensureInputHistory();
+        curH = parseFloat(val);
+        preservedBrandHue = curH;
+        syncPickerUI('slider');
+    }
+
+    const satValBox = document.getElementById('sat-val-box');
+    let isDragging = false;
+
+    function getCoordsFromEvent(e) {
+        if (e.touches && e.touches.length > 0) {
+            return { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
+        }
+        return { clientX: e.clientX, clientY: e.clientY };
+    }
+
+    function startSatDrag(e) {
+        pushState();
+        isDragging = true;
+        updateSatValCoords(getCoordsFromEvent(e));
+        
+        window.addEventListener('mousemove', onDragMove);
+        window.addEventListener('mouseup', endSatDrag);
+        window.addEventListener('touchmove', onDragMove, { passive: false });
+        window.addEventListener('touchend', endSatDrag);
+    }
+
+    function onDragMove(e) {
+        if (!isDragging) return;
+        if (e.touches) e.preventDefault();
+        updateSatValCoords(getCoordsFromEvent(e));
+    }
+
+    function updateSatValCoords(coords) {
+        const rect = satValBox.getBoundingClientRect();
+        let x = Math.max(0, Math.min(rect.width, coords.clientX - rect.left));
+        let y = Math.max(0, Math.min(rect.height, coords.clientY - rect.top));
+
+        curS = x / rect.width;
+        curV = 1 - (y / rect.height);
+        syncPickerUI('palette');
+    }
+
+    function endSatDrag() {
+        if (isDragging) {
+            isDragging = false;
+            window.removeEventListener('mousemove', onDragMove);
+            window.removeEventListener('mouseup', endSatDrag);
+            window.removeEventListener('touchmove', onDragMove);
+            window.removeEventListener('touchend', endSatDrag);
+        }
+    }
+
+    satValBox.addEventListener('mousedown', startSatDrag);
+    satValBox.addEventListener('touchstart', startSatDrag, { passive: false });
+
+    function updateFromHex(val, isUserInput = true) {
+        if (isUserInput) ensureInputHistory();
+        val = val.trim();
+        if (!val.startsWith('#')) val = '#' + val;
+        const rgb = hexToRgb(val);
+        if (rgb) {
+            const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+            if (hsv.s > 0.1) {
+                preservedBrandHue = Math.min(300, hsv.h);
+            }
+            curH = preservedBrandHue;
+            curS = hsv.s; 
+            curV = hsv.v;
+            syncPickerUI('hex');
+        }
+    }
+
+    function updateFromRgb(val, isUserInput = true) {
+        if (isUserInput) ensureInputHistory();
+        const m = val.match(/\d+/g);
+        if (m && m.length >= 3) {
+            const r = Math.min(255, parseInt(m[0]));
+            const g = Math.min(255, parseInt(m[1]));
+            const b = Math.min(255, parseInt(m[2]));
+            const hsv = rgbToHsv(r, g, b);
+            if (hsv.s > 0.1) {
+                preservedBrandHue = Math.min(300, hsv.h);
+            }
+            curH = preservedBrandHue;
+            curS = hsv.s; 
+            curV = hsv.v;
+            syncPickerUI('rgb');
+        }
+    }
+
+    function updateFromHsl(val, isUserInput = true) {
+        if (isUserInput) ensureInputHistory();
+        const m = val.match(/\d+/g);
+        if (m && m.length >= 3) {
+            const h = Math.min(300, parseInt(m[0]));
+            const s = Math.min(100, parseInt(m[1])) / 100;
+            const l = Math.min(100, parseInt(m[2])) / 100;
+            if (s > 0.1) {
+                preservedBrandHue = h;
+            }
+            curH = preservedBrandHue;
+            curV = l + s * Math.min(l, 1 - l);
+            curS = curV === 0 ? 0 : 2 * (1 - l / curV);
+            syncPickerUI('hsl');
+        }
+    }
+
+    function copyActiveHex() {
+        const val = document.getElementById('input-hex').value;
+        navigator.clipboard.writeText(val).then(() => alert(`복사 완료: ${val}`));
+    }
+
+    function openExportModal() {
+        const cssVars = `/* CSS 변수 (Design Tokens) */\n:root {\n  --color-primary: ${fg1Hex};\n  --color-secondary: ${fg2Hex};\n  --color-background: ${bgHex};\n}\n\n/* Tailwind Config */\ncolors: {\n  'ui-primary': '${fg1Hex}',\n  'ui-secondary': '${fg2Hex}',\n  'ui-bg': '${bgHex}',\n}`;
+        document.getElementById('export-code').innerText = cssVars;
+        document.getElementById('export-modal').classList.add('active');
+    }
+
+    function closeExportModal(e) {
+        if (e && e.target !== e.currentTarget) return;
+        document.getElementById('export-modal').classList.remove('active');
+    }
+
+    function copyExportCode() {
+        const code = document.getElementById('export-code').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+            alert('전체 코드가 복사되었습니다.');
+            closeExportModal();
+        });
+    }
+
+    window.onload = () => {
+        selectChannel('fg1', false);
+        updateHistoryButtons();
+    };
+</script>
+<script src="../nav.js"></script>
+</body>
+</html>
