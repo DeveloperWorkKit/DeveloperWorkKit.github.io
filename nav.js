@@ -32,6 +32,7 @@
                         <a href="${HOST_URL}/time/">타임스탬프 변환기 (TIME)</a>
                         <a href="${HOST_URL}/hash/">UUID & 해시 생성기 (HASH)</a>
                         <a href="${HOST_URL}/qrm/">QR 마스터 (QRM)</a>
+                        <a href="${HOST_URL}/color/">웹 색상 스튜디오 (COLOR)</a>
                     </div>
                 </div>
             </nav>
