@@ -65,12 +65,13 @@
       line-height: 1.2 !important;
     }
 
-    .badge-coder { background-color: #3b82f6 !important; }
-    .badge-json { background-color: #8b5cf6 !important; }
     .badge-strget { background-color: #ef4444 !important; }
+    .badge-markdown { background-color: #0284c7 !important; }
+    .badge-coder { background-color: #3b82f6 !important; }
+    .badge-beautify { background-color: #0d9488 !important; }
+    .badge-json { background-color: #8b5cf6 !important; }
     .badge-time { background-color: #10b981 !important; }
     .badge-hash { background-color: #6366f1 !important; }
-    .badge-beautify { background-color: #0d9488 !important; }
     .badge-cron { background-color: #e11d48 !important; }
     .badge-color { background-color: #db2777 !important; }
     
@@ -111,27 +112,7 @@
     </div>
 
     <div class="blog-grid">
-      <!-- 1번 글 -->
-      <a href="base64-guide.html" class="blog-card">
-        <div>
-          <span class="card-badge badge-coder">CODER</span>
-          <h2 class="card-title">Base64 인코딩 원리와 실무 한글 깨짐 해결법</h2>
-          <p class="card-desc">Base64의 내부 동작 원리와 웹 통신 중 발생하는 UTF-8 한글 깨짐 문제의 원인 및 해결 코드를 정리합니다.</p>
-        </div>
-        <span class="card-link-text">가이드 읽기 →</span>
-      </a>
-
-      <!-- 2번 글 -->
-      <a href="json-format-guide.html" class="blog-card">
-        <div>
-          <span class="card-badge badge-json">JSON</span>
-          <h2 class="card-title">JSON 유효성 검사와 구조적 데이터 파싱 팁</h2>
-          <p class="card-desc">대용량 JSON 트러블슈팅과 구문 오류(Syntax Error)를 빠르게 진단하는 실무 노하우를 알아봅니다.</p>
-        </div>
-        <span class="card-link-text">가이드 읽기 →</span>
-      </a>
-
-      <!-- 3번 글 -->
+      <!-- 1. STRGET (텍스트/문서 가이드) -->
       <a href="regex-extract-guide.html" class="blog-card">
         <div>
           <span class="card-badge badge-strget">STRGET</span>
@@ -141,27 +122,27 @@
         <span class="card-link-text">가이드 읽기 →</span>
       </a>
 
-      <!-- 4번 글 -->
-      <a href="timestamp-guide.html" class="blog-card">
+      <!-- 2. MARKDOWN (텍스트/문서 가이드) -->
+      <a href="markdown-guide.html" class="blog-card">
         <div>
-          <span class="card-badge badge-time">TIME</span>
-          <h2 class="card-title">Unix Epoch Timestamp 개념과 시간대 변환 가이드</h2>
-          <p class="card-desc">10자리 초와 13자리 밀리초의 차이점, 그리고 KST/UTC 시간대 상호 변환 시 주의사항을 정리합니다.</p>
+          <span class="card-badge badge-markdown">MARKDOWN</span>
+          <h2 class="card-title">마크다운(Markdown) 기초부터 확장 문법까지 완벽 가이드</h2>
+          <p class="card-desc">기본 서식, 체크리스트, 표(Table)부터 LaTeX 수학 수식과 Mermaid 다이어그램까지 마크다운 실전 활용법을 총정리합니다.</p>
         </div>
         <span class="card-link-text">가이드 읽기 →</span>
       </a>
 
-      <!-- 5번 글 -->
-      <a href="hash-guide.html" class="blog-card">
+      <!-- 3. CODER (개발/데이터 가이드) -->
+      <a href="base64-guide.html" class="blog-card">
         <div>
-          <span class="card-badge badge-hash">HASH</span>
-          <h2 class="card-title">단방향 암호화 해시(SHA-256)와 UUID v4 원리 정리</h2>
-          <p class="card-desc">데이터 무결성 검증을 위한 SHA-256 해시 알고리즘과 고유 식별자 생성을 위한 UUID v4 원리를 설명합니다.</p>
+          <span class="card-badge badge-coder">CODER</span>
+          <h2 class="card-title">Base64 인코딩 원리와 실무 한글 깨짐 해결법</h2>
+          <p class="card-desc">Base64의 내부 동작 원리와 웹 통신 중 발생하는 UTF-8 한글 깨짐 문제의 원인 및 해결 코드를 정리합니다.</p>
         </div>
         <span class="card-link-text">가이드 읽기 →</span>
       </a>
 
-      <!-- 6번 글 -->
+      <!-- 4. BEAUTIFY (개발/데이터 가이드) -->
       <a href="code-formatter-guide.html" class="blog-card">
         <div>
           <span class="card-badge badge-beautify">BEAUTIFY</span>
@@ -171,7 +152,37 @@
         <span class="card-link-text">가이드 읽기 →</span>
       </a>
 
-      <!-- 7번 글 -->
+      <!-- 5. JSON (개발/데이터 가이드) -->
+      <a href="json-format-guide.html" class="blog-card">
+        <div>
+          <span class="card-badge badge-json">JSON</span>
+          <h2 class="card-title">JSON 유효성 검사와 구조적 데이터 파싱 팁</h2>
+          <p class="card-desc">대용량 JSON 트러블슈팅과 구문 오류(Syntax Error)를 빠르게 진단하는 실무 노하우를 알아봅니다.</p>
+        </div>
+        <span class="card-link-text">가이드 읽기 →</span>
+      </a>
+
+      <!-- 6. TIME (개발/데이터 가이드) -->
+      <a href="timestamp-guide.html" class="blog-card">
+        <div>
+          <span class="card-badge badge-time">TIME</span>
+          <h2 class="card-title">Unix Epoch Timestamp 개념과 시간대 변환 가이드</h2>
+          <p class="card-desc">10자리 초와 13자리 밀리초의 차이점, 그리고 KST/UTC 시간대 상호 변환 시 주의사항을 정리합니다.</p>
+        </div>
+        <span class="card-link-text">가이드 읽기 →</span>
+      </a>
+
+      <!-- 7. HASH (개발/데이터 가이드) -->
+      <a href="hash-guide.html" class="blog-card">
+        <div>
+          <span class="card-badge badge-hash">HASH</span>
+          <h2 class="card-title">단방향 암호화 해시(SHA-256)와 UUID v4 원리 정리</h2>
+          <p class="card-desc">데이터 무결성 검증을 위한 SHA-256 해시 알고리즘과 고유 식별자 생성을 위한 UUID v4 원리를 설명합니다.</p>
+        </div>
+        <span class="card-link-text">가이드 읽기 →</span>
+      </a>
+
+      <!-- 8. CRON (개발/데이터 가이드) -->
       <a href="cron-guide.html" class="blog-card">
         <div>
           <span class="card-badge badge-cron">CRON</span>
@@ -181,7 +192,7 @@
         <span class="card-link-text">가이드 읽기 →</span>
       </a>
 
-      <!-- 8번 글 (신규 추가) -->
+      <!-- 9. COLOR (개발/데이터 가이드) -->
       <a href="wcag-color-contrast-guide.html" class="blog-card">
         <div>
           <span class="card-badge badge-color">COLOR</span>
