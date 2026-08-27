@@ -8,7 +8,8 @@
     <priority>1.0</priority>
   </url>
 
-  <!-- 2. 핵심 유틸리티 도구 12종 (높은 중요도) -->
+  <!-- 2. 핵심 유틸리티 도구 13종 (메인 그리드 순서와 1:1 정렬) -->
+  <!-- [텍스트 / 문서 도구군] -->
   <url>
     <loc>https://developerworkkit.github.io/strget/</loc>
     <lastmod>2026-08-25</lastmod>
@@ -21,6 +22,26 @@
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
+  <url>
+    <loc>https://developerworkkit.github.io/strcmp/</loc>
+    <lastmod>2026-08-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://developerworkkit.github.io/markdown/</loc>
+    <lastmod>2026-08-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://developerworkkit.github.io/fsee/</loc>
+    <lastmod>2026-08-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- [개발 / 데이터 도구군] -->
   <url>
     <loc>https://developerworkkit.github.io/coder/</loc>
     <lastmod>2026-08-25</lastmod>
@@ -35,18 +56,6 @@
   </url>
   <url>
     <loc>https://developerworkkit.github.io/json-viewer/</loc>
-    <lastmod>2026-08-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://developerworkkit.github.io/fsee/</loc>
-    <lastmod>2026-08-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://developerworkkit.github.io/strcmp/</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -82,11 +91,17 @@
     <priority>0.9</priority>
   </url>
 
-  <!-- 3. 기술 블로그 허브 및 가이드 8종 (중간 중요도) -->
+  <!-- 3. 기술 블로그 허브 및 가이드 9종 -->
   <url>
     <loc>https://developerworkkit.github.io/blog/</loc>
     <lastmod>2026-08-27</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://developerworkkit.github.io/blog/markdown-guide.html</loc>
+    <lastmod>2026-08-27</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
@@ -138,7 +153,7 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- 4. 일반 문서 (기본 중요도) -->
+  <!-- 4. 일반 문서 -->
   <url>
     <loc>https://developerworkkit.github.io/privacy.html</loc>
     <lastmod>2026-08-25</lastmod>
