@@ -1,70 +1,181 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>웹 접근성(WCAG 2.1) 명도 대비비 기준과 실무 UI 배색 가이드 | DevWorKit 블로그</title>
-    <meta name="description" content="W3C WCAG 2.1 AA/AAA 기준 명도 대비비 계산 공식과 다크/라이트 모드 UI 3단 배색 실무 가이드">
-    <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.7; color: #334155; background: #f8fafc; margin: 0; padding: 0; }
-        .post-container { max-width: 800px; margin: 40px auto; padding: 32px 24px; background: #ffffff; border: 1px solid #dee2e6; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        h1 { font-size: 26px; font-weight: 800; color: #0f172a; line-height: 1.4; margin-bottom: 12px; }
-        .post-meta { font-size: 13px; color: #94a3b8; margin-bottom: 24px; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; }
-        h2 { font-size: 19px; font-weight: 800; color: #1e293b; margin-top: 32px; border-left: 4px solid #2563eb; padding-left: 10px; }
-        p { margin: 12px 0; font-size: 14.5px; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13.5px; }
-        th, td { border: 1px solid #cbd5e1; padding: 10px 14px; text-align: left; }
-        th { background: #f1f5f9; font-weight: 800; }
-        .tool-banner { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 16px 20px; margin: 28px 0; display: flex; justify-content: space-between; align-items: center; }
-        .tool-banner-btn { background: #2563eb; color: #ffffff; text-decoration: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 13px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>웹 접근성(WCAG 2.1) 명도 대비비 기준과 실무 UI 배색 가이드 - DevWorKit</title>
+  <meta name="description" content="W3C WCAG 2.1 AA/AAA 기준 명도 대비비 계산 공식과 다크/라이트 모드 UI 3단 배색 실무 가이드를 정리합니다.">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    /* 블로그 본문 상세 전용 스타일 */
+    body {
+      background-color: #f8fafc;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #334155;
+    }
+    .article-container {
+      max-width: 860px;
+      margin: 40px auto 80px auto;
+      padding: 0 20px;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .back-link:hover {
+      color: #db2777;
+    }
+    .article-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 40px 48px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .article-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+      background-color: #db2777; /* COLOR 전용 핑크 뱃지 */
+      margin-bottom: 16px;
+    }
+    .article-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.35;
+      margin: 0 0 24px 0;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 20px;
+    }
+    .article-section {
+      margin-bottom: 32px;
+    }
+    .article-section h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0 0 12px 0;
+    }
+    .article-section p {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #475569;
+      margin: 0 0 12px 0;
+    }
+    .article-section ul {
+      margin: 0 0 16px 0;
+      padding-left: 20px;
+      color: #475569;
+      font-size: 15px;
+      line-height: 1.75;
+    }
+    .article-section li {
+      margin-bottom: 6px;
+    }
+    .code-block {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: Consolas, Monaco, "Courier New", Courier, monospace;
+      font-size: 13px;
+      overflow-x: auto;
+      margin: 14px 0;
+      line-height: 1.6;
+    }
+    /* COLOR 도구 색상(#db2777)과 100% 일치시킨 하단 배너 스타일 */
+    .tool-banner {
+      background: #fdf2f8;
+      border: 1px solid #fbcfe8;
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin-top: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .tool-banner-text {
+      font-size: 14px;
+      color: #9d174d;
+      font-weight: 600;
+    }
+    .tool-banner-btn {
+      background: #db2777;
+      color: #ffffff;
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: background-color 0.15s;
+    }
+    .tool-banner-btn:hover {
+      background: #be185d;
+    }
+  </style>
 </head>
 <body>
-<div class="post-container">
-    <h1>웹 접근성(WCAG 2.1) 명도 대비비 기준과 실무 UI 배색 가이드</h1>
-    <div class="post-meta">작성일: 2026-08-27 | 카테고리: UI/UX & Web Accessibility</div>
 
-    <p>웹 디자인과 프론트엔드 개발에서 시각 장애인 및 저시력 사용자를 포함한 모든 사용자가 정보를 또렷하게 읽을 수 있도록 보장하는 것은 필수입니다. 본 글에서는 W3C WCAG 2.1 가이드라인의 명도 대비비 기준을 정리합니다.</p>
+  <!-- 상단 공통 네비게이션 주입 -->
+  <div id="dwk-nav"></div>
 
-    <div class="tool-banner">
-        <div>
-            <strong style="color: #1e40af;">🎨 실시간 색상 계층 설계 및 가독성 검증</strong>
-            <div style="font-size: 12.5px; color: #475569; margin-top: 2px;">3채널 색상을 실시간 조율하고 대비비를 측정해보세요.</div>
+  <main class="article-container">
+    <a href="index.html" class="back-link">← 블로그 목록으로 돌아가기</a>
+    
+    <article class="article-card">
+      <span class="article-badge">COLOR</span>
+      <h1 class="article-title">웹 접근성(WCAG 2.1) 명도 대비비 기준과 실무 UI 배색 가이드</h1>
+
+      <section class="article-section">
+        <h2>1. 명도 대비비(Color Contrast Ratio)의 중요성</h2>
+        <p>웹 디자인과 프론트엔드 개발에서 글자색과 배경색의 명도 대비가 부족하면 저시력 사용자뿐만 아니라 야외 직사광선 환경의 모든 사용자가 정보를 읽기 어렵습니다. W3C의 웹 콘텐츠 접근성 지침(WCAG 2.1)은 누구나 텍스트를 또렷하게 인지할 수 있도록 수학적인 명도 대비비 기준을 정의하고 있습니다.</p>
+      </section>
+
+      <section class="article-section">
+        <h2>2. WCAG 2.1 핵심 가독성 판정 기준</h2>
+        <p>실무 UI 디자인 및 프론트엔드 개발 시 반드시 준수해야 하는 기준 수치입니다:</p>
+        <ul>
+          <li><strong>일반 본문 텍스트 (18pt / 24px 미만)</strong>: 최소 <strong>4.5 : 1</strong> 이상 (AA 등급) / 권장 <strong>7.0 : 1</strong> 이상 (AAA 등급)</li>
+          <li><strong>대형 텍스트 (18pt 이상 또는 14pt 볼드 이상)</strong>: 최소 <strong>3.0 : 1</strong> 이상 (AA 등급) / 권장 <strong>4.5 : 1</strong> 이상 (AAA 등급)</li>
+          <li><strong>UI 컴포넌트 및 그래픽 요소 (버튼 테두리, 입력 폼)</strong>: 최소 <strong>3.0 : 1</strong> 이상 (AA 등급)</li>
+        </ul>
+        <div class="code-block">
+// W3C 상대 휘도(Relative Luminance) 기반 명도 대비비 계산식
+Contrast Ratio = (L1 + 0.05) / (L2 + 0.05)
+* L1: 더 밝은 색상의 상대 휘도 (0.0 ~ 1.0)
+* L2: 더 어두운 색상의 상대 휘도 (0.0 ~ 1.0)
+* 결과 범위: 1:1 (동일 색상) ~ 21:1 (순수 블랙 vs 순수 화이트)
         </div>
-        <a href="../color/" class="tool-banner-btn">웹 색상 스튜디오 실행 →</a>
-    </div>
+      </section>
 
-    <h2>1. W3C WCAG 2.1 명도 대비비(Contrast Ratio) 등급</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>구분</th>
-                <th>AA 등급 (기본 준수)</th>
-                <th>AAA 등급 (최고 수준)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>일반 텍스트 (본문, 18pt 미만)</td>
-                <td><strong>최소 4.5 : 1 이상</strong></td>
-                <td><strong>최소 7.0 : 1 이상</strong></td>
-            </tr>
-            <tr>
-                <td>대형 텍스트 (18pt 이상 또는 14pt 볼드)</td>
-                <td><strong>최소 3.0 : 1 이상</strong></td>
-                <td><strong>최소 4.5 : 1 이상</strong></td>
-            </tr>
-            <tr>
-                <td>UI 컴포넌트 및 그래픽 요소</td>
-                <td><strong>최소 3.0 : 1 이상</strong></td>
-                <td>권장 사항</td>
-            </tr>
-        </tbody>
-    </table>
+      <section class="article-section">
+        <h2>3. 실무 UI 3채널 배색 계층 설계 팁</h2>
+        <p>대부분의 모던 웹/앱 UI는 <strong>주 텍스트(Primary Title)</strong>, <strong>보조 텍스트(Secondary Body)</strong>, <strong>배경색(Background)</strong>의 3단 구조로 이루어집니다. 본문 텍스트는 4.5:1(AA) 이상을 확보하고, 핵심 타이틀과 액션 버튼은 7.0:1(AAA) 이상을 유지하는 것이 가장 이상적인 시각 위계를 형성합니다.</p>
+      </section>
 
-    <h2>2. 실무 UI 3채널 배색 원칙</h2>
-    <p>대부분의 모던 웹/앱 UI는 **주 텍스트(제목/버튼)**, **보조 텍스트(설명 문장)**, **배경색**의 3단 계층 구조로 이루어집니다. 본문 텍스트는 4.5:1(AA) 이상을 확보하고, 핵심 타이틀과 액션 버튼은 7.0:1(AAA) 이상을 유지하는 것이 가장 이상적인 시각 위계(Visual Hierarchy)를 형성합니다.</p>
-</div>
-<script src="../nav.js"></script>
+      <section class="article-section">
+        <h2>4. 무료 온라인 색상 스튜디오 활용</h2>
+        <p>복잡한 휘도 계산 없이 브라우저에서 실시간으로 3채널 배색을 조율하고, WCAG 2.1 명도 대비비를 0.01 단위로 검증하며 디자인 토큰(CSS / Tailwind)을 원클릭 추출할 수 있습니다.</p>
+        <div class="tool-banner">
+          <span class="tool-banner-text">🎨 DevWorKit 실시간 웹 색상 스튜디오 사용해보기</span>
+          <a href="../color/" class="tool-banner-btn">도구로 이동 →</a>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <!-- 공통 네비게이션 스크립트 -->
+  <script src="../nav.js"></script>
 </body>
 </html>
