@@ -2,6 +2,15 @@
 (function () {
     const HOST_URL = 'https://developerworkkit.github.io';
 
+    // 1. 공통 파비콘(수리 도구 🛠️) 및 기본 Open Graph 메타 태그 동적 주입
+    const commonMetaHTML = `
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="${HOST_URL}/">
+        <meta property="og:site_name" content="DevWorKit">
+    `;
+    document.head.insertAdjacentHTML('beforeend', commonMetaHTML);
+
     const navHTML = `
     <header class="dwk-global-nav">
         <div class="nav-left">
