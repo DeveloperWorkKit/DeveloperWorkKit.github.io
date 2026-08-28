@@ -46,6 +46,19 @@
     </header>
     `;
 
+    const footerHTML = `
+    <footer class="dwk-global-footer">
+        <div class="dwk-footer-links">
+            <a href="${HOST_URL}/about.html">서비스 소개 및 문의</a>
+            <a href="${HOST_URL}/privacy.html">개인정보처리방침</a>
+            <a href="https://github.com/developerworkkit/developerworkkit.github.io" target="_blank" rel="noopener">GitHub</a>
+        </div>
+        <div class="dwk-footer-copy">
+            © DevWorKit (DWK) - All Tools Built for Productivity
+        </div>
+    </footer>
+    `;
+
     const navCSS = `
     <style>
         .dwk-global-nav {
@@ -159,6 +172,42 @@
         }
         .nav-right .nav-hub-btn:hover { color: #7dd3fc; }
 
+        /* 모던 푸터 스타일 */
+        .dwk-global-footer {
+            border-top: 1px solid #dee2e6;
+            padding: 24px 40px;
+            background-color: #f8fafc;
+            color: #666666;
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+            text-align: center;
+            margin-top: auto;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        .dwk-footer-links {
+            display: flex;
+            gap: 20px;
+            font-weight: 600;
+        }
+        .dwk-footer-links a {
+            color: #475569;
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+        .dwk-footer-links a:hover {
+            color: #0284c7;
+        }
+        .dwk-footer-copy {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
         /* 모바일 최적화 */
         @media (max-width: 768px) {
             .dwk-global-nav { padding: 0 12px; height: 50px; }
@@ -182,12 +231,24 @@
             .nav-dropdown.active .nav-dropdown-content {
                 display: block !important;
             }
+            .dwk-global-footer { padding: 20px 16px; }
+            .dwk-footer-links { gap: 12px; font-size: 12px; }
         }
     </style>
     `;
 
     document.head.insertAdjacentHTML('beforeend', navCSS);
     document.body.insertAdjacentHTML('afterbegin', navHTML);
+
+    // 페이지 로드 시 #dwk-footer 자리에 푸터 자동 주입 (없으면 body 끝에 추가)
+    window.addEventListener('DOMContentLoaded', () => {
+        const targetContainer = document.getElementById('dwk-footer');
+        if (targetContainer) {
+            targetContainer.innerHTML = footerHTML;
+        } else {
+            document.body.insertAdjacentHTML('beforeend', footerHTML);
+        }
+    });
 
     // 모바일 터치 토글 핸들러
     window.toggleMobileNav = function (e, dropdownId) {
