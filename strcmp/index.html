@@ -373,15 +373,6 @@
         .row-modified { background-color: #fcfcfc; }
         .row-empty { color: #aaa; padding: 20px !important; display: block; }
 
-        footer {
-            border-top: 1px solid var(--border-color);
-            padding: 16px 20px;
-            font-size: 12.5px;
-            color: var(--text-muted);
-            background-color: var(--bg-light);
-            text-align: center;
-            margin-top: auto;
-        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script>
 </head>
@@ -506,10 +497,6 @@
         </div>
     </div>
 </div>
-
-<footer>
-    각 입력 창에서 Ctrl+Z(실행 취소) / Ctrl+Y(다시 실행)를 눌러 이전 / 다음 상태로 되돌릴 수 있습니다.
-</footer>
 
 <script>
     const undoStacks = { left: [], right: [] };
