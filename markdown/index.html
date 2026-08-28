@@ -1,207 +1,296 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마크다운 실시간 에디터 | DevWorKit</title>
     <meta name="description" content="수학 수식, 다이어그램, 체크리스트를 실시간으로 지원하는 올인원 마크다운 에디터">
     <link rel="stylesheet" href="../style.css">
-    
+
     <!-- KaTeX CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    
+
     <!-- Mermaid.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.8.0/dist/mermaid.min.js"></script>
 
     <style>
         :root {
-            --badge-color: #0284c7;
             --primary-blue: #0284c7;
-            --border-color: #e2e8f0;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
+            --primary-blue-hover: #0369a1;
+            --bg-light: #f8fafc;
+            --border-color: #dee2e6;
+            --text-main: #333333;
+            --text-muted: #666666;
         }
 
-        #dmermaid, [id^="dmermaid"], svg[id^="mermaid-"], .error-icon, .error-text {
+        /* Mermaid 임시 노드 레이아웃 침범 및 가상 스크롤 영역 생성 원천 차단 */
+        #mermaid-sandbox,
+        #dmermaid,
+        [id^="dmermaid"],
+        body>svg:not(.visible-svg),
+        body>[id^="mermaid-"] {
             display: none !important;
-            visibility: hidden !important;
-            height: 0 !important;
-            width: 0 !important;
             position: absolute !important;
-            left: -9999px !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 0 !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
         }
 
-        html, body {
-            height: 100%;
+        /* 외부 브라우저 기본 스크롤 유지 */
+        html,
+        body {
             margin: 0;
             padding: 0;
-            overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             color: var(--text-main);
             background-color: #ffffff;
             display: flex;
             flex-direction: column;
+            min-height: 100vh;
         }
 
-        /* [핵심] 캡처 화면 1:1 일치 상단 서브 헤더 바 */
-        .tool-sub-header {
+        /* STRGET 1:1 일치 상단 헤더 */
+        header {
             border-bottom: 1px solid var(--border-color);
             padding: 14px 40px;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
-            gap: 10px;
-            background-color: #ffffff;
+            justify-content: space-between;
             flex-shrink: 0;
         }
-        .tool-sub-badge {
-            background-color: #0284c7;
-            color: #ffffff;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-        .tool-sub-title {
-            font-size: 19px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            color: #111827;
-        }
 
-        .dashboard-wrapper {
-            max-width: 1440px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 12px 20px 14px 20px;
-            box-sizing: border-box;
+        .logo-area {
             display: flex;
-            flex-direction: column;
-            flex: 1;
-            height: calc(100vh - 115px);
-            overflow: hidden;
+            align-items: center;
+            gap: 8px;
         }
 
-        .intro-section { margin-bottom: 8px; flex-shrink: 0; }
-        .intro-title { font-size: 20px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0; letter-spacing: -0.5px; }
-        .intro-desc { font-size: 13px; color: var(--text-muted); margin: 0 0 10px 0; }
+        .logo-badge {
+            background: #0284c7;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #111111;
+        }
+
+        /* 페이지 컨테이너 래퍼 */
+        .page-wrapper {
+            display: block;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 12px 20px 10px 20px;
+            box-sizing: border-box;
+            width: 100%;
+            flex: 1;
+        }
+
+        /* 가이드 섹션 */
+        .intro-section {
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .intro-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 4px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .intro-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 0 0 8px 0;
+        }
 
         .guide-box {
             background-color: #f8fafc;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px 18px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 10px 14px;
             font-size: 12.5px;
             color: #334155;
             line-height: 1.5;
-            margin-bottom: 8px;
         }
-        .guide-box strong { display: block; margin-bottom: 6px; color: #0f172a; font-size: 13px; }
-        .guide-list { margin: 0; padding-left: 18px; }
-        .guide-list li { margin-bottom: 3px; }
 
-        /* 1줄 단일 행 통합 툴바 */
+        .guide-box strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #0f172a;
+            font-size: 13px;
+        }
+
+        .guide-list {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .guide-list li {
+            margin-bottom: 2px;
+        }
+
+        /* 1:1 2분할 통합 툴바 */
         .unified-toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 8px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
             margin-bottom: 8px;
-            flex-shrink: 0;
-            flex-wrap: wrap;
-        }
-        .toolbar-left {
-            display: flex;
-            gap: 4px;
             align-items: center;
-            flex-wrap: wrap;
+            flex-shrink: 0;
         }
-        .toolbar-right {
+
+        .toolbar-left {
             display: flex;
             gap: 5px;
             align-items: center;
             flex-wrap: wrap;
         }
 
-        /* 3단 스크롤 모드 세그먼트 컨트롤 */
+        .toolbar-right {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: nowrap;
+        }
+
+        /* 3단 스크롤 모드 컨트롤 */
         .scroll-mode-control {
             display: inline-flex;
             background: #e2e8f0;
             padding: 2px;
-            border-radius: 6px;
-            gap: 2px;
+            border-radius: 5px;
+            gap: 1px;
+            flex-shrink: 0;
         }
+
         .scroll-mode-btn {
             background: transparent;
             border: none;
-            padding: 3px 7px;
-            border-radius: 4px;
+            padding: 4px 6px;
+            border-radius: 3px;
             font-size: 11px;
             font-weight: 700;
             color: #475569;
             cursor: pointer;
             transition: all 0.15s;
+            white-space: nowrap;
         }
+
         .scroll-mode-btn.active {
             background: #ffffff;
             color: #0284c7;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
+        /* 툴바 버튼 */
         .tool-btn {
             background: #ffffff;
             border: 1px solid #cbd5e1;
-            padding: 4px 8px;
-            border-radius: 5px;
+            padding: 4px 7px;
+            border-radius: 4px;
             font-size: 11px;
             font-weight: 700;
             color: #334155;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 3px;
+            gap: 2px;
             transition: all 0.15s;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
+
         .tool-btn:hover {
             background: #f1f5f9;
             border-color: #94a3b8;
             color: #0284c7;
         }
-        .tool-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .tool-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
         .tool-btn.primary {
             background: #0f172a;
             color: #ffffff;
             border-color: #0f172a;
         }
-        .tool-btn.primary:hover { background: #1e293b; }
+
+        .tool-btn.primary:hover {
+            background: #1e293b;
+        }
 
         .mini-history-btn {
             background: #f1f5f9;
             border: 1px solid #cbd5e1;
             border-radius: 4px;
-            padding: 2px 6px;
-            font-size: 11px;
+            padding: 2px 7px;
+            font-size: 11.5px;
             font-weight: 700;
             color: #334155;
             cursor: pointer;
             transition: all 0.1s;
         }
-        .mini-history-btn:hover { background: #e2e8f0; color: #0284c7; }
-        .mini-history-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
+        .mini-history-btn:hover {
+            background: #e2e8f0;
+            color: #0284c7;
+        }
+
+        .mini-history-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        /* [핵심] 에디터 그리드 높이를 660px로 여유 있게 확장 */
         .editor-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            flex: 1;
-            min-height: 0;
+            gap: 16px;
+            height: 860px;
+            box-sizing: border-box;
         }
-        @media (max-width: 900px) {
-            .editor-grid { grid-template-columns: 1fr; overflow-y: auto; }
-            html, body { overflow: auto; height: auto; }
-            .tool-sub-header { padding: 12px 20px; }
+
+        @media (max-width: 1024px) {
+            .unified-toolbar {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .toolbar-right {
+                justify-content: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .editor-grid {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .editor-wrapper {
+                height: 520px;
+            }
+
+            header {
+                padding: 14px 20px;
+            }
         }
 
         .pane-card {
@@ -211,9 +300,8 @@
             padding: 10px 14px;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
             box-sizing: border-box;
-            min-height: 0;
             height: 100%;
         }
 
@@ -226,14 +314,38 @@
             border-bottom: 1px solid #f1f5f9;
             flex-shrink: 0;
         }
-        .pane-title { font-size: 13px; font-weight: 800; color: #0f172a; }
-        .pane-stats { font-size: 11.5px; font-weight: 600; color: #64748b; }
 
-        .md-input {
+        .pane-title {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .pane-stats {
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        /* STRGET 방식 절대 위치 래퍼 */
+        .editor-wrapper {
+            position: relative;
             width: 100%;
             flex: 1;
             border: 1px solid #cbd5e1;
             border-radius: 6px;
+            overflow: hidden;
+            background: #ffffff;
+            min-height: 0;
+        }
+
+        .md-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
             padding: 12px;
             font-family: "D2Coding", Consolas, "Courier New", monospace;
             font-size: 13px;
@@ -246,14 +358,19 @@
             overflow-y: auto;
             tab-size: 2;
         }
-        .md-input:focus { border-color: var(--primary-blue); }
+
+        .md-input:focus {
+            box-shadow: inset 0 0 0 1px var(--primary-blue);
+        }
 
         .md-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            flex: 1;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            padding: 16px 20px 20px 20px;
+            height: 100%;
+            border: none;
+            padding: 16px 20px;
             background: #ffffff;
             overflow-y: auto;
             box-sizing: border-box;
@@ -262,18 +379,73 @@
             color: #334155;
         }
 
-        /* 렌더링 스타일 */
-        .md-preview h1 { font-size: 22px; font-weight: 800; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; margin: 14px 0 10px 0; color: #0f172a; }
-        .md-preview h2 { font-size: 18px; font-weight: 800; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin: 16px 0 8px 0; color: #0f172a; }
-        .md-preview h3 { font-size: 15px; font-weight: 700; margin: 14px 0 6px 0; color: #0f172a; }
-        .md-preview h4 { font-size: 14px; font-weight: 700; margin: 12px 0 4px 0; color: #1e293b; }
-        .md-preview p { margin: 6px 0; }
-        .md-preview del { color: #94a3b8; text-decoration: line-through; }
-        .md-preview a { color: #0284c7; text-decoration: none; font-weight: 600; }
-        .md-preview a:hover { text-decoration: underline; }
-        .md-preview img { max-width: 100%; border-radius: 6px; margin: 8px 0; }
-        .md-preview ul, .md-preview ol { padding-left: 20px; margin: 6px 0; }
-        .md-preview li { margin-bottom: 3px; }
+        /* 렌더링 서식 */
+        .md-preview h1 {
+            font-size: 22px;
+            font-weight: 800;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 6px;
+            margin: 14px 0 10px 0;
+            color: #0f172a;
+        }
+
+        .md-preview h2 {
+            font-size: 18px;
+            font-weight: 800;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 4px;
+            margin: 16px 0 8px 0;
+            color: #0f172a;
+        }
+
+        .md-preview h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin: 14px 0 6px 0;
+            color: #0f172a;
+        }
+
+        .md-preview h4 {
+            font-size: 14px;
+            font-weight: 700;
+            margin: 12px 0 4px 0;
+            color: #1e293b;
+        }
+
+        .md-preview p {
+            margin: 6px 0;
+        }
+
+        .md-preview del {
+            color: #94a3b8;
+            text-decoration: line-through;
+        }
+
+        .md-preview a {
+            color: #0284c7;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .md-preview a:hover {
+            text-decoration: underline;
+        }
+
+        .md-preview img {
+            max-width: 100%;
+            border-radius: 6px;
+            margin: 8px 0;
+        }
+
+        .md-preview ul,
+        .md-preview ol {
+            padding-left: 20px;
+            margin: 6px 0;
+        }
+
+        .md-preview li {
+            margin-bottom: 3px;
+        }
 
         .md-alert {
             padding: 10px 14px;
@@ -283,11 +455,38 @@
             font-size: 13px;
             line-height: 1.6;
         }
-        .md-alert-title { font-weight: 800; display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-        .md-alert-note { background: #eff6ff; border-color: #3b82f6; color: #1e40af; }
-        .md-alert-tip { background: #f0fdf4; border-color: #22c55e; color: #166534; }
-        .md-alert-warning { background: #fefce8; border-color: #eab308; color: #854d0e; }
-        .md-alert-caution { background: #fef2f2; border-color: #ef4444; color: #991b1b; }
+
+        .md-alert-title {
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
+        .md-alert-note {
+            background: #eff6ff;
+            border-color: #3b82f6;
+            color: #1e40af;
+        }
+
+        .md-alert-tip {
+            background: #f0fdf4;
+            border-color: #22c55e;
+            color: #166534;
+        }
+
+        .md-alert-warning {
+            background: #fefce8;
+            border-color: #eab308;
+            color: #854d0e;
+        }
+
+        .md-alert-caution {
+            background: #fef2f2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
 
         .md-preview .task-list-item {
             list-style-type: none;
@@ -296,6 +495,7 @@
             align-items: center;
             gap: 6px;
         }
+
         .md-preview .task-list-item input {
             cursor: pointer;
             accent-color: #0284c7;
@@ -312,7 +512,14 @@
             border-radius: 0 4px 4px 0;
         }
 
-        .md-preview mark { background-color: #fef08a; color: #854d0e; padding: 2px 4px; border-radius: 3px; font-weight: 600; }
+        .md-preview mark {
+            background-color: #fef08a;
+            color: #854d0e;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
         .md-preview kbd {
             background-color: #f1f5f9;
             border: 1px solid #cbd5e1;
@@ -332,7 +539,13 @@
             padding: 8px 12px;
             margin: 10px 0;
         }
-        .md-preview summary { font-weight: 700; cursor: pointer; color: #0f172a; outline: none; }
+
+        .md-preview summary {
+            font-weight: 700;
+            cursor: pointer;
+            color: #0f172a;
+            outline: none;
+        }
 
         .md-preview code:not(pre code) {
             font-family: Consolas, monospace;
@@ -356,9 +569,25 @@
             line-height: 1.5;
         }
 
-        .md-preview table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
-        .md-preview th, .md-preview td { border: 1px solid #cbd5e1; padding: 7px 10px; text-align: left; }
-        .md-preview th { background: #f8fafc; font-weight: 800; color: #0f172a; }
+        .md-preview table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 13px;
+        }
+
+        .md-preview th,
+        .md-preview td {
+            border: 1px solid #cbd5e1;
+            padding: 7px 10px;
+            text-align: left;
+        }
+
+        .md-preview th {
+            background: #f8fafc;
+            font-weight: 800;
+            color: #0f172a;
+        }
 
         .mermaid-container {
             background: #ffffff;
@@ -379,12 +608,14 @@
             padding: 10px 14px;
             box-sizing: border-box;
         }
+
         .mermaid-fallback-header {
             font-size: 11px;
             font-weight: 700;
             color: #f59e0b;
             margin-bottom: 6px;
         }
+
         .mermaid-fallback-code {
             color: #f8fafc;
             font-family: Consolas, monospace;
@@ -394,522 +625,571 @@
         }
     </style>
 </head>
+
 <body>
 
-<div id="dwk-nav"></div>
+    <div id="dwk-nav"></div>
 
-<!-- [상단 헤더] 캡처 화면 1:1 일치 서브 헤더 바 -->
-<header class="tool-sub-header">
-    <span class="tool-sub-badge">MARKDOWN</span>
-    <span class="tool-sub-title">마크다운 실시간 에디터</span>
-</header>
+    <!-- Mermaid 렌더링 노드 완전 격리 샌드박스 -->
+    <div id="mermaid-sandbox"></div>
 
-<div class="dashboard-wrapper">
-    <div class="intro-section">
-        <h1 class="intro-title">작성한 마크다운 문서를 실시간으로 확인하고 검증하는 도구입니다.</h1>
-        <p class="intro-desc">수학 수식, 다이어그램, 체크리스트, 콜아웃 문법을 3단 스크롤 모드로 실시간 확인하고 깔끔한 HTML 코드를 즉시 추출합니다.</p>
-        
-        <div class="guide-box">
-            <strong>마크다운 실시간 에디터 사용 방법 안내:</strong>
-            <ol class="guide-list">
-                <li>좌측 입력창에 마크다운 문서를 작성하면 우측 뷰어에 실시간으로 서식이 적용되어 렌더링됩니다.</li>
-                <li>상단 템플릿 버튼(<b>[다이어그램]</b>, <b>[수학 수식]</b>, <b>[알림 콜아웃]</b> 등)을 클릭하여 커서 위치에 예제 코드를 바로 삽입할 수 있습니다.</li>
-                <li>우측 상단에서 <b>[동시 휠 스크롤]</b>, <b>[스마트 추적]</b>, <b>[독립 스크롤]</b> 중 원하는 동기화 모드를 자유롭게 전환할 수 있습니다.</li>
-                <li>작성이 완료되면 상단의 <b>[⚡ HTML 복사]</b> 또는 <b>[💾 .md 저장]</b> 버튼을 눌러 결과물을 내보냅니다.</li>
-            </ol>
-            <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed #cbd5e1; display: flex; justify-content: space-between; align-items: center; white-space: nowrap;">
-                <span style="font-size: 12.5px; color: #334155; display: inline-block;">📘 <span style="font-weight: 700; color: #0f172a;">마크다운 기초 문법과 확장 문법 활용법</span>이 궁금하신가요?</span>
-                <a href="../blog/markdown-guide.html" style="color: #0284c7; font-weight: 700; text-decoration: none; background: #f0f9ff; border: 1px solid #bae6fd; padding: 4px 10px; border-radius: 5px; font-size: 12px; margin-left: 10px; flex-shrink: 0; display: inline-block;">실무 가이드 보기 →</a>
+    <!-- 상단 헤더 -->
+    <header>
+        <div class="logo-area">
+            <span class="logo-badge">MARKDOWN</span>
+            <span class="logo-text">마크다운 실시간 에디터</span>
+        </div>
+    </header>
+
+    <div class="page-wrapper">
+        <!-- 가이드 안내 섹션 -->
+        <div class="intro-section">
+            <h2 class="intro-title">작성한 마크다운 문서를 실시간으로 확인하고 검증하는 도구입니다.</h2>
+            <p class="intro-desc">수학 수식, 다이어그램, 체크리스트, 콜아웃 문법을 3단 스크롤 모드로 실시간 확인하고 깔끔한 HTML 코드를 즉시 추출합니다.</p>
+
+            <div class="guide-box">
+                <strong>마크다운 실시간 에디터 사용 방법 안내:</strong>
+                <ol class="guide-list">
+                    <li>좌측 입력창에 마크다운 문서를 작성하면 우측 뷰어에 실시간으로 서식이 적용되어 렌더링됩니다.</li>
+                    <li>상단 템플릿 버튼(<b>[다이어그램]</b>, <b>[수학 수식]</b>, <b>[알림 콜아웃]</b> 등)을 클릭하여 커서 위치에 예제 코드를 바로 삽입할 수 있습니다.</li>
+                    <li>우측 상단에서 <b>[동시 휠 스크롤]</b>, <b>[스마트 추적]</b>, <b>[독립 스크롤]</b> 중 원하는 동기화 모드를 자유롭게 전환할 수 있습니다.</li>
+                    <li>작성이 완료되면 상단의 <b>[⚡ HTML 복사]</b> 또는 <b>[💾 .md 저장]</b> 버튼을 눌러 결과물을 내보냅니다.</li>
+                </ol>
             </div>
         </div>
-    </div>
 
-    <!-- 1줄 단일 행 통합 툴바 -->
-    <div class="unified-toolbar">
-        <div class="toolbar-left">
-            <button class="tool-btn" onclick="injectSnippet('diagram')">📊 다이어그램</button>
-            <button class="tool-btn" onclick="injectSnippet('math')">🧮 수학 수식</button>
-            <button class="tool-btn" onclick="injectSnippet('callout')">📢 알림 콜아웃</button>
-            <button class="tool-btn" onclick="injectSnippet('checklist')">☑️ 체크리스트</button>
-            <button class="tool-btn" onclick="injectSnippet('details')">🔽 접기/펼치기</button>
-            <button class="tool-btn" onclick="injectSnippet('table')">📋 표(Table)</button>
-        </div>
-
-        <div class="toolbar-right">
-            <div class="scroll-mode-control">
-                <button class="scroll-mode-btn active" id="mode-sync" onclick="setScrollMode('sync')" title="휠 조작 시 양쪽 창이 1:1 비율로 동시 이동">🔗 동시 휠 스크롤</button>
-                <button class="scroll-mode-btn" id="mode-smart" onclick="setScrollMode('smart')" title="커서 및 작업 블록을 정밀 추적">🎯 스마트 추적</button>
-                <button class="scroll-mode-btn" id="mode-free" onclick="setScrollMode('free')" title="좌우 창이 각각 독립적으로 스크롤">🔓 독립 스크롤</button>
+        <!-- 1:1 2분할 툴바 (14개 버튼 정렬) -->
+        <div class="unified-toolbar">
+            <div class="toolbar-left">
+                <button class="tool-btn" onclick="injectSnippet('diagram')">📊 다이어그램</button>
+                <button class="tool-btn" onclick="injectSnippet('math')">🧮 수학 수식</button>
+                <button class="tool-btn" onclick="injectSnippet('callout')">📢 알림 콜아웃</button>
+                <button class="tool-btn" onclick="injectSnippet('checklist')">☑️ 체크리스트</button>
+                <button class="tool-btn" onclick="injectSnippet('details')">🔽 접기/펼치기</button>
+                <button class="tool-btn" onclick="injectSnippet('table')">📋 표(Table)</button>
             </div>
 
-            <button class="tool-btn" onclick="loadSample()">📝 종합 예제</button>
-            <button class="tool-btn" onclick="clearEditor()">🧹 초기화</button>
-            <button class="tool-btn" onclick="downloadMarkdown()">💾 .md 저장</button>
-            <button class="tool-btn" onclick="copyMarkdown()">📋 MD 복사</button>
-            <button class="tool-btn primary" onclick="copyHtml()">⚡ HTML 복사</button>
-        </div>
-    </div>
+            <div class="toolbar-right">
+                <div class="scroll-mode-control">
+                    <button class="scroll-mode-btn active" id="mode-sync" onclick="setScrollMode('sync')" title="휠 조작 시 양쪽 창이 1:1 비율로 동시 이동">🔗 동시 휠 스크롤</button>
+                    <button class="scroll-mode-btn" id="mode-smart" onclick="setScrollMode('smart')" title="커서 및 작업 블록을 정밀 추적">🎯 스마트 추적</button>
+                    <button class="scroll-mode-btn" id="mode-free" onclick="setScrollMode('free')" title="좌우 창이 각각 독립적으로 스크롤">🔓 독립 스크롤</button>
+                </div>
 
-    <div class="editor-grid">
-        <div class="pane-card">
-            <div class="pane-header">
-                <span class="pane-title">✏️ 마크다운 편집</span>
-                
-                <div style="display: flex; align-items: center; gap: 6px;">
-                    <div style="display: flex; gap: 3px;">
-                        <button class="mini-history-btn" id="btn-undo" onclick="undo()" title="되돌리기 (Ctrl+Z)">↩ 되돌리기</button>
-                        <button class="mini-history-btn" id="btn-redo" onclick="redo()" title="다시실행 (Ctrl+Y)">↪ 다시실행</button>
+                <button class="tool-btn" onclick="loadSample()">📝 종합 예제</button>
+                <button class="tool-btn" onclick="clearEditor()">🧹 초기화</button>
+                <button class="tool-btn" onclick="downloadMarkdown()">💾 .md 저장</button>
+                <button class="tool-btn" onclick="copyMarkdown()">📋 MD 복사</button>
+                <button class="tool-btn primary" onclick="copyHtml()">⚡ HTML 복사</button>
+            </div>
+        </div>
+
+        <div class="editor-grid">
+            <div class="pane-card">
+                <div class="pane-header">
+                    <span class="pane-title">✏️ 마크다운 편집</span>
+
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="display: flex; gap: 3px;">
+                            <button class="mini-history-btn" id="btn-undo" onclick="undo()" title="되돌리기 (Ctrl+Z)">↩ 되돌리기</button>
+                            <button class="mini-history-btn" id="btn-redo" onclick="redo()" title="다시실행 (Ctrl+Y)">↪ 다시실행</button>
+                        </div>
+                        <span class="pane-stats" id="md-stats">글자수: 0자</span>
                     </div>
-                    <span class="pane-stats" id="md-stats">글자수: 0자</span>
+                </div>
+                <!-- STRGET 구조: 절대 위치 래퍼 -->
+                <div class="editor-wrapper">
+                    <textarea class="md-input" id="md-input" placeholder="여기에 마크다운 문서를 작성하세요..." onmouseenter="activeHoverPane = 'left'" onmouseleave="activeHoverPane = null" oninput="onInputWithHistory()" onscroll="onEditorScroll('left')" onclick="onEditorClick()" onmouseup="onEditorClick()" onkeydown="handleKeydown(event)" onkeyup="onEditorKeyUp(event)"></textarea>
                 </div>
             </div>
-            <textarea class="md-input" id="md-input" placeholder="여기에 마크다운 문서를 작성하세요..." 
-                      onmouseenter="activeHoverPane = 'left'"
-                      onmouseleave="activeHoverPane = null"
-                      oninput="onInputWithHistory()" 
-                      onscroll="onEditorScroll('left')" 
-                      onclick="onEditorClick()"
-                      onmouseup="onEditorClick()"
-                      onkeydown="handleKeydown(event)"
-                      onkeyup="onEditorKeyUp(event)"></textarea>
-        </div>
 
-        <div class="pane-card">
-            <div class="pane-header">
-                <span class="pane-title">🖥️ 실시간 렌더링 뷰어</span>
-                <span class="pane-stats" id="mode-badge-label">모드: 🔗 동시 휠 스크롤</span>
+            <div class="pane-card">
+                <div class="pane-header">
+                    <span class="pane-title">🖥️ 실시간 렌더링 뷰어</span>
+                    <span class="pane-stats" id="mode-badge-label">모드: 🔗 동시 휠 스크롤</span>
+                </div>
+                <!-- STRGET 구조: 절대 위치 래퍼 -->
+                <div class="editor-wrapper">
+                    <div class="md-preview" id="md-preview" onmouseenter="activeHoverPane = 'right'" onmouseleave="activeHoverPane = null" onscroll="onEditorScroll('right')" onwheel="handlePreviewWheel(event)">
+
+                    </div>
+                </div>
             </div>
-            <div class="md-preview" id="md-preview" 
-                 onmouseenter="activeHoverPane = 'right'"
-                 onmouseleave="activeHoverPane = null"
-                 onscroll="onEditorScroll('right')"></div>
         </div>
     </div>
-</div>
 
-<script>
-    try {
-        mermaid.initialize({
-            startOnLoad: false,
-            theme: 'default',
-            securityLevel: 'loose',
-            suppressErrorRendering: true,
-            flowchart: { useMaxWidth: false, htmlLabels: true }
-        });
-    } catch(e) {}
+    <script>
+        try {
+            mermaid.initialize({
+                startOnLoad: false,
+                theme: 'default',
+                securityLevel: 'loose',
+                suppressErrorRendering: true,
+                flowchart: {
+                    useMaxWidth: false,
+                    htmlLabels: true
+                }
+            });
+        } catch (e) {}
 
-    let currentScrollMode = 'sync';
-    let isInitialLoading = false;
-    let activeHoverPane = null;
+        let currentScrollMode = 'sync';
+        let isInitialLoading = false;
+        let activeHoverPane = null;
 
-    function setScrollMode(mode) {
-        currentScrollMode = mode;
-        document.querySelectorAll('.scroll-mode-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById(`mode-${mode}`).classList.add('active');
+        function setScrollMode(mode) {
+            currentScrollMode = mode;
+            document.querySelectorAll('.scroll-mode-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`mode-${mode}`).classList.add('active');
 
-        const badge = document.getElementById('mode-badge-label');
-        if (mode === 'smart') badge.innerText = '모드: 🎯 스마트 추적';
-        else if (mode === 'sync') badge.innerText = '모드: 🔗 동시 휠 스크롤';
-        else badge.innerText = '모드: 🔓 독립 스크롤';
+            const badge = document.getElementById('mode-badge-label');
+            if (mode === 'smart') badge.innerText = '모드: 🎯 스마트 추적';
+            else if (mode === 'sync') badge.innerText = '모드: 🔗 동시 휠 스크롤';
+            else badge.innerText = '모드: 🔓 독립 스크롤';
 
-        if (mode === 'smart') executeSmartScroll();
-        else if (mode === 'sync') syncRatioScroll('left', true);
-    }
-
-    const undoStack = [];
-    const redoStack = [];
-    let isHistoryOperating = false;
-
-    function pushHistory(val) {
-        if (isHistoryOperating) return;
-        if (undoStack.length === 0 || undoStack[undoStack.length - 1] !== val) {
-            undoStack.push(val);
-            redoStack.length = 0;
-            updateHistoryButtons();
+            if (mode === 'smart') executeSmartScroll();
+            else if (mode === 'sync') syncRatioScroll('left', true);
         }
-    }
 
-    function undo() {
-        if (undoStack.length <= 1) return;
-        isHistoryOperating = true;
-        const current = undoStack.pop();
-        redoStack.push(current);
-        const prev = undoStack[undoStack.length - 1];
-        document.getElementById('md-input').value = prev;
-        renderMarkdown();
-        isHistoryOperating = false;
-        updateHistoryButtons();
-        dispatchScrollSync();
-    }
+        const undoStack = [];
+        const redoStack = [];
+        let isHistoryOperating = false;
 
-    function redo() {
-        if (redoStack.length === 0) return;
-        isHistoryOperating = true;
-        const next = redoStack.pop();
-        undoStack.push(next);
-        document.getElementById('md-input').value = next;
-        renderMarkdown();
-        isHistoryOperating = false;
-        updateHistoryButtons();
-        dispatchScrollSync();
-    }
+        function pushHistory(val) {
+            if (isHistoryOperating) return;
+            if (undoStack.length === 0 || undoStack[undoStack.length - 1] !== val) {
+                undoStack.push(val);
+                redoStack.length = 0;
+                updateHistoryButtons();
+            }
+        }
 
-    function updateHistoryButtons() {
-        const uBtn = document.getElementById('btn-undo');
-        const rBtn = document.getElementById('btn-redo');
-        if (uBtn) uBtn.disabled = (undoStack.length <= 1);
-        if (rBtn) rBtn.disabled = (redoStack.length === 0);
-    }
-
-    function handleKeydown(e) {
-        if (e.key === 'Tab') {
-            e.preventDefault();
-            const textarea = e.target;
-            const start = textarea.selectionStart;
-            const end = textarea.selectionEnd;
-            textarea.setRangeText('  ', start, end, 'end');
-            pushHistory(textarea.value);
+        function undo() {
+            if (undoStack.length <= 1) return;
+            isHistoryOperating = true;
+            const current = undoStack.pop();
+            redoStack.push(current);
+            const prev = undoStack[undoStack.length - 1];
+            document.getElementById('md-input').value = prev;
             renderMarkdown();
-            return;
+            isHistoryOperating = false;
+            updateHistoryButtons();
+            dispatchScrollSync();
         }
 
-        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
-            if (e.shiftKey) { e.preventDefault(); redo(); }
-            else { e.preventDefault(); undo(); }
-        } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
-            e.preventDefault(); redo();
+        function redo() {
+            if (redoStack.length === 0) return;
+            isHistoryOperating = true;
+            const next = redoStack.pop();
+            undoStack.push(next);
+            document.getElementById('md-input').value = next;
+            renderMarkdown();
+            isHistoryOperating = false;
+            updateHistoryButtons();
+            dispatchScrollSync();
         }
-    }
 
-    function onEditorClick() {
-        if (currentScrollMode === 'smart') executeSmartScroll();
-    }
+        function updateHistoryButtons() {
+            const uBtn = document.getElementById('btn-undo');
+            const rBtn = document.getElementById('btn-redo');
+            if (uBtn) uBtn.disabled = (undoStack.length <= 1);
+            if (rBtn) rBtn.disabled = (redoStack.length === 0);
+        }
 
-    function onEditorKeyUp(e) {
-        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End'].includes(e.key)) {
+        function handleKeydown(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const textarea = e.target;
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                textarea.setRangeText('  ', start, end, 'end');
+                pushHistory(textarea.value);
+                renderMarkdown();
+                return;
+            }
+
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+                if (e.shiftKey) {
+                    e.preventDefault();
+                    redo();
+                } else {
+                    e.preventDefault();
+                    undo();
+                }
+            } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
+                e.preventDefault();
+                redo();
+            }
+        }
+
+        function onEditorClick() {
             if (currentScrollMode === 'smart') executeSmartScroll();
         }
-    }
 
-    function onEditorScroll(source) {
-        if (isInitialLoading || currentScrollMode === 'free') return;
-        if (activeHoverPane && activeHoverPane !== source) return;
-
-        if (currentScrollMode === 'sync') {
-            syncRatioScroll(source);
-        } else if (currentScrollMode === 'smart' && source === 'left') {
-            executeSmartScroll();
+        function onEditorKeyUp(e) {
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End'].includes(e.key)) {
+                if (currentScrollMode === 'smart') executeSmartScroll();
+            }
         }
-    }
 
-    function syncRatioScroll(source, force = false) {
-        if (isInitialLoading) return;
+        function onEditorScroll(source) {
+            if (isInitialLoading || currentScrollMode === 'free') return;
+            if (activeHoverPane && activeHoverPane !== source) return;
 
-        const input = document.getElementById('md-input');
-        const preview = document.getElementById('md-preview');
-        if (!input || !preview) return;
-
-        const inputMax = input.scrollHeight - input.clientHeight;
-        const previewMax = preview.scrollHeight - preview.clientHeight;
-
-        if (source === 'left') {
-            if (inputMax <= 0 || previewMax <= 0) {
-                preview.scrollTop = 0;
-                return;
+            if (currentScrollMode === 'sync') {
+                syncRatioScroll(source);
+            } else if (currentScrollMode === 'smart' && source === 'left') {
+                executeSmartScroll();
             }
-            const ratio = Math.min(1, Math.max(0, input.scrollTop / inputMax));
-            preview.scrollTop = ratio * previewMax;
-        } else if (source === 'right') {
-            if (inputMax <= 0 || previewMax <= 0) {
-                input.scrollTop = 0;
-                return;
-            }
-            const ratio = Math.min(1, Math.max(0, preview.scrollTop / previewMax));
-            input.scrollTop = ratio * inputMax;
         }
-    }
 
-    function executeSmartScroll(forcedBlockIndex = null) {
-        if (isInitialLoading) return;
-        const input = document.getElementById('md-input');
-        const preview = document.getElementById('md-preview');
-        if (!input || !preview) return;
+        function syncRatioScroll(source, force = false) {
+            if (isInitialLoading) return;
 
-        const val = input.value;
-        const cursorPos = input.selectionEnd || input.selectionStart || 0;
+            const input = document.getElementById('md-input');
+            const preview = document.getElementById('md-preview');
+            if (!input || !preview) return;
 
-        const textBeforeCursor = val.substring(0, cursorPos);
-        const currentLines = textBeforeCursor.split('\n');
-        const totalLines = val.split('\n');
-        const lineRatio = totalLines.length > 1 ? (currentLines.length - 1) / (totalLines.length - 1) : 0;
-
-        const childElements = Array.from(preview.children).filter(el => el.offsetParent !== null);
-        
-        let targetScrollTop = 0;
-        if (childElements.length > 0) {
-            const targetIndex = forcedBlockIndex !== null ? forcedBlockIndex : Math.min(Math.floor(lineRatio * childElements.length), childElements.length - 1);
-            const targetElement = childElements[targetIndex];
-            if (targetElement) {
-                targetScrollTop = targetElement.offsetTop - preview.offsetTop - 30;
-            }
-        } else {
+            const inputMax = input.scrollHeight - input.clientHeight;
             const previewMax = preview.scrollHeight - preview.clientHeight;
-            targetScrollTop = lineRatio * previewMax;
+
+            if (source === 'left') {
+                if (inputMax <= 0 || previewMax <= 0) {
+                    preview.scrollTop = 0;
+                    return;
+                }
+                const ratio = Math.min(1, Math.max(0, input.scrollTop / inputMax));
+                preview.scrollTop = ratio * previewMax;
+            } else if (source === 'right') {
+                if (inputMax <= 0 || previewMax <= 0) {
+                    input.scrollTop = 0;
+                    return;
+                }
+                const ratio = Math.min(1, Math.max(0, preview.scrollTop / previewMax));
+                input.scrollTop = ratio * inputMax;
+            }
         }
 
-        requestAnimationFrame(() => {
-            preview.scrollTop = Math.max(0, targetScrollTop);
-        });
-    }
+        function handlePreviewWheel(e) {
+            const preview = e.currentTarget;
+            const scrollTop = preview.scrollTop;
+            const scrollHeight = preview.scrollHeight;
+            const height = preview.clientHeight;
+            const delta = e.deltaY;
 
-    function dispatchScrollSync() {
-        if (isInitialLoading) return;
-        if (currentScrollMode === 'smart') executeSmartScroll();
-        else if (currentScrollMode === 'sync') syncRatioScroll('left', true);
-    }
-
-    function injectSnippet(type) {
-        const textarea = document.getElementById('md-input');
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
-
-        let snippet = '';
-        switch (type) {
-            case 'diagram':
-                snippet = `\n\`\`\`mermaid\ngraph TD\n    A["마크다운 작성"] --> B{"실시간 파서"}\n    B --> C["수학 수식 (KaTeX)"]\n    B --> D["다이어그램 (Mermaid)"]\n    B --> E["콜아웃 & 체크리스트"]\n    C --> F["HTML 뷰어 렌더링"]\n    D --> F\n    E --> F\n\`\`\`\n`;
-                break;
-            case 'math':
-                snippet = `\n### 수학 수식 (LaTeX)\n인라인 수식: $E = mc^2$ 및 $\\sum_{i=1}^{n} x_i$\n\n블록 수식:\n$$\n\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}\n$$\n`;
-                break;
-            case 'callout':
-                snippet = `\n> [!NOTE]\n> 여기에 강조할 공지사항이나 핵심 안내 텍스트를 작성하세요.\n`;
-                break;
-            case 'checklist':
-                snippet = `\n### 오늘의 할 일\n- [x] 요구사항 분석 및 설계\n- [x] 실시간 UI 렌더러 구현\n- [ ] 배포 파이프라인 검증\n`;
-                break;
-            case 'details':
-                snippet = `\n<details>\n<summary>▶ 클릭하여 상세 내용 접기/펼치기</summary>\n\n여기에 숨겨둘 상세 설명이나 긴 코드를 입력합니다.\n\n</details>\n`;
-                break;
-            case 'table':
-                snippet = `\n| 기능명 | 지원 여부 | 단축키 |\n| :--- | :---: | :--- |\n| 실시간 렌더링 | ✅ 지원 | <kbd>Ctrl+S</kbd> |\n| 다이어그램 | ✅ 지원 | <kbd>Alt+D</kbd> |\n| HTML 변환 | ✅ 지원 | <kbd>Ctrl+C</kbd> |\n`;
-                break;
+            // 위로 스크롤 하려는데 이미 맨 위인 경우
+            if (delta < 0 && scrollTop <= 0) {
+                e.preventDefault();
+            }
+            // 아래로 스크롤 하려는데 이미 맨 아래인 경우
+            else if (delta > 0 && scrollTop + height >= scrollHeight) {
+                e.preventDefault();
+            }
         }
 
-        textarea.setRangeText(snippet, start, end, 'end');
-        textarea.focus();
-        
-        onInputWithHistory();
+        function executeSmartScroll(forcedBlockIndex = null) {
+            if (isInitialLoading) return;
+            const input = document.getElementById('md-input');
+            const preview = document.getElementById('md-preview');
+            if (!input || !preview) return;
 
-        setTimeout(() => {
-            dispatchScrollSync();
-        }, 20);
-    }
+            const val = input.value;
+            const cursorPos = input.selectionEnd || input.selectionStart || 0;
 
-    let inputDebounce = null;
-    function onInputWithHistory() {
-        const val = document.getElementById('md-input').value;
-        renderMarkdown();
-        clearTimeout(inputDebounce);
-        inputDebounce = setTimeout(() => { pushHistory(val); }, 300);
-    }
+            const textBeforeCursor = val.substring(0, cursorPos);
+            const currentLines = textBeforeCursor.split('\n');
+            const totalLines = val.split('\n');
+            const lineRatio = totalLines.length > 1 ? (currentLines.length - 1) / (totalLines.length - 1) : 0;
 
-    let mermaidCounter = 0;
+            const childElements = Array.from(preview.children).filter(el => el.offsetParent !== null);
 
-    function parseMarkdown(md) {
-        if (!md) return { html: '', mermaidMap: [] };
-        let html = md;
-        mermaidCounter = 0;
-        const mermaidMap = [];
-        const preservedBlocks = [];
-
-        try {
-            // 1. Mermaid 블록 격리
-            html = html.replace(/```mermaid([\s\S]*?)```/g, function(match, code) {
-                const id = 'mermaid-chart-' + (mermaidCounter++);
-                const cleanCode = code.trim();
-                mermaidMap.push({ id, code: cleanCode });
-                const token = `__MERMAID_BLOCK_${preservedBlocks.length}__`;
-                preservedBlocks.push(`<div class="mermaid-container"><div class="mermaid-slot" id="${id}"></div></div>`);
-                return token;
-            });
-
-            // 2. 일반 코드 블록 격리
-            html = html.replace(/```([a-zA-Z0-9_-]*)([\s\S]*?)```/g, function(match, lang, code) {
-                const safeCode = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").trim();
-                const token = `__CODE_BLOCK_${preservedBlocks.length}__`;
-                preservedBlocks.push(`<pre><code>${safeCode}</code></pre>`);
-                return token;
-            });
-
-            // 3. LaTeX 수식 블록 ($$ ... $$)
-            html = html.replace(/\$\$([\s\S]*?)\$\$/g, function(match, expr) {
-                const token = `__MATH_BLOCK_${preservedBlocks.length}__`;
-                try {
-                    if (typeof katex !== 'undefined') {
-                        preservedBlocks.push('<div style="text-align:center; margin:12px 0;">' + katex.renderToString(expr.trim(), { displayMode: true, throwOnError: false }) + '</div>');
-                    } else {
-                        preservedBlocks.push(`<pre>${expr}</pre>`);
-                    }
-                } catch (e) {
-                    preservedBlocks.push(`<pre>${expr}</pre>`);
+            let targetScrollTop = 0;
+            if (childElements.length > 0) {
+                const targetIndex = forcedBlockIndex !== null ? forcedBlockIndex : Math.min(Math.floor(lineRatio * childElements.length), childElements.length - 1);
+                const targetElement = childElements[targetIndex];
+                if (targetElement) {
+                    targetScrollTop = targetElement.offsetTop - preview.offsetTop - 30;
                 }
-                return token;
+            } else {
+                const previewMax = preview.scrollHeight - preview.clientHeight;
+                targetScrollTop = lineRatio * previewMax;
+            }
+
+            requestAnimationFrame(() => {
+                preview.scrollTop = Math.max(0, targetScrollTop);
             });
+        }
 
-            // 4. 인라인 코드
-            html = html.replace(/`([^`\n]+)`/g, function(match, codeText) {
-                const safe = codeText.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                return `<code>${safe}</code>`;
-            });
+        function dispatchScrollSync() {
+            if (isInitialLoading) return;
+            if (currentScrollMode === 'smart') executeSmartScroll();
+            else if (currentScrollMode === 'sync') syncRatioScroll('left', true);
+        }
 
-            // 5. 인라인 수식 ($ ... $)
-            html = html.replace(/\$([^\$\n]+)\$/g, function(match, expr) {
-                try {
-                    if (typeof katex !== 'undefined') {
-                        return katex.renderToString(expr.trim(), { displayMode: false, throwOnError: false });
-                    }
-                    return `<code>${expr}</code>`;
-                } catch (e) {
-                    return `<code>${expr}</code>`;
-                }
-            });
+        function injectSnippet(type) {
+            const textarea = document.getElementById('md-input');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
 
-            // 6. GitHub 알림 콜아웃
-            html = html.replace(/^\> \[!NOTE\]\r?\n\> (.*$)/gim, '<div class="md-alert md-alert-note"><div class="md-alert-title">📌 NOTE</div>$1</div>');
-            html = html.replace(/^\> \[!TIP\]\r?\n\> (.*$)/gim, '<div class="md-alert md-alert-tip"><div class="md-alert-title">💡 TIP</div>$1</div>');
-            html = html.replace(/^\> \[!WARNING\]\r?\n\> (.*$)/gim, '<div class="md-alert md-alert-warning"><div class="md-alert-title">⚠️ WARNING</div>$1</div>');
-            html = html.replace(/^\> \[!CAUTION\]\r?\n\> (.*$)/gim, '<div class="md-alert md-alert-caution"><div class="md-alert-title">🛑 CAUTION</div>$1</div>');
+            let snippet = '';
+            switch (type) {
+                case 'diagram':
+                    snippet = '\n```mermaid\ngraph TD\n    A[마크다운 작성] --> B{실시간 파서}\n    B --> C[수학 수식 KaTeX]\n    B --> D[다이어그램 Mermaid]\n    B --> E[GitHub 콜아웃]\n    C --> F[HTML 뷰어 렌더링]\n    D --> F\n    E --> F\n```\n';
+                    break;
+                case 'math':
+                    snippet = '\n### 수학 수식 (LaTeX)\n인라인 수식: $E = mc^2$ 및 $\\sum_{i=1}^{n} x_i$\n\n블록 수식:\n$$\n\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}\n$$\n';
+                    break;
+                case 'callout':
+                    snippet = '\n> [!NOTE]\n> 여기에 강조할 공지사항이나 핵심 안내 텍스트를 작성하세요.\n';
+                    break;
+                case 'checklist':
+                    snippet = '\n### 오늘의 할 일\n- [x] 요구사항 분석 및 설계\n- [x] 실시간 UI 렌더러 구현\n- [ ] 배포 파이프라인 검증\n';
+                    break;
+                case 'details':
+                    snippet = '\n<details>\n<summary>▶ 클릭하여 상세 내용 접기/펼치기</summary>\n\n여기에 숨겨둘 상세 설명이나 긴 코드를 입력합니다.\n\n</details>\n';
+                    break;
+                case 'table':
+                    snippet = '\n| 기능명 | 지원 여부 | 단축키 |\n| :--- | :---: | :--- |\n| 실시간 렌더링 | ✅ 지원 | <kbd>Ctrl+S</kbd> |\n| 다이어그램 | ✅ 지원 | <kbd>Alt+D</kbd> |\n| HTML 변환 | ✅ 지원 | <kbd>Ctrl+C</kbd> |\n';
+                    break;
+            }
 
-            // 7. 헤딩
-            html = html.replace(/^###### (.*$)/gim, '<h6>$1</h6>');
-            html = html.replace(/^##### (.*$)/gim, '<h5>$1</h5>');
-            html = html.replace(/^#### (.*$)/gim, '<h4>$1</h4>');
-            html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-            html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-            html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+            textarea.setRangeText(snippet, start, end, 'end');
+            textarea.focus();
 
-            // 8. 이미지 & 링크
-            html = html.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1">');
-            html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+            onInputWithHistory();
 
-            // 9. 취소선 & 형광펜
-            html = html.replace(/~~(.*?)~~/g, '<del>$1</del>');
-            html = html.replace(/==(.*?)==/g, '<mark>$1</mark>');
+            setTimeout(() => {
+                dispatchScrollSync();
+            }, 20);
+        }
 
-            // 10. 인용구 & 구분선
-            html = html.replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>');
-            html = html.replace(/^---$/gim, '<hr style="border:0; border-top:1px solid #e2e8f0; margin:14px 0;">');
+        let inputDebounce = null;
 
-            // 11. 표 (GFM Table)
-            html = html.replace(/((?:\|[^\n]+\|\r?\n)+)/g, function(match) {
-                const rows = match.trim().split('\n');
-                let tableHtml = '<table>';
-                rows.forEach((row, idx) => {
-                    if (row.includes('---')) return;
-                    const cols = row.split('|').slice(1, -1);
-                    tableHtml += '<tr>';
-                    cols.forEach(col => {
-                        const cellTag = (idx === 0) ? 'th' : 'td';
-                        tableHtml += `<${cellTag}>${col.trim()}</${cellTag}>`;
+        function onInputWithHistory() {
+            const val = document.getElementById('md-input').value;
+            renderMarkdown();
+            clearTimeout(inputDebounce);
+            inputDebounce = setTimeout(() => {
+                pushHistory(val);
+            }, 300);
+        }
+
+        let mermaidCounter = 0;
+
+        function parseMarkdown(md) {
+            if (!md) return {
+                html: '',
+                mermaidMap: []
+            };
+            let html = md;
+            mermaidCounter = 0;
+            const mermaidMap = [];
+            const preservedBlocks = [];
+
+            try {
+                // 1. Mermaid 블록 격리
+                html = html.replace(/```mermaid([\s\S]*?)```/g, function(match, code) {
+                    const id = 'mermaid-chart-' + (mermaidCounter++);
+                    const cleanCode = code.trim();
+                    mermaidMap.push({
+                        id,
+                        code: cleanCode
                     });
-                    tableHtml += '</tr>';
+                    const token = `__MERMAID_BLOCK_${preservedBlocks.length}__`;
+                    preservedBlocks.push(`<div class="mermaid-container"><div class="mermaid-slot" id="${id}"></div></div>`);
+                    return token;
                 });
-                tableHtml += '</table>';
-                return tableHtml;
-            });
 
-            // 12. 체크리스트 & 목록
-            html = html.replace(/^- \[x\] (.*$)/gim, '<li class="task-list-item"><input type="checkbox" checked disabled> $1</li>');
-            html = html.replace(/^- \[ \] (.*$)/gim, '<li class="task-list-item"><input type="checkbox" disabled> $1</li>');
-            html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
-            html = html.replace(/^- (.*$)/gim, '<li>$1</li>');
-            html = html.replace(/^\d+\. (.*$)/gim, '<li style="list-style-type: decimal;">$1</li>');
-            html = html.replace(/((?:<li[\s\S]*?<\/li>\s*)+)/g, '<ul>$1</ul>');
+                // 2. 일반 코드 블록 격리
+                html = html.replace(/```([a-zA-Z0-9_-]*)([\s\S]*?)```/g, function(match, lang, code) {
+                    const safeCode = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").trim();
+                    const token = `__CODE_BLOCK_${preservedBlocks.length}__`;
+                    preservedBlocks.push(`<pre><code>${safeCode}</code></pre>`);
+                    return token;
+                });
 
-            // 13. 인라인 서식
-            html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
-            html = html.replace(/\*(.*?)\*/gim, '<em>$1</em>');
-
-            // 14. 일반 단락 처리
-            const lines = html.split('\n');
-            html = lines.map(line => {
-                line = line.trim();
-                if (!line) return '';
-                if (/^(__|&lt;|<(h[1-6]|ul|li|pre|blockquote|table|tr|th|td|hr|details|summary|div))/i.test(line)) return line;
-                return `<p>${line}</p>`;
-            }).join('\n');
-
-            // 15. 격리된 블록 복원
-            preservedBlocks.forEach((block, idx) => {
-                html = html.replace(`__MERMAID_BLOCK_${idx}__`, block)
-                           .replace(`__CODE_BLOCK_${idx}__`, block)
-                           .replace(`__MATH_BLOCK_${idx}__`, block);
-            });
-
-        } catch (e) {
-            console.error("Markdown parse error:", e);
-        }
-
-        return { html, mermaidMap };
-    }
-
-    let renderTimer = null;
-    function renderMarkdown() {
-        const input = document.getElementById('md-input');
-        const preview = document.getElementById('md-preview');
-        const stats = document.getElementById('md-stats');
-        if (!input || !preview) return;
-
-        const val = input.value;
-        const parsed = parseMarkdown(val);
-        
-        preview.innerHTML = parsed.html;
-        if (stats) stats.innerText = `글자수: ${val.length.toLocaleString()}자`;
-
-        if (!isInitialLoading) {
-            dispatchScrollSync();
-        }
-
-        if (parsed.mermaidMap.length > 0 && typeof mermaid !== 'undefined') {
-            clearTimeout(renderTimer);
-            renderTimer = setTimeout(async () => {
-                for (const item of parsed.mermaidMap) {
-                    const slot = document.getElementById(item.id);
-                    if (!slot) continue;
-
+                // 3. LaTeX 수식 블록 ($$ ... $$)
+                html = html.replace(/\$\$([\s\S]*?)\$\$/g, function(match, expr) {
+                    const token = `__MATH_BLOCK_${preservedBlocks.length}__`;
                     try {
-                        const isValid = await mermaid.parse(item.code);
-                        if (isValid) {
-                            const uniqueRenderId = 'svg-' + item.id + '-' + Date.now();
-                            const { svg } = await mermaid.render(uniqueRenderId, item.code);
-                            slot.innerHTML = svg;
+                        if (typeof katex !== 'undefined') {
+                            preservedBlocks.push('<div style="text-align:center; margin:12px 0;">' + katex.renderToString(expr.trim(), {
+                                displayMode: true,
+                                throwOnError: false
+                            }) + '</div>');
                         } else {
-                            renderFallbackCode(slot, item.code);
+                            preservedBlocks.push(`<pre>${expr}</pre>`);
                         }
                     } catch (e) {
-                        renderFallbackCode(slot, item.code);
+                        preservedBlocks.push(`<pre>${expr}</pre>`);
                     }
-                }
-                if (!isInitialLoading) {
-                    dispatchScrollSync();
-                }
-            }, 30);
-        }
-    }
+                    return token;
+                });
 
-    function renderFallbackCode(slot, rawCode) {
-        const safe = rawCode.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        slot.innerHTML = `
+                // 4. 인라인 코드
+                html = html.replace(/`([^`\n]+)`/g, function(match, codeText) {
+                    const safe = codeText.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                    return `<code>${safe}</code>`;
+                });
+
+                // 5. 인라인 수식 ($ ... $)
+                html = html.replace(/\$([^\$\n]+)\$/g, function(match, expr) {
+                    try {
+                        if (typeof katex !== 'undefined') {
+                            return katex.renderToString(expr.trim(), {
+                                displayMode: false,
+                                throwOnError: false
+                            });
+                        }
+                        return `<code>${expr}</code>`;
+                    } catch (e) {
+                        return `<code>${expr}</code>`;
+                    }
+                });
+
+                // 6. GitHub 알림 콜아웃
+                html = html.replace(/^\> \[!NOTE\]\r?\n\> (.*$)/gim, '<div class="md-alert md-alert-note"><div class="md-alert-title">📌 NOTE</div>$1</div>');
+                html = html.replace(/^\> \[!TIP\]\r?\n\> (.*$)/gim, '<div class="md-alert md-alert-tip"><div class="md-alert-title">💡 TIP</div>$1</div>');
+                html = html.replace(/^\> \[!WARNING\]\r?\n\> (.*$)/gim, '<div class="md-alert md-alert-warning"><div class="md-alert-title">⚠️ WARNING</div>$1</div>');
+                html = html.replace(/^\> \[!CAUTION\]\r?\n\> (.*$)/gim, '<div class="md-alert md-alert-caution"><div class="md-alert-title">🛑 CAUTION</div>$1</div>');
+
+                // 7. 헤딩
+                html = html.replace(/^###### (.*$)/gim, '<h6>$1</h6>');
+                html = html.replace(/^##### (.*$)/gim, '<h5>$1</h5>');
+                html = html.replace(/^#### (.*$)/gim, '<h4>$1</h4>');
+                html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+                html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+                html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+
+                // 8. 이미지 & 링크
+                html = html.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1">');
+                html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+
+                // 9. 취소선 & 형광펜
+                html = html.replace(/~~(.*?)~~/g, '<del>$1</del>');
+                html = html.replace(/==(.*?)==/g, '<mark>$1</mark>');
+
+                // 10. 인용구 & 구분선
+                html = html.replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>');
+                html = html.replace(/^---$/gim, '<hr style="border:0; border-top:1px solid #e2e8f0; margin:14px 0;">');
+
+                // 11. 표 (GFM Table)
+                html = html.replace(/((?:\|[^\n]+\|\r?\n)+)/g, function(match) {
+                    const rows = match.trim().split('\n');
+                    let tableHtml = '<table>';
+                    rows.forEach((row, idx) => {
+                        if (row.includes('---')) return;
+                        const cols = row.split('|').slice(1, -1);
+                        tableHtml += '<tr>';
+                        cols.forEach(col => {
+                            const cellTag = (idx === 0) ? 'th' : 'td';
+                            tableHtml += `<${cellTag}>${col.trim()}</${cellTag}>`;
+                        });
+                        tableHtml += '</tr>';
+                    });
+                    tableHtml += '</table>';
+                    return tableHtml;
+                });
+
+                // 12. 체크리스트 & 목록
+                html = html.replace(/^- \[x\] (.*$)/gim, '<li class="task-list-item"><input type="checkbox" checked disabled> $1</li>');
+                html = html.replace(/^- \[ \] (.*$)/gim, '<li class="task-list-item"><input type="checkbox" disabled> $1</li>');
+                html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
+                html = html.replace(/^- (.*$)/gim, '<li>$1</li>');
+                html = html.replace(/^\d+\. (.*$)/gim, '<li style="list-style-type: decimal;">$1</li>');
+                html = html.replace(/((?:<li[\s\S]*?<\/li>\s*)+)/g, '<ul>$1</ul>');
+
+                // 13. 인라인 서식
+                html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
+                html = html.replace(/\*(.*?)\*/gim, '<em>$1</em>');
+
+                // 14. 일반 단락 처리
+                const lines = html.split('\n');
+                html = lines.map(line => {
+                    line = line.trim();
+                    if (!line) return '';
+                    if (/^(__|&lt;|<(h[1-6]|ul|li|pre|blockquote|table|tr|th|td|hr|details|summary|div))/i.test(line)) return line;
+                    return `<p>${line}</p>`;
+                }).join('\n');
+
+                // 15. 격리된 블록 복원
+                preservedBlocks.forEach((block, idx) => {
+                    html = html.replace(`__MERMAID_BLOCK_${idx}__`, block)
+                        .replace(`__CODE_BLOCK_${idx}__`, block)
+                        .replace(`__MATH_BLOCK_${idx}__`, block);
+                });
+
+            } catch (e) {
+                console.error("Markdown parse error:", e);
+            }
+
+            return {
+                html,
+                mermaidMap
+            };
+        }
+
+        let renderTimer = null;
+
+        function renderMarkdown() {
+            const input = document.getElementById('md-input');
+            const preview = document.getElementById('md-preview');
+            const stats = document.getElementById('md-stats');
+            if (!input || !preview) return;
+
+            const val = input.value;
+            const parsed = parseMarkdown(val);
+
+            preview.innerHTML = parsed.html;
+            if (stats) stats.innerText = `글자수: ${val.length.toLocaleString()}자`;
+
+            if (!isInitialLoading) {
+                dispatchScrollSync();
+            }
+
+            if (parsed.mermaidMap.length > 0 && typeof mermaid !== 'undefined') {
+                clearTimeout(renderTimer);
+                renderTimer = setTimeout(async () => {
+                    for (const item of parsed.mermaidMap) {
+                        const slot = document.getElementById(item.id);
+                        if (!slot) continue;
+
+                        try {
+                            const uniqueRenderId = 'svg-render-' + item.id + '-' + Math.floor(Math.random() * 10000);
+                            const {
+                                svg
+                            } = await mermaid.render(uniqueRenderId, item.code);
+                            slot.innerHTML = svg;
+                        } catch (e) {
+                            renderFallbackCode(slot, item.code);
+                        }
+                    }
+
+                    // body 직하위에 생성된 임시 Mermaid DOM 노드 완전 제거
+                    document.querySelectorAll('body > [id^="dmermaid"], body > [id^="mermaid-"]').forEach(el => {
+                        el.remove();
+                    });
+
+                    if (!isInitialLoading) {
+                        dispatchScrollSync();
+                    }
+                }, 40);
+            }
+        }
+
+        function renderFallbackCode(slot, rawCode) {
+            const safe = rawCode.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            slot.innerHTML = `
             <div class="mermaid-fallback-box">
                 <div class="mermaid-fallback-header">⚠️ 다이어그램 문법 오류 (작성 중인 코드 뷰)</div>
                 <pre class="mermaid-fallback-code"><code>${safe}</code></pre>
             </div>
         `;
-    }
+        }
 
-    function loadSample() {
-        isInitialLoading = true;
-        const sample = `# DevWorKit 마크다운 에디터
+        function loadSample() {
+            isInitialLoading = true;
+
+            const sample = `# DevWorKit 마크다운 에디터
 
 **무료 온라인 마크다운 에디터**에 오신 것을 환영합니다. 단축키(Ctrl+Z / Ctrl+Y)로 이전 작업을 되돌릴 수 있습니다.
 
@@ -929,11 +1209,11 @@
 ### 2. Mermaid 다이어그램 (Flowchart)
 \`\`\`mermaid
 graph TD
-    A["마크다운 작성"] --> B{"실시간 파서"}
-    B --> C["수학 수식 (KaTeX)"]
-    B --> D["다이어그램 (Mermaid)"]
-    B --> E["GitHub 콜아웃"]
-    C --> F["HTML 뷰어 렌더링"]
+    A[마크다운 작성] --> B{실시간 파서}
+    B --> C[수학 수식 KaTeX]
+    B --> D[다이어그램 Mermaid]
+    B --> E[GitHub 콜아웃]
+    C --> F[HTML 뷰어 렌더링]
     D --> F
     E --> F
 \`\`\`
@@ -971,65 +1251,68 @@ function calculateScore(ratio) {
 | 다이어그램 | ✅ 완료 | Mermaid SVG Vector |
 | 체크리스트 | ✅ 완료 | GFM Task Parser |`;
 
-        const textarea = document.getElementById('md-input');
-        const preview = document.getElementById('md-preview');
-        if (textarea) {
-            textarea.value = sample;
-            undoStack.length = 0;
-            redoStack.length = 0;
-            pushHistory(sample);
-            renderMarkdown();
+            const textarea = document.getElementById('md-input');
+            const preview = document.getElementById('md-preview');
+            if (textarea) {
+                textarea.value = sample;
+                undoStack.length = 0;
+                redoStack.length = 0;
+                pushHistory(sample);
+                renderMarkdown();
 
-            textarea.setSelectionRange(0, 0);
-            textarea.scrollTop = 0;
-            if (preview) preview.scrollTop = 0;
-
-            setTimeout(() => {
+                textarea.setSelectionRange(0, 0);
                 textarea.scrollTop = 0;
                 if (preview) preview.scrollTop = 0;
-                isInitialLoading = false;
-            }, 60);
+
+                setTimeout(() => {
+                    textarea.scrollTop = 0;
+                    if (preview) preview.scrollTop = 0;
+                    isInitialLoading = false;
+                }, 60);
+            }
         }
-    }
 
-    function clearEditor() {
-        const textarea = document.getElementById('md-input');
-        if (textarea) {
-            textarea.value = '';
-            onInputWithHistory();
+        function clearEditor() {
+            const textarea = document.getElementById('md-input');
+            if (textarea) {
+                textarea.value = '';
+                onInputWithHistory();
+            }
         }
-    }
 
-    function downloadMarkdown() {
-        const text = document.getElementById('md-input').value;
-        if (!text) return alert('저장할 마크다운 내용이 없습니다.');
-        const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'document.md';
-        a.click();
-        URL.revokeObjectURL(url);
-    }
+        function downloadMarkdown() {
+            const text = document.getElementById('md-input').value;
+            if (!text) return alert('저장할 마크다운 내용이 없습니다.');
+            const blob = new Blob([text], {
+                type: 'text/markdown;charset=utf-8'
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'document.md';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
 
-    function copyMarkdown() {
-        const text = document.getElementById('md-input').value;
-        if (!text) return alert('복사할 내용이 없습니다.');
-        navigator.clipboard.writeText(text).then(() => alert('마크다운 원문이 복사되었습니다.'));
-    }
+        function copyMarkdown() {
+            const text = document.getElementById('md-input').value;
+            if (!text) return alert('복사할 내용이 없습니다.');
+            navigator.clipboard.writeText(text).then(() => alert('마크다운 원문이 복사되었습니다.'));
+        }
 
-    function copyHtml() {
-        const html = document.getElementById('md-preview').innerHTML;
-        if (!html) return alert('변환된 내용이 없습니다.');
-        navigator.clipboard.writeText(html).then(() => alert('정제된 HTML 코드가 복사되었습니다.'));
-    }
+        function copyHtml() {
+            const html = document.getElementById('md-preview').innerHTML;
+            if (!html) return alert('변환된 내용이 없습니다.');
+            navigator.clipboard.writeText(html).then(() => alert('정제된 HTML 코드가 복사되었습니다.'));
+        }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', loadSample);
-    } else {
-        loadSample();
-    }
-</script>
-<script src="../nav.js"></script>
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadSample);
+        } else {
+            loadSample();
+        }
+    </script>
+    <script src="../nav.js"></script>
 </body>
+
 </html>
