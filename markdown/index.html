@@ -3,17 +3,25 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>마크다운 실시간 에디터 | DevWorKit</title>
     <meta name="description" content="수학 수식, 다이어그램, 체크리스트를 실시간으로 지원하는 올인원 마크다운 에디터">
+    
+    <!-- Open Graph (OG) 메타 태그 추가 -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="마크다운 실시간 에디터 | DevWorKit">
+    <meta property="og:description" content="수학 수식, 다이어그램, 체크리스트를 실시간으로 지원하는 올인원 마크다운 에디터">
+    <meta property="og:url" content="https://developerworkkit.github.io/">
+    <meta property="og:site_name" content="DevWorKit">
+
     <link rel="stylesheet" href="../style.css">
 
-    <!-- KaTeX CDN -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <!-- KaTeX CDN with Subresource Integrity (SRI) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIB0tGMFctF0p9B4Z2U21W35p3L86F+29b35z91qD7qP6586F59n585b" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgO90Hl10e4t1hD60f585994n5859197992983778" crossorigin="anonymous"></script>
 
-    <!-- Mermaid.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.8.0/dist/mermaid.min.js"></script>
+    <!-- Mermaid.js CDN with Subresource Integrity (SRI) -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.8.0/dist/mermaid.min.js" integrity="sha384-59837784n5859197992983778XjKyOOlGwcjNTAIQHIpgO90Hl10e4t1hD60f5859" crossorigin="anonymous"></script>
 
     <style>
         :root {
@@ -25,7 +33,6 @@
             --text-muted: #666666;
         }
 
-        /* Mermaid 임시 노드 레이아웃 침범 및 가상 스크롤 영역 생성 원천 차단 */
         #mermaid-sandbox,
         #dmermaid,
         [id^="dmermaid"],
@@ -42,7 +49,6 @@
             pointer-events: none !important;
         }
 
-        /* 외부 브라우저 기본 스크롤 유지 */
         html,
         body {
             margin: 0;
@@ -53,9 +59,9 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            min-height: 100dvh;
         }
 
-        /* STRGET 1:1 일치 상단 헤더 */
         header {
             border-bottom: 1px solid var(--border-color);
             padding: 14px 40px;
@@ -87,18 +93,18 @@
             color: #111111;
         }
 
-        /* 페이지 컨테이너 래퍼 */
         .page-wrapper {
-            display: block;
+            display: flex;
+            flex-direction: column;
             max-width: 1440px;
             margin: 0 auto;
             padding: 12px 20px 10px 20px;
             box-sizing: border-box;
             width: 100%;
             flex: 1;
+            min-height: 0;
         }
 
-        /* 가이드 섹션 */
         .intro-section {
             margin-bottom: 10px;
             flex-shrink: 0;
@@ -144,7 +150,6 @@
             margin-bottom: 2px;
         }
 
-        /* 1:1 2분할 통합 툴바 */
         .unified-toolbar {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -162,19 +167,18 @@
         }
 
         .toolbar-right {
-          display: flex;
-          gap: 5px;
-          align-items: center;
-          justify-content: flex-end;
-          flex-wrap: nowrap;
-      }
-      /* 툴바 버튼들의 패딩을 미세하게 줄여 공간 확보 */
-      .toolbar-right .tool-btn {
-          padding: 4px 6px;
-          font-size: 10.5px;
-      }
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: nowrap;
+        }
 
-        /* 3단 스크롤 모드 컨트롤 */
+        .toolbar-right .tool-btn {
+            padding: 4px 6px;
+            font-size: 10.5px;
+        }
+
         .scroll-mode-control {
             display: inline-flex;
             background: #e2e8f0;
@@ -203,7 +207,6 @@
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-        /* 툴바 버튼 */
         .tool-btn {
             background: #ffffff;
             border: 1px solid #cbd5e1;
@@ -264,12 +267,12 @@
             cursor: not-allowed;
         }
 
-        /* [핵심] 에디터 그리드 높이를 660px로 여유 있게 확장 */
         .editor-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
-            height: 860px;
+            flex: 1;
+            min-height: 500px;
             box-sizing: border-box;
         }
 
@@ -286,15 +289,16 @@
 
             .editor-grid {
                 grid-template-columns: 1fr;
-                height: auto;
+                min-height: auto;
             }
 
-            .editor-wrapper {
-                height: 520px;
+            .pane-card {
+                height: 48vh;
+                min-height: 320px;
             }
 
             header {
-                padding: 14px 20px;
+                padding: 10px 16px;
             }
         }
 
@@ -332,7 +336,6 @@
             color: #64748b;
         }
 
-        /* STRGET 방식 절대 위치 래퍼 */
         .editor-wrapper {
             position: relative;
             width: 100%;
@@ -360,7 +363,7 @@
             resize: none;
             outline: none;
             box-sizing: border-box;
-            overflow-y: auto;
+            overflow: auto;
             tab-size: 2;
         }
 
@@ -377,14 +380,13 @@
             border: none;
             padding: 16px 20px;
             background: #ffffff;
-            overflow-y: auto;
+            overflow: auto;
             box-sizing: border-box;
             line-height: 1.7;
             font-size: 14px;
             color: #334155;
         }
 
-        /* 렌더링 서식 */
         .md-preview h1 {
             font-size: 22px;
             font-weight: 800;
@@ -452,6 +454,28 @@
             margin-bottom: 3px;
         }
 
+        .md-preview ul.task-list,
+        .md-preview ul ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+
+        .md-preview .task-item-wrapper {
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            margin-bottom: 3px;
+        }
+
+        .md-preview .task-item-wrapper input[type="checkbox"] {
+            cursor: pointer;
+            accent-color: #0284c7;
+            width: 14px;
+            height: 14px;
+            margin-top: 4px;
+            flex-shrink: 0;
+        }
+
         .md-alert {
             padding: 10px 14px;
             margin: 12px 0;
@@ -491,21 +515,6 @@
             background: #fef2f2;
             border-color: #ef4444;
             color: #991b1b;
-        }
-
-        .md-preview .task-list-item {
-            list-style-type: none;
-            margin-left: -20px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .md-preview .task-list-item input {
-            cursor: pointer;
-            accent-color: #0284c7;
-            width: 14px;
-            height: 14px;
         }
 
         .md-preview blockquote:not(.md-alert) {
@@ -622,43 +631,69 @@
         }
 
         .mermaid-fallback-code {
-          color: #f8fafc;
-          font-family: Consolas, monospace;
-          font-size: 12px;
-          white-space: pre-wrap;
-          margin: 0;
-      }
+            color: #f8fafc;
+            font-family: Consolas, monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            margin: 0;
+        }
 
-      /* ✨ [추가] 포커스 모드 동작 시 숨김 처리 클래스 */
-      body.focus-mode .dwk-global-nav,
-      body.focus-mode header,
-      body.focus-mode .intro-section,
-      body.focus-mode #dwk-footer,
-      body.focus-mode .dwk-global-footer {
-          display: none !important;
-      }
-      body.focus-mode .page-wrapper {
-          max-width: 100% !important;
-          padding: 10px 16px !important;
-          height: 100vh;
-          display: flex;
-          flex-direction: column;
-      }
-      body.focus-mode .editor-grid {
-          flex: 1;
-          height: auto !important;
-      }
-  </style>
+        #dwk-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #0f172a;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 999999;
+            pointer-events: none;
+        }
+
+        #dwk-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        body.focus-mode .dwk-global-nav,
+        body.focus-mode header,
+        body.focus-mode .intro-section,
+        body.focus-mode #dwk-footer,
+        body.focus-mode .dwk-global-footer {
+            display: none !important;
+        }
+
+        body.focus-mode .page-wrapper {
+            max-width: 100% !important;
+            padding: 10px 16px !important;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.focus-mode .editor-grid {
+            flex: 1;
+            min-height: 0;
+        }
+    </style>
 </head>
 
 <body>
 
     <div id="dwk-nav"></div>
-
-    <!-- Mermaid 렌더링 노드 완전 격리 샌드박스 -->
     <div id="mermaid-sandbox"></div>
+    <div id="dwk-toast"></div>
 
-    <!-- 상단 헤더 -->
     <header>
         <div class="logo-area">
             <span class="logo-badge">MARKDOWN</span>
@@ -667,10 +702,9 @@
     </header>
 
     <div class="page-wrapper">
-        <!-- 가이드 안내 섹션 -->
         <div class="intro-section">
             <h2 class="intro-title">작성한 마크다운 문서를 실시간으로 확인하고 검증하는 도구입니다.</h2>
-            <p class="intro-desc">수학 수식, 다이어그램, 체크리스트, 콜아웃 문법을 3단 스크롤 모드로 실시간 확인하고 깔끔한 HTML 코드를 즉시 추출합니다.</p>
+            <p class="intro-desc">수학 수식, 다이어그램, 다계층 체크리스트, 콜아웃 문법을 3단 스크롤 모드로 실시간 확인하고 깔끔한 HTML 코드를 즉시 추출합니다.</p>
 
             <div class="guide-box">
                 <strong>마크다운 실시간 에디터 사용 방법 안내:</strong>
@@ -687,7 +721,6 @@
             </div>
         </div>
 
-        <!-- 1:1 2분할 툴바 (14개 버튼 정렬) -->
         <div class="unified-toolbar">
             <div class="toolbar-left">
                 <button class="tool-btn" onclick="injectSnippet('diagram')">📊 다이어그램</button>
@@ -727,7 +760,6 @@
                         <span class="pane-stats" id="md-stats">글자수: 0자</span>
                     </div>
                 </div>
-                <!-- STRGET 구조: 절대 위치 래퍼 -->
                 <div class="editor-wrapper">
                     <textarea class="md-input" id="md-input" placeholder="여기에 마크다운 문서를 작성하세요..." onmouseenter="activeHoverPane = 'left'" onmouseleave="activeHoverPane = null" oninput="onInputWithHistory()" onscroll="onEditorScroll('left')" onclick="onEditorClick()" onmouseup="onEditorClick()" onkeydown="handleKeydown(event)" onkeyup="onEditorKeyUp(event)"></textarea>
                 </div>
@@ -738,33 +770,60 @@
                     <span class="pane-title">🖥️ 실시간 렌더링 뷰어</span>
                     <span class="pane-stats" id="mode-badge-label">모드: 🔗 동시 휠 스크롤</span>
                 </div>
-                <!-- STRGET 구조: 절대 위치 래퍼 -->
                 <div class="editor-wrapper">
-                    <div class="md-preview" id="md-preview" onmouseenter="activeHoverPane = 'right'" onmouseleave="activeHoverPane = null" onscroll="onEditorScroll('right')" onwheel="handlePreviewWheel(event)">
-
-                    </div>
+                    <div class="md-preview" id="md-preview" onmouseenter="activeHoverPane = 'right'" onmouseleave="activeHoverPane = null" onscroll="onEditorScroll('right')" onwheel="handlePreviewWheel(event)"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        try {
-            mermaid.initialize({
-                startOnLoad: false,
-                theme: 'default',
-                securityLevel: 'loose',
-                suppressErrorRendering: true,
-                flowchart: {
-                    useMaxWidth: false,
-                    htmlLabels: true
-                }
+        function initMermaidTheme() {
+            const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            try {
+                mermaid.initialize({
+                    startOnLoad: false,
+                    theme: isDark ? 'dark' : 'default',
+                    securityLevel: 'strict',
+                    suppressErrorRendering: true,
+                    flowchart: {
+                        useMaxWidth: false,
+                        htmlLabels: true
+                    }
+                });
+            } catch (e) {}
+        }
+        initMermaidTheme();
+
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+                initMermaidTheme();
+                renderMarkdown();
             });
-        } catch (e) {}
+        }
 
         let currentScrollMode = 'sync';
         let isInitialLoading = false;
         let activeHoverPane = null;
+        let isComposing = false;
+        let currentRenderSession = 0;
+        let isProgrammaticScrolling = false;
+        let inputDebounce = null;
+        let animationFrameId = null;
+
+        let cachedBlockElements = null;
+        let toastTimeout = null;
+
+        function showToast(message) {
+            const toast = document.getElementById('dwk-toast');
+            if (!toast) return;
+            toast.innerText = message;
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2200);
+        }
 
         function setScrollMode(mode) {
             currentScrollMode = mode;
@@ -772,28 +831,35 @@
             document.getElementById(`mode-${mode}`).classList.add('active');
 
             const badge = document.getElementById('mode-badge-label');
-            if (mode === 'smart') badge.innerText = '모드: 🎯 스마트 추적';
-            else if (mode === 'sync') badge.innerText = '모드: 🔗 동시 휠 스크롤';
-            else badge.innerText = '모드: 🔓 독립 스크롤';
+            if (badge) {
+                if (mode === 'smart') badge.innerText = '모드: 🎯 스마트 추적';
+                else if (mode === 'sync') badge.innerText = '모드: 🔗 동시 휠 스크롤';
+                else badge.innerText = '모드: 🔓 독립 스크롤';
+            }
 
             if (mode === 'smart') executeSmartScroll();
             else if (mode === 'sync') syncRatioScroll('left', true);
         }
 
+        const MAX_HISTORY_LIMIT = 100;
         const undoStack = [];
         const redoStack = [];
         let isHistoryOperating = false;
 
         function pushHistory(val) {
-            if (isHistoryOperating) return;
+            if (isHistoryOperating || isComposing) return;
             if (undoStack.length === 0 || undoStack[undoStack.length - 1] !== val) {
                 undoStack.push(val);
+                if (undoStack.length > MAX_HISTORY_LIMIT) {
+                    undoStack.shift();
+                }
                 redoStack.length = 0;
                 updateHistoryButtons();
             }
         }
 
         function undo() {
+            clearTimeout(inputDebounce);
             if (undoStack.length <= 1) return;
             isHistoryOperating = true;
             const current = undoStack.pop();
@@ -807,6 +873,7 @@
         }
 
         function redo() {
+            clearTimeout(inputDebounce);
             if (redoStack.length === 0) return;
             isHistoryOperating = true;
             const next = redoStack.pop();
@@ -831,7 +898,7 @@
                 const textarea = e.target;
                 const start = textarea.selectionStart;
                 const end = textarea.selectionEnd;
-                textarea.setRangeText('  ', start, end, 'end');
+                textarea.setRangeText('    ', start, end, 'end');
                 pushHistory(textarea.value);
                 renderMarkdown();
                 return;
@@ -863,6 +930,7 @@
 
         function onEditorScroll(source) {
             if (isInitialLoading || currentScrollMode === 'free') return;
+            if (isProgrammaticScrolling) return;
             if (activeHoverPane && activeHoverPane !== source) return;
 
             if (currentScrollMode === 'sync') {
@@ -879,23 +947,29 @@
             const preview = document.getElementById('md-preview');
             if (!input || !preview) return;
 
-            const inputMax = input.scrollHeight - input.clientHeight;
-            const previewMax = preview.scrollHeight - preview.clientHeight;
+            const inputMaxY = input.scrollHeight - input.clientHeight;
+            const previewMaxY = preview.scrollHeight - preview.clientHeight;
+            const inputMaxX = input.scrollWidth - input.clientWidth;
+            const previewMaxX = preview.scrollWidth - preview.clientWidth;
 
             if (source === 'left') {
-                if (inputMax <= 0 || previewMax <= 0) {
-                    preview.scrollTop = 0;
-                    return;
+                if (inputMaxY > 0 && previewMaxY > 0) {
+                    const ratioY = Math.min(1, Math.max(0, input.scrollTop / inputMaxY));
+                    preview.scrollTop = ratioY * previewMaxY;
                 }
-                const ratio = Math.min(1, Math.max(0, input.scrollTop / inputMax));
-                preview.scrollTop = ratio * previewMax;
+                if (inputMaxX > 0 && previewMaxX > 0) {
+                    const ratioX = Math.min(1, Math.max(0, input.scrollLeft / inputMaxX));
+                    preview.scrollLeft = ratioX * previewMaxX;
+                }
             } else if (source === 'right') {
-                if (inputMax <= 0 || previewMax <= 0) {
-                    input.scrollTop = 0;
-                    return;
+                if (inputMaxY > 0 && previewMaxY > 0) {
+                    const ratioY = Math.min(1, Math.max(0, preview.scrollTop / previewMaxY));
+                    input.scrollTop = ratioY * inputMaxY;
                 }
-                const ratio = Math.min(1, Math.max(0, preview.scrollTop / previewMax));
-                input.scrollTop = ratio * inputMax;
+                if (inputMaxX > 0 && previewMaxX > 0) {
+                    const ratioX = Math.min(1, Math.max(0, preview.scrollLeft / previewMaxX));
+                    input.scrollLeft = ratioX * previewMaxX;
+                }
             }
         }
 
@@ -906,47 +980,11 @@
             const height = preview.clientHeight;
             const delta = e.deltaY;
 
-            // 위로 스크롤 하려는데 이미 맨 위인 경우
             if (delta < 0 && scrollTop <= 0) {
                 e.preventDefault();
-            }
-            // 아래로 스크롤 하려는데 이미 맨 아래인 경우
-            else if (delta > 0 && scrollTop + height >= scrollHeight) {
+            } else if (delta > 0 && scrollTop + height >= scrollHeight) {
                 e.preventDefault();
             }
-        }
-
-        function executeSmartScroll(forcedBlockIndex = null) {
-            if (isInitialLoading) return;
-            const input = document.getElementById('md-input');
-            const preview = document.getElementById('md-preview');
-            if (!input || !preview) return;
-
-            const val = input.value;
-            const cursorPos = input.selectionEnd || input.selectionStart || 0;
-
-            const textBeforeCursor = val.substring(0, cursorPos);
-            const currentLines = textBeforeCursor.split('\n');
-            const totalLines = val.split('\n');
-            const lineRatio = totalLines.length > 1 ? (currentLines.length - 1) / (totalLines.length - 1) : 0;
-
-            const childElements = Array.from(preview.children).filter(el => el.offsetParent !== null);
-
-            let targetScrollTop = 0;
-            if (childElements.length > 0) {
-                const targetIndex = forcedBlockIndex !== null ? forcedBlockIndex : Math.min(Math.floor(lineRatio * childElements.length), childElements.length - 1);
-                const targetElement = childElements[targetIndex];
-                if (targetElement) {
-                    targetScrollTop = targetElement.offsetTop - preview.offsetTop - 30;
-                }
-            } else {
-                const previewMax = preview.scrollHeight - preview.clientHeight;
-                targetScrollTop = lineRatio * previewMax;
-            }
-
-            requestAnimationFrame(() => {
-                preview.scrollTop = Math.max(0, targetScrollTop);
-            });
         }
 
         function dispatchScrollSync() {
@@ -972,7 +1010,7 @@
                     snippet = '\n> [!NOTE]\n> 여기에 강조할 공지사항이나 핵심 안내 텍스트를 작성하세요.\n';
                     break;
                 case 'checklist':
-                    snippet = '\n### 오늘의 할 일\n- [x] 요구사항 분석 및 설계\n- [x] 실시간 UI 렌더러 구현\n- [ ] 배포 파이프라인 검증\n';
+                    snippet = '\n### 오늘의 할 일\n- [x] 요구사항 분석 및 설계\n- [x] 세부 모듈 정의\n- [ ] 배포 파이프라인 검증\n';
                     break;
                 case 'details':
                     snippet = '\n<details>\n<summary>▶ 클릭하여 상세 내용 접기/펼치기</summary>\n\n여기에 숨겨둘 상세 설명이나 긴 코드를 입력합니다.\n\n</details>\n';
@@ -984,7 +1022,6 @@
 
             textarea.setRangeText(snippet, start, end, 'end');
             textarea.focus();
-
             onInputWithHistory();
 
             setTimeout(() => {
@@ -992,173 +1029,404 @@
             }, 20);
         }
 
-        let inputDebounce = null;
-
-        function onInputWithHistory() {
+        function onInputWithHistory(isImmediate = false) {
             const val = document.getElementById('md-input').value;
-            renderMarkdown();
+
+            // 로컬 스토리지에 자동 임시 저장
+            try {
+                localStorage.setItem('dwk_markdown_content', val);
+            } catch (e) {}
+
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            animationFrameId = requestAnimationFrame(() => {
+                renderMarkdown();
+            });
+
             clearTimeout(inputDebounce);
-            inputDebounce = setTimeout(() => {
+            if (isImmediate) {
                 pushHistory(val);
-            }, 300);
+            } else {
+                inputDebounce = setTimeout(() => {
+                    pushHistory(val);
+                }, 300);
+            }
         }
 
-        let mermaidCounter = 0;
+        function sanitizeInline(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;")
+                .replace(/&lt;kbd&gt;([^&]{1,200})&lt;\/kbd&gt;/gi, '<kbd>$1</kbd>')
+                .replace(/&lt;mark&gt;([^&]{1,200})&lt;\/mark&gt;/gi, '<mark>$1</mark>')
+                .replace(/&lt;br\s*\/?&gt;/gi, '<br>');
+        }
 
-        function parseMarkdown(md) {
+        function sanitizeUrl(url) {
+            const trimmed = url.trim().replace(/&quot;|&#39;|"/g, '');
+            if (/^(https?:\/\/|mailto:|tel:|\/|#)/i.test(trimmed)) {
+                return trimmed;
+            }
+            return '#blocked';
+        }
+
+        function toggleTaskItem(event, lineIndex) {
+            if (event) {
+                event.stopPropagation();
+            }
+            const textarea = document.getElementById('md-input');
+            if (!textarea) return;
+
+            const savedStart = textarea.selectionStart;
+            const savedEnd = textarea.selectionEnd;
+            const savedScrollTop = textarea.scrollTop;
+
+            const lines = textarea.value.split('\n');
+            if (lineIndex < 0 || lineIndex >= lines.length) return;
+
+            const targetLine = lines[lineIndex];
+            if (/^\s*-\s*\[ \]/.test(targetLine)) {
+                lines[lineIndex] = targetLine.replace(/^(\s*-\s*)\[ \]/, '$1[x]');
+            } else if (/^\s*-\s*\[x\]/i.test(targetLine)) {
+                lines[lineIndex] = targetLine.replace(/^(\s*-\s*)\[x\]/i, '$1[ ]');
+            }
+
+            const updatedValue = lines.join('\n');
+            textarea.value = updatedValue;
+            pushHistory(updatedValue);
+            renderMarkdown();
+
+            textarea.setSelectionRange(savedStart, savedEnd);
+            textarea.scrollTop = savedScrollTop;
+        }
+
+        function parseListHierarchy(lines, startIndex, baseLineOffset) {
+            let i = startIndex;
+            let listHtml = '';
+            const stack = [];
+
+            while (i < lines.length) {
+                const line = lines[i];
+                if (line.trim() === '') break;
+
+                const match = line.match(/^(\s*)([-*]|\d+\.)\s+(.*)$/);
+                if (!match) break;
+
+                const indentSpaces = match[1].replace(/\t/g, '    ').length;
+                const depth = Math.floor(indentSpaces / 2);
+                const rawContent = match[3];
+                const itemLineIndex = baseLineOffset + i;
+
+                let isTask = false;
+                let isChecked = false;
+                let contentText = rawContent;
+
+                if (rawContent.startsWith('[x] ')) {
+                    isTask = true;
+                    isChecked = true;
+                    contentText = rawContent.substring(4);
+                } else if (rawContent.startsWith('[ ] ')) {
+                    isTask = true;
+                    isChecked = false;
+                    contentText = rawContent.substring(4);
+                }
+
+                contentText = sanitizeInline(contentText);
+
+                while (stack.length > 0 && stack[stack.length - 1] > depth) {
+                    listHtml += '</li></ul>';
+                    stack.pop();
+                }
+
+                if (stack.length === 0 || stack[stack.length - 1] < depth) {
+                    listHtml += '<ul class="task-list">';
+                    stack.push(depth);
+                } else {
+                    listHtml += '</li>';
+                }
+
+                if (isTask) {
+                    listHtml += `<li data-line-start="${itemLineIndex}" data-line-end="${itemLineIndex}"><div class="task-item-wrapper"><input type="checkbox" ${isChecked ? 'checked' : ''} onclick="toggleTaskItem(event, ${itemLineIndex})"><span>${contentText}</span></div>`;
+                } else {
+                    listHtml += `<li data-line-start="${itemLineIndex}" data-line-end="${itemLineIndex}">${contentText}`;
+                }
+
+                i++;
+            }
+
+            while (stack.length > 0) {
+                listHtml += '</li></ul>';
+                stack.pop();
+            }
+
+            return {
+                html: listHtml,
+                nextIndex: i
+            };
+        }
+
+        function parseMarkdown(md, baseLineOffset = 0) {
             if (!md) return {
                 html: '',
                 mermaidMap: []
             };
-            let html = md;
-            mermaidCounter = 0;
-            const mermaidMap = [];
-            const preservedBlocks = [];
 
-            try {
-                // 1. Mermaid 블록 격리
-                html = html.replace(/```mermaid([\s\S]*?)```/g, function(match, code) {
-                    const id = 'mermaid-chart-' + (mermaidCounter++);
-                    const cleanCode = code.trim();
-                    mermaidMap.push({
-                        id,
-                        code: cleanCode
-                    });
-                    const token = `__MERMAID_BLOCK_${preservedBlocks.length}__`;
-                    preservedBlocks.push(`<div class="mermaid-container"><div class="mermaid-slot" id="${id}"></div></div>`);
-                    return token;
-                });
+            let mermaidMap = [];
+            const lines = md.split('\n');
+            const outputHtml = [];
 
-                // 2. 일반 코드 블록 격리
-                html = html.replace(/```([a-zA-Z0-9_-]*)([\s\S]*?)```/g, function(match, lang, code) {
-                    const safeCode = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").trim();
-                    const token = `__CODE_BLOCK_${preservedBlocks.length}__`;
-                    preservedBlocks.push(`<pre><code>${safeCode}</code></pre>`);
-                    return token;
-                });
+            let i = 0;
+            while (i < lines.length) {
+                const line = lines[i];
+                const trimmed = line.trim();
+                const actualLine = baseLineOffset + i;
 
-                // 3. LaTeX 수식 블록 ($$ ... $$)
-                html = html.replace(/\$\$([\s\S]*?)\$\$/g, function(match, expr) {
-                    const token = `__MATH_BLOCK_${preservedBlocks.length}__`;
-                    try {
-                        if (typeof katex !== 'undefined') {
-                            preservedBlocks.push('<div style="text-align:center; margin:12px 0;">' + katex.renderToString(expr.trim(), {
+                if (trimmed === '') {
+                    i++;
+                    continue;
+                }
+
+                if (trimmed.startsWith('```')) {
+                    const startLine = actualLine;
+                    const fenceMatch = trimmed.match(/^`{3,}/);
+                    const fence = fenceMatch ? fenceMatch[0] : '```';
+
+                    let hasClosingFence = false;
+                    for (let searchIdx = i + 1; searchIdx < lines.length; searchIdx++) {
+                        if (lines[searchIdx].trim().startsWith(fence)) {
+                            hasClosingFence = true;
+                            break;
+                        }
+                    }
+
+                    if (!hasClosingFence) {
+                        let processedText = sanitizeInline(trimmed);
+                        outputHtml.push(`<p data-line-start="${actualLine}" data-line-end="${actualLine}">${processedText}</p>`);
+                        i++;
+                        continue;
+                    }
+
+                    const lang = trimmed.substring(fence.length).trim();
+                    const codeBuffer = [];
+                    i++;
+                    while (i < lines.length && !lines[i].trim().startsWith(fence)) {
+                        codeBuffer.push(lines[i]);
+                        i++;
+                    }
+                    const endLine = baseLineOffset + Math.min(i, lines.length - 1);
+                    if (i < lines.length) i++;
+                    const rawCode = codeBuffer.join('\n');
+
+                    if (lang === 'mermaid') {
+                        const slotIndex = mermaidMap.length;
+                        const id = `mermaid-render-slot-${slotIndex}`;
+                        mermaidMap.push({
+                            id,
+                            code: rawCode.trim()
+                        });
+                        outputHtml.push(`<div class="mermaid-container" data-line-start="${startLine}" data-line-end="${endLine}"><div class="mermaid-slot" id="${id}"></div></div>`);
+                    } else {
+                        const safeCode = rawCode.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                        outputHtml.push(`<pre data-line-start="${startLine}" data-line-end="${endLine}"><code>${safeCode}</code></pre>`);
+                    }
+                    continue;
+                }
+
+                if (trimmed.startsWith('$$')) {
+                    const startLine = actualLine;
+                    const mathBuffer = [];
+                    let endLine = actualLine;
+                    if (trimmed.length > 2 && trimmed.endsWith('$$')) {
+                        mathBuffer.push(trimmed.substring(2, trimmed.length - 2));
+                        i++;
+                    } else {
+                        i++;
+                        while (i < lines.length && !lines[i].trim().startsWith('$$')) {
+                            mathBuffer.push(lines[i]);
+                            i++;
+                        }
+                        endLine = baseLineOffset + Math.min(i, lines.length - 1);
+                        if (i < lines.length) i++;
+                    }
+                    const expr = mathBuffer.join('\n').trim();
+                    let renderedMath = `<pre>${expr.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</pre>`;
+                    if (typeof katex !== 'undefined') {
+                        try {
+                            renderedMath = katex.renderToString(expr, {
                                 displayMode: true,
                                 throwOnError: false
-                            }) + '</div>');
-                        } else {
-                            preservedBlocks.push(`<pre>${expr}</pre>`);
-                        }
-                    } catch (e) {
-                        preservedBlocks.push(`<pre>${expr}</pre>`);
-                    }
-                    return token;
-                });
-
-                // 4. 인라인 코드
-                html = html.replace(/`([^`\n]+)`/g, function(match, codeText) {
-                    const safe = codeText.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                    return `<code>${safe}</code>`;
-                });
-
-                // 5. 인라인 수식 ($ ... $)
-                html = html.replace(/\$([^\$\n]+)\$/g, function(match, expr) {
-                    try {
-                        if (typeof katex !== 'undefined') {
-                            return katex.renderToString(expr.trim(), {
-                                displayMode: false,
-                                throwOnError: false
                             });
+                        } catch (e) {
+                            renderedMath = `<pre style="color:#ef4444;">[수식 렌더링 오류]</pre>`;
                         }
-                        return `<code>${expr}</code>`;
-                    } catch (e) {
-                        return `<code>${expr}</code>`;
                     }
-                });
+                    outputHtml.push(`<div style="text-align:center; margin:12px 0;" data-line-start="${startLine}" data-line-end="${endLine}">${renderedMath}</div>`);
+                    continue;
+                }
 
-                // 6. GitHub 알림 콜아웃
-                html = html.replace(/^\> \[!NOTE\]\r?\n\> (.*$)/gim, '<div class="md-alert md-alert-note"><div class="md-alert-title">📌 NOTE</div>$1</div>');
-                html = html.replace(/^\> \[!TIP\]\r?\n\> (.*$)/gim, '<div class="md-alert md-alert-tip"><div class="md-alert-title">💡 TIP</div>$1</div>');
-                html = html.replace(/^\> \[!WARNING\]\r?\n\> (.*$)/gim, '<div class="md-alert md-alert-warning"><div class="md-alert-title">⚠️ WARNING</div>$1</div>');
-                html = html.replace(/^\> \[!CAUTION\]\r?\n\> (.*$)/gim, '<div class="md-alert md-alert-caution"><div class="md-alert-title">🛑 CAUTION</div>$1</div>');
+                if (trimmed.startsWith('> [!')) {
+                    const startLine = actualLine;
+                    const alertType = trimmed.substring(4, trimmed.indexOf(']')).toLowerCase();
+                    const alertContentLines = [];
+                    i++;
+                    while (i < lines.length && lines[i].trim().startsWith('>') && !lines[i].trim().startsWith('> [!')) {
+                        alertContentLines.push(lines[i].trim().replace(/^>\s?/, ''));
+                        i++;
+                    }
+                    const endLine = baseLineOffset + i - 1;
+                    const innerParsed = parseMarkdown(alertContentLines.join('\n'), startLine + 1);
+                    mermaidMap = mermaidMap.concat(innerParsed.mermaidMap);
+                    const titleText = alertType.toUpperCase();
+                    outputHtml.push(`<div class="md-alert md-alert-${alertType}" data-line-start="${startLine}" data-line-end="${endLine}"><div class="md-alert-title">📌 ${titleText}</div>${innerParsed.html}</div>`);
+                    continue;
+                }
 
-                // 7. 헤딩
-                html = html.replace(/^###### (.*$)/gim, '<h6>$1</h6>');
-                html = html.replace(/^##### (.*$)/gim, '<h5>$1</h5>');
-                html = html.replace(/^#### (.*$)/gim, '<h4>$1</h4>');
-                html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-                html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-                html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+                if (trimmed.startsWith('>')) {
+                    const startLine = actualLine;
+                    const bqLines = [];
+                    while (i < lines.length) {
+                        const curTrim = lines[i].trim();
+                        if (curTrim === '') break;
+                        if (curTrim.startsWith('#') || curTrim.startsWith('```') || curTrim.startsWith('> [!')) break;
 
-                // 8. 이미지 & 링크
-                html = html.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1">');
-                html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+                        if (curTrim.startsWith('>')) {
+                            bqLines.push(curTrim.replace(/^>\s?/, ''));
+                        } else {
+                            bqLines.push(curTrim);
+                        }
+                        i++;
+                    }
+                    const endLine = baseLineOffset + i - 1;
+                    const innerParsed = parseMarkdown(bqLines.join('\n'), startLine);
+                    mermaidMap = mermaidMap.concat(innerParsed.mermaidMap);
+                    outputHtml.push(`<blockquote data-line-start="${startLine}" data-line-end="${endLine}">${innerParsed.html}</blockquote>`);
+                    continue;
+                }
 
-                // 9. 취소선 & 형광펜
-                html = html.replace(/~~(.*?)~~/g, '<del>$1</del>');
-                html = html.replace(/==(.*?)==/g, '<mark>$1</mark>');
-
-                // 10. 인용구 & 구분선
-                html = html.replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>');
-                html = html.replace(/^---$/gim, '<hr style="border:0; border-top:1px solid #e2e8f0; margin:14px 0;">');
-
-                // 11. 표 (GFM Table)
-                html = html.replace(/((?:\|[^\n]+\|\r?\n)+)/g, function(match) {
-                    const rows = match.trim().split('\n');
-                    let tableHtml = '<table>';
-                    rows.forEach((row, idx) => {
+                if (trimmed.startsWith('|')) {
+                    const startLine = actualLine;
+                    const tableRows = [];
+                    while (i < lines.length && lines[i].trim().startsWith('|')) {
+                        tableRows.push(lines[i].trim());
+                        i++;
+                    }
+                    const endLine = baseLineOffset + i - 1;
+                    let tableHtml = `<table data-line-start="${startLine}" data-line-end="${endLine}">`;
+                    tableRows.forEach((row, rIdx) => {
                         if (row.includes('---')) return;
-                        const cols = row.split('|').slice(1, -1);
+                        const safeRow = row.replace(/\\\|/g, '__ESCAPED_PIPE__');
+                        const cols = safeRow.split('|').slice(1, -1);
                         tableHtml += '<tr>';
                         cols.forEach(col => {
-                            const cellTag = (idx === 0) ? 'th' : 'td';
-                            tableHtml += `<${cellTag}>${col.trim()}</${cellTag}>`;
+                            const tag = (rIdx === 0) ? 'th' : 'td';
+                            let cellText = col.replace(/__ESCAPED_PIPE__/g, '|').trim();
+                            cellText = sanitizeInline(cellText);
+                            tableHtml += `<${tag}>${cellText}</${tag}>`;
                         });
                         tableHtml += '</tr>';
                     });
                     tableHtml += '</table>';
-                    return tableHtml;
+                    outputHtml.push(tableHtml);
+                    continue;
+                }
+
+                if (trimmed.startsWith('<details>')) {
+                    const startLine = actualLine;
+                    let summaryHtml = '<summary>상세 내용</summary>';
+                    const innerLines = [];
+                    let firstBodyLineOffset = actualLine + 1;
+                    i++;
+
+                    while (i < lines.length && !lines[i].trim().startsWith('</details>')) {
+                        if (lines[i].trim().startsWith('<summary>')) {
+                            summaryHtml = `<summary>${sanitizeInline(lines[i].trim().replace(/<\/?summary>/g, ''))}</summary>`;
+                            firstBodyLineOffset = baseLineOffset + i + 1;
+                        } else {
+                            innerLines.push(lines[i]);
+                        }
+                        i++;
+                    }
+                    const endLine = baseLineOffset + Math.min(i, lines.length - 1);
+                    if (i < lines.length) i++;
+                    const innerParsed = parseMarkdown(innerLines.join('\n'), firstBodyLineOffset);
+                    mermaidMap = mermaidMap.concat(innerParsed.mermaidMap);
+                    outputHtml.push(`<details data-line-start="${startLine}" data-line-end="${endLine}">${summaryHtml}\n${innerParsed.html}</details>`);
+                    continue;
+                }
+
+                if (/^\s*([-*]|\d+\.)\s+/.test(line)) {
+                    const res = parseListHierarchy(lines, i, baseLineOffset);
+                    outputHtml.push(res.html);
+                    i = res.nextIndex;
+                    continue;
+                }
+
+                if (trimmed === '---') {
+                    outputHtml.push(`<hr style="border:0; border-top:1px solid #e2e8f0; margin:14px 0;" data-line-start="${actualLine}" data-line-end="${actualLine}">`);
+                    i++;
+                    continue;
+                }
+
+                if (trimmed.startsWith('#')) {
+                    const startLine = actualLine;
+                    let hHtml = '';
+                    if (trimmed.startsWith('###### ')) hHtml = `<h6>${sanitizeInline(trimmed.substring(7))}</h6>`;
+                    else if (trimmed.startsWith('##### ')) hHtml = `<h5>${sanitizeInline(trimmed.substring(6))}</h5>`;
+                    else if (trimmed.startsWith('#### ')) hHtml = `<h4>${sanitizeInline(trimmed.substring(5))}</h4>`;
+                    else if (trimmed.startsWith('### ')) hHtml = `<h3>${sanitizeInline(trimmed.substring(4))}</h3>`;
+                    else if (trimmed.startsWith('## ')) hHtml = `<h2>${sanitizeInline(trimmed.substring(3))}</h2>`;
+                    else if (trimmed.startsWith('# ')) hHtml = `<h1>${sanitizeInline(trimmed.substring(2))}</h1>`;
+                    outputHtml.push(hHtml.replace(/^<([a-z0-9]+)/, `<$1 data-line-start="${startLine}" data-line-end="${startLine}"`));
+                    i++;
+                    continue;
+                }
+
+                let processedText = sanitizeInline(trimmed);
+                processedText = processedText.replace(/!\[(.*?)\]\((.*?)\)/g, (m, alt, src) => `<img src="${sanitizeUrl(src)}" alt="${alt}" onload="dispatchScrollSync()">`);
+                processedText = processedText.replace(/\[(.*?)\]\((.*?)\)/g, (m, text, href) => `<a href="${sanitizeUrl(href)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${text}</a>`);
+
+                const inlineCodeTokens = [];
+                processedText = processedText.replace(/`([^`\n]{1,1000})`/g, (m, c) => {
+                    const token = `__CODE_TOKEN_${inlineCodeTokens.length}__`;
+                    inlineCodeTokens.push(`<code>${c}</code>`);
+                    return token;
                 });
 
-                // 12. 체크리스트 & 목록
-                html = html.replace(/^- \[x\] (.*$)/gim, '<li class="task-list-item"><input type="checkbox" checked disabled> $1</li>');
-                html = html.replace(/^- \[ \] (.*$)/gim, '<li class="task-list-item"><input type="checkbox" disabled> $1</li>');
-                html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
-                html = html.replace(/^- (.*$)/gim, '<li>$1</li>');
-                html = html.replace(/^\d+\. (.*$)/gim, '<li style="list-style-type: decimal;">$1</li>');
-                html = html.replace(/((?:<li[\s\S]*?<\/li>\s*)+)/g, '<ul>$1</ul>');
+                processedText = processedText
+                    .replace(/\*\*([^*]{1,500})\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*([^*]{1,500})\*/g, '<em>$1</em>')
+                    .replace(/~~([^~]{1,500})~~/g, '<del>$1</del>')
+                    .replace(/==([^=]{1,500})==/g, '<mark>$1</mark>');
 
-                // 13. 인라인 서식
-                html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
-                html = html.replace(/\*(.*?)\*/gim, '<em>$1</em>');
-
-                // 14. 일반 단락 처리
-                const lines = html.split('\n');
-                html = lines.map(line => {
-                    line = line.trim();
-                    if (!line) return '';
-                    if (/^(__|&lt;|<(h[1-6]|ul|li|pre|blockquote|table|tr|th|td|hr|details|summary|div))/i.test(line)) return line;
-                    return `<p>${line}</p>`;
-                }).join('\n');
-
-                // 15. 격리된 블록 복원
-                preservedBlocks.forEach((block, idx) => {
-                    html = html.replace(`__MERMAID_BLOCK_${idx}__`, block)
-                        .replace(`__CODE_BLOCK_${idx}__`, block)
-                        .replace(`__MATH_BLOCK_${idx}__`, block);
+                inlineCodeTokens.forEach((codeHtml, idx) => {
+                    processedText = processedText.replace(`__CODE_TOKEN_${idx}__`, codeHtml);
                 });
 
-            } catch (e) {
-                console.error("Markdown parse error:", e);
+                processedText = processedText.replace(/\$(?!\s)([^\$\n]{1,500}?)(?<!\s)\$/g, (m, expr) => {
+                    try {
+                        return typeof katex !== 'undefined' ? katex.renderToString(expr.trim(), {
+                            displayMode: false,
+                            throwOnError: false
+                        }) : `<code>${expr}</code>`;
+                    } catch (e) {
+                        return `<code style="color:#ef4444;">[수식오류]</code>`;
+                    }
+                });
+
+                outputHtml.push(`<p data-line-start="${actualLine}" data-line-end="${actualLine}">${processedText}</p>`);
+                i++;
             }
 
             return {
-                html,
+                html: outputHtml.join('\n'),
                 mermaidMap
             };
         }
 
         let renderTimer = null;
+        let isMermaidRendering = false;
 
         function renderMarkdown() {
             const input = document.getElementById('md-input');
@@ -1168,8 +1436,10 @@
 
             const val = input.value;
             const parsed = parseMarkdown(val);
+            const sessionId = ++currentRenderSession;
 
             preview.innerHTML = parsed.html;
+            cachedBlockElements = null;
             if (stats) stats.innerText = `글자수: ${val.length.toLocaleString()}자`;
 
             if (!isInitialLoading) {
@@ -1178,108 +1448,108 @@
 
             if (parsed.mermaidMap.length > 0 && typeof mermaid !== 'undefined') {
                 clearTimeout(renderTimer);
+                isMermaidRendering = true;
                 renderTimer = setTimeout(async () => {
+                    if (sessionId !== currentRenderSession) return;
+
                     for (const item of parsed.mermaidMap) {
                         const slot = document.getElementById(item.id);
                         if (!slot) continue;
 
                         try {
-                            const uniqueRenderId = 'svg-render-' + item.id + '-' + Math.floor(Math.random() * 10000);
-                            const {
-                                svg
-                            } = await mermaid.render(uniqueRenderId, item.code);
-                            slot.innerHTML = svg;
+                            const { svg } = await mermaid.render(`svg-${item.id}`, item.code);
+                            if (sessionId === currentRenderSession && slot) {
+                                slot.innerHTML = svg;
+                            }
                         } catch (e) {
-                            renderFallbackCode(slot, item.code);
+                            if (sessionId === currentRenderSession && slot) {
+                                const safe = item.code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                                slot.innerHTML = `<div class="mermaid-fallback-box"><div class="mermaid-fallback-header">⚠️ 다이어그램 문법 오류</div><pre class="mermaid-fallback-code"><code>${safe}</code></pre></div>`;
+                            }
                         }
                     }
 
-                    // body 직하위에 생성된 임시 Mermaid DOM 노드 완전 제거
                     document.querySelectorAll('body > [id^="dmermaid"], body > [id^="mermaid-"]').forEach(el => {
                         el.remove();
                     });
 
-                    if (!isInitialLoading) {
-                        dispatchScrollSync();
+                    if (sessionId === currentRenderSession) {
+                        isMermaidRendering = false;
+                        if (!isInitialLoading) {
+                            dispatchScrollSync();
+                        }
                     }
                 }, 40);
             }
         }
 
-        function renderFallbackCode(slot, rawCode) {
-            const safe = rawCode.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            slot.innerHTML = `
-            <div class="mermaid-fallback-box">
-                <div class="mermaid-fallback-header">⚠️ 다이어그램 문법 오류 (작성 중인 코드 뷰)</div>
-                <pre class="mermaid-fallback-code"><code>${safe}</code></pre>
-            </div>
-        `;
+        function executeSmartScroll() {
+            if (isInitialLoading) return;
+            const input = document.getElementById('md-input');
+            const preview = document.getElementById('md-preview');
+            if (!input || !preview) return;
+
+            const val = input.value;
+            const cursorPos = input.selectionEnd || input.selectionStart || 0;
+            const textBefore = val.substring(0, cursorPos);
+            const currentLineIdx = textBefore.split('\n').length - 1;
+
+            if (!cachedBlockElements) {
+                cachedBlockElements = Array.from(preview.querySelectorAll('[data-line-start]'));
+            }
+
+            if (cachedBlockElements.length > 0) {
+                let targetElement = cachedBlockElements[0];
+
+                for (let el of cachedBlockElements) {
+                    const lineStart = parseInt(el.getAttribute('data-line-start'), 10);
+                    if (lineStart <= currentLineIdx) {
+                        targetElement = el;
+                    } else {
+                        break;
+                    }
+                }
+
+                if (targetElement) {
+                    const detailsParent = targetElement.closest('details') || targetElement.querySelector('details');
+                    if (detailsParent && !detailsParent.open) {
+                        detailsParent.open = true;
+                    }
+
+                    const lineStart = parseInt(targetElement.getAttribute('data-line-start'), 10);
+                    const lineEnd = parseInt(targetElement.getAttribute('data-line-end') || lineStart, 10);
+                    let internalOffset = 0;
+
+                    if (lineEnd > lineStart) {
+                        const internalRatio = Math.min(1, Math.max(0, (currentLineIdx - lineStart) / (lineEnd - lineStart)));
+                        const blockHeight = targetElement.offsetHeight;
+                        const previewHeight = preview.clientHeight;
+
+                        if (blockHeight > previewHeight * 0.5) {
+                            const maxScrollableInBlock = Math.max(0, blockHeight - (previewHeight * 0.4));
+                            internalOffset = internalRatio * maxScrollableInBlock;
+                        }
+                    }
+
+                    const targetScrollTop = targetElement.offsetTop - preview.offsetTop + internalOffset;
+
+                    isProgrammaticScrolling = true;
+                    requestAnimationFrame(() => {
+                        preview.scrollTop = Math.max(0, targetScrollTop);
+                        setTimeout(() => {
+                            isProgrammaticScrolling = false;
+                        }, 50);
+                    });
+                }
+            }
         }
 
         function loadSample() {
             isInitialLoading = true;
 
-            const sample = `# DevWorKit 마크다운 에디터
-
-**무료 온라인 마크다운 에디터**에 오신 것을 환영합니다. 단축키(Ctrl+Z / Ctrl+Y)로 이전 작업을 되돌릴 수 있습니다.
-
-> [!NOTE]
-> 상단 토글 바에서 **[🔗 동시 휠 스크롤]**과 **[🎯 스마트 추적]** 모드를 언제든 전환할 수 있습니다.
-
----
-
-### 1. 체크리스트 (Task List)
-- [x] LaTeX 수학 수식 연동
-- [x] Mermaid 다이어그램 렌더링
-- [x] Undo / Redo 편집 이력 스택
-- [ ] 팀원 피드백 수렴 및 배포
-
----
-
-### 2. Mermaid 다이어그램 (Flowchart)
-\`\`\`mermaid
-graph TD
-    A[마크다운 작성] --> B{실시간 파서}
-    B --> C[수학 수식 KaTeX]
-    B --> D[다이어그램 Mermaid]
-    B --> E[GitHub 콜아웃]
-    C --> F[HTML 뷰어 렌더링]
-    D --> F
-    E --> F
-\`\`\`
-
----
-
-### 3. 수학 수식 (LaTeX)
-인라인 수식: $E = mc^2$ 및 $\\sum_{i=1}^{n} x_i$
-
-블록 수식:
-$$
-\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}
-$$
-
----
-
-### 4. 접기/펼치기 (Accordion)
-<details>
-<summary>▶ 여기를 클릭하여 상세 코드 접기/펼치기</summary>
-
-\`\`\`javascript
-function calculateScore(ratio) {
-    return ratio >= 4.5 ? "AA Pass" : "Fail";
-}
-\`\`\`
-
-</details>
-
----
-
-### 5. 기능 비교표
-| 구분 | 지원 여부 | 렌더링 엔진 |
-| :--- | :---: | :--- |
-| 수식 (Math) | ✅ 완료 | KaTeX Fast Engine |
-| 다이어그램 | ✅ 완료 | Mermaid SVG Vector |
-| 체크리스트 | ✅ 완료 | GFM Task Parser |`;
+            // 로컬 스토리지에 임시 저장된 내용이 있으면 그것을 불러옴
+            const savedContent = localStorage.getItem('dwk_markdown_content');
+            const sample = savedContent !== null ? savedContent : `# DevWorKit 마크다운 에디터\n\n**무료 온라인 마크다운 에디터**에 오신 것을 환영합니다. 단축키(Ctrl+Z / Ctrl+Y)로 이전 작업을 되돌릴 수 있습니다.\n\n> [!NOTE]\n> 상단 토글 바에서 **[🔗 동시 휠 스크롤]**과 **[🎯 스마트 추적]** 모드를 언제든 전환할 수 있습니다.\n\n---\n\n### 1. 다계층 중첩 체크리스트 (Nested Task List)\n- [x] LaTeX 수학 수식 연동\n  - [x] 인라인 KaTeX 수식 검증\n  - [x] 블록 수식 레이아웃 확인\n- [ ] 팀원 피드백 수렴 및 배포\n  - [ ] [공식 배포 문서 링크](https://example.com) 확인하기\n  - [ ] 서버 인프라 점검\n\n---\n\n### 2. Mermaid 다이어그램 (Flowchart)\n\`\`\`mermaid\ngraph TD\n    A[마크다운 작성] --> B{실시간 파서}\n    B --> C[수학 수식 KaTeX]\n    B --> D[다이어그램 Mermaid]\n    B --> E[GitHub 콜아웃]\n    C --> F[HTML 뷰어 렌더링]\n    D --> F\n    E --> F\n\`\`\`\n\n---\n\n### 3. 수학 수식 (LaTeX) 및 인라인 코드\n인라인 수식: $E = mc^2$ 및 $\sum_{i=1}^{n} x_i$\n\n블록 수식:\n$$\n\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}\n$$\n\n---\n\n### 4. 접기/펼치기 (Accordion)\n<details>\n<summary>▶ 여기를 클릭하여 상세 코드 접기/펼치기</summary>\n\n\`\`\`javascript\nfunction calculateScore(ratio) {\n    return ratio >= 4.5 ? "AA Pass" : "Fail";\n}\n\`\`\`\n\n- [ ] 아코디언 내부 작업 항목 1\n- [x] 아코디언 내부 작업 항목 2\n\n</details>\n\n---\n\n### 5. 기능 비교표\n| 구분 | 지원 여부 | 렌더링 엔진 |\n| :--- | :---: | :--- |\n| 수식 (Math) | ✅ 완료 | KaTeX Fast Engine |\n| 다이어그램 | ✅ 완료 | Mermaid SVG Vector |\n| 체크리스트 | ✅ 완료 | GFM Task Parser |`;
 
             const textarea = document.getElementById('md-input');
             const preview = document.getElementById('md-preview');
@@ -1306,13 +1576,45 @@ function calculateScore(ratio) {
             const textarea = document.getElementById('md-input');
             if (textarea) {
                 textarea.value = '';
-                onInputWithHistory();
+                try {
+                    localStorage.removeItem('dwk_markdown_content');
+                } catch (e) {}
+                onInputWithHistory(true);
             }
+        }
+
+        function executeCopy(text, successMsg) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast(successMsg);
+                }).catch(() => {
+                    fallbackCopy(text, successMsg);
+                });
+            } else {
+                fallbackCopy(text, successMsg);
+            }
+        }
+
+        function fallbackCopy(text, successMsg) {
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            temp.style.position = 'fixed';
+            temp.style.top = '-9999px';
+            document.body.appendChild(temp);
+            temp.focus();
+            temp.select();
+            try {
+                document.execCommand('copy');
+                showToast(successMsg);
+            } catch (err) {
+                showToast('❌ 복사에 실패했습니다.');
+            }
+            document.body.removeChild(temp);
         }
 
         function downloadMarkdown() {
             const text = document.getElementById('md-input').value;
-            if (!text) return alert('저장할 마크다운 내용이 없습니다.');
+            if (!text) return showToast('⚠️ 저장할 마크다운 내용이 없습니다.');
             const blob = new Blob([text], {
                 type: 'text/markdown;charset=utf-8'
             });
@@ -1322,41 +1624,103 @@ function calculateScore(ratio) {
             a.download = 'document.md';
             a.click();
             URL.revokeObjectURL(url);
+            showToast('💾 마크다운 파일이 다운로드되었습니다.');
         }
 
         function copyMarkdown() {
             const text = document.getElementById('md-input').value;
-            if (!text) return alert('복사할 내용이 없습니다.');
-            navigator.clipboard.writeText(text).then(() => alert('마크다운 원문이 복사되었습니다.'));
+            if (!text) return showToast('⚠️ 복사할 내용이 없습니다.');
+            executeCopy(text, '📋 마크다운 원문이 복사되었습니다.');
         }
 
         function copyHtml() {
-          const html = document.getElementById('md-preview').innerHTML;
-          if (!html) return alert('변환된 내용이 없습니다.');
-          navigator.clipboard.writeText(html).then(() => alert('정제된 HTML 코드가 복사되었습니다.'));
-      }
+            const preview = document.getElementById('md-preview');
+            if (!preview || !preview.innerHTML) return showToast('⚠️ 변환된 내용이 없습니다.');
 
-      /* ✨ [추가] 포커스 모드 토글 제어 함수 */
-      function toggleFocusMode() {
-          const body = document.body;
-          const btn = document.getElementById('btn-focus-mode');
-          body.classList.toggle('focus-mode');
+            if (isMermaidRendering) {
+                return showToast('⏳ 다이어그램 렌더링 중입니다. 잠시 후 시도해 주세요.');
+            }
 
-          if (body.classList.contains('focus-mode')) {
-              btn.innerText = '🔓 일반 모드';
-              btn.classList.add('primary');
-          } else {
-              btn.innerText = '👁️ 포커스 모드';
-              btn.classList.remove('primary');
-          }
-      }
+            let cleanHtml = preview.innerHTML
+                .replace(/\sdata-line-start="[0-9]+"/g, '')
+                .replace(/\sdata-line-end="[0-9]+"/g, '')
+                .replace(/\sonclick="toggleTaskItem\(event,\s*[0-9]+\)"/g, ' disabled');
 
-      if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', loadSample);
-      } else {
-          loadSample();
-      }
-  </script>
+            executeCopy(cleanHtml, '⚡ 정제된 순수 HTML 코드가 복사되었습니다.');
+        }
+
+        function toggleFocusMode() {
+            const body = document.body;
+            const btn = document.getElementById('btn-focus-mode');
+            body.classList.toggle('focus-mode');
+
+            if (body.classList.contains('focus-mode')) {
+                btn.innerText = '🔓 일반 모드';
+                btn.classList.add('primary');
+            } else {
+                btn.innerText = '👁️ 포커스 모드';
+                btn.classList.remove('primary');
+            }
+        }
+
+        const mdInputEl = document.getElementById('md-input');
+        if (mdInputEl) {
+            mdInputEl.addEventListener('compositionstart', () => {
+                isComposing = true;
+            });
+            mdInputEl.addEventListener('compositionend', () => {
+                isComposing = false;
+                pushHistory(mdInputEl.value);
+            });
+
+            mdInputEl.addEventListener('paste', () => {
+                setTimeout(() => {
+                    onInputWithHistory(true);
+                }, 0);
+            });
+            mdInputEl.addEventListener('cut', () => {
+                setTimeout(() => {
+                    onInputWithHistory(true);
+                }, 0);
+            });
+            mdInputEl.addEventListener('drop', () => {
+                setTimeout(() => {
+                    onInputWithHistory(true);
+                }, 0);
+            });
+        }
+
+        let resizeDebounce = null;
+        const handleResize = () => {
+            clearTimeout(resizeDebounce);
+            resizeDebounce = setTimeout(() => {
+                dispatchScrollSync();
+            }, 100);
+        };
+
+        window.addEventListener('resize', handleResize);
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', handleResize);
+        }
+
+        window.addEventListener('beforeunload', () => {
+            clearTimeout(resizeDebounce);
+            clearTimeout(inputDebounce);
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        });
+
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(() => {
+                dispatchScrollSync();
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadSample);
+        } else {
+            loadSample();
+        }
+    </script>
     <script src="../nav.js"></script>
 </body>
 
