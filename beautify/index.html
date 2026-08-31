@@ -604,6 +604,8 @@
         const line = textBefore.split('\n').length;
         const col = textBefore.length - textBefore.lastIndexOf('\n');
         const inputBytes = new Blob([raw.value]).size;
+        const charCount = raw.value.length;
+        
         document.getElementById('input-status').innerText = `Ln: ${line}, Col: ${col}`;
         document.getElementById('input-size').innerText = `Size: ${formatBytes(inputBytes)}`;
         updateLineNumbers('raw-code', 'input-line-numbers', true);
@@ -616,6 +618,8 @@
         const outLine = outTextBefore.split('\n').length;
         const outCol = outTextBefore.length - outTextBefore.lastIndexOf('\n');
         const outBytes = new Blob([out.value]).size;
+        const charCount = out.value.length;
+        
         document.getElementById('output-status').innerText = `Ln: ${outLine}, Col: ${outCol}`;
         document.getElementById('output-size').innerText = `Size: ${formatBytes(outBytes)}`;
         updateLineNumbers('formatted-code', 'output-line-numbers', false);
