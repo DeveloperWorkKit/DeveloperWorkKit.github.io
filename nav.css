@@ -1,7 +1,7 @@
-/* nav.css - DevWorKit 글로벌 내비게이션 & 네온 슬레이트 다크모드 */
+/* nav.css - DevWorKit 글로벌 내비게이션 & 모던 다크모드 완성형 */
 .dwk-global-nav {
-    background-color: #0b0f19;
-    border-bottom: 1px solid #1e293b;
+    background-color: #111827;
+    border-bottom: 1px solid #1f2937;
     padding: 0 24px;
     height: 52px;
     display: flex;
@@ -22,13 +22,12 @@
     flex-shrink: 0;
 }
 .dwk-logo-badge {
-    background: linear-gradient(135deg, #0284c7, #38bdf8);
+    background-color: #0284c7;
     color: #ffffff;
     font-size: 11.5px;
     font-weight: 800;
     padding: 2px 7px;
     border-radius: 4px;
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
 }
 .dwk-brand-text {
     color: #ffffff;
@@ -41,7 +40,7 @@
 .nav-dropdown { position: relative; display: inline-block; }
 .nav-dropbtn {
     background: transparent;
-    color: #94a3b8;
+    color: #9ca3af;
     border: none;
     font-size: 13.5px;
     font-weight: 600;
@@ -60,16 +59,16 @@
     position: absolute;
     top: 100%;
     left: 0;
-    background-color: #0f172a;
+    background-color: #1f2937;
     min-width: 240px;
-    box-shadow: 0px 10px 25px rgba(0,0,0,0.5);
+    box-shadow: 0px 10px 20px rgba(0,0,0,0.3);
     border-radius: 6px;
-    border: 1px solid #334155;
+    border: 1px solid #374151;
     padding: 6px 0;
     z-index: 100000;
 }
 .nav-dropdown-content a {
-    color: #cbd5e1;
+    color: #d1d5db;
     padding: 11px 18px;
     text-decoration: none;
     display: block;
@@ -79,7 +78,7 @@
     white-space: nowrap;
 }
 .nav-dropdown-content a:hover {
-    background-color: #1e293b;
+    background-color: #374151;
     color: #38bdf8;
 }
 
@@ -166,8 +165,8 @@
 }
 
 .theme-toggle-btn {
-    background: #1e293b;
-    border: 1px solid #334155;
+    background: #1f2937;
+    border: 1px solid #374151;
     color: #f3f4f6;
     cursor: pointer;
     padding: 5px 9px;
@@ -180,13 +179,12 @@
     user-select: none;
 }
 .theme-toggle-btn:hover {
-    background: #334155;
-    border-color: #475569;
-    box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+    background: #374151;
+    border-color: #4b5563;
 }
 
 .nav-link-sub {
-    color: #94a3b8;
+    color: #9ca3af;
     font-size: 13px;
     text-decoration: none;
     font-weight: 500;
@@ -203,7 +201,7 @@
     transition: color 0.15s;
     white-space: nowrap;
 }
-.nav-right .nav-hub-btn:hover { color: #7dd3fc; text-shadow: 0 0 8px rgba(56, 189, 248, 0.5); }
+.nav-right .nav-hub-btn:hover { color: #7dd3fc; }
 
 .dwk-global-footer {
     border-top: 1px solid #dee2e6;
@@ -237,12 +235,11 @@
 .dwk-footer-copy { color: #94a3b8; font-size: 12px; }
 
 /* ========================================================================= */
-/* 🌌 네온사인 & 은은한 사이버 슬레이트 다크모드 엔진                         */
+/* 🌑 초선명 소프트 다크모드 엔진 (차분한 파스텔 톤 유지)                    */
 /* ========================================================================= */
 
 html.dark-theme {
-    /* 딥 옵시디언 배경 + 네온 톤 시프트 */
-    filter: invert(93%) hue-rotate(195deg) brightness(101%);
+    filter: invert(90%) hue-rotate(180deg);
     background-color: #ffffff;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -256,23 +253,13 @@ html.dark-theme video,
 html.dark-theme canvas,
 html.dark-theme svg:not(.visible-svg),
 html.dark-theme .mermaid,
-html.dark-theme .interactive-canvas {
-    filter: invert(100%) hue-rotate(165deg);
-}
-
-/* 네온 뱃지 전용 발색 레이어 */
+html.dark-theme .interactive-canvas,
 html.dark-theme .card-badge,
 html.dark-theme .logo-badge,
 html.dark-theme .tool-badge,
+html.dark-theme .badge,
 html.dark-theme .header-badge {
-    filter: invert(100%) hue-rotate(165deg) saturate(140%) brightness(110%);
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
-}
-
-/* 카드 호버 시 은은한 네온 조명 */
-html.dark-theme .tool-card:hover,
-html.dark-theme .guide-card:hover {
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.15) !important;
+    filter: invert(100%) hue-rotate(180deg);
 }
 
 /* 스크롤바 */
