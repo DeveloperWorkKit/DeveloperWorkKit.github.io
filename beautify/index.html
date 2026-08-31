@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,22 +35,55 @@
             justify-content: space-between;
         }
 
-        .logo-area { display: flex; align-items: center; gap: 8px; }
-        .logo-badge { background: var(--teal-brand); color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
-        .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-badge {
+            background: var(--teal-brand);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #111111;
+        }
 
         .page-wrapper {
             display: block;
-            max-width: 1280px;
+            max-width: 1100px;
             margin: 20px auto 40px auto;
             padding: 0 20px;
             box-sizing: border-box;
             width: 100%;
         }
 
-        .intro-section { margin-bottom: 20px; }
-        .intro-title { font-size: 22px; font-weight: 800; color: #111827; margin: 0 0 6px 0; letter-spacing: -0.5px; }
-        .intro-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 16px 0; }
+        .intro-section {
+            margin-bottom: 25px;
+        }
+
+        .intro-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 6px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .intro-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin: 0 0 16px 0;
+        }
+
         .guide-box {
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -59,11 +93,64 @@
             color: #334155;
             line-height: 1.6;
         }
-        .guide-box strong { display: block; margin-bottom: 8px; color: #0f172a; font-size: 14px; }
-        .guide-list { margin: 0; padding-left: 18px; }
-        .guide-list li { margin-bottom: 4px; }
 
-        .main-container { width: 100%; margin: 0 auto; box-sizing: border-box; }
+        .guide-box strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #0f172a;
+            font-size: 14px;
+        }
+
+        .guide-list {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .guide-list li {
+            margin-bottom: 4px;
+        }
+
+        .guide-banner-row {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px dashed #cbd5e1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #475569;
+            white-space: nowrap;
+        }
+
+        .guide-banner-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .guide-banner-btn {
+            color: #2563eb;
+            font-weight: 700;
+            text-decoration: none;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 5px 12px;
+            border-radius: 6px;
+            white-space: nowrap;
+            margin-left: 12px;
+            flex-shrink: 0;
+            display: inline-block;
+        }
+
+        .guide-banner-btn:hover {
+            background: #dbeafe;
+        }
+
+        .main-container {
+            width: 100%;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
 
         .tab-group {
             display: flex;
@@ -74,7 +161,12 @@
             justify-content: space-between;
         }
 
-        .tab-sub-group { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+        .tab-sub-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
 
         .tab-btn {
             padding: 8px 14px;
@@ -119,7 +211,10 @@
             gap: 4px;
             transition: all 0.15s;
         }
-        .action-btn:hover { background-color: #e2e8f0; }
+
+        .action-btn:hover {
+            background-color: #e2e8f0;
+        }
 
         .converter-grid {
             display: grid;
@@ -127,7 +222,11 @@
             gap: 16px;
         }
 
-        @media (max-width: 900px) { .converter-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 900px) {
+            .converter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
 
         .panel-box {
             border: 1px solid var(--border-color);
@@ -136,7 +235,7 @@
             background-color: #ffffff;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
         }
 
         .panel-header {
@@ -146,7 +245,11 @@
             margin-bottom: 8px;
         }
 
-        .panel-title { font-size: 13.5px; font-weight: 700; color: #1e293b; }
+        .panel-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #1e293b;
+        }
 
         .editor-wrapper {
             display: flex;
@@ -254,7 +357,10 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        .btn-mini-primary:hover { background-color: #059669; }
+
+        .btn-mini-primary:hover {
+            background-color: #059669;
+        }
 
         .btn-fullscreen {
             background: #f8fafc;
@@ -269,10 +375,13 @@
             align-items: center;
             gap: 4px;
         }
-        .btn-fullscreen:hover { background: #e2e8f0; }
+
+        .btn-fullscreen:hover {
+            background: #e2e8f0;
+        }
 
         .bottom-ad-box {
-            max-width: 1280px;
+            max-width: 1100px;
             width: 100%;
             margin: 25px auto 10px auto;
             text-align: center;
@@ -282,504 +391,515 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.8/beautify-css.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.8/beautify-html.min.js"></script>
 </head>
+
 <body>
 
-<header>
-    <div class="logo-area">
-        <span class="logo-badge">BEAUTIFY</span>
-        <span class="logo-text">코드 뷰티파이어 & 웹 뷰어</span>
-    </div>
-</header>
+    <header>
+        <div class="logo-area">
+            <span class="logo-badge">BEAUTIFY</span>
+            <span class="logo-text">코드 뷰티파이어 & 웹 뷰어</span>
+        </div>
+    </header>
 
-<div class="page-wrapper">
-    <div class="intro-section">
-        <h2 class="intro-title">HTML, CSS, JS 실시간 코드 정렬, 압축 및 웹 렌더링 뷰어입니다.</h2>
-        <p class="intro-desc">들여쓰기 정렬, 한 줄 압축(Minify), 파일 열기/다운로드, 그리고 실시간 브라우저 전체화면 렌더링을 지원합니다.</p>
-        
-        <div class="guide-box">
-            <strong>코드 뷰티파이어 사용 방법 안내:</strong>
-            <ol class="guide-list">
-                <li>코드를 직접 입력하거나 <b>[📂 파일 열기]</b> 또는 <b>[샘플 불러오기]</b>를 클릭합니다.</li>
-                <li>상단에서 <b>HTML, JavaScript, CSS</b> 언어 모드와 <b>들여쓰기(2칸/4칸/탭)</b> 옵션을 선택합니다.</li>
-                <li><b>[⚡ 압축 (Minify)]</b> 버튼을 누르면 즉시 한 줄로 압축되며, <b>[⛶ 전체화면]</b>으로 새 탭에서 전체 웹페이지로 실행할 수 있습니다.</li>
-                <li>양쪽 에디터 어디든 마우스로 클릭하면 실시간 행/열 번호(<b>Ln, Col</b>)와 파일 크기를 즉시 확인할 수 있습니다.</li>
-            </ol>
-            
-            <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #cbd5e1; display: flex; justify-content: space-between; align-items: center; white-space: nowrap;">
-                <span style="font-size: 13px; color: #334155; display: inline-block;">📘 <span style="font-weight: 700; color: #0f172a;">코드 포맷터의 동작 원리와 들여쓰기 표준 규칙</span>이 궁금하신가요?</span>
-                <a href="../guide/code-formatter-guide.html" style="color: #2563eb; font-weight: 700; text-decoration: none; background: #eff6ff; border: 1px solid #bfdbfe; padding: 5px 12px; border-radius: 6px; font-size: 12.5px; margin-left: 12px; flex-shrink: 0; display: inline-block;">실무 가이드 보기 →</a>
+    <div class="page-wrapper">
+        <div class="intro-section">
+            <h2 class="intro-title">HTML, CSS, JS 실시간 코드 정렬, 압축 및 웹 렌더링 뷰어입니다.</h2>
+            <p class="intro-desc">들여쓰기 정렬, 한 줄 압축(Minify), 파일 열기/다운로드, 그리고 실시간 브라우저 전체화면 렌더링을 지원합니다.</p>
+
+            <div class="guide-box">
+                <strong>코드 뷰티파이어 사용 방법 안내:</strong>
+                <ol class="guide-list">
+                    <li>코드를 직접 입력하거나 <b>[📂 파일 열기]</b> 또는 <b>[샘플 불러오기]</b>를 클릭합니다.</li>
+                    <li>상단에서 <b>HTML, JavaScript, CSS</b> 언어 모드와 <b>들여쓰기(2칸/4칸/탭)</b> 옵션을 선택합니다.</li>
+                    <li><b>[⚡ 압축 (Minify)]</b> 버튼을 누르면 즉시 한 줄로 압축되며, <b>[⛶ 전체화면]</b>으로 새 탭에서 전체 웹페이지로 실행할 수 있습니다.</li>
+                    <li>양쪽 에디터 어디든 마우스로 클릭하면 실시간 행/열 번호(<b>Ln, Col</b>)와 파일 크기를 즉시 확인할 수 있습니다.</li>
+                </ol>
+
+                <div class="guide-banner-row">
+                    <span class="guide-banner-text">📘 <span style="font-weight: 700; color: #0f172a;">코드 포맷터의 동작 원리와 들여쓰기 표준 규칙</span>이 궁금하신가요?</span>
+                    <a href="../guide/code-formatter-guide.html" class="guide-banner-btn">실무 가이드 보기 →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-container">
+            <div class="tab-group">
+                <div class="tab-sub-group">
+                    <button class="tab-btn active" onclick="setLang('html', this)">HTML</button>
+                    <button class="tab-btn" onclick="setLang('js', this)">JavaScript</button>
+                    <button class="tab-btn" onclick="setLang('css', this)">CSS</button>
+
+                    <select id="indent-select" class="select-indent" onchange="runFormat()">
+                        <option value="2">들여쓰기: 2 Spaces</option>
+                        <option value="4" selected>들여쓰기: 4 Spaces</option>
+                        <option value="tab">들여쓰기: Tab</option>
+                    </select>
+
+                    <button class="action-btn" onclick="runMinify()" style="color: #d97706; font-weight: 700;">⚡ 압축 (Minify)</button>
+                </div>
+
+                <div class="tab-sub-group">
+                    <input type="file" id="file-uploader" style="display:none;" onchange="handleFileUpload(event)">
+                    <button class="action-btn" onclick="document.getElementById('file-uploader').click()">📂 파일 열기</button>
+                    <button class="action-btn" onclick="downloadResult()">💾 다운로드</button>
+                    <button class="action-btn" onclick="loadSample()">샘플</button>
+                    <button class="action-btn" onclick="clearAll()">초기화</button>
+                </div>
+            </div>
+
+            <div class="converter-grid">
+                <!-- 좌측 원본 입력 패널 -->
+                <div class="panel-box">
+                    <div class="panel-header">
+                        <span class="panel-title">원본 소스 코드</span>
+                        <label style="font-size: 12px; color: #64748b; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                            <input type="checkbox" id="auto-update" checked> 실시간 자동 정렬
+                        </label>
+                    </div>
+                    <div class="editor-wrapper">
+                        <div class="gutter-container">
+                            <div class="line-numbers" id="input-line-numbers">
+                                <div class="line-num-item">1</div>
+                            </div>
+                        </div>
+                        <textarea id="raw-code" class="code-textarea" placeholder="여기에 소스 코드를 입력하거나 [📂 파일 열기]를 눌러보세요..." spellcheck="false"></textarea>
+                    </div>
+                    <div class="editor-status-bar">
+                        <span id="input-status">Ln: 1, Col: 1 | 글자수: 0자</span>
+                        <span id="input-size">Size: 0 B</span>
+                    </div>
+                </div>
+
+                <!-- 우측 변환 결과 패널 -->
+                <div class="panel-box">
+                    <div class="panel-header">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="panel-title" id="output-title">정렬된 결과 (HTML)</span>
+                            <div id="view-mode-toggle" style="display: flex; gap: 4px;">
+                                <button class="view-switch-btn active" id="btn-view-code" onclick="switchOutputMode('code')">코드</button>
+                                <button class="view-switch-btn" id="btn-view-preview" onclick="switchOutputMode('preview')">화면 미리보기</button>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <button class="btn-fullscreen" onclick="openInNewTab()" title="새 창 전체화면으로 웹페이지를 띄웁니다.">⛶ 전체화면</button>
+                            <button class="btn-mini-primary" id="btn-copy" onclick="copyResult()">결과 복사</button>
+                        </div>
+                    </div>
+                    <div class="editor-wrapper">
+                        <div class="gutter-container" id="output-gutter-container">
+                            <div class="line-numbers" id="output-line-numbers">
+                                <div class="line-num-item">1</div>
+                            </div>
+                        </div>
+                        <textarea id="formatted-code" class="code-textarea" placeholder="정렬 또는 압축된 코드가 여기에 표시됩니다." readonly spellcheck="false"></textarea>
+                        <iframe id="preview-frame"></iframe>
+                    </div>
+                    <div class="editor-status-bar">
+                        <span id="output-status">Ln: 1, Col: 1 | 글자수: 0자</span>
+                        <span id="output-size">Size: 0 B</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="main-container">
-        <div class="tab-group">
-            <div class="tab-sub-group">
-                <button class="tab-btn active" onclick="setLang('html', this)">HTML</button>
-                <button class="tab-btn" onclick="setLang('js', this)">JavaScript</button>
-                <button class="tab-btn" onclick="setLang('css', this)">CSS</button>
-                
-                <select id="indent-select" class="select-indent" onchange="runFormat()">
-                    <option value="2">들여쓰기: 2 Spaces</option>
-                    <option value="4" selected>들여쓰기: 4 Spaces</option>
-                    <option value="tab">들여쓰기: Tab</option>
-                </select>
-
-                <button class="action-btn" onclick="runMinify()" style="color: #d97706; font-weight: 700;">⚡ 압축 (Minify)</button>
-            </div>
-            
-            <div class="tab-sub-group">
-                <input type="file" id="file-uploader" style="display:none;" onchange="handleFileUpload(event)">
-                <button class="action-btn" onclick="document.getElementById('file-uploader').click()">📂 파일 열기</button>
-                <button class="action-btn" onclick="downloadResult()">💾 다운로드</button>
-                <button class="action-btn" onclick="loadSample()">샘플</button>
-                <button class="action-btn" onclick="clearAll()">초기화</button>
-            </div>
-        </div>
-
-        <div class="converter-grid">
-            <!-- 좌측 원본 입력 패널 -->
-            <div class="panel-box">
-                <div class="panel-header">
-                    <span class="panel-title">원본 소스 코드</span>
-                    <label style="font-size: 12px; color: #64748b; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                        <input type="checkbox" id="auto-update" checked> 실시간 자동 정렬
-                    </label>
-                </div>
-                <div class="editor-wrapper">
-                    <div class="gutter-container">
-                        <div class="line-numbers" id="input-line-numbers">
-                            <div class="line-num-item">1</div>
-                        </div>
-                    </div>
-                    <textarea id="raw-code" class="code-textarea" placeholder="여기에 소스 코드를 입력하거나 [📂 파일 열기]를 눌러보세요..." spellcheck="false"></textarea>
-                </div>
-                <div class="editor-status-bar">
-                    <span id="input-status">Ln: 1, Col: 1 | 글자수: 0자</span>
-                    <span id="input-size">Size: 0 B</span>
-                </div>
-            </div>
-
-            <!-- 우측 변환 결과 패널 -->
-            <div class="panel-box">
-                <div class="panel-header">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <span class="panel-title" id="output-title">정렬된 결과 (HTML)</span>
-                        <div id="view-mode-toggle" style="display: flex; gap: 4px;">
-                            <button class="view-switch-btn active" id="btn-view-code" onclick="switchOutputMode('code')">코드</button>
-                            <button class="view-switch-btn" id="btn-view-preview" onclick="switchOutputMode('preview')">화면 미리보기</button>
-                        </div>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <button class="btn-fullscreen" onclick="openInNewTab()" title="새 창 전체화면으로 웹페이지를 띄웁니다.">⛶ 전체화면</button>
-                        <button class="btn-mini-primary" id="btn-copy" onclick="copyResult()">결과 복사</button>
-                    </div>
-                </div>
-                <div class="editor-wrapper">
-                    <div class="gutter-container" id="output-gutter-container">
-                        <div class="line-numbers" id="output-line-numbers">
-                            <div class="line-num-item">1</div>
-                        </div>
-                    </div>
-                    <textarea id="formatted-code" class="code-textarea" placeholder="정렬 또는 압축된 코드가 여기에 표시됩니다." readonly spellcheck="false"></textarea>
-                    <iframe id="preview-frame"></iframe>
-                </div>
-                <div class="editor-status-bar">
-                    <span id="output-status">Ln: 1, Col: 1 | 글자수: 0자</span>
-                    <span id="output-size">Size: 0 B</span>
-                </div>
-            </div>
-        </div>
+    <div class="bottom-ad-box">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3823705730142714" data-ad-slot="3894691126" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
     </div>
-</div>
 
-<div class="bottom-ad-box">
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-3823705730142714"
-         data-ad-slot="3894691126"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-</div>
+    <script>
+        let currentLang = 'html';
+        let outputMode = 'code';
 
-<script>
-    let currentLang = 'html';
-    let outputMode = 'code';
+        let lastRawLineCount = -1;
+        let lastOutLineCount = -1;
 
-    let lastRawLineCount = -1;
-    let lastOutLineCount = -1;
+        // ===== Undo / Redo History Stack Engine =====
+        const codeUndoStack = [];
+        const codeRedoStack = [];
+        let codeHistoryTimer = null;
 
-    // ===== Undo / Redo History Stack Engine =====
-    const codeUndoStack = [];
-    const codeRedoStack = [];
-    let codeHistoryTimer = null;
+        function recordCodeHistory() {
+            const el = document.getElementById('raw-code');
+            if (!el) return;
 
-    function recordCodeHistory() {
-        const el = document.getElementById('raw-code');
-        if (!el) return;
+            const state = {
+                val: el.value,
+                selStart: el.selectionStart,
+                selEnd: el.selectionEnd,
+                scrollTop: el.scrollTop
+            };
 
-        const state = {
-            val: el.value,
-            selStart: el.selectionStart,
-            selEnd: el.selectionEnd,
-            scrollTop: el.scrollTop
+            if (codeUndoStack.length === 0 || codeUndoStack[codeUndoStack.length - 1].val !== state.val) {
+                codeUndoStack.push(state);
+                if (codeUndoStack.length > 50) codeUndoStack.shift();
+                codeRedoStack.length = 0;
+            }
+        }
+
+        function applyCodeState(el, state) {
+            el.value = state.val;
+            runFormat();
+
+            setTimeout(() => {
+                el.focus();
+                el.setSelectionRange(state.selStart, state.selEnd);
+                el.scrollTop = state.scrollTop;
+                syncScroll('raw-code', 'input-line-numbers');
+                updateInputStatus();
+            }, 0);
+        }
+
+        function handleCodeKeyDown(e) {
+            const isCtrl = e.ctrlKey || e.metaKey;
+            const key = e.key.toLowerCase();
+            const el = document.getElementById('raw-code');
+
+            if (isCtrl && key === 'z' && !e.shiftKey) {
+                if (codeUndoStack.length > 1) {
+                    e.preventDefault();
+                    const current = codeUndoStack.pop();
+                    codeRedoStack.push(current);
+
+                    const prev = codeUndoStack[codeUndoStack.length - 1];
+                    applyCodeState(el, prev);
+                }
+            } else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
+                if (codeRedoStack.length > 0) {
+                    e.preventDefault();
+                    const next = codeRedoStack.pop();
+                    codeUndoStack.push(next);
+
+                    applyCodeState(el, next);
+                }
+            }
+        }
+
+        function handleCodeInput() {
+            if (document.getElementById('auto-update').checked) {
+                runFormat();
+            } else {
+                updateInputStatus();
+            }
+
+            clearTimeout(codeHistoryTimer);
+            codeHistoryTimer = setTimeout(() => {
+                recordCodeHistory();
+            }, 300);
+        }
+        // ============================================
+
+        const samples = {
+            html: '<!DOCTYPE html>\n<html>\n<head>\n<style>\nbody { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 30px; background: #f0fdf4; margin: 0; }\n.card { background: white; padding: 24px; border-radius: 12px; border: 1px solid #86efac; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }\nh1 { color: #166534; font-size: 22px; margin: 0 0 10px 0; }\np { color: #15803d; font-size: 14.5px; line-height: 1.6; margin: 0 0 16px 0; }\nbutton { background: #16a34a; color: white; border: none; padding: 9px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13.5px; }\nbutton:hover { background: #15803d; }\n</style>\n</head>\n<body>\n<div class="card">\n<h1>🎉 실시간 렌더링 뷰어 정상 작동!</h1>\n<p>HTML/CSS/JS 코드를 작성하면 즉시 우측 화면에 브라우저 렌더링 결과물이 실시간으로 나타납니다.</p>\n<button onclick="alert(\'자바스크립트 동작도 정상입니다!\')">클릭 테스트</button>\n</div>\n</body>\n</html>',
+            js: 'function calculateMetrics(dataset){\n    if(!Array.isArray(dataset) || dataset.length === 0){\n        return { avg: 0, max: 0, min: 0 };\n    }\n    let sum = dataset.reduce((acc, curr) => acc + curr, 0);\n    let avg = sum / dataset.length;\n    let max = Math.max(...dataset);\n    let min = Math.min(...dataset);\n    return { avg: avg.toFixed(2), max: max, min: min };\n}\nconst sampleData = [10, 45, 23, 89, 54];\nconsole.log(calculateMetrics(sampleData));',
+            css: '.container {\n    width: 100%;\n    max-width: 1200px;\n    margin: 0 auto;\n    padding: 0 20px;\n}\n.card {\n    background: #ffffff;\n    border: 1px solid #e2e8f0;\n    border-radius: 10px;\n    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);\n    padding: 24px;\n}\n.title {\n    font-size: 18px;\n    font-weight: 700;\n    color: #0f172a;\n    margin-bottom: 8px;\n}'
         };
 
-        if (codeUndoStack.length === 0 || codeUndoStack[codeUndoStack.length - 1].val !== state.val) {
-            codeUndoStack.push(state);
-            if (codeUndoStack.length > 50) codeUndoStack.shift();
-            codeRedoStack.length = 0;
-        }
-    }
+        function updateLineNumbers(textareaId, lineNumberId, isRaw) {
+            const textarea = document.getElementById(textareaId);
+            const lineNumContainer = document.getElementById(lineNumberId);
+            const lines = textarea.value.split('\n').length;
 
-    function applyCodeState(el, state) {
-        el.value = state.val;
-        runFormat();
+            if (isRaw && lines === lastRawLineCount) return;
+            if (!isRaw && lines === lastOutLineCount) return;
 
-        setTimeout(() => {
-            el.focus();
-            el.setSelectionRange(state.selStart, state.selEnd);
-            el.scrollTop = state.scrollTop;
-            syncScroll('raw-code', 'input-line-numbers');
-            updateInputStatus();
-        }, 0);
-    }
+            if (isRaw) lastRawLineCount = lines;
+            else lastOutLineCount = lines;
 
-    function handleCodeKeyDown(e) {
-        const isCtrl = e.ctrlKey || e.metaKey;
-        const key = e.key.toLowerCase();
-        const el = document.getElementById('raw-code');
-
-        if (isCtrl && key === 'z' && !e.shiftKey) {
-            if (codeUndoStack.length > 1) {
-                e.preventDefault();
-                const current = codeUndoStack.pop();
-                codeRedoStack.push(current);
-
-                const prev = codeUndoStack[codeUndoStack.length - 1];
-                applyCodeState(el, prev);
+            let html = '';
+            const total = Math.max(lines, 1);
+            for (let i = 1; i <= total; i++) {
+                html += `<div class="line-num-item">${i}</div>`;
             }
-        } else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
-            if (codeRedoStack.length > 0) {
-                e.preventDefault();
-                const next = codeRedoStack.pop();
-                codeUndoStack.push(next);
+            lineNumContainer.innerHTML = html;
+        }
 
-                applyCodeState(el, next);
+        function syncScroll(textareaId, lineNumberId) {
+            const textarea = document.getElementById(textareaId);
+            const lineNumContainer = document.getElementById(lineNumberId);
+            if (textarea && lineNumContainer) {
+                lineNumContainer.style.transform = `translateY(-${textarea.scrollTop}px)`;
             }
         }
-    }
 
-    function handleCodeInput() {
-        if (document.getElementById('auto-update').checked) {
+        function setLang(lang, btn) {
+            currentLang = lang;
+            if (btn) {
+                document.querySelectorAll('.tab-sub-group .tab-btn').forEach(b => {
+                    if (b.innerText === 'HTML' || b.innerText === 'JavaScript' || b.innerText === 'CSS') {
+                        b.classList.remove('active');
+                    }
+                });
+                btn.classList.add('active');
+            }
+
+            const toggleBox = document.getElementById('view-mode-toggle');
+            if (lang === 'html') {
+                toggleBox.style.display = 'flex';
+            } else {
+                toggleBox.style.display = 'none';
+                switchOutputMode('code');
+            }
+
             runFormat();
-        } else {
-            updateInputStatus();
         }
 
-        clearTimeout(codeHistoryTimer);
-        codeHistoryTimer = setTimeout(() => {
-            recordCodeHistory();
-        }, 300);
-    }
-    // ============================================
+        function switchOutputMode(mode) {
+            outputMode = mode;
+            const codeArea = document.getElementById('formatted-code');
+            const outputGutter = document.getElementById('output-gutter-container');
+            const previewFrame = document.getElementById('preview-frame');
+            const btnCode = document.getElementById('btn-view-code');
+            const btnPreview = document.getElementById('btn-view-preview');
+            const copyBtn = document.getElementById('btn-copy');
 
-    const samples = {
-        html: '<!DOCTYPE html>\n<html>\n<head>\n<style>\nbody { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 30px; background: #f0fdf4; margin: 0; }\n.card { background: white; padding: 24px; border-radius: 12px; border: 1px solid #86efac; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }\nh1 { color: #166534; font-size: 22px; margin: 0 0 10px 0; }\np { color: #15803d; font-size: 14.5px; line-height: 1.6; margin: 0 0 16px 0; }\nbutton { background: #16a34a; color: white; border: none; padding: 9px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13.5px; }\nbutton:hover { background: #15803d; }\n</style>\n</head>\n<body>\n<div class="card">\n<h1>🎉 실시간 렌더링 뷰어 정상 작동!</h1>\n<p>HTML/CSS/JS 코드를 작성하면 즉시 우측 화면에 브라우저 렌더링 결과물이 실시간으로 나타납니다.</p>\n<button onclick="alert(\'자바스크립트 동작도 정상입니다!\')">클릭 테스트</button>\n</div>\n</body>\n</html>',
-        js: 'function calculateMetrics(dataset){\n    if(!Array.isArray(dataset) || dataset.length === 0){\n        return { avg: 0, max: 0, min: 0 };\n    }\n    let sum = dataset.reduce((acc, curr) => acc + curr, 0);\n    let avg = sum / dataset.length;\n    let max = Math.max(...dataset);\n    let min = Math.min(...dataset);\n    return { avg: avg.toFixed(2), max: max, min: min };\n}\nconst sampleData = [10, 45, 23, 89, 54];\nconsole.log(calculateMetrics(sampleData));',
-        css: '.container {\n    width: 100%;\n    max-width: 1200px;\n    margin: 0 auto;\n    padding: 0 20px;\n}\n.card {\n    background: #ffffff;\n    border: 1px solid #e2e8f0;\n    border-radius: 10px;\n    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);\n    padding: 24px;\n}\n.title {\n    font-size: 18px;\n    font-weight: 700;\n    color: #0f172a;\n    margin-bottom: 8px;\n}'
-    };
-
-    function updateLineNumbers(textareaId, lineNumberId, isRaw) {
-        const textarea = document.getElementById(textareaId);
-        const lineNumContainer = document.getElementById(lineNumberId);
-        const lines = textarea.value.split('\n').length;
-
-        if (isRaw && lines === lastRawLineCount) return;
-        if (!isRaw && lines === lastOutLineCount) return;
-
-        if (isRaw) lastRawLineCount = lines;
-        else lastOutLineCount = lines;
-
-        let html = '';
-        const total = Math.max(lines, 1);
-        for (let i = 1; i <= total; i++) {
-            html += `<div class="line-num-item">${i}</div>`;
+            if (mode === 'code') {
+                codeArea.style.display = 'block';
+                outputGutter.style.display = 'block';
+                previewFrame.style.display = 'none';
+                if (btnCode) btnCode.classList.add('active');
+                if (btnPreview) btnPreview.classList.remove('active');
+                copyBtn.style.display = 'block';
+                document.getElementById('output-title').innerText = '정렬된 결과 (' + currentLang.toUpperCase() + ')';
+            } else {
+                codeArea.style.display = 'none';
+                outputGutter.style.display = 'none';
+                previewFrame.style.display = 'block';
+                if (btnCode) btnCode.classList.remove('active');
+                if (btnPreview) btnPreview.classList.add('active');
+                copyBtn.style.display = 'none';
+                document.getElementById('output-title').innerText = '실시간 웹 화면 미리보기';
+                updatePreview();
+            }
         }
-        lineNumContainer.innerHTML = html;
-    }
 
-    function syncScroll(textareaId, lineNumberId) {
-        const textarea = document.getElementById(textareaId);
-        const lineNumContainer = document.getElementById(lineNumberId);
-        if (textarea && lineNumContainer) {
-            lineNumContainer.style.transform = `translateY(-${textarea.scrollTop}px)`;
+        function updatePreview() {
+            const raw = document.getElementById('raw-code').value;
+            const iframe = document.getElementById('preview-frame');
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            doc.open();
+            doc.write(raw || '<div style="font-family:sans-serif; color:#94a3b8; padding:30px; text-align:center;">좌측에 HTML 코드를 입력하면 실시간으로 렌더링됩니다.</div>');
+            doc.close();
         }
-    }
 
-    function setLang(lang, btn) {
-        currentLang = lang;
-        if (btn) {
-            document.querySelectorAll('.tab-sub-group .tab-btn').forEach(b => {
-                if (b.innerText === 'HTML' || b.innerText === 'JavaScript' || b.innerText === 'CSS') {
-                    b.classList.remove('active');
+        function openInNewTab() {
+            const raw = document.getElementById('raw-code').value;
+            if (!raw.trim()) {
+                alert('전체화면으로 실행할 HTML 코드가 없습니다.');
+                return;
+            }
+            const newWin = window.open('', '_blank');
+            if (newWin) {
+                newWin.document.open();
+                newWin.document.write(raw);
+                newWin.document.close();
+            } else {
+                alert('브라우저 팝업 차단을 해제해주세요.');
+            }
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            if (bytes < 1024) return bytes + ' B';
+            return (bytes / 1024).toFixed(1) + ' KB';
+        }
+
+        function updateInputStatus() {
+            const raw = document.getElementById('raw-code');
+            const selStart = raw.selectionStart || 0;
+            const textBefore = raw.value.substring(0, selStart);
+            const line = textBefore.split('\n').length;
+            const col = textBefore.length - textBefore.lastIndexOf('\n');
+            const inputBytes = new Blob([raw.value]).size;
+            const charCount = raw.value.length;
+
+            document.getElementById('input-status').innerText = `Ln: ${line}, Col: ${col} | 글자수: ${charCount.toLocaleString()}자`;
+            document.getElementById('input-size').innerText = `Size: ${formatBytes(inputBytes)}`;
+            updateLineNumbers('raw-code', 'input-line-numbers', true);
+        }
+
+        function updateOutputStatus() {
+            const out = document.getElementById('formatted-code');
+            const outSelStart = out.selectionStart || 0;
+            const outTextBefore = out.value.substring(0, outSelStart);
+            const outLine = outTextBefore.split('\n').length;
+            const outCol = outTextBefore.length - outTextBefore.lastIndexOf('\n');
+            const outBytes = new Blob([out.value]).size;
+            const charCount = out.value.length;
+
+            document.getElementById('output-status').innerText = `Ln: ${outLine}, Col: ${outCol} | 글자수: ${charCount.toLocaleString()}자`;
+            document.getElementById('output-size').innerText = `Size: ${formatBytes(outBytes)}`;
+            updateLineNumbers('formatted-code', 'output-line-numbers', false);
+        }
+
+        function runFormat() {
+            const raw = document.getElementById('raw-code').value;
+            const out = document.getElementById('formatted-code');
+
+            if (outputMode === 'code') {
+                document.getElementById('output-title').innerText = '정렬된 결과 (' + currentLang.toUpperCase() + ')';
+            }
+
+            if (!raw.trim()) {
+                out.value = '';
+                updatePreview();
+                updateInputStatus();
+                updateOutputStatus();
+                return;
+            }
+
+            const indentVal = document.getElementById('indent-select').value;
+            const opts = {
+                indent_size: indentVal === 'tab' ? 1 : parseInt(indentVal),
+                indent_char: indentVal === 'tab' ? '\t' : ' ',
+                max_preserve_newlines: 2,
+                preserve_newlines: true,
+                wrap_line_length: 0
+            };
+
+            try {
+                if (currentLang === 'html' && window.html_beautify) {
+                    out.value = html_beautify(raw, opts);
+                } else if (currentLang === 'js' && window.js_beautify) {
+                    out.value = js_beautify(raw, opts);
+                } else if (currentLang === 'css' && window.css_beautify) {
+                    out.value = css_beautify(raw, opts);
                 }
-            });
-            btn.classList.add('active');
-        }
-        
-        const toggleBox = document.getElementById('view-mode-toggle');
-        if (lang === 'html') {
-            toggleBox.style.display = 'flex';
-        } else {
-            toggleBox.style.display = 'none';
-            switchOutputMode('code');
-        }
+            } catch (e) {
+                out.value = '코드 정렬 오류:\n' + e.message;
+            }
 
-        runFormat();
-    }
-
-    function switchOutputMode(mode) {
-        outputMode = mode;
-        const codeArea = document.getElementById('formatted-code');
-        const outputGutter = document.getElementById('output-gutter-container');
-        const previewFrame = document.getElementById('preview-frame');
-        const btnCode = document.getElementById('btn-view-code');
-        const btnPreview = document.getElementById('btn-view-preview');
-        const copyBtn = document.getElementById('btn-copy');
-
-        if (mode === 'code') {
-            codeArea.style.display = 'block';
-            outputGutter.style.display = 'block';
-            previewFrame.style.display = 'none';
-            if (btnCode) btnCode.classList.add('active');
-            if (btnPreview) btnPreview.classList.remove('active');
-            copyBtn.style.display = 'block';
-            document.getElementById('output-title').innerText = '정렬된 결과 (' + currentLang.toUpperCase() + ')';
-        } else {
-            codeArea.style.display = 'none';
-            outputGutter.style.display = 'none';
-            previewFrame.style.display = 'block';
-            if (btnCode) btnCode.classList.remove('active');
-            if (btnPreview) btnPreview.classList.add('active');
-            copyBtn.style.display = 'none';
-            document.getElementById('output-title').innerText = '실시간 웹 화면 미리보기';
-            updatePreview();
-        }
-    }
-
-    function updatePreview() {
-        const raw = document.getElementById('raw-code').value;
-        const iframe = document.getElementById('preview-frame');
-        const doc = iframe.contentDocument || iframe.contentWindow.document;
-        doc.open();
-        doc.write(raw || '<div style="font-family:sans-serif; color:#94a3b8; padding:30px; text-align:center;">좌측에 HTML 코드를 입력하면 실시간으로 렌더링됩니다.</div>');
-        doc.close();
-    }
-
-    function openInNewTab() {
-        const raw = document.getElementById('raw-code').value;
-        if (!raw.trim()) { alert('전체화면으로 실행할 HTML 코드가 없습니다.'); return; }
-        const newWin = window.open('', '_blank');
-        if (newWin) {
-            newWin.document.open();
-            newWin.document.write(raw);
-            newWin.document.close();
-        } else {
-            alert('브라우저 팝업 차단을 해제해주세요.');
-        }
-    }
-
-    function formatBytes(bytes) {
-        if (bytes === 0) return '0 B';
-        if (bytes < 1024) return bytes + ' B';
-        return (bytes / 1024).toFixed(1) + ' KB';
-    }
-
-    function updateInputStatus() {
-        const raw = document.getElementById('raw-code');
-        const selStart = raw.selectionStart || 0;
-        const textBefore = raw.value.substring(0, selStart);
-        const line = textBefore.split('\n').length;
-        const col = textBefore.length - textBefore.lastIndexOf('\n');
-        const inputBytes = new Blob([raw.value]).size;
-        const charCount = raw.value.length;
-        
-        document.getElementById('input-status').innerText = `Ln: ${line}, Col: ${col} | 글자수: ${charCount.toLocaleString()}자`;
-        document.getElementById('input-size').innerText = `Size: ${formatBytes(inputBytes)}`;
-        updateLineNumbers('raw-code', 'input-line-numbers', true);
-    }
-
-    function updateOutputStatus() {
-        const out = document.getElementById('formatted-code');
-        const outSelStart = out.selectionStart || 0;
-        const outTextBefore = out.value.substring(0, outSelStart);
-        const outLine = outTextBefore.split('\n').length;
-        const outCol = outTextBefore.length - outTextBefore.lastIndexOf('\n');
-        const outBytes = new Blob([out.value]).size;
-        const charCount = out.value.length;
-        
-        document.getElementById('output-status').innerText = `Ln: ${outLine}, Col: ${outCol} | 글자수: ${charCount.toLocaleString()}자`;
-        document.getElementById('output-size').innerText = `Size: ${formatBytes(outBytes)}`;
-        updateLineNumbers('formatted-code', 'output-line-numbers', false);
-    }
-
-    function runFormat() {
-        const raw = document.getElementById('raw-code').value;
-        const out = document.getElementById('formatted-code');
-        
-        if (outputMode === 'code') {
-            document.getElementById('output-title').innerText = '정렬된 결과 (' + currentLang.toUpperCase() + ')';
-        }
-
-        if (!raw.trim()) { 
-            out.value = ''; 
             updatePreview();
             updateInputStatus();
             updateOutputStatus();
-            return; 
         }
 
-        const indentVal = document.getElementById('indent-select').value;
-        const opts = {
-            indent_size: indentVal === 'tab' ? 1 : parseInt(indentVal),
-            indent_char: indentVal === 'tab' ? '\t' : ' ',
-            max_preserve_newlines: 2,
-            preserve_newlines: true,
-            wrap_line_length: 0
-        };
-
-        try {
-            if (currentLang === 'html' && window.html_beautify) {
-                out.value = html_beautify(raw, opts);
-            } else if (currentLang === 'js' && window.js_beautify) {
-                out.value = js_beautify(raw, opts);
-            } else if (currentLang === 'css' && window.css_beautify) {
-                out.value = css_beautify(raw, opts);
+        function runMinify() {
+            const raw = document.getElementById('raw-code').value;
+            const out = document.getElementById('formatted-code');
+            if (!raw.trim()) {
+                alert('압축할 소스 코드가 없습니다.');
+                return;
             }
-        } catch (e) {
-            out.value = '코드 정렬 오류:\n' + e.message;
+
+            let minified = '';
+            if (currentLang === 'html') {
+                minified = raw.replace(/<!--[\s\S]*?-->/g, '').replace(/\s+/g, ' ').replace(/> </g, '><').trim();
+            } else if (currentLang === 'css') {
+                minified = raw.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s*([\{\}\:\;\,])\s*/g, '$1').replace(/\s+/g, ' ').trim();
+            } else if (currentLang === 'js') {
+                minified = raw.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '').replace(/\s*([\{\}\=\+\-\*\/\:\;\,])\s*/g, '$1').replace(/\s+/g, ' ').trim();
+            }
+
+            switchOutputMode('code');
+            out.value = minified;
+            document.getElementById('output-title').innerText = '압축된 결과 (' + currentLang.toUpperCase() + ')';
+            updateInputStatus();
+            updateOutputStatus();
         }
 
-        updatePreview();
-        updateInputStatus();
-        updateOutputStatus();
-    }
+        function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
 
-    function runMinify() {
-        const raw = document.getElementById('raw-code').value;
-        const out = document.getElementById('formatted-code');
-        if (!raw.trim()) {
-            alert('압축할 소스 코드가 없습니다.');
-            return;
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (ext === 'html' || ext === 'htm') setLang('html');
+            else if (ext === 'js') setLang('js');
+            else if (ext === 'css') setLang('css');
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                document.getElementById('raw-code').value = evt.target.result;
+                recordCodeHistory();
+                runFormat();
+            };
+            reader.readAsText(file);
+            e.target.value = '';
         }
 
-        let minified = '';
-        if (currentLang === 'html') {
-            minified = raw.replace(/<!--[\s\S]*?-->/g, '').replace(/\s+/g, ' ').replace(/> </g, '><').trim();
-        } else if (currentLang === 'css') {
-            minified = raw.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s*([\{\}\:\;\,])\s*/g, '$1').replace(/\s+/g, ' ').trim();
-        } else if (currentLang === 'js') {
-            minified = raw.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '').replace(/\s*([\{\}\=\+\-\*\/\:\;\,])\s*/g, '$1').replace(/\s+/g, ' ').trim();
+        function downloadResult() {
+            const out = document.getElementById('formatted-code').value || document.getElementById('raw-code').value;
+            if (!out.trim()) {
+                alert('다운로드할 코드가 없습니다.');
+                return;
+            }
+
+            const extMap = {
+                html: 'html',
+                js: 'js',
+                css: 'css'
+            };
+            const ext = extMap[currentLang] || 'txt';
+            const blob = new Blob([out], {
+                type: 'text/plain;charset=utf-8'
+            });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `code_${currentLang}_${Date.now()}.${ext}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
-        switchOutputMode('code');
-        out.value = minified;
-        document.getElementById('output-title').innerText = '압축된 결과 (' + currentLang.toUpperCase() + ')';
-        updateInputStatus();
-        updateOutputStatus();
-    }
-
-    function handleFileUpload(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const ext = file.name.split('.').pop().toLowerCase();
-        if (ext === 'html' || ext === 'htm') setLang('html');
-        else if (ext === 'js') setLang('js');
-        else if (ext === 'css') setLang('css');
-
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-            document.getElementById('raw-code').value = evt.target.result;
+        function loadSample() {
+            const el = document.getElementById('raw-code');
+            el.value = samples[currentLang] || '';
             recordCodeHistory();
             runFormat();
-        };
-        reader.readAsText(file);
-        e.target.value = '';
-    }
-
-    function downloadResult() {
-        const out = document.getElementById('formatted-code').value || document.getElementById('raw-code').value;
-        if (!out.trim()) { 
-            alert('다운로드할 코드가 없습니다.'); 
-            return; 
         }
 
-        const extMap = { html: 'html', js: 'js', css: 'css' };
-        const ext = extMap[currentLang] || 'txt';
-        const blob = new Blob([out], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `code_${currentLang}_${Date.now()}.${ext}`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
+        function clearAll() {
+            const el = document.getElementById('raw-code');
+            el.value = '';
+            document.getElementById('formatted-code').value = '';
+            recordCodeHistory();
+            updatePreview();
+            updateInputStatus();
+            updateOutputStatus();
+            el.focus();
+        }
 
-    function loadSample() {
-        const el = document.getElementById('raw-code');
-        el.value = samples[currentLang] || '';
-        recordCodeHistory();
-        runFormat();
-    }
+        function copyResult() {
+            const out = document.getElementById('formatted-code').value;
+            if (!out) {
+                alert('복사할 결과가 없습니다.');
+                return;
+            }
+            navigator.clipboard.writeText(out).then(() => {
+                alert('코드가 클립보드에 복사되었습니다!');
+            });
+        }
 
-    function clearAll() {
-        const el = document.getElementById('raw-code');
-        el.value = '';
-        document.getElementById('formatted-code').value = '';
-        recordCodeHistory();
-        updatePreview();
-        updateInputStatus();
-        updateOutputStatus();
-        el.focus();
-    }
+        window.onload = () => {
+            const rawInputEl = document.getElementById('raw-code');
+            const outEl = document.getElementById('formatted-code');
 
-    function copyResult() {
-        const out = document.getElementById('formatted-code').value;
-        if (!out) { alert('복사할 결과가 없습니다.'); return; }
-        navigator.clipboard.writeText(out).then(() => {
-            alert('코드가 클립보드에 복사되었습니다!');
-        });
-    }
+            rawInputEl.addEventListener('input', handleCodeInput);
+            rawInputEl.addEventListener('keydown', handleCodeKeyDown);
+            rawInputEl.addEventListener('scroll', () => syncScroll('raw-code', 'input-line-numbers'));
+            rawInputEl.addEventListener('click', updateInputStatus);
+            rawInputEl.addEventListener('keyup', updateInputStatus);
+            rawInputEl.addEventListener('mouseup', updateInputStatus);
 
-    window.onload = () => {
-        const rawInputEl = document.getElementById('raw-code');
-        const outEl = document.getElementById('formatted-code');
+            outEl.addEventListener('scroll', () => syncScroll('formatted-code', 'output-line-numbers'));
+            outEl.addEventListener('click', updateOutputStatus);
+            outEl.addEventListener('keyup', updateOutputStatus);
+            outEl.addEventListener('mouseup', updateOutputStatus);
+            outEl.addEventListener('focus', updateOutputStatus);
 
-        rawInputEl.addEventListener('input', handleCodeInput);
-        rawInputEl.addEventListener('keydown', handleCodeKeyDown);
-        rawInputEl.addEventListener('scroll', () => syncScroll('raw-code', 'input-line-numbers'));
-        rawInputEl.addEventListener('click', updateInputStatus);
-        rawInputEl.addEventListener('keyup', updateInputStatus);
-        rawInputEl.addEventListener('mouseup', updateInputStatus);
-
-        outEl.addEventListener('scroll', () => syncScroll('formatted-code', 'output-line-numbers'));
-        outEl.addEventListener('click', updateOutputStatus);
-        outEl.addEventListener('keyup', updateOutputStatus);
-        outEl.addEventListener('mouseup', updateOutputStatus);
-        outEl.addEventListener('focus', updateOutputStatus);
-
-        recordCodeHistory();
-        updateInputStatus();
-        updateOutputStatus();
-    };
-</script>
-<div id="dwk-footer"></div>
-<script src="../nav.js"></script>
+            recordCodeHistory();
+            updateInputStatus();
+            updateOutputStatus();
+        };
+    </script>
+    <div id="dwk-footer"></div>
+    <script src="../nav.js"></script>
 </body>
+
 </html>
