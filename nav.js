@@ -103,7 +103,7 @@
 
     document.body.insertAdjacentHTML('afterbegin', navHTML);
 
-    // 5. 다크모드 초기화 & 토글 (html 태그 타겟팅)
+    // 5. 스마트 다크모드 초기화 & 토글
     function initTheme() {
         const savedTheme = localStorage.getItem('dwk_theme');
         if (savedTheme === 'dark') {
@@ -128,7 +128,7 @@
         applyBadgeColors();
     };
 
-    // 6. 메인 허브 및 가이드 페이지 4대 네온 뱃지 동기화
+    // 6. 메인 허브 & 가이드 페이지 뱃지 매트 파스텔 틴트 동기화
     function applyBadgeColors() {
         const textTools = ['STRGET', 'COUNTER', 'STRCMP', 'MARKDOWN'];
         const dataTools = ['FSEE', 'CODER', 'BEAUTIFY', 'JSON'];
@@ -140,6 +140,7 @@
             badge.style.fontWeight = '800';
             badge.style.padding = '2px 7px';
             badge.style.fontSize = '11.5px';
+            badge.style.letterSpacing = '-0.2px';
 
             if (textTools.includes(txt)) {
                 badge.style.backgroundColor = '#e0f2fe';
@@ -154,9 +155,9 @@
                 badge.style.color = '#0f766e';
                 badge.style.border = '1px solid #99f6e4';
             } else {
-                badge.style.backgroundColor = '#ffe4e6';
-                badge.style.color = '#e11d48';
-                badge.style.border = '1px solid #fecdd3';
+                badge.style.backgroundColor = '#f1f5f9';
+                badge.style.color = '#475569';
+                badge.style.border = '1px solid #cbd5e1';
             }
         });
     }
