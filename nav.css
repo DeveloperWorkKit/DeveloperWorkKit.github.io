@@ -253,8 +253,7 @@ html, body {
 /* ========================================================================= */
 
 html.dark-theme {
-    /* 쌩블랙이 아닌 깊이감 있는 다크 슬레이트 톤으로 부드럽게 반전 */
-    filter: invert(94%) hue-rotate(180deg) saturate(110%);
+    filter: invert(90%) hue-rotate(180deg) brightness(105%) contrast(90%);
     background-color: #ffffff;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
