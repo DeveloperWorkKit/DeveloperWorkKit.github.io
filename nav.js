@@ -29,7 +29,7 @@
         { name: '웹 색상 스튜디오 & UI 가독성', tag: 'COLOR', url: `${HOST_URL}/color/`, keywords: 'contrast wcag 명도대비 대비비 palette 색상표' }
     ];
 
-    // 3. 글로벌 GNB HTML
+    // 3. 글로벌 GNB HTML (모바일 전용 라벨 분기 적용)
     const navHTML = `
     <header class="dwk-global-nav">
         <div class="nav-left">
@@ -39,7 +39,9 @@
             </a>
             <nav class="nav-menu">
                 <div class="nav-dropdown" id="dropdown-text">
-                    <button class="nav-dropbtn" onclick="toggleMobileNav(event, 'dropdown-text')">텍스트/문서 ▾</button>
+                    <button class="nav-dropbtn" onclick="toggleMobileNav(event, 'dropdown-text')">
+                        <span class="desktop-label">텍스트/문서</span><span class="mobile-label">문서</span> ▾
+                    </button>
                     <div class="nav-dropdown-content">
                         <a href="${HOST_URL}/strget/">문자열 추출기 (STRGET)</a>
                         <a href="${HOST_URL}/counter/">글자수 & 바이트 계산기 (COUNTER)</a>
@@ -49,7 +51,9 @@
                 </div>
 
                 <div class="nav-dropdown" id="dropdown-data">
-                    <button class="nav-dropbtn" onclick="toggleMobileNav(event, 'dropdown-data')">개발/데이터 ▾</button>
+                    <button class="nav-dropbtn" onclick="toggleMobileNav(event, 'dropdown-data')">
+                        <span class="desktop-label">개발/데이터</span><span class="mobile-label">데이터</span> ▾
+                    </button>
                     <div class="nav-dropdown-content">
                         <a href="${HOST_URL}/fsee/">폴더 구조 엑셀 (FSEE)</a>
                         <a href="${HOST_URL}/coder/">Base64 & URL 변환기 (CODER)</a>
@@ -59,7 +63,9 @@
                 </div>
 
                 <div class="nav-dropdown" id="dropdown-util">
-                    <button class="nav-dropbtn" onclick="toggleMobileNav(event, 'dropdown-util')">시스템/디자인 ▾</button>
+                    <button class="nav-dropbtn" onclick="toggleMobileNav(event, 'dropdown-util')">
+                        <span class="desktop-label">시스템/디자인</span><span class="mobile-label">도구</span> ▾
+                    </button>
                     <div class="nav-dropdown-content">
                         <a href="${HOST_URL}/time/">타임스탬프 변환기 (TIME)</a>
                         <a href="${HOST_URL}/hash/">UUID & 해시 생성기 (HASH)</a>
@@ -73,7 +79,7 @@
         
         <div class="nav-right">
             <div class="nav-search-wrapper" id="nav-search-container">
-                <input type="text" id="gnb-search-input" class="gnb-search-input" placeholder="도구 빠른 검색..." oninput="handleGnbSearch(this.value)" onfocus="handleGnbFocus()" autocomplete="off">
+                <input type="text" id="gnb-search-input" class="gnb-search-input" placeholder="검색..." oninput="handleGnbSearch(this.value)" onfocus="handleGnbFocus()" autocomplete="off">
                 <span class="gnb-search-icon">🔍</span>
                 <div class="gnb-search-results" id="gnb-search-results"></div>
             </div>
@@ -103,7 +109,7 @@
 
     document.body.insertAdjacentHTML('afterbegin', navHTML);
 
-    // 5. 스마트 다크모드 초기화 & 토글
+    // 5. 스마트 다크모드 초기화 & 토글 (html 태그 타겟팅)
     function initTheme() {
         const savedTheme = localStorage.getItem('dwk_theme');
         if (savedTheme === 'dark') {
