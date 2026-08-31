@@ -249,11 +249,12 @@ html, body {
 .dwk-footer-copy { color: #94a3b8; font-size: 12px; }
 
 /* ========================================================================= */
-/* 🌑 초선명 소프트 다크모드 엔진                                            */
+/* 🌑 첫 번째 사진 고품격 슬레이트 다크모드 엔진 (첫 번째 사진 색감 적용)    */
 /* ========================================================================= */
 
 html.dark-theme {
-    filter: invert(90%) hue-rotate(180deg);
+    /* 쌩블랙이 아닌 깊이감 있는 다크 슬레이트 톤으로 부드럽게 반전 */
+    filter: invert(94%) hue-rotate(180deg) saturate(110%);
     background-color: #ffffff;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -304,7 +305,7 @@ html.dark-theme ::-webkit-scrollbar-thumb {
 }
 
 /* ========================================================================= */
-/* 📱 360px 모바일 화면 완벽 압축 (가로 스크롤 완전 박멸)                   */
+/* 📱 360px 모바일 화면 완벽 압축 & 가로 스크롤 완전 박멸                   */
 /* ========================================================================= */
 @media (max-width: 860px) {
     .mobile-label { display: inline; }
