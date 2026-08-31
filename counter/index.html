@@ -46,7 +46,6 @@
             width: 100%;
         }
 
-        /* 가이드 박스 */
         .intro-section { margin-bottom: 25px; }
         .intro-title { font-size: 22px; font-weight: 800; color: #111827; margin: 0 0 6px 0; letter-spacing: -0.5px; }
         .intro-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 16px 0; }
@@ -71,7 +70,6 @@
             gap: 15px;
             margin-bottom: 20px;
         }
-
         @media (max-width: 800px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
 
         .stat-card {
@@ -81,7 +79,6 @@
             padding: 16px;
             text-align: center;
         }
-
         .stat-card.highlight-card { background-color: #e7f5ff; border-color: #74c0fc; }
         .stat-title { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
         .stat-value { font-size: 24px; font-weight: 800; color: #111111; }
@@ -106,7 +103,6 @@
         }
 
         .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
-
         .btn-action {
             background-color: #ffffff;
             border: 1px solid var(--border-color);
@@ -118,7 +114,6 @@
             color: var(--text-main);
             transition: all 0.15s;
         }
-
         .btn-action:hover { background-color: #e9ecef; }
         .btn-primary { background-color: var(--primary-blue); color: white; border-color: var(--primary-blue); }
         .btn-primary:hover { background-color: var(--primary-blue-hover); }
@@ -137,7 +132,6 @@
             outline: none;
             transition: border-color 0.2s;
         }
-
         textarea.counter-textarea:focus { border-color: var(--primary-blue); }
 
         .sub-stats {
@@ -149,12 +143,7 @@
             flex-wrap: wrap;
         }
 
-        .bottom-ad-box {
-            max-width: 1100px;
-            width: 100%;
-            margin: 25px auto 10px auto;
-            text-align: center;
-        }
+        .bottom-ad-box { max-width: 1100px; width: 100%; margin: 25px auto 10px auto; text-align: center; }
     </style>
 </head>
 <body>
@@ -167,7 +156,6 @@
 </header>
 
 <div class="page-wrapper">
-    <!-- 사용 안내 가이드 -->
     <div class="intro-section">
         <h2 class="intro-title">자기소개서 및 문서의 분량을 실시간으로 측정하는 글자수 계산기입니다.</h2>
         <p class="intro-desc">공백 포함/제외 글자 수와 대기업/공공기관 지원 표준인 EUC-KR 및 UTF-8 바이트를 정밀 계산합니다.</p>
@@ -227,12 +215,7 @@
 </div>
 
 <div class="bottom-ad-box">
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-3823705730142714"
-         data-ad-slot="3894691126"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3823705730142714" data-ad-slot="3894691126" data-ad-format="auto" data-full-width-responsive="true"></ins>
     <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 
@@ -262,12 +245,10 @@
         const isCtrl = e.ctrlKey || e.metaKey;
         const key = e.key.toLowerCase();
         const el = document.getElementById('main-textarea');
-
         if (isCtrl && key === 'z' && !e.shiftKey) {
             if (textUndoStack.length > 1) {
                 e.preventDefault();
-                const current = textUndoStack.pop();
-                textRedoStack.push(current);
+                textRedoStack.push(textUndoStack.pop());
                 applyTextState(el, textUndoStack[textUndoStack.length - 1]);
             }
         } else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
@@ -291,16 +272,7 @@
     }
 
     function loadSampleText() {
-        const sample = `[지원 동기 및 포부 예시]
-
-끊임없는 배움과     도전을 통해     가치를 창출하는     웹 개발자입니다.
-
-
-복잡한     업무 흐름과     반복 수작업을     자동화하여 팀 전체의 생산성을 극대화했던 경험이 있습니다.
-
-
-
-DevWorKit 플랫폼 구축 프로젝트에 동참하여     실무 중심의 고성능 웹 유틸리티 서비스를 개발하고 싶습니다.`;
+        const sample = `[지원 동기 및 포부 예시]\n\n끊임없는 배움과 도전을 통해 가치를 창출하는 웹 개발자입니다.\n\n복잡한 업무 흐름과 반복 수작업을 자동화하여 팀 전체의 생산성을 극대화했던 경험이 있습니다.\n\nDevWorKit 플랫폼 구축 프로젝트에 동참하여 실무 중심의 고성능 웹 유틸리티 서비스를 개발하고 싶습니다.`;
         const el = document.getElementById('main-textarea');
         el.value = sample;
         recordTextHistory();
@@ -311,11 +283,7 @@ DevWorKit 플랫폼 구축 프로젝트에 동참하여     실무 중심의 고
         let bytes = 0;
         for (let i = 0; i < str.length; i++) {
             const code = str.charCodeAt(i);
-            if (code <= 0x007f) {
-                bytes += (code === 10 || code === 13) ? 2 : 1;
-            } else {
-                bytes += 2;
-            }
+            bytes += (code <= 0x007f && code !== 10 && code !== 13) ? 1 : 2;
         }
         return bytes;
     }
@@ -369,9 +337,7 @@ DevWorKit 플랫폼 구축 프로젝트에 동참하여     실무 중심의 고
     function copyText() {
         const text = document.getElementById('main-textarea').value;
         if (!text) { alert('복사할 텍스트가 없습니다.'); return; }
-        navigator.clipboard.writeText(text).then(() => {
-            alert('본문 텍스트가 클립보드에 복사되었습니다!');
-        });
+        navigator.clipboard.writeText(text).then(() => { alert('본문 텍스트가 클립보드에 복사되었습니다!'); });
     }
 
     window.onload = () => {
