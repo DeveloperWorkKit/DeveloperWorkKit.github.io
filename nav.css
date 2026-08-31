@@ -7,6 +7,10 @@ html, body {
     box-sizing: border-box;
 }
 
+/* PC/모바일 라벨 기본 표시 룰 */
+.mobile-label { display: none; }
+.desktop-label { display: inline; }
+
 .dwk-global-nav {
     background-color: #111827;
     border-bottom: 1px solid #1f2937;
@@ -271,13 +275,14 @@ html.dark-theme .badge,
 html.dark-theme .header-badge {
     filter: invert(100%) hue-rotate(180deg);
 }
+
+/* 다크모드 글꼴 팽창 및 버튼 글자 뚱뚱함 억제 */
 html.dark-theme button,
 html.dark-theme .btn,
 html.dark-theme [class*="btn-"],
 html.dark-theme .action-tool-btn,
 html.dark-theme input[type="button"],
 html.dark-theme input[type="submit"] {
-    /* 굵기를 Medium(500)으로 슬림화하여 빛 번짐 및 글자 뭉개짐 억제 */
     font-weight: 500 !important;
     letter-spacing: -0.3px !important;
     text-shadow: none !important;
@@ -297,68 +302,74 @@ html.dark-theme .copy-action-btn {
 html.dark-theme ::-webkit-scrollbar-thumb {
     background-color: #cbd5e1;
 }
+
 /* ========================================================================= */
-/* 📱 모바일 화면 완벽 압축 & 가로 스크롤 박멸 미디어 쿼리                   */
+/* 📱 360px 모바일 화면 완벽 압축 (가로 스크롤 완전 박멸)                   */
 /* ========================================================================= */
 @media (max-width: 860px) {
+    .mobile-label { display: inline; }
+    .desktop-label { display: none; }
+
     .dwk-global-nav { 
         padding: 0 8px; 
         height: 48px; 
+        box-sizing: border-box;
     }
     .nav-left { 
-        gap: 6px; 
-    }
-    .nav-brand { 
         gap: 4px; 
     }
+    .nav-brand { 
+        gap: 2px; 
+    }
     .dwk-brand-text { 
-        display: none; /* 모바일에서 DWK 뱃지만 남겨 공간 대폭 확보 */
+        display: none !important; /* 모바일에서 로고 뱃지만 표시하여 공간 확보 */
     }
     .nav-dropbtn { 
-        font-size: 12px; 
-        padding: 10px 4px; 
+        font-size: 11.5px; 
+        padding: 8px 3px; 
         gap: 1px;
     }
     .nav-link-sub { 
-        display: none; 
+        display: none !important; 
     }
     .nav-right {
-        gap: 6px;
+        gap: 5px;
     }
     .gnb-search-input { 
-        width: 65px; 
+        width: 55px; 
         font-size: 11px; 
-        padding: 4px 18px 4px 6px; 
+        padding: 4px 16px 4px 6px; 
     }
     .gnb-search-input:focus { 
-        width: 100px; 
+        width: 90px; 
     }
     .gnb-search-results { 
         width: 200px; 
-        right: -10px;
+        right: 0;
     }
     .nav-hub-btn { 
-        font-size: 11.5px; 
+        font-size: 11px; 
+        white-space: nowrap;
     }
 
     .nav-dropdown-content {
         position: fixed;
         top: 48px;
-        left: 8px;
-        right: 8px;
+        left: 6px;
+        right: 6px;
         min-width: auto;
         width: auto;
-        max-width: calc(100vw - 16px);
+        max-width: calc(100vw - 12px);
         box-sizing: border-box;
     }
     .nav-dropdown.active .nav-dropdown-content {
         display: block !important;
     }
     .dwk-global-footer { 
-        padding: 16px 12px; 
+        padding: 16px 10px; 
     }
     .dwk-footer-links { 
         gap: 10px; 
-        font-size: 11.5px; 
+        font-size: 11px; 
     }
 }
