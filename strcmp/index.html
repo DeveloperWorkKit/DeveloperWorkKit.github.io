@@ -163,7 +163,6 @@
         .btn-mini-danger { color: #d9534f; }
         .btn-mini-danger:hover { background-color: #fdf2f2; border-color: #d9534f; }
 
-        /* 고성능 에디터 래퍼 & 거터 */
         .editor-wrapper {
             display: flex;
             height: 320px;
@@ -372,7 +371,6 @@
         
         .row-modified { background-color: #fcfcfc; }
         .row-empty { color: #aaa; padding: 20px !important; display: block; }
-
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script>
 </head>
@@ -403,7 +401,6 @@
 
     <div class="diff-grid-wrapper">
         <div class="diff-grid">
-            <!-- 좌측 원본 에디터 -->
             <div class="input-panel">
                 <div class="panel-header-zone">
                     <span class="panel-label">원본 텍스트 (Original)</span>
@@ -422,12 +419,11 @@
                     <textarea id="text-left" class="code-area" placeholder="비교할 원본 글이나 이전 코드를 입력하세요..." spellcheck="false"></textarea>
                 </div>
                 <div class="editor-status-bar">
-                    <span id="left-status">Ln: 1, Col: 1</span>
+                    <span id="left-status">Ln: 1, Col: 1 | 글자수: 0자</span>
                     <span id="left-size">Size: 0 B</span>
                 </div>
             </div>
 
-            <!-- 우측 수정본 에디터 -->
             <div class="input-panel">
                 <div class="panel-header-zone">
                     <span class="panel-label">수정된 텍스트 (Modified)</span>
@@ -445,7 +441,7 @@
                     <textarea id="text-right" class="code-area" placeholder="수정 후의 글이나 새로운 코드를 입력하세요..." spellcheck="false"></textarea>
                 </div>
                 <div class="editor-status-bar">
-                    <span id="right-status">Ln: 1, Col: 1</span>
+                    <span id="right-status">Ln: 1, Col: 1 | 글자수: 0자</span>
                     <span id="right-size">Size: 0 B</span>
                 </div>
             </div>
@@ -605,7 +601,9 @@
         const line = textBefore.split('\n').length;
         const col = textBefore.length - textBefore.lastIndexOf('\n');
         const inputBytes = new Blob([raw.value]).size;
-        document.getElementById(`${side}-status`).innerText = `Ln: ${line}, Col: ${col}`;
+        const charCount = raw.value.length;
+
+        document.getElementById(`${side}-status`).innerText = `Ln: ${line}, Col: ${col} | 글자수: ${charCount.toLocaleString()}자`;
         document.getElementById(`${side}-size`).innerText = `Size: ${formatBytes(inputBytes)}`;
         updateLineNumbers(`text-${side}`, `${side}-line-numbers`, side);
     }
@@ -927,6 +925,7 @@ async function authenticateUser(username, passwordHash) {
         updateSideStatus('right');
     };
 </script>
+<div id="dwk-footer"></div>
 <script src="../nav.js"></script>
 </body>
 </html>
