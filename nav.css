@@ -262,6 +262,24 @@ html.dark-theme .header-badge {
     filter: invert(100%) hue-rotate(180deg);
 }
 
+/* 다크모드 글꼴 팽창 및 버튼 글자 뚱뚱함 억제 */
+html.dark-theme button,
+html.dark-theme .btn,
+html.dark-theme [class*="btn-"],
+html.dark-theme .action-tool-btn {
+    font-weight: 600 !important;
+    letter-spacing: -0.2px;
+    text-shadow: none !important;
+}
+
+/* 유색 액션 버튼 글자색 단일 톤 통일 */
+html.dark-theme button[class*="btn-green"],
+html.dark-theme button[class*="btn-blue"],
+html.dark-theme .btn-copy-excel,
+html.dark-theme .btn-primary {
+    color: #ffffff !important;
+}
+
 /* 스크롤바 */
 html.dark-theme ::-webkit-scrollbar-thumb {
     background-color: #cbd5e1;
