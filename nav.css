@@ -234,11 +234,11 @@
 .dwk-footer-links a:hover { color: #0284c7; }
 .dwk-footer-copy { color: #94a3b8; font-size: 12px; }
 
-/* ========================================================= */
-/* 🌑 13개 도구 전수 완벽 통제 다크모드 (body.dark-theme)    */
-/* ========================================================= */
+/* ========================================================================= */
+/* 🌑 전 도구 100% 커버 전역 다크모드 (body.dark-theme)                     */
+/* ========================================================================= */
 
-/* 1. 도구별 인라인 CSS 변수 및 바디 배경 전역 치환 */
+/* 1. CSS 변수 및 기본 배경/텍스트 */
 body.dark-theme {
     --bg-light: #131b2e !important;
     --border-color: #1e293b !important;
@@ -265,7 +265,7 @@ body.dark-theme span:not(.gnb-result-tag):not(.dwk-logo-badge):not(.card-badge):
     color: #94a3b8 !important;
 }
 
-/* 3. 본문 내 모든 패널, 가이드, 컨테이너 (클래스명 불문 전수 포획) */
+/* 3. 본문 내 모든 컨테이너, 패널, 가이드, 박스 전수 포획 */
 body.dark-theme .control-box,
 body.dark-theme .display-box,
 body.dark-theme .guide-box,
@@ -297,14 +297,54 @@ body.dark-theme .guide-box strong {
     color: #38bdf8 !important;
 }
 
-/* 4. 모든 입력창, 텍스트에어리어, 셀렉트박스, 코드 뷰어 */
+/* 4. 에디터 뷰어, 프리뷰 컨테이너, Diff 결과, QR/크론 박스 완벽 다크화 */
+body.dark-theme .markdown-body,
+body.dark-theme .preview-container,
+body.dark-theme .render-view,
+body.dark-theme .diff-box,
+body.dark-theme .diff-output,
+body.dark-theme [id*="diff-result"],
+body.dark-theme [id*="diff-output"],
+body.dark-theme [id*="preview"],
+body.dark-theme [id*="render"],
+body.dark-theme [class*="preview"],
+body.dark-theme [class*="viewer"],
+body.dark-theme .drop-zone,
+body.dark-theme .upload-box,
+body.dark-theme .schedule-box,
+body.dark-theme .next-run-box,
+body.dark-theme .qr-preview-box,
+body.dark-theme .scan-result-box,
+body.dark-theme .wcag-table,
+body.dark-theme table,
+body.dark-theme th,
+body.dark-theme td {
+    background-color: #0b0f19 !important;
+    border-color: #1e293b !important;
+    color: #e2e8f0 !important;
+}
+
+/* 5. 에디터 라인 넘버 거터(Line Gutters) 및 코드 블록 */
+body.dark-theme .line-numbers,
+body.dark-theme .editor-gutter,
+body.dark-theme .gutter,
+body.dark-theme pre,
+body.dark-theme code {
+    background-color: #0b0f19 !important;
+    border-color: #1e293b !important;
+    color: #64748b !important;
+}
+
+/* 6. 모든 입력창 (텍스트, 숫자, 날짜/시간, 셀렉트, 텍스트에어리어) */
 body.dark-theme textarea,
 body.dark-theme input[type="text"],
 body.dark-theme input[type="number"],
 body.dark-theme input[type="search"],
+body.dark-theme input[type="date"],
+body.dark-theme input[type="time"],
+body.dark-theme input[type="datetime-local"],
 body.dark-theme select,
-body.dark-theme pre,
-body.dark-theme code,
+body.dark-theme .test-textarea,
 body.dark-theme .backdrop,
 body.dark-theme .text-area-container,
 body.dark-theme .regex-input-wrapper,
@@ -312,6 +352,7 @@ body.dark-theme .custom-save-zone {
     background-color: #0b0f19 !important;
     border-color: #1e293b !important;
     color: #f8fafc !important;
+    color-scheme: dark; /* 브라우저 기본 캘린더/시계 아이콘 다크모드 강제 */
 }
 
 body.dark-theme .regex-input-wrapper input {
@@ -324,14 +365,17 @@ body.dark-theme input::placeholder {
     color: #475569 !important;
 }
 
+body.dark-theme textarea:focus,
+body.dark-theme input:focus,
+body.dark-theme select:focus {
+    border-color: #38bdf8 !important;
+    outline: none !important;
+}
+
 body.dark-theme .save-input-row input,
 body.dark-theme .saved-select-row select {
     background-color: #1e293b !important;
     border-color: #334155 !important;
-    color: #f8fafc !important;
-}
-
-body.dark-theme .test-textarea {
     color: #f8fafc !important;
 }
 
@@ -344,12 +388,12 @@ body.dark-theme ::-webkit-scrollbar-track {
     background-color: #0b0f19 !important;
 }
 
-/* 5. 버튼류 (프리셋, 서브 액션, 네비게이션) */
+/* 7. 버튼류 (프리셋, 모드 전환, 미니 액션, 네비게이션) */
 body.dark-theme .btn-preset,
 body.dark-theme .btn-mini-action,
 body.dark-theme .btn-nav-match,
 body.dark-theme .btn-sub-action,
-body.dark-theme button:not(.theme-toggle-btn):not(.filter-chip):not(.nav-dropbtn):not([class*="btn-primary"]):not([class*="btn-copy-"]):not(.btn-drag-apply) {
+body.dark-theme button:not(.theme-toggle-btn):not(.filter-chip):not(.nav-dropbtn):not([class*="btn-primary"]):not([class*="btn-copy-"]):not(.btn-drag-apply):not(.btn-copy-matches):not(.btn-copy-excel) {
     background-color: #1e293b !important;
     border: 1px solid #334155 !important;
     color: #cbd5e1 !important;
@@ -371,12 +415,12 @@ body.dark-theme .btn-preset-custom {
 body.dark-theme .btn-mini-action:hover,
 body.dark-theme .btn-nav-match:hover,
 body.dark-theme .btn-sub-action:hover,
-body.dark-theme button:not(.theme-toggle-btn):not(.filter-chip):not(.nav-dropbtn):not([class*="btn-primary"]):not([class*="btn-copy-"]):not(.btn-drag-apply):hover {
+body.dark-theme button:not(.theme-toggle-btn):not(.filter-chip):not(.nav-dropbtn):not([class*="btn-primary"]):not([class*="btn-copy-"]):not(.btn-drag-apply):not(.btn-copy-matches):not(.btn-copy-excel):hover {
     background-color: #334155 !important;
     color: #ffffff !important;
 }
 
-/* 6. 다크모드 전용 형광펜 하이라이트 */
+/* 8. 다크모드 형광펜 & Diff 비교 하이라이트 */
 body.dark-theme .highlight {
     background-color: #854d0e !important;
     color: transparent !important;
@@ -391,8 +435,20 @@ body.dark-theme .highlight-active {
     box-shadow: 0 0 0 2px #f59e0b !important;
     color: transparent !important;
 }
+body.dark-theme .diff-added,
+body.dark-theme ins {
+    background-color: #064e3b !important;
+    color: #6ee7b7 !important;
+    text-decoration: none !important;
+}
+body.dark-theme .diff-removed,
+body.dark-theme del {
+    background-color: #7f1d1d !important;
+    color: #fca5a5 !important;
+    text-decoration: line-through !important;
+}
 
-/* 7. 메인 허브 필터칩 */
+/* 9. 메인 허브 필터칩 */
 body.dark-theme .filter-chip {
     background-color: #1e293b !important;
     border-color: #334155 !important;
@@ -408,7 +464,7 @@ body.dark-theme .filter-chip.active {
     border-color: #38bdf8 !important;
 }
 
-/* 8. 푸터 & GNB 검색결과 팝업 */
+/* 10. 푸터 & GNB 검색결과 팝업 */
 body.dark-theme .dwk-global-footer {
     background-color: #0b0f19 !important;
     border-top-color: #1e293b !important;
