@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR 마스터</title>
+    <title>QR 마스터 | DevWorKit</title>
     <style>
         :root {
             --primary-blue: #007bff;
@@ -17,7 +17,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Malgun Gothic", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             color: var(--text-main);
             background-color: #ffffff;
             margin: 0;
@@ -35,54 +35,52 @@
             justify-content: space-between;
         }
 
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-badge { background: var(--primary-blue); color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
+        .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
 
-        .logo-badge {
-            background: var(--primary-blue);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .logo-text {
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: #111111;
-        }
-
-        .main-container {
-            max-width: 960px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 40px 20px;
+        .page-wrapper {
+            display: block;
+            max-width: 1100px;
+            margin: 20px auto 40px auto;
+            padding: 0 20px;
             box-sizing: border-box;
-            flex: 1;
+            width: 100%;
         }
+
+        .intro-section { margin-bottom: 25px; }
+        .intro-title { font-size: 22px; font-weight: 800; color: #111827; margin: 0 0 6px 0; letter-spacing: -0.5px; }
+        .intro-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 16px 0; }
+        
+        .guide-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-size: 13.5px;
+            color: #334155;
+            line-height: 1.6;
+        }
+        .guide-box strong { display: block; margin-bottom: 8px; color: #0f172a; font-size: 14px; }
+        .guide-list { margin: 0; padding-left: 18px; }
+        .guide-list li { margin-bottom: 4px; }
 
         .tab-group {
             display: flex;
             gap: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             border-bottom: 2px solid var(--border-color);
             padding-bottom: 10px;
         }
 
         .tab-btn {
-            padding: 10px 20px;
-            font-size: 15px;
-            font-weight: 600;
+            padding: 9px 18px;
+            font-size: 14px;
+            font-weight: 700;
             color: var(--text-muted);
             background: none;
             border: none;
             cursor: pointer;
-            transition: color 0.15s;
         }
 
         .tab-btn.active {
@@ -97,62 +95,18 @@
         .panel-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
+            gap: 24px;
         }
 
-        .control-box {
+        .control-box, .display-box {
             border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 25px;
+            border-radius: 8px;
+            padding: 24px;
             background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #111111;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px;
-            box-sizing: border-box;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary-blue);
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-        .btn-green { background-color: var(--primary-green); }
-        .btn-green:hover { background-color: var(--primary-green-hover); }
-        .btn-blue { background-color: var(--primary-blue); }
-        .btn-blue:hover { background-color: var(--primary-blue-hover); }
 
         .display-box {
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 25px;
             background-color: var(--bg-light);
             display: flex;
             flex-direction: column;
@@ -161,53 +115,88 @@
             min-height: 300px;
         }
 
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block;
+            font-size: 13.5px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #111111;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 14px;
+            outline: none;
+        }
+        .form-control:focus { border-color: var(--primary-blue); }
+
+        .btn {
+            width: 100%;
+            padding: 11px;
+            color: white;
+            font-weight: 700;
+            font-size: 13.5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-green { background-color: var(--primary-green); }
+        .btn-green:hover { background-color: var(--primary-green-hover); }
+        .btn-blue { background-color: var(--primary-blue); }
+        .btn-blue:hover { background-color: var(--primary-blue-hover); }
+
         #qrcode-output {
             background-color: white;
             padding: 15px;
             border: 1px solid var(--border-color);
-            border-radius: 4px;
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        #qrcode-output img {
-            display: block;
+            border-radius: 6px;
+            margin-bottom: 16px;
         }
 
         #scan-preview-zone {
             width: 100%;
-            max-width: 400px;
-            border: 2px dashed #adb5bd;
+            max-width: 350px;
+            border: 2px dashed #cbd5e1;
             border-radius: 6px;
             padding: 20px;
             text-align: center;
             background: white;
             cursor: pointer;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         #result-display {
             width: 100%;
-            padding: 15px;
+            padding: 12px;
             background: white;
             border: 1px solid var(--border-color);
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 14px;
-            font-weight: bold;
-            word-break: break-all;
+            border-radius: 5px;
+            font-size: 13.5px;
+            font-weight: 700;
             text-align: center;
-            min-height: 50px;
         }
 
         #status-bar {
-            margin-top: 30px;
-            padding: 15px;
-            background: var(--bg-light);
-            border-radius: 4px;
-            text-align: center;
-            font-size: 14px;
+            margin-top: 25px;
+            background-color: var(--bg-light);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
             font-weight: 600;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .bottom-ad-box {
+            max-width: 1100px;
+            width: 100%;
+            margin: 25px auto 10px auto;
+            text-align: center;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/davidshimjs-qrcodejs@0.0.2/qrcode.min.js"></script>
@@ -222,7 +211,21 @@
     </div>
 </header>
 
-<div class="main-container">
+<div class="page-wrapper">
+    <div class="intro-section">
+        <h2 class="intro-title">URL 및 텍스트를 실시간으로 고품질 QR 코드로 변환하고 스캔하는 도구입니다.</h2>
+        <p class="intro-desc">입력 즉시 QR 코드가 생성되며 중앙 로고 삽입, 이미지 파일 업로드 기반 스캔 기능을 완벽히 지원합니다.</p>
+        
+        <div class="guide-box">
+            <strong>QR 마스터 사용 방법 안내:</strong>
+            <ol class="guide-list">
+                <li><b>[QR코드 실시간 생성]</b> 탭에서 URL이나 텍스트를 입력하면 즉시 QR 코드가 그려집니다.</li>
+                <li>필요한 경우 중앙 로고 텍스트를 추가하고 <b>[QR코드 다운로드]</b>를 통해 이미지로 저장할 수 있습니다.</li>
+                <li><b>[QR코드 이미지 스캔]</b> 탭에서 캡처 이미지를 업로드하여 담긴 주소나 데이터를 즉시 판독합니다.</li>
+            </ol>
+        </div>
+    </div>
+
     <div class="tab-group">
         <button class="tab-btn active" onclick="switchTab('gen-panel', this)">QR코드 실시간 생성</button>
         <button class="tab-btn" onclick="switchTab('scan-panel', this)">QR코드 이미지 스캔</button>
@@ -240,7 +243,7 @@
                     <input type="text" id="qr-logo-text" class="form-control" placeholder="QR" maxlength="6" oninput="generateQRCodeRealtime()">
                 </div>
                 <div style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-top: 15px;">
-                    ※ 텍스트를 타이핑 시 QR코드가 실시간으로 변경됩니다.
+                    ※ 텍스트 타이핑 시 QR코드가 실시간으로 변경됩니다.
                 </div>
             </div>
             <div class="display-box">
@@ -262,11 +265,11 @@
             </div>
             <div class="display-box">
                 <div id="scan-preview-zone" onclick="document.getElementById('qr-file-input').click()">
-                    <span style="font-size:14px; color:var(--text-muted);" id="preview-text">여기를 클릭하여 QR 이미지를 로드하세요.</span>
+                    <span style="font-size:13.5px; color:var(--text-muted);" id="preview-text">여기를 클릭하여 QR 이미지를 로드하세요.</span>
                     <canvas id="scan-canvas" style="display: none; width: 100%; max-height: 200px; object-fit: contain; margin-top: 10px;"></canvas>
                 </div>
                 <div style="width: 100%;">
-                    <div style="font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:5px;">스캔 판독 결과:</div>
+                    <div style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">스캔 판독 결과:</div>
                     <div id="result-display">대기 중...</div>
                 </div>
             </div>
@@ -274,6 +277,16 @@
     </div>
 
     <div id="status-bar">실시간 모니터링 엔진 가동 중</div>
+</div>
+
+<div class="bottom-ad-box">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3823705730142714"
+         data-ad-slot="3894691126"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 
 <script>
@@ -302,7 +315,6 @@
         outputDiv.innerHTML = "";
         dlBtn.style.display = "block";
 
-        // 1. 순수 QR 객체 1차 동적 렌더링 배정
         const qrcode = new QRCode(outputDiv, {
             text: text,
             width: 200,
@@ -312,25 +324,17 @@
             correctLevel : QRCode.CorrectLevel.H
         });
 
-        // 2. 모바일 비동기 스레드 추적을 위한 폴링/체크 프로토콜 가동
         const checkInterval = setInterval(() => {
             const qrImg = outputDiv.querySelector('img');
-            
-            // 이미지 태그가 노드에 안착했고, 실제 Base64 데이터 소스가 할당되었는지 무결성 체크
             if (qrImg && qrImg.src && qrImg.src.startsWith('data:image')) {
-                clearInterval(checkInterval); // 폴링 중지
-
-                // 레이스 컨디션을 막기 위해 완전히 로드된 이벤트를 캐치하여 2차 합성 트랙 기동
+                clearInterval(checkInterval);
                 qrImg.onload = function() {
                     const canvas = document.createElement('canvas');
                     canvas.width = 200;
                     canvas.height = 200;
                     const ctx = canvas.getContext('2d');
-
-                    // 순수 QR코드 원본 복제 드로우
                     ctx.drawImage(qrImg, 0, 0);
 
-                    // 로고 합성 레이어 오버레이
                     if (logo) {
                         ctx.fillStyle = "#ffffff";
                         ctx.fillRect(75, 75, 50, 50);
@@ -344,21 +348,14 @@
                         ctx.textBaseline = "middle";
                         ctx.fillText(logo, 100, 100);
                         
-                        // 화면 뷰어 이미지 소스를 로고가 포함된 고품질 최종본으로 강제 치환
                         qrImg.src = canvas.toDataURL("image/png");
                     }
-
-                    // 글로벌 참조 변수에 완성된 가상 캔버스를 안정적으로 동기화 바인딩
                     currentQrCanvas = canvas;
                     document.getElementById('status-bar').innerText = "실시간 QR 패턴 무결성 동기화 완료";
                 };
-
-                // 일부 구형 브라우저에서 onload 캐시 스킵 현상을 막기 위해 강제 트리거 트리 유도
-                if (qrImg.complete) {
-                    qrImg.onload();
-                }
+                if (qrImg.complete) { qrImg.onload(); }
             }
-        }, 30); // 30ms 단위 정밀 트랙 폴링
+        }, 30);
     }
 
     function downloadQRImage() {
@@ -366,22 +363,10 @@
             alert("QR 패턴 생성이 완료되지 않았습니다. 잠시 후 다시 시도해 주세요.");
             return;
         }
-        
-        const userAgreement = confirm(
-            "무료 사이트 유지 및 블로그 광고 조회 지원을 위해\n" +
-            "확인 클릭 시 다운로드와 함께 공식 블로그로 연결됩니다."
-        );
-
-        if (userAgreement) {
-            window.open("https://srhs.tistory.com/", "_blank");
-
-            const link = document.createElement('a');
-            link.download = 'QR_CODE.png'; 
-            link.href = currentQrCanvas.toDataURL('image/png');
-            link.click();
-        } else {
-            document.getElementById('status-bar').innerText = "다운로드가 취소되었습니다.";
-        }
+        const link = document.createElement('a');
+        link.download = 'QR_CODE.png'; 
+        link.href = currentQrCanvas.toDataURL('image/png');
+        link.click();
     }
 
     function scanQRFile(input) {
@@ -389,25 +374,23 @@
         if (!file) return;
 
         const reader = new FileReader();
-        const canvas = document.getElementById('scan-canvas');
-        const ctx = canvas.getContext('2d');
-        const previewText = document.getElementById('preview-text');
-        const resultDisplay = document.getElementById('result-display');
-
         reader.onload = function(e) {
             const img = new Image();
             img.onload = function() {
+                const canvas = document.getElementById('scan-canvas');
+                const ctx = canvas.getContext('2d');
                 canvas.width = img.width;
                 canvas.height = img.height;
                 ctx.drawImage(img, 0, 0);
                 canvas.style.display = "block";
-                previewText.style.display = "none";
+                document.getElementById('preview-text').style.display = "none";
 
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const code = jsQR(imageData.data, imageData.width, imageData.height, {
                     inversionAttempts: "dontInvert",
                 });
 
+                const resultDisplay = document.getElementById('result-display');
                 if (code) {
                     if(code.data.startsWith('http')) {
                         resultDisplay.innerHTML = `<a href="${code.data}" target="_blank" style="color:var(--primary-blue);">${code.data} [이동하기]</a>`;
@@ -426,6 +409,7 @@
 
     window.onload = () => { generateQRCodeRealtime(); };
 </script>
+<div id="dwk-footer"></div>
 <script src="../nav.js"></script>
 </body>
 </html>
