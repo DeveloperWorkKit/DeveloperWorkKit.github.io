@@ -1,4 +1,4 @@
-/* nav.css - DevWorKit 글로벌 내비게이션 & 스마트 다크모드 완성형 */
+/* nav.css - DevWorKit 글로벌 내비게이션 & 고해상도 다크모드 완성형 */
 .dwk-global-nav {
     background-color: #111827;
     border-bottom: 1px solid #1f2937;
@@ -235,16 +235,19 @@
 .dwk-footer-copy { color: #94a3b8; font-size: 12px; }
 
 /* ========================================================================= */
-/* 🌑 스마트 반전 다크모드 엔진 (클래스 무관 100% 자동 변환)                 */
+/* 🌑 초선명 스마트 다크모드 엔진 (글자 뭉개짐 완전 제거)                    */
 /* ========================================================================= */
 
 html.dark-theme {
-    /* 칙칙한 잿빛을 없애고 세련된 다크 블루 톤으로 생동감 부여 */
-    filter: invert(93%) hue-rotate(200deg) brightness(102%) contrast(92%) saturate(130%);
+    /* 번짐을 유발하는 contrast/saturate 과보정을 제거하고 깔끔한 90% 반전 적용 */
+    filter: invert(90%) hue-rotate(180deg);
     background-color: #ffffff;
+    /* 서브픽셀 폰트 렌더링 선명도 강제 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* 상단 GNB, 푸터, 미디어, 뱃지는 색감 왜곡 없이 원본 그대로 유지 */
+/* GNB, 푸터, 미디어, 다이어그램 및 COLOR 스튜디오 캔버스 원본 보존 */
 html.dark-theme .dwk-global-nav,
 html.dark-theme .dwk-global-footer,
 html.dark-theme img,
@@ -255,10 +258,10 @@ html.dark-theme .mermaid,
 html.dark-theme .interactive-canvas,
 html.dark-theme [class*="badge"],
 html.dark-theme .card-badge {
-    filter: invert(100%) hue-rotate(160deg) saturate(90%);
+    filter: invert(100%) hue-rotate(180deg);
 }
 
-/* 스크롤바 */
+/* 스크롤바 최적화 */
 html.dark-theme ::-webkit-scrollbar-thumb {
     background-color: #cbd5e1;
 }
