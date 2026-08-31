@@ -235,135 +235,181 @@
 .dwk-footer-copy { color: #94a3b8; font-size: 12px; }
 
 /* ========================================================= */
-/* 🌑 전역 다크모드 완벽 교정 (body.dark-theme)             */
+/* 🌑 전역 다크모드 완벽 타겟팅 교정 (body.dark-theme)      */
 /* ========================================================= */
 body.dark-theme {
     background-color: #0b0f19 !important;
     color: #e2e8f0 !important;
 }
 
-/* 1. 모든 제목, 헤더 및 본문 텍스트 */
-body.dark-theme h1,
-body.dark-theme h2,
-body.dark-theme h3,
-body.dark-theme h4,
-body.dark-theme .header-title,
-body.dark-theme .tool-title,
-body.dark-theme .hero-title {
+/* 1. 상단 로고 및 헤더 영역 */
+body.dark-theme header {
+    border-bottom-color: #1e293b !important;
+}
+body.dark-theme .logo-text {
     color: #f8fafc !important;
 }
 
-body.dark-theme p,
-body.dark-theme span:not(.gnb-result-tag):not(.dwk-logo-badge):not(.card-badge):not(.logo-badge),
-body.dark-theme label,
-body.dark-theme .hero-desc,
-body.dark-theme .desc-text {
+/* 2. 가이드 & 인트로 섹션 */
+body.dark-theme .intro-title {
+    color: #f8fafc !important;
+}
+body.dark-theme .intro-desc {
     color: #94a3b8 !important;
 }
-
-/* 2. 도구 내부의 모든 컨테이너, 패널, 가이드 박스 일괄 다크 전환 */
-body.dark-theme .tool-card,
-body.dark-theme .tool-box,
-body.dark-theme .container,
-body.dark-theme .main-container,
-body.dark-theme .guide-box,
-body.dark-theme .info-box,
-body.dark-theme .guide-banner,
-body.dark-theme .control-section,
-body.dark-theme .panel,
-body.dark-theme .left-panel,
-body.dark-theme .right-panel,
-body.dark-theme .box-wrapper,
-body.dark-theme [class*="section-guide"],
-body.dark-theme [class*="preset-box"],
-body.dark-theme [class*="result-box"],
-body.dark-theme [class*="box-container"] {
+body.dark-theme .guide-box {
     background-color: #131b2e !important;
     border-color: #1e293b !important;
-    color: #e2e8f0 !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+    color: #cbd5e1 !important;
 }
-
-body.dark-theme .tool-card:hover {
-    border-color: #38bdf8 !important;
+body.dark-theme .guide-box strong {
+    color: #38bdf8 !important;
 }
-
-/* 3. 입력창, 텍스트에어리어, 셀렉트박스 */
-body.dark-theme textarea,
-body.dark-theme input[type="text"],
-body.dark-theme select {
-    background-color: #0b0f19 !important;
-    border: 1px solid #1e293b !important;
-    color: #f8fafc !important;
-}
-
-body.dark-theme textarea::placeholder,
-body.dark-theme input[type="text"]::placeholder {
-    color: #475569 !important;
-}
-
-body.dark-theme textarea:focus,
-body.dark-theme input[type="text"]:focus,
-body.dark-theme select:focus {
-    border-color: #38bdf8 !important;
-    outline: none !important;
-}
-
-/* 4. 프리셋 및 일반 버튼류 눈부심 방지 */
-body.dark-theme button:not(.theme-toggle-btn):not(.filter-chip):not(.nav-dropbtn):not([class*="btn-primary"]) {
-    background-color: #1e293b !important;
-    border: 1px solid #334155 !important;
+body.dark-theme .guide-box span {
     color: #cbd5e1 !important;
 }
 
-body.dark-theme button:not(.theme-toggle-btn):not(.filter-chip):not(.nav-dropbtn):hover {
+/* 3. 좌측/우측 메인 패널 박스 */
+body.dark-theme .control-box,
+body.dark-theme .display-box,
+body.dark-theme .tool-card,
+body.dark-theme .tool-box,
+body.dark-theme .container,
+body.dark-theme .main-container {
+    background-color: #131b2e !important;
+    border-color: #1e293b !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* 4. 라벨 및 텍스트 요소 */
+body.dark-theme .form-group label,
+body.dark-theme .display-header span,
+body.dark-theme .opt-label,
+body.dark-theme .match-count-badge {
+    color: #cbd5e1 !important;
+}
+
+/* 5. 프리셋 버튼 및 서브 액션 버튼 */
+body.dark-theme .btn-preset {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #94a3b8 !important;
+}
+body.dark-theme .btn-preset:hover,
+body.dark-theme .btn-preset.active {
+    background-color: #0369a1 !important;
+    border-color: #38bdf8 !important;
+    color: #ffffff !important;
+}
+body.dark-theme .btn-preset-custom {
+    background-color: #1a2333 !important;
+    border-color: #475569 !important;
+    color: #cbd5e1 !important;
+}
+body.dark-theme .btn-mini-action,
+body.dark-theme .btn-nav-match,
+body.dark-theme .btn-sub-action {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #cbd5e1 !important;
+}
+body.dark-theme .btn-mini-action:hover,
+body.dark-theme .btn-nav-match:hover,
+body.dark-theme .btn-sub-action:hover {
     background-color: #334155 !important;
     color: #ffffff !important;
 }
 
-/* 5. 메인 필터칩 */
+/* 6. 정규식 입력 래퍼 및 인풋/셀렉트 */
+body.dark-theme .regex-input-wrapper {
+    background-color: #0b0f19 !important;
+    border-color: #1e293b !important;
+}
+body.dark-theme .regex-input-wrapper input {
+    color: #38bdf8 !important;
+}
+body.dark-theme .custom-save-zone {
+    background-color: #0f172a !important;
+    border-color: #1e293b !important;
+}
+body.dark-theme .save-input-row input,
+body.dark-theme .saved-select-row select {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+}
+
+/* 7. 본문 텍스트에어리어 & 백드롭 하이라이트 컨테이너 */
+body.dark-theme .text-area-container {
+    background-color: #0b0f19 !important;
+    border-color: #1e293b !important;
+}
+body.dark-theme .backdrop {
+    background-color: #0b0f19 !important;
+}
+body.dark-theme .test-textarea {
+    color: #f8fafc !important;
+}
+body.dark-theme .test-textarea::placeholder {
+    color: #475569 !important;
+}
+body.dark-theme .test-textarea::-webkit-scrollbar-thumb {
+    background-color: #334155 !important;
+    border-color: #0b0f19 !important;
+}
+body.dark-theme .test-textarea::-webkit-scrollbar-track {
+    background-color: #0b0f19 !important;
+}
+
+/* 8. 하이라이트 색상 (다크 최적화 형광펜) */
+body.dark-theme .highlight {
+    background-color: #854d0e !important; /* 다크 모드용 부드러운 앰버 옐로우 */
+}
+body.dark-theme .highlight-duplicate {
+    background-color: #334155 !important;
+    border-bottom-color: #ea580c !important;
+}
+body.dark-theme .highlight-active {
+    background-color: #d97706 !important;
+    box-shadow: 0 0 0 2px #f59e0b !important;
+}
+
+/* 9. 메인 허브 필터칩 */
 body.dark-theme .filter-chip {
     background-color: #1e293b !important;
     border-color: #334155 !important;
     color: #cbd5e1 !important;
 }
-
 body.dark-theme .filter-chip:hover {
     background-color: #334155 !important;
     color: #ffffff !important;
 }
-
 body.dark-theme .filter-chip.active {
     background-color: #38bdf8 !important;
     color: #0f172a !important;
     border-color: #38bdf8 !important;
 }
 
-/* 6. 푸터 및 검색결과 팝업 */
+/* 10. 푸터 및 검색결과 팝업 */
 body.dark-theme .dwk-global-footer {
     background-color: #0b0f19 !important;
     border-top-color: #1e293b !important;
     color: #64748b !important;
 }
-
 body.dark-theme .dwk-footer-links a {
     color: #94a3b8 !important;
 }
-
 body.dark-theme .dwk-footer-links a:hover {
     color: #38bdf8 !important;
 }
-
 body.dark-theme .gnb-search-results {
     background-color: #1e293b !important;
     border-color: #334155 !important;
 }
-
 body.dark-theme .gnb-search-results a {
     color: #f1f5f9 !important;
     border-bottom-color: #334155 !important;
 }
-
 body.dark-theme .gnb-search-results a:hover {
     background-color: #0f172a !important;
     color: #38bdf8 !important;
