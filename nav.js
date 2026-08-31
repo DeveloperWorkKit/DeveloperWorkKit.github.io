@@ -28,7 +28,7 @@
     `;
     document.head.insertAdjacentHTML('beforeend', commonMetaHTML);
 
-    // 2. 글로벌 네비게이션 HTML (GNB 실시간 빠른 검색바 추가)
+    // 2. 글로벌 네비게이션 HTML
     const navHTML = `
     <header class="dwk-global-nav">
         <div class="nav-left">
@@ -65,7 +65,7 @@
         </div>
         
         <div class="nav-right">
-            <!-- GNB 실시간 빠른 도구 검색 -->
+            <!-- GNB 실시간 빠른 도구 검색 (화이트 배경 최적화) -->
             <div class="nav-search-wrapper" id="nav-search-container">
                 <input type="text" id="gnb-search-input" class="gnb-search-input" placeholder="도구 빠른 검색..." oninput="handleGnbSearch(this.value)" onfocus="handleGnbFocus()" autocomplete="off">
                 <span class="gnb-search-icon">🔍</span>
@@ -93,7 +93,7 @@
     </footer>
     `;
 
-    // 4. 스타일시트 (GNB 서치 인터페이스 포함)
+    // 4. 스타일시트 (화이트 검색바 & 드롭다운 스타일)
     const navCSS = `
     <style>
         .dwk-global-nav {
@@ -187,33 +187,39 @@
 
         .nav-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
         
-        /* GNB 검색창 스타일 */
+        /* GNB 검색창: 화이트 배경 최적화 */
         .nav-search-wrapper {
             position: relative;
             display: flex;
             align-items: center;
         }
         .gnb-search-input {
-            background-color: #1f2937;
-            border: 1px solid #374151;
-            color: #f3f4f6;
+            background-color: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #0f172a !important;
             font-size: 12.5px;
+            font-weight: 600;
             padding: 6px 28px 6px 12px;
             border-radius: 6px;
-            width: 140px;
+            width: 150px;
             outline: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             transition: all 0.2s ease;
         }
+        .gnb-search-input::placeholder {
+            color: #64748b !important;
+            font-weight: 500;
+        }
         .gnb-search-input:focus {
-            width: 210px;
-            border-color: #38bdf8;
-            background-color: #111827;
+            width: 220px;
+            border-color: #0284c7 !important;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25) !important;
         }
         .gnb-search-icon {
             position: absolute;
             right: 8px;
             font-size: 11px;
-            color: #9ca3af;
+            color: #64748b;
             pointer-events: none;
         }
         .gnb-search-results {
@@ -222,10 +228,10 @@
             top: calc(100% + 8px);
             right: 0;
             width: 260px;
-            background-color: #1f2937;
-            border: 1px solid #374151;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             max-height: 320px;
             overflow-y: auto;
             z-index: 100001;
@@ -234,25 +240,26 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 9px 14px;
-            color: #e5e7eb;
+            padding: 10px 14px;
+            color: #1e293b;
             text-decoration: none;
             font-size: 13px;
-            border-bottom: 1px solid #2d3748;
+            font-weight: 600;
+            border-bottom: 1px solid #f1f5f9;
             transition: background-color 0.15s;
         }
         .gnb-search-results a:last-child { border-bottom: none; }
         .gnb-search-results a:hover {
-            background-color: #374151;
-            color: #38bdf8;
+            background-color: #f8fafc;
+            color: #0284c7;
         }
         .gnb-result-tag {
             font-size: 10.5px;
-            background-color: #374151;
-            color: #93c5fd;
+            background-color: #e0f2fe;
+            color: #0369a1;
             padding: 2px 6px;
             border-radius: 4px;
-            font-weight: 700;
+            font-weight: 800;
         }
 
         .nav-link-sub {
@@ -315,9 +322,9 @@
             .nav-dropbtn { font-size: 12px; padding: 12px 4px; }
             .nav-link-sub { display: none; }
             .nav-hub-btn { font-size: 12px; }
-            .gnb-search-input { width: 95px; font-size: 11.5px; padding: 5px 22px 5px 8px; }
-            .gnb-search-input:focus { width: 140px; }
-            .gnb-search-results { width: 200px; }
+            .gnb-search-input { width: 105px; font-size: 11.5px; padding: 5px 22px 5px 8px; }
+            .gnb-search-input:focus { width: 150px; }
+            .gnb-search-results { width: 220px; }
 
             .nav-dropdown-content {
                 position: fixed;
@@ -341,17 +348,48 @@
     document.head.insertAdjacentHTML('beforeend', navCSS);
     document.body.insertAdjacentHTML('afterbegin', navHTML);
 
-    // 푸터 주입
+    // 5. 푸터 주입 및 개별 도구 페이지 뱃지 소프트 틴트 자동 동기화
     window.addEventListener('DOMContentLoaded', () => {
+        // 푸터 주입
         const targetContainer = document.getElementById('dwk-footer');
         if (targetContainer) {
             targetContainer.innerHTML = footerHTML;
         } else {
             document.body.insertAdjacentHTML('beforeend', footerHTML);
         }
+
+        // 도구 상세 페이지 상단 뱃지 자동 색상 오버라이드
+        const path = window.location.pathname.toLowerCase();
+        const headerBadge = document.querySelector('.card-badge, .logo-badge, .tool-badge, .header-badge');
+        
+        if (headerBadge) {
+            headerBadge.style.borderRadius = '6px';
+            headerBadge.style.fontWeight = '800';
+            headerBadge.style.padding = '4px 9px';
+            headerBadge.style.letterSpacing = '0.5px';
+
+            // 1. 텍스트 / 문서 도구군 (Soft Sky Blue)
+            if (path.includes('/strget/') || path.includes('/counter/') || path.includes('/strcmp/') || path.includes('/markdown/')) {
+                headerBadge.style.backgroundColor = '#e0f2fe';
+                headerBadge.style.color = '#0369a1';
+                headerBadge.style.border = '1px solid #bae6fd';
+            }
+            // 2. 개발 / 데이터 도구군 (Soft Violet)
+            else if (path.includes('/fsee/') || path.includes('/coder/') || path.includes('/beautify/') || path.includes('/json-viewer/')) {
+                headerBadge.style.backgroundColor = '#ede9fe';
+                headerBadge.style.color = '#6d28d9';
+                headerBadge.style.border = '1px solid #ddd6fe';
+            }
+            // 3. 시스템 / 디자인 유틸군 (Soft Teal)
+            else if (path.includes('/time/') || path.includes('/hash/') || path.includes('/qrm/') || path.includes('/cron/') || path.includes('/color/')) {
+                headerBadge.style.backgroundColor = '#ccfbf1';
+                headerBadge.style.color = '#0f766e';
+                headerBadge.style.border = '1px solid #99f6e4';
+            }
+        }
     });
 
-    // 5. GNB 검색 인터랙션 핸들러
+    // 6. GNB 실시간 검색 핸들러
     window.handleGnbFocus = function () {
         const input = document.getElementById('gnb-search-input');
         if (input.value.trim().length > 0) {
@@ -376,7 +414,7 @@
         );
 
         if (filtered.length === 0) {
-            resultsBox.innerHTML = '<div style="padding:12px;color:#9ca3af;font-size:12px;text-align:center;">검색 결과 없음</div>';
+            resultsBox.innerHTML = '<div style="padding:12px;color:#64748b;font-size:12px;text-align:center;">검색 결과가 없습니다.</div>';
         } else {
             resultsBox.innerHTML = filtered.map(t => `
                 <a href="${t.url}">
@@ -403,7 +441,7 @@
         }
     };
 
-    // 외부 영역 클릭 시 드롭다운 닫기
+    // 외부 영역 클릭 시 닫기
     document.addEventListener('click', function (e) {
         if (!e.target.closest('.nav-dropdown')) {
             document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('active'));
