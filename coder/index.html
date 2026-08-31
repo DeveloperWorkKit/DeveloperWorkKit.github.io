@@ -63,7 +63,7 @@
         .guide-list { margin: 0; padding-left: 18px; }
         .guide-list li { margin-bottom: 4px; }
 
-        /* 완벽한 1줄 가이드 배너 */
+        /* 완벽한 1줄 가이드 배너 (블로그 링크) */
         .guide-banner-row {
             margin-top: 14px;
             padding-top: 12px;
@@ -91,6 +91,7 @@
             white-space: nowrap;
             margin-left: 12px;
             flex-shrink: 0;
+            display: inline-block;
         }
         .guide-banner-btn:hover {
             background: #dbeafe;
@@ -215,9 +216,10 @@
                 <li>오른쪽 창에 실시간으로 출력된 변환 결과를 확인하고 <b>[결과 복사]</b>를 클릭하여 클립보드에 담습니다.</li>
                 <li>모든 연산은 브라우저 내부에서 즉시 수행되므로 개인정보나 비밀 토큰도 안전하게 변환할 수 있습니다.</li>
             </ol>
-            <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #cbd5e1; display: flex; justify-content: space-between; align-items: center; white-space: nowrap;">
-                <span style="font-size: 13px; color: #334155; display: inline-block;">📘 <span style="font-weight: 700; color: #0f172a;">Base64 동작 원리와 한글 깨짐 해결법</span>이 궁금하신가요?</span>
-                <a href="../guide/base64-guide.html" style="color: #2563eb; font-weight: 700; text-decoration: none; background: #eff6ff; border: 1px solid #bfdbfe; padding: 5px 12px; border-radius: 6px; font-size: 12.5px; margin-left: 12px; flex-shrink: 0; display: inline-block;">실무 가이드 보기 →</a>
+            
+            <div class="guide-banner-row">
+                <span class="guide-banner-text">📘 <span style="font-weight: 700; color: #0f172a;">Base64 동작 원리와 한글 깨짐 해결법</span>이 궁금하신가요?</span>
+                <a href="../guide/base64-guide.html" class="guide-banner-btn">실무 가이드 보기 →</a>
             </div>
         </div>
     </div>
@@ -398,6 +400,7 @@
         recordInputHistory();
     };
 </script>
+<div id="dwk-footer"></div>
 <script src="../nav.js"></script>
 </body>
 </html>
