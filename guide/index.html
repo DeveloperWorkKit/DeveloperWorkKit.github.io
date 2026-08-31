@@ -51,29 +51,23 @@
       border-color: #cbd5e1;
     }
     
-    /* 뱃지와 제목 사이 간격 강제 확장 */
     .guide-card .card-badge {
       display: inline-block !important;
       align-self: flex-start !important;
       padding: 4px 10px !important;
       border-radius: 6px !important;
       font-size: 11px !important;
-      font-weight: 700 !important;
-      color: #fff !important;
+      font-weight: 800 !important;
       letter-spacing: 0.5px !important;
       margin: 0 0 12px 0 !important; 
       line-height: 1.2 !important;
+      border: 1px solid transparent !important;
     }
 
-    .badge-strget { background-color: #ef4444 !important; }
-    .badge-markdown { background-color: #0284c7 !important; }
-    .badge-coder { background-color: #3b82f6 !important; }
-    .badge-beautify { background-color: #0d9488 !important; }
-    .badge-json { background-color: #8b5cf6 !important; }
-    .badge-time { background-color: #10b981 !important; }
-    .badge-hash { background-color: #6366f1 !important; }
-    .badge-cron { background-color: #e11d48 !important; }
-    .badge-color { background-color: #db2777 !important; }
+    /* 메인 페이지와 동일한 3가지 역할별 소프트 틴트 색상 연동 */
+    .badge-cat-text { background-color: #e0f2fe !important; color: #0369a1 !important; border-color: #bae6fd !important; }
+    .badge-cat-data { background-color: #ede9fe !important; color: #6d28d9 !important; border-color: #ddd6fe !important; }
+    .badge-cat-util { background-color: #ccfbf1 !important; color: #0f766e !important; border-color: #99f6e4 !important; }
     
     .guide-card .card-title {
       font-size: 17px !important;
@@ -112,90 +106,84 @@
     </div>
 
     <div class="guide-grid">
-      <!-- 1. STRGET (텍스트/문서 가이드) -->
+      <!-- 텍스트 / 문서 도구군 -->
       <a href="regex-extract-guide.html" class="guide-card">
         <div>
-          <span class="card-badge badge-strget">STRGET</span>
+          <span class="card-badge badge-cat-text">STRGET</span>
           <h2 class="card-title">정규표현식(Regex)을 이용한 이메일·전화번호 추출 가이드</h2>
           <p class="card-desc">비정형 텍스트 뭉치에서 원하는 패턴의 문자열만 정규식으로 정확히 파싱하는 실전 패턴을 설명합니다.</p>
         </div>
         <span class="card-link-text">가이드 읽기 →</span>
       </a>
 
-      <!-- 2. MARKDOWN (텍스트/문서 가이드) -->
       <a href="markdown-guide.html" class="guide-card">
         <div>
-          <span class="card-badge badge-markdown">MARKDOWN</span>
+          <span class="card-badge badge-cat-text">MARKDOWN</span>
           <h2 class="card-title">마크다운(Markdown) 기초부터 확장 문법까지 완벽 가이드</h2>
           <p class="card-desc">기본 서식, 체크리스트, 표(Table)부터 LaTeX 수학 수식과 Mermaid 다이어그램까지 마크다운 실전 활용법을 총정리합니다.</p>
         </div>
         <span class="card-link-text">가이드 읽기 →</span>
       </a>
 
-      <!-- 3. CODER (개발/데이터 가이드) -->
+      <!-- 개발 / 데이터 도구군 -->
       <a href="base64-guide.html" class="guide-card">
         <div>
-          <span class="card-badge badge-coder">CODER</span>
+          <span class="card-badge badge-cat-data">CODER</span>
           <h2 class="card-title">Base64 인코딩 원리와 실무 한글 깨짐 해결법</h2>
           <p class="card-desc">Base64의 내부 동작 원리와 웹 통신 중 발생하는 UTF-8 한글 깨짐 문제의 원인 및 해결 코드를 정리합니다.</p>
         </div>
         <span class="card-link-text">가이드 읽기 →</span>
       </a>
 
-      <!-- 4. BEAUTIFY (개발/데이터 가이드) -->
       <a href="code-formatter-guide.html" class="guide-card">
         <div>
-          <span class="card-badge badge-beautify">BEAUTIFY</span>
+          <span class="card-badge badge-cat-data">BEAUTIFY</span>
           <h2 class="card-title">코드 뷰티파이어의 동작 원리와 들여쓰기 표준 가이드</h2>
           <p class="card-desc">엉킨 소스코드를 깔끔하게 정돈하는 AST 파싱 원리와 HTML/JS 들여쓰기(2칸 vs 4칸) 표준 규칙을 정리합니다.</p>
         </div>
         <span class="card-link-text">가이드 읽기 →</span>
       </a>
 
-      <!-- 5. JSON (개발/데이터 가이드) -->
       <a href="json-format-guide.html" class="guide-card">
         <div>
-          <span class="card-badge badge-json">JSON</span>
+          <span class="card-badge badge-cat-data">JSON</span>
           <h2 class="card-title">JSON 유효성 검사와 구조적 데이터 파싱 팁</h2>
           <p class="card-desc">대용량 JSON 트러블슈팅과 구문 오류(Syntax Error)를 빠르게 진단하는 실무 노하우를 알아봅니다.</p>
         </div>
         <span class="card-link-text">가이드 읽기 →</span>
       </a>
 
-      <!-- 6. TIME (개발/데이터 가이드) -->
+      <!-- 시스템 / 디자인 유틸군 -->
       <a href="timestamp-guide.html" class="guide-card">
         <div>
-          <span class="card-badge badge-time">TIME</span>
+          <span class="card-badge badge-cat-util">TIME</span>
           <h2 class="card-title">Unix Epoch Timestamp 개념과 시간대 변환 가이드</h2>
           <p class="card-desc">10자리 초와 13자리 밀리초의 차이점, 그리고 KST/UTC 시간대 상호 변환 시 주의사항을 정리합니다.</p>
         </div>
         <span class="card-link-text">가이드 읽기 →</span>
       </a>
 
-      <!-- 7. HASH (개발/데이터 가이드) -->
       <a href="hash-guide.html" class="guide-card">
         <div>
-          <span class="card-badge badge-hash">HASH</span>
+          <span class="card-badge badge-cat-util">HASH</span>
           <h2 class="card-title">단방향 암호화 해시(SHA-256)와 UUID v4 원리 정리</h2>
           <p class="card-desc">데이터 무결성 검증을 위한 SHA-256 해시 알고리즘과 고유 식별자 생성을 위한 UUID v4 원리를 설명합니다.</p>
         </div>
         <span class="card-link-text">가이드 읽기 →</span>
       </a>
 
-      <!-- 8. CRON (개발/데이터 가이드) -->
       <a href="cron-guide.html" class="guide-card">
         <div>
-          <span class="card-badge badge-cron">CRON</span>
+          <span class="card-badge badge-cat-util">CRON</span>
           <h2 class="card-title">리눅스 크론탭 문법 완벽 정복과 실무 스케줄러 가이드</h2>
           <p class="card-desc">5개 필드(분 시 일 월 요일)의 동작 규칙과 특수 문자(*, /, -, ,) 활용법, 실무 에러 방어 팁을 정리합니다.</p>
         </div>
         <span class="card-link-text">가이드 읽기 →</span>
       </a>
 
-      <!-- 9. COLOR (개발/데이터 가이드) -->
       <a href="wcag-color-contrast-guide.html" class="guide-card">
         <div>
-          <span class="card-badge badge-color">COLOR</span>
+          <span class="card-badge badge-cat-util">COLOR</span>
           <h2 class="card-title">웹 접근성(WCAG 2.1) 명도 대비비 기준과 실무 UI 배색 가이드</h2>
           <p class="card-desc">W3C WCAG 2.1 AA/AAA 기준 명도 대비비 계산 공식과 주 텍스트, 본문, 배경색 3채널의 실무 배색 원리를 정리합니다.</p>
         </div>
