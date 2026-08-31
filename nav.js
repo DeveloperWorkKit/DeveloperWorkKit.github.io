@@ -103,7 +103,7 @@
 
     document.body.insertAdjacentHTML('afterbegin', navHTML);
 
-    // 5. 테마 초기화 및 토글 핸들러
+    // 5. 다크모드 초기화 & 토글
     function initTheme() {
         const savedTheme = localStorage.getItem('dwk_theme');
         if (savedTheme === 'dark') {
@@ -128,17 +128,26 @@
         applyBadgeColors();
     };
 
-    // 6. 개별 도구 페이지 뱃지 소프트 틴트 동기화
+    // 6. 메인 허브 및 서브페이지 로고 뱃지 색상 자동 보정
     function applyBadgeColors() {
         const path = window.location.pathname.toLowerCase();
-        const headerBadge = document.querySelector('.card-badge, .logo-badge, .tool-badge, .header-badge');
         const isDark = document.body.classList.contains('dark-theme');
-        
-        if (headerBadge) {
+
+        // 메인 허브 카드 뱃지 일괄 카테고리 태깅
+        document.querySelectorAll('.tool-card').forEach(card => {
+            const badge = card.querySelector('.card-badge');
+            const cat = card.getAttribute('data-category');
+            if (badge && cat) {
+                badge.setAttribute('data-cat', cat);
+            }
+        });
+
+        // 서브페이지 헤더 뱃지 처리
+        const headerBadge = document.querySelector('.card-badge, .logo-badge, .tool-badge, .header-badge');
+        if (headerBadge && !document.querySelector('.hero-section')) {
             headerBadge.style.borderRadius = '6px';
             headerBadge.style.fontWeight = '800';
             headerBadge.style.padding = '4px 9px';
-            headerBadge.style.letterSpacing = '0.5px';
 
             if (path.includes('/strget/') || path.includes('/counter/') || path.includes('/strcmp/') || path.includes('/markdown/')) {
                 headerBadge.style.backgroundColor = isDark ? '#082f49' : '#e0f2fe';
@@ -156,7 +165,7 @@
         }
     }
 
-    // 7. DOM 로드 이벤트
+    // 7. DOM 로드 완료 시
     window.addEventListener('DOMContentLoaded', () => {
         initTheme();
         applyBadgeColors();
@@ -169,7 +178,7 @@
         }
     });
 
-    // 8. GNB 검색 이벤트
+    // 8. GNB 검색
     window.handleGnbFocus = function () {
         const input = document.getElementById('gnb-search-input');
         if (input.value.trim().length > 0) {
@@ -206,7 +215,7 @@
         resultsBox.style.display = 'block';
     };
 
-    // 9. 모바일 드롭다운 토글
+    // 9. 모바일 토글
     window.toggleMobileNav = function (e, dropdownId) {
         if (window.innerWidth <= 860) {
             e.preventDefault();
