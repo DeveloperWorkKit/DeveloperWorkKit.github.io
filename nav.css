@@ -1,4 +1,4 @@
-/* nav.css - DevWorKit 글로벌 내비게이션 & 다크모드 전역 스타일 */
+/* nav.css - DevWorKit 글로벌 내비게이션 & 전역 다크모드 완성형 */
 .dwk-global-nav {
     background-color: #111827;
     border-bottom: 1px solid #1f2937;
@@ -235,10 +235,9 @@
 .dwk-footer-copy { color: #94a3b8; font-size: 12px; }
 
 /* ========================================================================= */
-/* 🌑 전 도구 100% 커버 전역 다크모드 (body.dark-theme)                     */
+/* 🌑 전역 다크모드 완결판 (body.dark-theme)                                 */
 /* ========================================================================= */
 
-/* 1. CSS 변수 및 기본 배경/텍스트 */
 body.dark-theme {
     --bg-light: #131b2e !important;
     --border-color: #1e293b !important;
@@ -248,7 +247,7 @@ body.dark-theme {
     color: #e2e8f0 !important;
 }
 
-/* 2. 상단 헤더, 로고 및 모든 제목/텍스트 */
+/* 1. 헤더 & 로고 & 타이틀 */
 body.dark-theme header {
     border-bottom-color: #1e293b !important;
     background-color: transparent !important;
@@ -260,12 +259,36 @@ body.dark-theme strong, body.dark-theme b {
     color: #f8fafc !important;
 }
 body.dark-theme p, body.dark-theme label, body.dark-theme li,
-body.dark-theme .intro-desc, body.dark-theme .hero-desc, body.dark-theme .desc-text,
-body.dark-theme span:not(.gnb-result-tag):not(.dwk-logo-badge):not(.card-badge):not(.logo-badge):not(.highlight):not(.highlight-duplicate):not(.highlight-active) {
+body.dark-theme .intro-desc, body.dark-theme .hero-desc, body.dark-theme .desc-text {
     color: #94a3b8 !important;
 }
 
-/* 3. 본문 내 모든 컨테이너, 패널, 가이드, 박스 전수 포획 */
+/* 2. 메인 허브 3대 소프트 틴트 뱃지 원본 복원 */
+body.dark-theme .card-badge[data-cat="text"],
+body.dark-theme .badge-text {
+    background-color: #082f49 !important;
+    color: #7dd3fc !important;
+    border: 1px solid #0369a1 !important;
+}
+body.dark-theme .card-badge[data-cat="data"],
+body.dark-theme .badge-data {
+    background-color: #2e1065 !important;
+    color: #c4b5fd !important;
+    border: 1px solid #5b21b6 !important;
+}
+body.dark-theme .card-badge[data-cat="util"],
+body.dark-theme .badge-util {
+    background-color: #042f2e !important;
+    color: #5eead4 !important;
+    border: 1px solid #115e59 !important;
+}
+
+/* 3. 일반 텍스트 span 보호 */
+body.dark-theme span:not(.gnb-result-tag):not(.dwk-logo-badge):not(.card-badge):not(.logo-badge):not(.highlight):not(.highlight-duplicate):not(.highlight-active):not([class*="badge"]) {
+    color: inherit;
+}
+
+/* 4. 컨테이너 & 패널 & 가이드 & 박스 일괄 다크화 */
 body.dark-theme .control-box,
 body.dark-theme .display-box,
 body.dark-theme .guide-box,
@@ -282,60 +305,72 @@ body.dark-theme .right-panel,
 body.dark-theme .box-wrapper,
 body.dark-theme .page-wrapper > div,
 body.dark-theme [class*="container"] > div,
-body.dark-theme [class*="grid"] > div,
-body.dark-theme [class*="panel"],
-body.dark-theme [class*="box"],
-body.dark-theme [class*="card"],
-body.dark-theme [class*="wrap"] {
+body.dark-theme [class*="grid"] > div {
     background-color: #131b2e !important;
     border-color: #1e293b !important;
     color: #e2e8f0 !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
 }
 
-body.dark-theme .guide-box strong {
-    color: #38bdf8 !important;
-}
-
-/* 4. 에디터 뷰어, 프리뷰 컨테이너, Diff 결과, QR/크론 박스 완벽 다크화 */
-body.dark-theme .markdown-body,
-body.dark-theme .preview-container,
-body.dark-theme .render-view,
+/* 5. [STRCMP, QRM, CRON] 하얀색 결과창 및 프리뷰 완벽 다크화 */
+body.dark-theme #diff-result,
 body.dark-theme .diff-box,
 body.dark-theme .diff-output,
-body.dark-theme [id*="diff-result"],
-body.dark-theme [id*="diff-output"],
-body.dark-theme [id*="preview"],
-body.dark-theme [id*="render"],
-body.dark-theme [class*="preview"],
-body.dark-theme [class*="viewer"],
+body.dark-theme .diff-container,
+body.dark-theme .scan-result-box,
 body.dark-theme .drop-zone,
 body.dark-theme .upload-box,
-body.dark-theme .schedule-box,
 body.dark-theme .next-run-box,
-body.dark-theme .qr-preview-box,
-body.dark-theme .scan-result-box,
-body.dark-theme .wcag-table,
-body.dark-theme table,
-body.dark-theme th,
-body.dark-theme td {
+body.dark-theme .cron-result-box,
+body.dark-theme .cron-info-box,
+body.dark-theme .schedule-box,
+body.dark-theme .cron-preview-area,
+body.dark-theme [id*="scan-result"],
+body.dark-theme [id*="diff-view"],
+body.dark-theme [id*="next-runs"] {
     background-color: #0b0f19 !important;
     border-color: #1e293b !important;
     color: #e2e8f0 !important;
 }
 
-/* 5. 에디터 라인 넘버 거터(Line Gutters) 및 코드 블록 */
-body.dark-theme .line-numbers,
-body.dark-theme .editor-gutter,
-body.dark-theme .gutter,
-body.dark-theme pre,
-body.dark-theme code {
+/* 6. [MARKDOWN] 에디터 및 렌더링 뷰어 다크 최적화 (KaTeX/Mermaid 보호) */
+body.dark-theme .markdown-body,
+body.dark-theme #preview-content,
+body.dark-theme .preview-container {
     background-color: #0b0f19 !important;
     border-color: #1e293b !important;
-    color: #64748b !important;
+    color: #e2e8f0 !important;
+}
+body.dark-theme .markdown-body h1,
+body.dark-theme .markdown-body h2,
+body.dark-theme .markdown-body h3,
+body.dark-theme .markdown-body strong {
+    color: #f8fafc !important;
+}
+body.dark-theme .markdown-body blockquote,
+body.dark-theme .markdown-body .callout {
+    background-color: #131b2e !important;
+    border-left-color: #38bdf8 !important;
+    color: #cbd5e1 !important;
+}
+/* KaTeX 수식 및 Mermaid 다이어그램 텍스트/SVG 보존 */
+body.dark-theme .katex,
+body.dark-theme .katex-display {
+    color: #f8fafc !important;
+}
+body.dark-theme .mermaid svg {
+    filter: brightness(0.9) contrast(1.1);
 }
 
-/* 6. 모든 입력창 (텍스트, 숫자, 날짜/시간, 셀렉트, 텍스트에어리어) */
+/* 7. [COLOR] 웹 색상 스튜디오의 실시간 캔버스 격리 (다크모드 오버라이드 제외) */
+body.dark-theme #color-preview-card,
+body.dark-theme .live-preview-box,
+body.dark-theme .interactive-canvas {
+    /* 캔버스는 사용자가 설정한 색상/배경을 유지 */
+    border-color: #334155 !important;
+}
+
+/* 8. 입력창 & 셀렉트 & 에디터 거터 */
 body.dark-theme textarea,
 body.dark-theme input[type="text"],
 body.dark-theme input[type="number"],
@@ -348,16 +383,12 @@ body.dark-theme .test-textarea,
 body.dark-theme .backdrop,
 body.dark-theme .text-area-container,
 body.dark-theme .regex-input-wrapper,
-body.dark-theme .custom-save-zone {
+body.dark-theme .line-numbers,
+body.dark-theme .editor-gutter {
     background-color: #0b0f19 !important;
     border-color: #1e293b !important;
     color: #f8fafc !important;
-    color-scheme: dark; /* 브라우저 기본 캘린더/시계 아이콘 다크모드 강제 */
-}
-
-body.dark-theme .regex-input-wrapper input {
-    background-color: transparent !important;
-    color: #38bdf8 !important;
+    color-scheme: dark;
 }
 
 body.dark-theme textarea::placeholder,
@@ -365,35 +396,24 @@ body.dark-theme input::placeholder {
     color: #475569 !important;
 }
 
-body.dark-theme textarea:focus,
-body.dark-theme input:focus,
-body.dark-theme select:focus {
-    border-color: #38bdf8 !important;
-    outline: none !important;
+/* 9. 버튼 가독성 전면 보호 (초록/파랑 액션 버튼 흰색 글자 유지) */
+body.dark-theme .btn-copy-excel,
+body.dark-theme .btn-primary,
+body.dark-theme .btn-success,
+body.dark-theme [class*="btn-copy"],
+body.dark-theme [class*="btn-action-main"],
+body.dark-theme button[style*="background-color: rgb(25, 135, 84)"],
+body.dark-theme button[style*="background: rgb(25, 135, 84)"],
+body.dark-theme button[style*="#198754"],
+body.dark-theme button[style*="#10b981"] {
+    color: #ffffff !important;
 }
 
-body.dark-theme .save-input-row input,
-body.dark-theme .saved-select-row select {
-    background-color: #1e293b !important;
-    border-color: #334155 !important;
-    color: #f8fafc !important;
-}
-
-/* 스크롤바 다크 최적화 */
-body.dark-theme ::-webkit-scrollbar-thumb {
-    background-color: #334155 !important;
-    border-color: #0b0f19 !important;
-}
-body.dark-theme ::-webkit-scrollbar-track {
-    background-color: #0b0f19 !important;
-}
-
-/* 7. 버튼류 (프리셋, 모드 전환, 미니 액션, 네비게이션) */
 body.dark-theme .btn-preset,
 body.dark-theme .btn-mini-action,
 body.dark-theme .btn-nav-match,
 body.dark-theme .btn-sub-action,
-body.dark-theme button:not(.theme-toggle-btn):not(.filter-chip):not(.nav-dropbtn):not([class*="btn-primary"]):not([class*="btn-copy-"]):not(.btn-drag-apply):not(.btn-copy-matches):not(.btn-copy-excel) {
+body.dark-theme button:not(.theme-toggle-btn):not(.filter-chip):not(.nav-dropbtn):not([class*="btn-copy"]):not([class*="btn-primary"]):not(.btn-drag-apply) {
     background-color: #1e293b !important;
     border: 1px solid #334155 !important;
     color: #cbd5e1 !important;
@@ -406,21 +426,7 @@ body.dark-theme .btn-preset.active {
     color: #ffffff !important;
 }
 
-body.dark-theme .btn-preset-custom {
-    background-color: #1a2333 !important;
-    border-color: #475569 !important;
-    color: #cbd5e1 !important;
-}
-
-body.dark-theme .btn-mini-action:hover,
-body.dark-theme .btn-nav-match:hover,
-body.dark-theme .btn-sub-action:hover,
-body.dark-theme button:not(.theme-toggle-btn):not(.filter-chip):not(.nav-dropbtn):not([class*="btn-primary"]):not([class*="btn-copy-"]):not(.btn-drag-apply):not(.btn-copy-matches):not(.btn-copy-excel):hover {
-    background-color: #334155 !important;
-    color: #ffffff !important;
-}
-
-/* 8. 다크모드 형광펜 & Diff 비교 하이라이트 */
+/* 10. 형광펜 & Diff 비교 하이라이트 */
 body.dark-theme .highlight {
     background-color: #854d0e !important;
     color: transparent !important;
@@ -435,36 +441,26 @@ body.dark-theme .highlight-active {
     box-shadow: 0 0 0 2px #f59e0b !important;
     color: transparent !important;
 }
-body.dark-theme .diff-added,
-body.dark-theme ins {
+body.dark-theme .diff-added, body.dark-theme ins {
     background-color: #064e3b !important;
     color: #6ee7b7 !important;
-    text-decoration: none !important;
 }
-body.dark-theme .diff-removed,
-body.dark-theme del {
+body.dark-theme .diff-removed, body.dark-theme del {
     background-color: #7f1d1d !important;
     color: #fca5a5 !important;
-    text-decoration: line-through !important;
 }
 
-/* 9. 메인 허브 필터칩 */
+/* 11. 메인 필터칩 & 푸터 & GNB 검색결과 */
 body.dark-theme .filter-chip {
     background-color: #1e293b !important;
     border-color: #334155 !important;
     color: #cbd5e1 !important;
-}
-body.dark-theme .filter-chip:hover {
-    background-color: #334155 !important;
-    color: #ffffff !important;
 }
 body.dark-theme .filter-chip.active {
     background-color: #38bdf8 !important;
     color: #0f172a !important;
     border-color: #38bdf8 !important;
 }
-
-/* 10. 푸터 & GNB 검색결과 팝업 */
 body.dark-theme .dwk-global-footer {
     background-color: #0b0f19 !important;
     border-top-color: #1e293b !important;
@@ -486,7 +482,6 @@ body.dark-theme .gnb-search-results a:hover {
     color: #38bdf8 !important;
 }
 
-/* 모바일 최적화 */
 @media (max-width: 860px) {
     .dwk-global-nav { padding: 0 12px; height: 50px; }
     .nav-left { gap: 8px; }
