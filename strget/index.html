@@ -46,7 +46,6 @@
             width: 100%;
         }
 
-        /* 가이드 안내 섹션 */
         .intro-section { margin-bottom: 25px; }
         .intro-title { font-size: 22px; font-weight: 800; color: #111827; margin: 0 0 6px 0; letter-spacing: -0.5px; }
         .intro-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 16px 0; }
@@ -63,22 +62,9 @@
         .guide-list { margin: 0; padding-left: 18px; }
         .guide-list li { margin-bottom: 4px; }
 
-        .main-container {
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        .panel-grid {
-            display: grid;
-            grid-template-columns: 400px 1fr;
-            gap: 24px;
-        }
-
-        @media (max-width: 900px) {
-            .panel-grid { grid-template-columns: 1fr; }
-        }
+        .main-container { width: 100%; margin: 0; padding: 0; box-sizing: border-box; }
+        .panel-grid { display: grid; grid-template-columns: 400px 1fr; gap: 24px; }
+        @media (max-width: 900px) { .panel-grid { grid-template-columns: 1fr; } }
 
         .control-box {
             border: 1px solid var(--border-color);
@@ -99,12 +85,7 @@
             color: #111111;
         }
 
-        .preset-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 6px;
-        }
-
+        .preset-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
         .btn-preset {
             padding: 8px 6px;
             background-color: var(--bg-light);
@@ -116,26 +97,13 @@
             text-align: center;
             transition: all 0.15s;
         }
-
         .btn-preset:hover, .btn-preset.active {
             border-color: var(--primary-blue);
             color: var(--primary-blue);
             background-color: #e7f5ff;
         }
-
-        .btn-preset-custom {
-            grid-column: span 2;
-            background-color: #e9ecef;
-            border-style: dashed;
-            color: #495057;
-        }
-
-        .btn-preset-custom:hover, .btn-preset-custom.active {
-            border-style: solid;
-            border-color: var(--primary-blue);
-            color: var(--primary-blue);
-            background-color: #e7f5ff;
-        }
+        .btn-preset-custom { grid-column: span 2; background-color: #e9ecef; border-style: dashed; color: #495057; }
+        .btn-preset-custom:hover, .btn-preset-custom.active { border-style: solid; border-color: var(--primary-blue); color: var(--primary-blue); background-color: #e7f5ff; }
 
         .regex-input-wrapper {
             display: flex;
@@ -145,98 +113,33 @@
             border: 1px solid var(--border-color);
             border-radius: 4px;
             margin-top: 4px;
-            transition: all 0.2s;
         }
-
         .regex-input-wrapper input {
             border: none;
             background: transparent;
             width: 100%;
             padding: 4px 0;
-            font-family: "Consolas", "Courier New", Courier, monospace;
+            font-family: "Consolas", monospace;
             font-size: 13px;
             font-weight: 700;
             color: #495057;
         }
-
-        .regex-input-wrapper input[readonly] {
-            cursor: not-allowed;
-            color: #6c757d;
-        }
-
-        .regex-input-wrapper input:not([readonly]) {
-            color: #111111;
-            background-color: #ffffff;
-            box-shadow: inset 0 0 0 1px var(--primary-blue);
-            padding: 4px 8px;
-            border-radius: 3px;
-        }
-
+        .regex-input-wrapper input[readonly] { cursor: not-allowed; color: #6c757d; }
+        .regex-input-wrapper input:not([readonly]) { color: #111111; background-color: #ffffff; box-shadow: inset 0 0 0 1px var(--primary-blue); padding: 4px 8px; border-radius: 3px; }
         .regex-input-wrapper input:focus { outline: none; }
 
-        .custom-save-zone {
-            display: none;
-            flex-direction: column;
-            gap: 6px;
-            margin-top: 8px;
-            padding: 10px;
-            background-color: var(--bg-light);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-        }
+        .custom-save-zone { display: none; flex-direction: column; gap: 6px; margin-top: 8px; padding: 10px; background-color: var(--bg-light); border: 1px solid var(--border-color); border-radius: 4px; }
+        .save-input-row, .saved-select-row { display: flex; gap: 6px; }
+        .save-input-row input, .saved-select-row select { flex: 1; padding: 5px 8px; font-size: 12px; border: 1px solid var(--border-color); border-radius: 4px; background-color: #fff; }
 
-        .save-input-row, .saved-select-row {
-            display: flex;
-            gap: 6px;
-        }
-
-        .save-input-row input, .saved-select-row select {
-            flex: 1;
-            padding: 5px 8px;
-            font-size: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            background-color: #fff;
-        }
-
-        .btn-sub-action {
-            background-color: #ffffff;
-            border: 1px solid var(--border-color);
-            padding: 4px 8px;
-            font-size: 11.5px;
-            font-weight: 600;
-            border-radius: 4px;
-            cursor: pointer;
-            white-space: nowrap;
-        }
+        .btn-sub-action { background-color: #ffffff; border: 1px solid var(--border-color); padding: 4px 8px; font-size: 11.5px; font-weight: 600; border-radius: 4px; cursor: pointer; white-space: nowrap; }
         .btn-sub-action:hover { background-color: #e9ecef; }
         .btn-sub-danger { color: #dc3545; }
         .btn-sub-danger:hover { background-color: #fff5f5; border-color: #dc3545; }
 
-        .option-toggle-group {
-            margin-top: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .opt-label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12.5px;
-            font-weight: 600;
-            color: #495057;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .opt-label input[type="checkbox"] {
-            width: 14px;
-            height: 14px;
-            accent-color: var(--primary-blue);
-            cursor: pointer;
-        }
+        .option-toggle-group { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .opt-label { display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: #495057; cursor: pointer; user-select: none; }
+        .opt-label input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--primary-blue); cursor: pointer; }
 
         .display-box {
             border: 1px solid var(--border-color);
@@ -247,195 +150,36 @@
             flex-direction: column;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
+        .display-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 
-        .display-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .drag-sample-bar {
-            display: none;
-            background-color: #e7f5ff;
-            border: 1px solid #74c0fc;
-            border-radius: 4px;
-            padding: 8px 12px;
-            margin-bottom: 10px;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 13px;
-            color: #1864ab;
-        }
-
-        .btn-drag-apply {
-            background-color: var(--primary-blue);
-            color: white;
-            border: none;
-            padding: 4px 10px;
-            font-size: 12px;
-            font-weight: 600;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+        .drag-sample-bar { display: none; background-color: #e7f5ff; border: 1px solid #74c0fc; border-radius: 4px; padding: 8px 12px; margin-bottom: 10px; align-items: center; justify-content: space-between; font-size: 13px; color: #1864ab; }
+        .btn-drag-apply { background-color: var(--primary-blue); color: white; border: none; padding: 4px 10px; font-size: 12px; font-weight: 600; border-radius: 4px; cursor: pointer; }
         .btn-drag-apply:hover { background-color: var(--primary-blue-hover); }
 
-        .btn-mini-action {
-            background-color: #ffffff;
-            border: 1px solid var(--border-color);
-            padding: 4px 10px;
-            font-size: 12px;
-            font-weight: 600;
-            border-radius: 4px;
-            cursor: pointer;
-            color: var(--text-main);
-        }
+        .btn-mini-action { background-color: #ffffff; border: 1px solid var(--border-color); padding: 4px 10px; font-size: 12px; font-weight: 600; border-radius: 4px; cursor: pointer; color: var(--text-main); }
         .btn-mini-action:hover { background-color: #e9ecef; }
 
-        .text-area-container {
-            position: relative;
-            width: 100%;
-            flex: 1;
-            min-height: 380px;
-            background: #ffffff;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            overflow: hidden;
-        }
+        .text-area-container { position: relative; width: 100%; flex: 1; min-height: 380px; background: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; }
+        .backdrop, .test-textarea { position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; box-sizing: border-box; font-size: 13.5px; line-height: 1.6; font-family: "Consolas", monospace; white-space: pre-wrap; word-break: break-all; }
+        .test-textarea { background: transparent; color: #111111; resize: none; border: none; z-index: 2; overflow-y: scroll; padding: 12px; outline: none; }
+        .backdrop { color: transparent; pointer-events: none; overflow-y: scroll; z-index: 1; background-color: #ffffff; border: none; padding: 12px; }
 
-        .backdrop, .test-textarea {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            box-sizing: border-box;
-            font-size: 13.5px;
-            line-height: 1.6;
-            font-family: "Consolas", "Courier New", Courier, monospace;
-            white-space: pre-wrap;
-            word-break: break-all;
-            letter-spacing: 0px;
-        }
+        .highlight { background-color: #ffeb3b; color: transparent; border-radius: 2px; }
+        .highlight-duplicate { background-color: #e0e0e0; border-bottom: 2px solid #ff9800; color: transparent; border-radius: 2px; }
+        .highlight-active { background-color: #ff9800 !important; color: transparent; border-radius: 2px; box-shadow: 0 0 0 2px #e65100; }
 
-        .test-textarea {
-            background: transparent;
-            color: #111111;
-            resize: none;
-            border: none;
-            z-index: 2;
-            overflow-y: scroll;
-            padding: 12px;
-            cursor: auto;
-            outline: none;
-        }
-
-        .backdrop {
-            color: transparent;
-            pointer-events: none;
-            overflow-y: scroll;
-            z-index: 1;
-            background-color: #ffffff;
-            border: none;
-            padding: 12px;
-        }
-
-        .test-textarea::-webkit-scrollbar { width: 14px; }
-        .test-textarea::-webkit-scrollbar-thumb { background-color: #cdcdcd; border-radius: 4px; border: 3px solid #ffffff; }
-        .test-textarea::-webkit-scrollbar-track { background-color: #f1f1f1; }
-
-        .backdrop::-webkit-scrollbar { width: 14px; }
-        .backdrop::-webkit-scrollbar-thumb { background-color: transparent; }
-        .backdrop::-webkit-scrollbar-track { background-color: transparent; }
-
-        .highlight {
-            background-color: #ffeb3b;
-            color: transparent;
-            border-radius: 2px;
-        }
-
-        .highlight-duplicate {
-            background-color: #e0e0e0;
-            border-bottom: 2px solid #ff9800;
-            color: transparent;
-            border-radius: 2px;
-        }
-
-        .highlight-active {
-            background-color: #ff9800 !important;
-            color: transparent;
-            border-radius: 2px;
-            box-shadow: 0 0 0 2px #e65100;
-        }
-
-        .bottom-action-zone {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 12px;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
+        .bottom-action-zone { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; gap: 10px; flex-wrap: wrap; }
         .copy-group { display: flex; gap: 8px; }
-
-        .btn-copy-matches {
-            background-color: var(--primary-blue);
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            font-size: 13px;
-            font-weight: 600;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
+        .btn-copy-matches { background-color: var(--primary-blue); color: white; border: none; padding: 8px 14px; font-size: 13px; font-weight: 600; border-radius: 4px; cursor: pointer; }
         .btn-copy-matches:hover { background-color: var(--primary-blue-hover); }
-
-        .btn-copy-excel {
-            background-color: #198754;
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            font-size: 13px;
-            font-weight: 600;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
+        .btn-copy-excel { background-color: #198754; color: white; border: none; padding: 8px 14px; font-size: 13px; font-weight: 600; border-radius: 4px; cursor: pointer; }
         .btn-copy-excel:hover { background-color: #157347; }
 
-        .match-nav-group {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-nav-match {
-            background-color: #ffffff;
-            border: 1px solid var(--border-color);
-            padding: 3px 8px;
-            font-size: 12px;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+        .match-nav-group { display: flex; align-items: center; gap: 6px; }
+        .btn-nav-match { background-color: #ffffff; border: 1px solid var(--border-color); padding: 3px 8px; font-size: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; }
         .btn-nav-match:hover { background-color: #e9ecef; }
-
-        .match-count-badge {
-            font-size: 13px;
-            font-weight: bold;
-            color: var(--text-muted);
-        }
-
-        .bottom-ad-box {
-            max-width: 1100px;
-            width: 100%;
-            margin: 25px auto 10px auto;
-            text-align: center;
-        }
-
+        .match-count-badge { font-size: 13px; font-weight: bold; color: var(--text-muted); }
+        .bottom-ad-box { max-width: 1100px; width: 100%; margin: 25px auto 10px auto; text-align: center; }
     </style>
 </head>
 <body>
@@ -448,7 +192,6 @@
 </header>
 
 <div class="page-wrapper">
-    <!-- 사용 안내 가이드 -->
     <div class="intro-section">
         <h2 class="intro-title">긴 텍스트에서 원하는 패턴의 데이터만 고속으로 추출하는 도구입니다.</h2>
         <p class="intro-desc">이메일, 전화번호, 숫자, 날짜 및 커스텀 정규식 패턴을 실시간으로 매칭하고 엑셀 표로 복사합니다.</p>
@@ -462,15 +205,14 @@
                 <li>원하는 특정 서식이 있는 경우 <b>[사용자 지정 패턴 입력]</b>을 통해 정규식을 직접 작성하고 브라우저에 영구 저장할 수 있습니다.</li>
             </ol>
             <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #cbd5e1; display: flex; justify-content: space-between; align-items: center; white-space: nowrap;">
-    <span style="font-size: 13px; color: #334155; display: inline-block;">📘 <span style="font-weight: 700; color: #0f172a;">정규표현식(Regex)을 이용한 이메일·전화번호 추출법</span>이 궁금하신가요?</span>
-    <a href="../guide/regex-extract-guide.html" style="color: #2563eb; font-weight: 700; text-decoration: none; background: #eff6ff; border: 1px solid #bfdbfe; padding: 5px 12px; border-radius: 6px; font-size: 12.5px; margin-left: 12px; flex-shrink: 0; display: inline-block;">실무 가이드 보기 →</a>
-</div>
+                <span style="font-size: 13px; color: #334155; display: inline-block;">📘 <span style="font-weight: 700; color: #0f172a;">정규표현식(Regex)을 이용한 이메일·전화번호 추출법</span>이 궁금하신가요?</span>
+                <a href="../guide/regex-extract-guide.html" style="color: #2563eb; font-weight: 700; text-decoration: none; background: #eff6ff; border: 1px solid #bfdbfe; padding: 5px 12px; border-radius: 6px; font-size: 12.5px; margin-left: 12px; flex-shrink: 0; display: inline-block;">실무 가이드 보기 →</a>
+            </div>
         </div>
     </div>
 
     <div class="main-container">
         <div class="panel-grid">
-            <!-- 좌측 컨트롤 영역 -->
             <div class="control-box">
                 <div class="form-group">
                     <label>추출 프리셋</label>
@@ -490,7 +232,7 @@
                 <div class="form-group">
                     <label for="regex-pattern">추출 정규식 형식 :</label>
                     <div class="regex-input-wrapper">
-                        <input type="text" id="regex-pattern" value="[가-힣ㄱ-ㅎㅏ-ㅣ]+" placeholder="[사용자 지정] 선택 시 수정 가능" readonly>
+                        <input type="text" id="regex-pattern" value="[가-힣ㄱ-ㅎㅏ-ㅣ]+" placeholder="[사용자 지정] 선택 시 수정 가능" readonly oninput="handlePatternInput()">
                     </div>
 
                     <div class="custom-save-zone" id="custom-save-zone">
@@ -507,30 +249,14 @@
                     </div>
                     
                     <div class="option-toggle-group">
-                        <label class="opt-label">
-                            <input type="checkbox" id="chk-group-words" checked onchange="toggleWordGrouping()">
-                            연속 단어 단위로 묶어서 추출
-                        </label>
-
-                        <label class="opt-label">
-                            <input type="checkbox" id="chk-unique-matches" onchange="handleTextProcess()">
-                            중복 데이터 제거 후 추출 (중복은 회색 표시)
-                        </label>
-
-                        <label class="opt-label">
-                            <input type="checkbox" id="chk-case-sensitive" onchange="handleTextProcess()">
-                            영문 대소문자 구분 (Case Sensitive)
-                        </label>
-
-                        <label class="opt-label">
-                            <input type="checkbox" id="chk-masking-data" onchange="handleTextProcess()">
-                            복사 시 추출 데이터 개인정보 마스킹 (***)
-                        </label>
+                        <label class="opt-label"><input type="checkbox" id="chk-group-words" checked onchange="toggleWordGrouping()"> 연속 단어 단위로 묶어서 추출</label>
+                        <label class="opt-label"><input type="checkbox" id="chk-unique-matches" onchange="handleTextProcess()"> 중복 데이터 제거 후 추출 (중복은 회색 표시)</label>
+                        <label class="opt-label"><input type="checkbox" id="chk-case-sensitive" onchange="handleTextProcess()"> 영문 대소문자 구분 (Case Sensitive)</label>
+                        <label class="opt-label"><input type="checkbox" id="chk-masking-data" onchange="handleTextProcess()"> 복사 시 추출 데이터 개인정보 마스킹 (***)</label>
                     </div>
                 </div>
             </div>
 
-            <!-- 우측 본문 디스플레이 영역 -->
             <div class="display-box">
                 <div class="display-header">
                     <span style="font-size: 14px; font-weight: 700; color: #111111;">본문 데이터 입력</span>
@@ -567,14 +293,8 @@
     </div>
 </div>
 
-<!-- 하단 광고 영역 -->
 <div class="bottom-ad-box">
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-3823705730142714"
-         data-ad-slot="3894691126"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3823705730142714" data-ad-slot="3894691126" data-ad-format="auto" data-full-width-responsive="true"></ins>
     <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 
@@ -592,14 +312,7 @@
     function recordTextHistory() {
         const el = document.getElementById('test-text-input');
         if (!el) return;
-
-        const state = {
-            val: el.value,
-            selStart: el.selectionStart,
-            selEnd: el.selectionEnd,
-            scrollTop: el.scrollTop
-        };
-
+        const state = { val: el.value, selStart: el.selectionStart, selEnd: el.selectionEnd, scrollTop: el.scrollTop };
         if (textUndoStack.length === 0 || textUndoStack[textUndoStack.length - 1].val !== state.val) {
             textUndoStack.push(state);
             if (textUndoStack.length > 50) textUndoStack.shift();
@@ -610,9 +323,7 @@
     function handleTextInput() {
         handleTextProcess();
         clearTimeout(textTimer);
-        textTimer = setTimeout(() => {
-            recordTextHistory();
-        }, 300);
+        textTimer = setTimeout(() => { recordTextHistory(); }, 300);
     }
 
     function handleTextKeyDown(e) {
@@ -623,19 +334,14 @@
         if (isCtrl && key === 'z' && !e.shiftKey) {
             if (textUndoStack.length > 1) {
                 e.preventDefault();
-                const current = textUndoStack.pop();
-                textRedoStack.push(current);
-
-                const prev = textUndoStack[textUndoStack.length - 1];
-                applyTextState(el, prev);
+                textRedoStack.push(textUndoStack.pop());
+                applyTextState(el, textUndoStack[textUndoStack.length - 1]);
             }
-        }
-        else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
+        } else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
             if (textRedoStack.length > 0) {
                 e.preventDefault();
                 const next = textRedoStack.pop();
                 textUndoStack.push(next);
-
                 applyTextState(el, next);
             }
         }
@@ -644,7 +350,6 @@
     function applyTextState(el, state) {
         el.value = state.val;
         handleTextProcess();
-
         setTimeout(() => {
             el.focus();
             el.setSelectionRange(state.selStart, state.selEnd);
@@ -666,7 +371,6 @@
 
         if (start === end && matchPositions.length > 0) {
             const clickPos = start;
-            
             let foundIdx = matchPositions.findIndex(p => clickPos >= p.start && clickPos <= p.end);
             
             if (foundIdx !== -1) {
@@ -700,7 +404,6 @@
     function analyzeTextPattern(str) {
         let patternResult = "";
         let currentType = null;
-        let count = 0;
 
         function getType(char) {
             if (/[0-9]/.test(char)) return 'digit';
@@ -710,7 +413,7 @@
             return 'special';
         }
 
-        function appendPattern(type, cnt, charSegment) {
+        function appendPattern(type, charSegment) {
             if (type === 'digit') patternResult += `\\d+`;
             else if (type === 'alpha') patternResult += `[a-zA-Z]+`;
             else if (type === 'kor') patternResult += `[가-힣ㄱ-ㅎㅏ-ㅣ]+`;
@@ -723,38 +426,26 @@
         }
 
         let charSegment = "";
-
         for (let i = 0; i < str.length; i++) {
             const char = str[i];
             const type = getType(char);
 
             if (type !== currentType) {
-                if (currentType !== null) {
-                    appendPattern(currentType, count, charSegment);
-                }
+                if (currentType !== null) appendPattern(currentType, charSegment);
                 currentType = type;
-                count = 1;
                 charSegment = char;
             } else {
-                count++;
                 charSegment += char;
             }
         }
-        if (currentType !== null) {
-            appendPattern(currentType, count, charSegment);
-        }
-
+        if (currentType !== null) appendPattern(currentType, charSegment);
         return patternResult;
     }
 
     function applyDraggedPattern() {
         if (!generatedDragPattern) return;
-        
         enableCustomMode(document.getElementById('preset-custom'));
-        
-        const patternInput = document.getElementById('regex-pattern');
-        patternInput.value = generatedDragPattern;
-        
+        document.getElementById('regex-pattern').value = generatedDragPattern;
         handleTextProcess();
         document.getElementById('drag-sample-bar').style.display = 'none';
     }
@@ -766,13 +457,7 @@
     function recordPatternHistory() {
         const el = document.getElementById('regex-pattern');
         if (!el || el.readOnly) return;
-
-        const state = {
-            val: el.value,
-            selStart: el.selectionStart,
-            selEnd: el.selectionEnd
-        };
-
+        const state = { val: el.value, selStart: el.selectionStart, selEnd: el.selectionEnd };
         if (patternUndoStack.length === 0 || patternUndoStack[patternUndoStack.length - 1].val !== state.val) {
             patternUndoStack.push(state);
             if (patternUndoStack.length > 50) patternUndoStack.shift();
@@ -783,55 +468,11 @@
     function handlePatternInput() {
         handleTextProcess();
         clearTimeout(patternTimer);
-        patternTimer = setTimeout(() => {
-            recordPatternHistory();
-        }, 300);
-    }
-
-    function handlePatternKeyDown(e) {
-        const el = document.getElementById('regex-pattern');
-        if (el.readOnly) return;
-
-        const isCtrl = e.ctrlKey || e.metaKey;
-        const key = e.key.toLowerCase();
-
-        if (isCtrl && key === 'z' && !e.shiftKey) {
-            if (patternUndoStack.length > 1) {
-                e.preventDefault();
-                const current = patternUndoStack.pop();
-                patternRedoStack.push(current);
-
-                const prev = patternUndoStack[patternUndoStack.length - 1];
-                applyPatternState(el, prev);
-            }
-        }
-        else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
-            if (patternRedoStack.length > 0) {
-                e.preventDefault();
-                const next = patternRedoStack.pop();
-                patternUndoStack.push(next);
-
-                applyPatternState(el, next);
-            }
-        }
-    }
-
-    function applyPatternState(el, state) {
-        el.value = state.val;
-        handleTextProcess();
-
-        setTimeout(() => {
-            el.focus();
-            el.setSelectionRange(state.selStart, state.selEnd);
-        }, 0);
+        patternTimer = setTimeout(() => { recordPatternHistory(); }, 300);
     }
 
     function loadSampleText() {
-        const sample = `[샘플 업무 데이터 안내]
-안녕하세요. DevWorKit 프로젝트 지원팀 담당자 홍길동(hong@workkit.io)입니다.
-신규 프로젝트 문의는 010-1234-5678 또는 대표번호 02-987-6543으로 연락 부탁드립니다.
-프로젝트 시작일은 2026-03-01이며, 최종 납품 기한은 2026-08-31까지입니다.
-추가 문의: support@developerworkkit.github.io, contact@workkit.io`;
+        const sample = `[샘플 업무 데이터 안내]\n안녕하세요. DevWorKit 프로젝트 지원팀 담당자 홍길동(hong@workkit.io)입니다.\n신규 프로젝트 문의는 010-1234-5678 또는 대표번호 02-987-6543으로 연락 부탁드립니다.\n프로젝트 시작일은 2026-03-01이며, 최종 납품 기한은 2026-08-31까지입니다.\n추가 문의: support@developerworkkit.github.io, contact@workkit.io`;
         const el = document.getElementById('test-text-input');
         el.value = sample;
         recordTextHistory();
@@ -847,11 +488,9 @@
         const patterns = getStoredPatterns();
         const select = document.getElementById('saved-pattern-select');
         select.innerHTML = '<option value="">-- 저장된 패턴 목록 --</option>';
-
         for (let name in patterns) {
             const option = document.createElement('option');
-            option.value = name;
-            option.textContent = name;
+            option.value = name; option.textContent = name;
             select.appendChild(option);
         }
     }
@@ -860,97 +499,54 @@
         const nameInput = document.getElementById('custom-pattern-name');
         const name = nameInput.value.trim();
         const pattern = document.getElementById('regex-pattern').value;
-
-        if (!name) {
-            alert('저장할 패턴의 이름을 입력해 주세요.');
-            nameInput.focus();
-            return;
-        }
-        if (!pattern) {
-            alert('저장할 패턴 내용이 없습니다.');
-            return;
-        }
-
-        const patternData = {
-            pattern: pattern,
+        if (!name || !pattern) { alert('이름과 패턴을 입력해 주세요.'); return; }
+        const patterns = getStoredPatterns();
+        patterns[name] = {
+            pattern,
             groupWords: document.getElementById('chk-group-words').checked,
             uniqueMatches: document.getElementById('chk-unique-matches').checked,
             caseSensitive: document.getElementById('chk-case-sensitive').checked,
             maskingData: document.getElementById('chk-masking-data').checked
         };
-
-        const patterns = getStoredPatterns();
-        patterns[name] = patternData;
         localStorage.setItem('strget_custom_patterns_v2', JSON.stringify(patterns));
-
-        nameInput.value = '';
-        refreshPatternSelect();
-        alert(`'${name}' 패턴과 설정 옵션이 함께 저장되었습니다!`);
+        nameInput.value = ''; refreshPatternSelect(); alert('저장되었습니다!');
     }
 
     function loadSelectedPattern() {
         const select = document.getElementById('saved-pattern-select');
-        const selectedName = select.value;
-        if (!selectedName) return;
-
-        const patterns = getStoredPatterns();
-        const data = patterns[selectedName];
+        const data = getStoredPatterns()[select.value];
         if (!data) return;
-
-        const patternInput = document.getElementById('regex-pattern');
-        patternInput.value = data.pattern;
-
+        document.getElementById('regex-pattern').value = data.pattern;
         document.getElementById('chk-group-words').checked = !!data.groupWords;
         document.getElementById('chk-unique-matches').checked = !!data.uniqueMatches;
         document.getElementById('chk-case-sensitive').checked = !!data.caseSensitive;
         document.getElementById('chk-masking-data').checked = !!data.maskingData;
-
-        patternUndoStack.length = 0;
-        patternRedoStack.length = 0;
-        recordPatternHistory();
-
         handleTextProcess();
     }
 
     function deleteSelectedPattern() {
         const select = document.getElementById('saved-pattern-select');
-        const selectedName = select.value;
-        
-        if (!selectedName) {
-            alert('삭제할 패턴을 목록에서 선택해 주세요.');
-            return;
-        }
-
-        if (confirm(`'${selectedName}' 패턴을 정말 삭제하시겠습니까?`)) {
+        if (!select.value) return;
+        if (confirm(`'${select.value}' 패턴을 삭제하시겠습니까?`)) {
             const patterns = getStoredPatterns();
-            delete patterns[selectedName];
+            delete patterns[select.value];
             localStorage.setItem('strget_custom_patterns_v2', JSON.stringify(patterns));
-
-            refreshPatternSelect();
-            alert('패턴이 삭제되었습니다.');
+            refreshPatternSelect(); alert('삭제되었습니다.');
         }
     }
 
     function applyPreset(pattern, btn) {
         isCustomMode = false;
         document.getElementById('custom-save-zone').style.display = 'none';
-        
         document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
         if(btn) btn.classList.add('active');
-        
         const patternInput = document.getElementById('regex-pattern');
         patternInput.readOnly = true;
-
         const isGrouped = document.getElementById('chk-group-words').checked;
-        const isStructured = /@|\\d\{|\\s\+/.test(pattern);
-
-        if (!isStructured) {
+        if (!/@|\\d\{/.test(pattern)) {
             let cleanPattern = pattern.replace(/\+$/, '');
             patternInput.value = isGrouped ? cleanPattern + '+' : cleanPattern;
-        } else {
-            patternInput.value = pattern;
-        }
-
+        } else { patternInput.value = pattern; }
         handleTextProcess();
     }
 
@@ -958,62 +554,23 @@
         isCustomMode = true;
         document.getElementById('custom-save-zone').style.display = 'flex';
         refreshPatternSelect();
-        
         document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
         if(btn) btn.classList.add('active');
-
         const patternInput = document.getElementById('regex-pattern');
         patternInput.readOnly = false;
-        
-        patternUndoStack.length = 0;
-        patternRedoStack.length = 0;
-        recordPatternHistory();
-
         patternInput.focus();
-        patternInput.select();
-
+        recordPatternHistory();
         handleTextProcess();
     }
 
     function toggleWordGrouping() {
-        if (isCustomMode) {
-            handleTextProcess();
-            return;
-        }
-
-        const patternInput = document.getElementById('regex-pattern');
-        let currentPattern = patternInput.value;
-        const isGrouped = document.getElementById('chk-group-words').checked;
-
-        if (/@|\\d\{/.test(currentPattern)) {
-            handleTextProcess();
-            return;
-        }
-
-        if (isGrouped) {
-            if (!currentPattern.endsWith('+') && !currentPattern.endsWith('}')) {
-                patternInput.value = currentPattern + '+';
-            }
-        } else {
-            if (currentPattern.endsWith('+')) {
-                patternInput.value = currentPattern.slice(0, -1);
-            }
-        }
-
-        handleTextProcess();
+        if (!isCustomMode) applyPreset(document.getElementById('regex-pattern').value, document.querySelector('.btn-preset.active'));
     }
 
     function applyMasking(text) {
-        if (text.includes('@')) {
-            return text.replace(/(^[^@]{1,3})[^@]*(@.*$)/, '$1***$2');
-        }
-        if (/^\d{2,3}-\d{3,4}-\d{4}$/.test(text)) {
-            return text.replace(/(\d{2,3}-)\d{3,4}(-\d{4})/, '$1****$2');
-        }
-        if (text.length > 2) {
-            return text.substring(0, 1) + '*'.repeat(text.length - 2) + text.substring(text.length - 1);
-        }
-        return text.substring(0, 1) + '*';
+        if (text.includes('@')) return text.replace(/(^[^@]{1,3})[^@]*(@.*$)/, '$1***$2');
+        if (/^\d{2,3}-\d{3,4}-\d{4}$/.test(text)) return text.replace(/(\d{2,3}-)\d{3,4}(-\d{4})/, '$1****$2');
+        return text.substring(0, 1) + '*'.repeat(text.length - 1);
     }
 
     function handleTextProcess() {
@@ -1021,125 +578,70 @@
         const inputTextArea = document.getElementById('test-text-input');
         const backdrop = document.getElementById('backdrop-view');
         const statusBadge = document.getElementById('match-status');
-
         const isUnique = document.getElementById('chk-unique-matches').checked;
         const isCaseSensitive = document.getElementById('chk-case-sensitive').checked;
         const isMasked = document.getElementById('chk-masking-data').checked;
-
         const flags = isCaseSensitive ? 'g' : 'gi';
 
-        let savedPos = (currentMatchIndex >= 0 && matchPositions && matchPositions[currentMatchIndex]) 
-            ? matchPositions[currentMatchIndex] 
-            : null;
-
+        let savedPos = (currentMatchIndex >= 0 && matchPositions && matchPositions[currentMatchIndex]) ? matchPositions[currentMatchIndex] : null;
         let text = inputTextArea.value;
-        currentMatchedList = [];
-        rawAllPositions = [];
-        matchPositions = [];
+        currentMatchedList = []; rawAllPositions = []; matchPositions = [];
 
         if (!pattern || !text) {
             backdrop.innerHTML = escapeHtml(text);
             statusBadge.innerText = "매칭 데이터: 0건";
-            currentMatchIndex = -1;
-            return;
+            currentMatchIndex = -1; return;
         }
 
         try {
-            let safePattern = pattern;
-            if (isCustomMode) {
-                try {
-                    new RegExp(pattern, flags);
-                } catch (e) {
-                    safePattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                }
-            }
-
-            const regex = new RegExp(safePattern, flags);
-            let rawMatches = [];
-
+            const regex = new RegExp(pattern, flags);
             let match;
             while ((match = regex.exec(text)) !== null) {
-                rawAllPositions.push({
-                    start: match.index,
-                    end: match.index + match[0].length,
-                    raw: match[0]
-                });
-                rawMatches.push(match[0]);
+                rawAllPositions.push({ start: match.index, end: match.index + match[0].length, raw: match[0] });
                 if (!regex.global) break;
             }
 
             if (isUnique) {
-                let seen = new Set();
-                let filteredMatches = [];
-                let filteredPositions = [];
-
-                rawAllPositions.forEach((pos, idx) => {
-                    const checkKey = isCaseSensitive ? pos.raw : pos.raw.toLowerCase();
-                    if (!seen.has(checkKey)) {
-                        seen.add(checkKey);
-                        filteredMatches.push(pos.raw);
-                        filteredPositions.push(rawAllPositions[idx]);
-                    }
+                let seen = new Set(), fM = [], fP = [];
+                rawAllPositions.forEach(pos => {
+                    const key = isCaseSensitive ? pos.raw : pos.raw.toLowerCase();
+                    if (!seen.has(key)) { seen.add(key); fM.push(pos.raw); fP.push(pos); }
                 });
-
-                currentMatchedList = isMasked ? filteredMatches.map(m => applyMasking(m)) : filteredMatches;
-                matchPositions = filteredPositions;
+                currentMatchedList = isMasked ? fM.map(m => applyMasking(m)) : fM;
+                matchPositions = fP;
             } else {
-                currentMatchedList = isMasked ? rawMatches.map(m => applyMasking(m)) : rawMatches;
+                currentMatchedList = isMasked ? rawAllPositions.map(m => applyMasking(m.raw)) : rawAllPositions.map(m => m.raw);
                 matchPositions = rawAllPositions;
             }
 
             if (savedPos && matchPositions.length > 0) {
                 let newIdx = matchPositions.findIndex(p => p.start === savedPos.start);
-                if (newIdx === -1) {
-                    newIdx = matchPositions.findIndex(p => p.raw === savedPos.raw);
-                }
+                if (newIdx === -1) newIdx = matchPositions.findIndex(p => p.raw === savedPos.raw);
                 currentMatchIndex = newIdx !== -1 ? newIdx : 0;
             } else if (matchPositions.length > 0 && currentMatchIndex !== -1) {
                 currentMatchIndex = 0;
-            } else {
-                currentMatchIndex = -1;
-            }
+            } else { currentMatchIndex = -1; }
 
-            let htmlResult = "";
-            let lastIndex = 0;
-            let seenWords = new Set();
-
+            let htmlResult = "", lastIndex = 0, seenWords = new Set();
             rawAllPositions.forEach((pos, idx) => {
                 htmlResult += escapeHtml(text.substring(lastIndex, pos.start));
-
                 const checkKey = isCaseSensitive ? pos.raw : pos.raw.toLowerCase();
                 const isDup = isUnique && seenWords.has(checkKey);
                 seenWords.add(checkKey);
-
-                let matchId = `match-tag-raw-${idx}`;
                 let uniqueIdx = matchPositions.findIndex(p => p.start === pos.start && p.end === pos.end);
-                if (uniqueIdx !== -1) {
-                    matchId = `match-tag-${uniqueIdx}`;
-                }
-
                 let className = isDup ? "highlight-duplicate" : "highlight";
-                if (uniqueIdx !== -1 && uniqueIdx === currentMatchIndex) {
-                    className += " highlight-active";
-                }
-
-                htmlResult += `<span class="${className}" id="${matchId}">${escapeHtml(pos.raw)}</span>`;
+                if (uniqueIdx !== -1 && uniqueIdx === currentMatchIndex) className += " highlight-active";
+                htmlResult += `<span class="${className}" id="match-tag-${uniqueIdx}">${escapeHtml(pos.raw)}</span>`;
                 lastIndex = pos.end;
             });
             htmlResult += escapeHtml(text.substring(lastIndex));
-
             backdrop.innerHTML = htmlResult.replace(/\n/g, '<br>') + (text.endsWith('\n') ? '<br>&nbsp;' : '');
             
             if (currentMatchIndex !== -1 && matchPositions[currentMatchIndex]) {
-                const target = matchPositions[currentMatchIndex];
-                setTimeout(() => {
-                    inputTextArea.setSelectionRange(target.start, target.end);
-                }, 0);
                 statusBadge.innerText = `매칭: ${currentMatchIndex + 1} / ${matchPositions.length}건`;
             } else {
                 statusBadge.innerText = `매칭 데이터: ${currentMatchedList.length}건`;
             }
-
         } catch (err) {
             backdrop.innerHTML = escapeHtml(text).replace(/\n/g, '<br>');
             statusBadge.innerText = "매칭 데이터: 0건";
@@ -1148,85 +650,33 @@
     }
 
     function highlightActiveMatchInBackdrop() {
-        document.querySelectorAll('.highlight-active').forEach(el => {
-            el.classList.remove('highlight-active');
-        });
-
+        document.querySelectorAll('.highlight-active').forEach(el => el.classList.remove('highlight-active'));
         if (currentMatchIndex !== -1) {
             const activeTag = document.getElementById(`match-tag-${currentMatchIndex}`);
-            if (activeTag) {
-                activeTag.classList.add('highlight-active');
-            }
+            if (activeTag) activeTag.classList.add('highlight-active');
         }
     }
 
     function navigateMatch(direction) {
-        if (!matchPositions || matchPositions.length === 0) {
-            alert("이동할 매칭 데이터가 없습니다.");
-            return;
-        }
-
-        if (currentMatchIndex === -1) {
-            currentMatchIndex = 0;
-        } else {
-            currentMatchIndex += direction;
-        }
-
-        if (currentMatchIndex >= matchPositions.length) currentMatchIndex = 0;
-        if (currentMatchIndex < 0) currentMatchIndex = matchPositions.length - 1;
-
+        if (!matchPositions.length) return;
+        currentMatchIndex = (currentMatchIndex + direction + matchPositions.length) % matchPositions.length;
         const target = matchPositions[currentMatchIndex];
         const textarea = document.getElementById('test-text-input');
-
-        if (!target) return;
-
         highlightActiveMatchInBackdrop();
-
-        setTimeout(() => {
-            textarea.focus();
-            textarea.setSelectionRange(target.start, target.end);
-
-            const activeTag = document.getElementById(`match-tag-${currentMatchIndex}`);
-            if (activeTag) {
-                const containerHeight = textarea.clientHeight;
-                const targetY = activeTag.offsetTop;
-                textarea.scrollTop = Math.max(0, targetY - (containerHeight / 2) + 20);
-            }
-
-            syncScroll();
-        }, 10);
-
+        textarea.focus();
+        textarea.setSelectionRange(target.start, target.end);
         document.getElementById('match-status').innerText = `매칭: ${currentMatchIndex + 1} / ${matchPositions.length}건`;
     }
 
     function copyMatchedResults(format) {
-        if (currentMatchedList.length === 0) {
-            alert("추출할 매칭 데이터가 없습니다.");
-            return;
-        }
-
-        let textToCopy = "";
-
-        if (format === 'excel') {
-            textToCopy = "번호\t추출 데이터\n" + currentMatchedList.map((item, idx) => `${idx + 1}\t${item}`).join('\n');
-        } else {
-            textToCopy = currentMatchedList.join('\n');
-        }
-
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            alert(format === 'excel' ? "엑셀 붙여넣기용(Tab 구분) 데이터가 복사되었습니다!" : `총 ${currentMatchedList.length}건의 데이터가 복사되었습니다!`);
-        });
+        if (!currentMatchedList.length) { alert("추출할 데이터가 없습니다."); return; }
+        const textToCopy = format === 'excel' ? "번호\t추출 데이터\n" + currentMatchedList.map((item, idx) => `${idx + 1}\t${item}`).join('\n') : currentMatchedList.join('\n');
+        navigator.clipboard.writeText(textToCopy).then(() => alert("복사되었습니다!"));
     }
 
     function clearInputText() {
         const textarea = document.getElementById('test-text-input');
-        if (!textarea.value) return;
-
-        textarea.value = '';
-        recordTextHistory();
-        handleTextProcess();
-        textarea.focus();
-        document.getElementById('drag-sample-bar').style.display = 'none';
+        textarea.value = ''; recordTextHistory(); handleTextProcess(); textarea.focus();
     }
 
     function syncScroll() {
@@ -1236,32 +686,21 @@
         backdrop.scrollLeft = inputTextArea.scrollLeft;
     }
 
-    function escapeHtml(string) {
-        return string
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
+    function escapeHtml(str) {
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
     window.onload = () => {
         const textEl = document.getElementById('test-text-input');
-        const patternEl = document.getElementById('regex-pattern');
-
         textEl.addEventListener('input', handleTextInput);
         textEl.addEventListener('keydown', handleTextKeyDown);
         textEl.addEventListener('mouseup', handleTextClickOrMouseUp);
-        textEl.addEventListener('keyup', handleTextClickOrMouseUp);
         recordTextHistory();
-
-        patternEl.addEventListener('input', handlePatternInput);
-        patternEl.addEventListener('keydown', handlePatternKeyDown);
-
         document.getElementById('preset-kor').classList.add('active');
         handleTextProcess();
     };
 </script>
+<div id="dwk-footer"></div>
 <script src="../nav.js"></script>
 </body>
 </html>
