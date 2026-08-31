@@ -12,28 +12,28 @@
       padding: 0;
       background-color: #f8fafc;
     }
-    .blog-container {
+    .guide-container {
       max-width: 1080px;
       margin: 40px auto 80px auto;
       padding: 0 20px;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-    .blog-header {
+    .guide-header {
       margin-bottom: 30px;
       border-bottom: 2px solid #e2e8f0;
       padding-bottom: 15px;
     }
-    .blog-header h1 {
+    .guide-header h1 {
       font-size: 26px;
       color: #0f172a;
       margin: 10px 0 0 0;
     }
-    .blog-grid {
+    .guide-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 24px;
     }
-    .blog-card {
+    .guide-card {
       background: #ffffff;
       border: 1px solid #e2e8f0;
       border-radius: 12px;
@@ -45,14 +45,14 @@
       text-decoration: none;
       box-sizing: border-box;
     }
-    .blog-card:hover {
+    .guide-card:hover {
       transform: translateY(-4px);
       box-shadow: 0 10px 20px rgba(0,0,0,0.06);
       border-color: #cbd5e1;
     }
     
     /* 뱃지와 제목 사이 간격 강제 확장 */
-    .blog-card .card-badge {
+    .guide-card .card-badge {
       display: inline-block !important;
       align-self: flex-start !important;
       padding: 4px 10px !important;
@@ -75,7 +75,7 @@
     .badge-cron { background-color: #e11d48 !important; }
     .badge-color { background-color: #db2777 !important; }
     
-    .blog-card .card-title {
+    .guide-card .card-title {
       font-size: 17px !important;
       font-weight: 700 !important;
       color: #1e293b !important;
@@ -85,14 +85,14 @@
       display: flex !important;
       align-items: flex-start !important;
     }
-    .blog-card .card-desc {
+    .guide-card .card-desc {
       font-size: 14px !important;
       color: #64748b !important;
       line-height: 1.6 !important;
       margin: 0 0 18px 0 !important;
       flex-grow: 1 !important;
     }
-    .blog-card .card-link-text {
+    .guide-card .card-link-text {
       font-size: 13px !important;
       font-weight: 600 !important;
       color: #2563eb !important;
@@ -105,15 +105,15 @@
 
   <div id="dwk-nav"></div>
 
-  <div class="blog-container">
-    <div class="blog-header">
+  <div class="guide-container">
+    <div class="guide-header">
       <a href="../index.html" style="color: #64748b; font-size: 13px; text-decoration: none;">← DevWorKit 홈으로</a>
       <h1>DWK 실무 기술 가이드</h1>
     </div>
 
-    <div class="blog-grid">
+    <div class="guide-grid">
       <!-- 1. STRGET (텍스트/문서 가이드) -->
-      <a href="regex-extract-guide.html" class="blog-card">
+      <a href="regex-extract-guide.html" class="guide-card">
         <div>
           <span class="card-badge badge-strget">STRGET</span>
           <h2 class="card-title">정규표현식(Regex)을 이용한 이메일·전화번호 추출 가이드</h2>
@@ -123,7 +123,7 @@
       </a>
 
       <!-- 2. MARKDOWN (텍스트/문서 가이드) -->
-      <a href="markdown-guide.html" class="blog-card">
+      <a href="markdown-guide.html" class="guide-card">
         <div>
           <span class="card-badge badge-markdown">MARKDOWN</span>
           <h2 class="card-title">마크다운(Markdown) 기초부터 확장 문법까지 완벽 가이드</h2>
@@ -133,7 +133,7 @@
       </a>
 
       <!-- 3. CODER (개발/데이터 가이드) -->
-      <a href="base64-guide.html" class="blog-card">
+      <a href="base64-guide.html" class="guide-card">
         <div>
           <span class="card-badge badge-coder">CODER</span>
           <h2 class="card-title">Base64 인코딩 원리와 실무 한글 깨짐 해결법</h2>
@@ -143,7 +143,7 @@
       </a>
 
       <!-- 4. BEAUTIFY (개발/데이터 가이드) -->
-      <a href="code-formatter-guide.html" class="blog-card">
+      <a href="code-formatter-guide.html" class="guide-card">
         <div>
           <span class="card-badge badge-beautify">BEAUTIFY</span>
           <h2 class="card-title">코드 뷰티파이어의 동작 원리와 들여쓰기 표준 가이드</h2>
@@ -153,7 +153,7 @@
       </a>
 
       <!-- 5. JSON (개발/데이터 가이드) -->
-      <a href="json-format-guide.html" class="blog-card">
+      <a href="json-format-guide.html" class="guide-card">
         <div>
           <span class="card-badge badge-json">JSON</span>
           <h2 class="card-title">JSON 유효성 검사와 구조적 데이터 파싱 팁</h2>
@@ -163,7 +163,7 @@
       </a>
 
       <!-- 6. TIME (개발/데이터 가이드) -->
-      <a href="timestamp-guide.html" class="blog-card">
+      <a href="timestamp-guide.html" class="guide-card">
         <div>
           <span class="card-badge badge-time">TIME</span>
           <h2 class="card-title">Unix Epoch Timestamp 개념과 시간대 변환 가이드</h2>
@@ -173,7 +173,7 @@
       </a>
 
       <!-- 7. HASH (개발/데이터 가이드) -->
-      <a href="hash-guide.html" class="blog-card">
+      <a href="hash-guide.html" class="guide-card">
         <div>
           <span class="card-badge badge-hash">HASH</span>
           <h2 class="card-title">단방향 암호화 해시(SHA-256)와 UUID v4 원리 정리</h2>
@@ -183,7 +183,7 @@
       </a>
 
       <!-- 8. CRON (개발/데이터 가이드) -->
-      <a href="cron-guide.html" class="blog-card">
+      <a href="cron-guide.html" class="guide-card">
         <div>
           <span class="card-badge badge-cron">CRON</span>
           <h2 class="card-title">리눅스 크론탭 문법 완벽 정복과 실무 스케줄러 가이드</h2>
@@ -193,7 +193,7 @@
       </a>
 
       <!-- 9. COLOR (개발/데이터 가이드) -->
-      <a href="wcag-color-contrast-guide.html" class="blog-card">
+      <a href="wcag-color-contrast-guide.html" class="guide-card">
         <div>
           <span class="card-badge badge-color">COLOR</span>
           <h2 class="card-title">웹 접근성(WCAG 2.1) 명도 대비비 기준과 실무 UI 배색 가이드</h2>
