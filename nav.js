@@ -107,9 +107,9 @@
     function initTheme() {
         const savedTheme = localStorage.getItem('dwk_theme');
         if (savedTheme === 'dark') {
-            document.body.classList.add('dark-theme');
+            document.documentElement.classList.add('dark-theme');
         } else {
-            document.body.classList.remove('dark-theme');
+            document.documentElement.classList.remove('dark-theme');
         }
         updateToggleBtnIcon();
     }
@@ -117,15 +117,14 @@
     function updateToggleBtnIcon() {
         const btn = document.getElementById('theme-toggle-btn');
         if (!btn) return;
-        const isDark = document.body.classList.contains('dark-theme');
+        const isDark = document.documentElement.classList.contains('dark-theme');
         btn.innerHTML = isDark ? '☀️' : '🌙';
     }
 
     window.toggleTheme = function () {
-        const isDark = document.body.classList.toggle('dark-theme');
+        const isDark = document.documentElement.classList.toggle('dark-theme');
         localStorage.setItem('dwk_theme', isDark ? 'dark' : 'light');
         updateToggleBtnIcon();
-        applyBadgeColors();
     };
 
     // 6. 메인 허브 및 서브페이지 로고 뱃지 색상 자동 보정
