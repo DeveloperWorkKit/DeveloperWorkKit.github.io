@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,7 +20,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, "Malgun Gothic", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             color: var(--text-main);
             background-color: #ffffff;
             margin: 0;
@@ -34,12 +35,30 @@
             padding: 20px 40px;
         }
 
-        .logo-area { display: flex; align-items: center; gap: 8px; }
-        .logo-badge { background: #10b981; color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
-        .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-badge {
+            background: #10b981;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #111111;
+        }
 
         .main-container {
-            max-width: 1280px;
+            max-width: 1100px;
             width: 100%;
             margin: 0 auto;
             padding: 20px 20px 40px 20px;
@@ -47,9 +66,23 @@
             flex: 1;
         }
 
-        .intro-section { margin-bottom: 20px; }
-        .intro-section h1 { font-size: 22px; font-weight: 800; color: #111827; margin: 0 0 6px 0; letter-spacing: -0.5px; }
-        .intro-section p { font-size: 14px; color: var(--text-muted); margin: 0 0 16px 0; }
+        .intro-section {
+            margin-bottom: 20px;
+        }
+
+        .intro-section h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 6px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .intro-section p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin: 0 0 16px 0;
+        }
 
         .guide-box {
             background-color: #f8fafc;
@@ -60,9 +93,22 @@
             color: #334155;
             line-height: 1.6;
         }
-        .guide-box strong { display: block; margin-bottom: 8px; color: #0f172a; font-size: 14px; }
-        .guide-list { margin: 0; padding-left: 18px; }
-        .guide-list li { margin-bottom: 4px; }
+
+        .guide-box strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #0f172a;
+            font-size: 14px;
+        }
+
+        .guide-list {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .guide-list li {
+            margin-bottom: 4px;
+        }
 
         .diff-grid-wrapper {
             position: relative;
@@ -76,7 +122,9 @@
         }
 
         @media (max-width: 900px) {
-            .diff-grid { grid-template-columns: 1fr; }
+            .diff-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .btn-center-swap {
@@ -105,10 +153,11 @@
             color: #ffffff;
             border-color: var(--primary-blue);
             transform: translate(-50%, -50%) scale(1.1);
-            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.25);
         }
 
-        .btn-center-swap:active { transform: translate(-50%, -50%) scale(0.95); }
+        .btn-center-swap:active {
+            transform: translate(-50%, -50%) scale(0.95);
+        }
 
         @media (max-width: 900px) {
             .btn-center-swap {
@@ -118,9 +167,6 @@
                 transform: none;
                 margin: 10px auto;
             }
-            .btn-center-swap:hover { transform: scale(1.1); }
-            .btn-center-swap::before { content: "⇅"; }
-            .btn-center-swap span { display: none; }
         }
 
         .input-panel {
@@ -130,18 +176,22 @@
             background-color: #ffffff;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
         }
-        
+
         .panel-header-zone {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 8px;
         }
-        
-        .panel-label { font-size: 13.5px; font-weight: 700; color: #1e293b; }
-        
+
+        .panel-label {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
         .panel-controls {
             display: flex;
             align-items: center;
@@ -157,11 +207,20 @@
             font-weight: 600;
             border-radius: 4px;
             cursor: pointer;
-            transition: all 0.15s;
         }
-        .btn-mini:hover { background-color: #e9ecef; }
-        .btn-mini-danger { color: #d9534f; }
-        .btn-mini-danger:hover { background-color: #fdf2f2; border-color: #d9534f; }
+
+        .btn-mini:hover {
+            background-color: #e9ecef;
+        }
+
+        .btn-mini-danger {
+            color: #d9534f;
+        }
+
+        .btn-mini-danger:hover {
+            background-color: #fdf2f2;
+            border-color: #d9534f;
+        }
 
         .editor-wrapper {
             display: flex;
@@ -191,11 +250,10 @@
             padding: 12px 8px 0 0;
             box-sizing: border-box;
             color: #94a3b8;
-            font-family: Consolas, "Courier New", monospace !important;
+            font-family: Consolas, monospace !important;
             font-size: 13px !important;
             line-height: 21px !important;
             text-align: right;
-            transform: translateY(0);
             will-change: transform;
         }
 
@@ -209,7 +267,7 @@
             flex: 1;
             height: 100%;
             padding: 12px;
-            font-family: Consolas, "Courier New", monospace !important;
+            font-family: Consolas, monospace !important;
             font-size: 13px !important;
             line-height: 21px !important;
             border: none;
@@ -218,7 +276,6 @@
             outline: none;
             background-color: #ffffff;
             white-space: pre !important;
-            overflow-wrap: normal;
             overflow: auto;
         }
 
@@ -242,8 +299,13 @@
             flex-wrap: wrap;
         }
 
-        .action-left { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
-        
+        .action-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
         .btn-compare {
             background-color: var(--primary-blue);
             color: white;
@@ -253,9 +315,11 @@
             font-weight: 700;
             border-radius: 6px;
             cursor: pointer;
-            transition: background 0.15s;
         }
-        .btn-compare:hover { background-color: var(--primary-blue-hover); }
+
+        .btn-compare:hover {
+            background-color: var(--primary-blue-hover);
+        }
 
         .filter-opt-group {
             display: flex;
@@ -285,33 +349,35 @@
             align-items: center;
             gap: 15px;
         }
-        .sim-info { display: flex; flex-direction: column; gap: 2px; }
-        .sim-title { font-size: 12.5px; color: var(--text-muted); font-weight: 600; }
-        .sim-value { font-size: 19px; font-weight: 800; color: #111111; }
-        .sim-value span { color: var(--primary-blue); font-size: 21px; }
-        .sim-desc { font-size: 12px; color: #868e96; margin-left: auto; }
 
-        .copy-btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
-        .btn-copy-action {
-            border: none;
-            padding: 6px 12px;
-            font-size: 12.5px;
-            font-weight: 600;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.1s;
-            display: none;
+        .sim-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
-        .btn-orange-mode { background-color: #ff9800; color: white; }
-        .btn-orange-mode:hover { background-color: #e68a00; }
-        .btn-red-mode { background-color: #cb2431; color: white; }
-        .btn-red-mode:hover { background-color: #b31f2c; }
-        .btn-teal-mode { background-color: #009688; color: white; }
-        .btn-teal-mode:hover { background-color: #00796b; }
-        .btn-green-mode { background-color: #2ea44f; color: white; }
-        .btn-green-mode:hover { background-color: #2c974b; }
-        .btn-all-mode { background-color: #6c757d; color: white; display: block !important; }
-        .btn-all-mode:hover { background-color: #5a6268; }
+
+        .sim-title {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .sim-value {
+            font-size: 19px;
+            font-weight: 800;
+            color: #111111;
+        }
+
+        .sim-value span {
+            color: var(--primary-blue);
+            font-size: 21px;
+        }
+
+        .sim-desc {
+            font-size: 12px;
+            color: #868e96;
+            margin-left: auto;
+        }
 
         .result-panel {
             border: 1px solid var(--border-color);
@@ -336,14 +402,19 @@
         .diff-table {
             width: 100%;
             border-collapse: collapse;
-            font-family: Consolas, "Courier New", monospace;
+            font-family: Consolas, monospace;
             font-size: 13px;
             line-height: 1.8;
             background-color: #ffffff;
         }
 
-        .diff-row { display: table-row; }
-        .diff-row.hide { display: none !important; }
+        .diff-row {
+            display: table-row;
+        }
+
+        .diff-row.hide {
+            display: none !important;
+        }
 
         .diff-num {
             width: 52px;
@@ -366,566 +437,493 @@
             display: table-cell;
         }
 
-        ins { background-color: var(--diff-ins); color: var(--diff-ins-text); text-decoration: none; padding: 2px 3px; border-radius: 3px; font-weight: 600; border-bottom: 2px solid #34d058; }
-        del { background-color: var(--diff-del); color: var(--diff-del-text); text-decoration: line-through; padding: 2px 3px; border-radius: 3px; }
-        
-        .row-modified { background-color: #fcfcfc; }
-        .row-empty { color: #aaa; padding: 20px !important; display: block; }
+        ins {
+            background-color: var(--diff-ins);
+            color: var(--diff-ins-text);
+            text-decoration: none;
+            padding: 2px 3px;
+            border-radius: 3px;
+            font-weight: 600;
+            border-bottom: 2px solid #34d058;
+        }
+
+        del {
+            background-color: var(--diff-del);
+            color: var(--diff-del-text);
+            text-decoration: line-through;
+            padding: 2px 3px;
+            border-radius: 3px;
+        }
+
+        .row-modified {
+            background-color: #fcfcfc;
+        }
+
+        .row-empty {
+            color: #aaa;
+            padding: 20px !important;
+            display: block;
+        }
+
+        .copy-btn-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .btn-copy-action {
+            border: none;
+            padding: 6px 12px;
+            font-size: 12.5px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .btn-orange-mode {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .btn-orange-mode:hover {
+            background-color: #e68a00;
+        }
+
+        .btn-red-mode {
+            background-color: #cb2431;
+            color: white;
+        }
+
+        .btn-red-mode:hover {
+            background-color: #b31f2c;
+        }
+
+        .btn-teal-mode {
+            background-color: #009688;
+            color: white;
+        }
+
+        .btn-teal-mode:hover {
+            background-color: #00796b;
+        }
+
+        .btn-green-mode {
+            background-color: #2ea44f;
+            color: white;
+        }
+
+        .btn-green-mode:hover {
+            background-color: #2c974b;
+        }
+
+        .btn-all-mode {
+            background-color: #6c757d;
+            color: white;
+            display: block !important;
+        }
+
+        .btn-all-mode:hover {
+            background-color: #5a6268;
+        }
+
+        .bottom-ad-box {
+            max-width: 1100px;
+            width: 100%;
+            margin: 25px auto 10px auto;
+            text-align: center;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script>
 </head>
+
 <body>
 
-<header>
-    <div class="logo-area">
-        <span class="logo-badge">STRCMP</span>
-        <span class="logo-text">문자열 비교기</span>
-    </div>
-</header>
-
-<div class="main-container">
-    <div class="intro-section">
-        <h1>문자열을 비교하여 차이점을 보여주는 사이트입니다.</h1>
-        <p>'변경된 줄만 필터링해서 보기'를 선택하면 변경된 내용만 따로 확인하고 복사할 수 있습니다.</p>
-        
-        <div class="guide-box">
-            <strong>문자열 비교기 사용 방법 안내:</strong>
-            <ol class="guide-list">
-                <li>좌측에 <b>[원본 문서]</b>, 우측에 <b>[수정된 문서]</b>를 입력하거나 <b>[샘플 불러오기]</b>를 클릭합니다.</li>
-                <li>하단의 <b>[비교하기]</b> 버튼을 누르면 두 텍스트의 최종 일치율(%)과 줄 번호별 차이점이 시각화됩니다.</li>
-                <li>수정된 내용만 정밀하게 확인하고 싶다면 <b>[변경된 줄만 필터링해서 보기]</b> 옵션을 체크하세요.</li>
-                <li>양쪽 에디터 내에서 <b>Ctrl + Z (실행 취소)</b> 및 <b>Ctrl + Y (다시 실행)</b>를 완벽하게 지원합니다.</li>
-            </ol>
+    <header>
+        <div class="logo-area">
+            <span class="logo-badge">STRCMP</span>
+            <span class="logo-text">문자열 비교기</span>
         </div>
-    </div>
+    </header>
 
-    <div class="diff-grid-wrapper">
-        <div class="diff-grid">
-            <div class="input-panel">
-                <div class="panel-header-zone">
-                    <span class="panel-label">원본 텍스트 (Original)</span>
-                    <div class="panel-controls">
-                        <button class="btn-mini" onclick="loadSampleText()">샘플 불러오기</button>
-                        <button class="btn-mini" onclick="copyInputSource('text-left', '원본')">복사</button>
-                        <button class="btn-mini btn-mini-danger" onclick="clearTextSource('text-left', 'left')">지우기</button>
-                    </div>
-                </div>
-                <div class="editor-wrapper">
-                    <div class="gutter-container">
-                        <div class="line-numbers" id="left-line-numbers">
-                            <div class="line-num-item">1</div>
+    <div class="main-container">
+        <div class="intro-section">
+            <h1>문자열을 비교하여 차이점을 보여주는 사이트입니다.</h1>
+            <p>'변경된 줄만 필터링해서 보기'를 선택하면 변경된 내용만 따로 확인하고 복사할 수 있습니다.</p>
+
+            <div class="guide-box">
+                <strong>문자열 비교기 사용 방법 안내:</strong>
+                <ol class="guide-list">
+                    <li>좌측에 <b>[원본 문서]</b>, 우측에 <b>[수정된 문서]</b>를 입력하거나 <b>[샘플 불러오기]</b>를 클릭합니다.</li>
+                    <li>하단의 <b>[비교하기]</b> 버튼을 누르면 두 텍스트의 최종 일치율(%)과 줄 번호별 차이점이 시각화됩니다.</li>
+                    <li>수정된 내용만 정밀하게 확인하고 싶다면 <b>[변경된 줄만 필터링해서 보기]</b> 옵션을 체크하세요.</li>
+                    <li>양쪽 에디터 내에서 <b>Ctrl + Z (실행 취소)</b> 및 <b>Ctrl + Y (다시 실행)</b>를 완벽하게 지원합니다.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="diff-grid-wrapper">
+            <div class="diff-grid">
+                <div class="input-panel">
+                    <div class="panel-header-zone">
+                        <span class="panel-label">원본 텍스트 (Original)</span>
+                        <div class="panel-controls">
+                            <button class="btn-mini" onclick="loadSampleText()">샘플 불러오기</button>
+                            <button class="btn-mini" onclick="copyInputSource('text-left', '원본')">복사</button>
+                            <button class="btn-mini btn-mini-danger" onclick="clearTextSource('text-left', 'left')">지우기</button>
                         </div>
                     </div>
-                    <textarea id="text-left" class="code-area" placeholder="비교할 원본 글이나 이전 코드를 입력하세요..." spellcheck="false"></textarea>
-                </div>
-                <div class="editor-status-bar">
-                    <span id="left-status">Ln: 1, Col: 1 | 글자수: 0자</span>
-                    <span id="left-size">Size: 0 B</span>
-                </div>
-            </div>
-
-            <div class="input-panel">
-                <div class="panel-header-zone">
-                    <span class="panel-label">수정된 텍스트 (Modified)</span>
-                    <div class="panel-controls">
-                        <button class="btn-mini" onclick="copyInputSource('text-right', '수정본')">복사</button>
-                        <button class="btn-mini btn-mini-danger" onclick="clearTextSource('text-right', 'right')">지우기</button>
+                    <div class="editor-wrapper">
+                        <div class="gutter-container">
+                            <div class="line-numbers" id="left-line-numbers">
+                                <div class="line-num-item">1</div>
+                            </div>
+                        </div>
+                        <textarea id="text-left" class="code-area" placeholder="비교할 원본 글이나 이전 코드를 입력하세요..." spellcheck="false"></textarea>
                     </div>
+                    <div class="editor-status-bar"><span id="left-status">Ln: 1, Col: 1 | 글자수: 0자</span><span id="left-size">Size: 0 B</span></div>
                 </div>
-                <div class="editor-wrapper">
-                    <div class="gutter-container">
-                        <div class="line-numbers" id="right-line-numbers">
-                            <div class="line-num-item">1</div>
+
+                <div class="input-panel">
+                    <div class="panel-header-zone">
+                        <span class="panel-label">수정된 텍스트 (Modified)</span>
+                        <div class="panel-controls">
+                            <button class="btn-mini" onclick="copyInputSource('text-right', '수정본')">복사</button>
+                            <button class="btn-mini btn-mini-danger" onclick="clearTextSource('text-right', 'right')">지우기</button>
                         </div>
                     </div>
-                    <textarea id="text-right" class="code-area" placeholder="수정 후의 글이나 새로운 코드를 입력하세요..." spellcheck="false"></textarea>
+                    <div class="editor-wrapper">
+                        <div class="gutter-container">
+                            <div class="line-numbers" id="right-line-numbers">
+                                <div class="line-num-item">1</div>
+                            </div>
+                        </div>
+                        <textarea id="text-right" class="code-area" placeholder="수정 후의 글이나 새로운 코드를 입력하세요..." spellcheck="false"></textarea>
+                    </div>
+                    <div class="editor-status-bar"><span id="right-status">Ln: 1, Col: 1 | 글자수: 0자</span><span id="right-size">Size: 0 B</span></div>
                 </div>
-                <div class="editor-status-bar">
-                    <span id="right-status">Ln: 1, Col: 1 | 글자수: 0자</span>
-                    <span id="right-size">Size: 0 B</span>
+            </div>
+            <button class="btn-center-swap" onclick="swapTextContents()" title="좌우 텍스트 맞바꾸기"><span>⇄</span></button>
+        </div>
+
+        <div class="action-bar">
+            <div class="action-left">
+                <button class="btn-compare" onclick="executeDiffCheckerEngine()">비교하기</button>
+                <div class="filter-opt-group">
+                    <label class="filter-opt"><input type="checkbox" id="chk-only-changes" onchange="toggleChangesFilter()"> 변경된 줄만 필터링해서 보기</label>
+                    <label class="filter-opt"><input type="checkbox" id="chk-ignore-space" onchange="triggerDiffEngineIfActive()"> 공백 무시</label>
+                    <label class="filter-opt"><input type="checkbox" id="chk-ignore-case" onchange="triggerDiffEngineIfActive()"> 대소문자 무시</label>
                 </div>
             </div>
         </div>
 
-        <button class="btn-center-swap" onclick="swapTextContents()" title="좌우 텍스트 맞바꾸기">
-            <span>⇄</span>
-        </button>
-    </div>
+        <div id="similarity-dashboard" class="similarity-dashboard">
+            <div class="sim-info">
+                <div class="sim-title">두 문서의 최종 일치율</div>
+                <div class="sim-value" id="val-match-percentage">0.00%</div>
+            </div>
+            <div class="sim-desc" id="val-match-detail">공통 글자 수: 0자 / 최대 분량: 0자</div>
+        </div>
 
-    <div class="action-bar">
-        <div class="action-left">
-            <button class="btn-compare" onclick="executeDiffCheckerEngine()">비교하기</button>
-            <div class="filter-opt-group">
-                <label class="filter-opt">
-                    <input type="checkbox" id="chk-only-changes" onchange="toggleChangesFilter()"> 변경된 줄만 필터링해서 보기
-                </label>
-                <label class="filter-opt">
-                    <input type="checkbox" id="chk-ignore-space" onchange="triggerDiffEngineIfActive()"> 공백 무시
-                </label>
-                <label class="filter-opt">
-                    <input type="checkbox" id="chk-ignore-case" onchange="triggerDiffEngineIfActive()"> 대소문자 무시
-                </label>
+        <div class="result-panel">
+            <div class="result-header">
+                <span>차이점 비교 결과 (Diff Result)</span>
+                <div class="copy-btn-group">
+                    <button id="btn-copy-del" class="btn-copy-action btn-orange-mode" onclick="copySelectiveDiffResult('del')">[원본] 변경된 줄 전체 복사</button>
+                    <button id="btn-copy-del-only" class="btn-copy-action btn-red-mode" onclick="copySelectiveDiffResult('del-only')">[원본] 지워진 글자만 복사</button>
+                    <button id="btn-copy-ins" class="btn-copy-action btn-teal-mode" onclick="copySelectiveDiffResult('ins')">[수정본] 변경된 줄 전체 복사</button>
+                    <button id="btn-copy-ins-only" class="btn-copy-action btn-green-mode" onclick="copySelectiveDiffResult('ins-only')">[수정본] 추가된 글자만 복사</button>
+                    <button class="btn-copy-action btn-all-mode" onclick="copySelectiveDiffResult('all')">비교 결과 전체 복사</button>
+                </div>
+            </div>
+            <div id="diff-table-body" class="diff-table">
+                <div class="diff-row">
+                    <div class="diff-num">-</div>
+                    <div class="diff-text row-empty">좌우 박스에 대조할 내용을 입력하고 [비교하기] 버튼을 누르세요.</div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="similarity-dashboard" class="similarity-dashboard">
-        <div class="sim-info">
-            <div class="sim-title">두 문서의 최종 일치율</div>
-            <div class="sim-value" id="val-match-percentage">0.00%</div>
-        </div>
-        <div class="sim-desc" id="val-match-detail">공통 글자 수: 0자 / 최대 분량: 0자</div>
+    <div class="bottom-ad-box">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3823705730142714" data-ad-slot="3894691126" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
     </div>
 
-    <div class="result-panel">
-        <div class="result-header">
-            <span>차이점 비교 결과 (Diff Result)</span>
-            <div class="copy-btn-group">
-                <button id="btn-copy-del" class="btn-copy-action btn-orange-mode" onclick="copySelectiveDiffResult('del')">[원본] 변경된 줄 전체 복사</button>
-                <button id="btn-copy-del-only" class="btn-copy-action btn-red-mode" onclick="copySelectiveDiffResult('del-only')">[원본] 지워진 글자만 복사</button>
-                <button id="btn-copy-ins" class="btn-copy-action btn-teal-mode" onclick="copySelectiveDiffResult('ins')">[수정본] 변경된 줄 전체 복사</button>
-                <button id="btn-copy-ins-only" class="btn-copy-action btn-green-mode" onclick="copySelectiveDiffResult('ins-only')">[수정본] 추가된 글자만 복사</button>
-                <button class="btn-copy-action btn-all-mode" onclick="copySelectiveDiffResult('all')">비교 결과 전체 복사</button>
-            </div>
-        </div>
-        <div id="diff-table-body" class="diff-table">
-            <div class="diff-row"><div class="diff-num">-</div><div class="diff-text row-empty">좌우 박스에 대조할 내용을 입력하고 [비교하기] 버튼을 누르세요.</div></div>
-        </div>
-    </div>
-</div>
+    <script>
+        const undoStacks = {
+            left: [],
+            right: []
+        };
+        const redoStacks = {
+            left: [],
+            right: []
+        };
+        let typingTimer = {
+            left: null,
+            right: null
+        };
+        let lastLeftLines = -1,
+            lastRightLines = -1;
 
-<script>
-    const undoStacks = { left: [], right: [] };
-    const redoStacks = { left: [], right: [] };
-    let typingTimer = { left: null, right: null };
-    let lastLeftLines = -1;
-    let lastRightLines = -1;
-
-    function recordHistory(side) {
-        const el = document.getElementById(`text-${side}`);
-        if (!el) return;
-
-        const val = el.value;
-        const stack = undoStacks[side];
-        
-        if (stack.length === 0 || stack[stack.length - 1] !== val) {
-            stack.push(val);
-            if (stack.length > 50) stack.shift();
-            redoStacks[side] = [];
+        function recordHistory(side) {
+            const el = document.getElementById(`text-${side}`);
+            if (!el) return;
+            const val = el.value,
+                stack = undoStacks[side];
+            if (stack.length === 0 || stack[stack.length - 1] !== val) {
+                stack.push(val);
+                if (stack.length > 50) stack.shift();
+                redoStacks[side] = [];
+            }
         }
-    }
 
-    function handleInputHistory(side) {
-        updateSideStatus(side);
-        clearTimeout(typingTimer[side]);
-        typingTimer[side] = setTimeout(() => {
-            recordHistory(side);
-        }, 300);
-    }
-
-    function handleCustomHistoryKeys(e, side) {
-        const isCtrl = e.ctrlKey || e.metaKey;
-        const key = e.key.toLowerCase();
-
-        if (isCtrl && key === 'z' && !e.shiftKey) {
-            const uStack = undoStacks[side];
-            const rStack = redoStacks[side];
-            const textarea = document.getElementById(`text-${side}`);
-            const currentVal = textarea.value;
-
-            if (uStack[uStack.length - 1] !== currentVal) {
+        function handleInputHistory(side) {
+            updateSideStatus(side);
+            clearTimeout(typingTimer[side]);
+            typingTimer[side] = setTimeout(() => {
                 recordHistory(side);
-            }
-
-            if (uStack.length > 1) {
-                e.preventDefault();
-                const popped = uStack.pop();
-                rStack.push(popped);
-                
-                const previousState = uStack[uStack.length - 1];
-                textarea.value = previousState;
-                updateSideStatus(side);
-            }
-        } else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
-            const uStack = undoStacks[side];
-            const rStack = redoStacks[side];
-
-            if (rStack.length > 0) {
-                e.preventDefault();
-                const nextState = rStack.pop();
-                uStack.push(nextState);
-                
-                const textarea = document.getElementById(`text-${side}`);
-                textarea.value = nextState;
-                updateSideStatus(side);
-            }
-        }
-    }
-
-    function updateLineNumbers(textareaId, lineNumberId, side) {
-        const textarea = document.getElementById(textareaId);
-        const lineNumContainer = document.getElementById(lineNumberId);
-        const lines = textarea.value ? textarea.value.split('\n').length : 1;
-
-        if (side === 'left' && lines === lastLeftLines) return;
-        if (side === 'right' && lines === lastRightLines) return;
-
-        if (side === 'left') lastLeftLines = lines;
-        else lastRightLines = lines;
-
-        let html = '';
-        for (let i = 1; i <= lines; i++) {
-            html += `<div class="line-num-item">${i}</div>`;
-        }
-        lineNumContainer.innerHTML = html;
-    }
-
-    function syncScroll(textareaId, lineNumberId) {
-        const textarea = document.getElementById(textareaId);
-        const lineNumContainer = document.getElementById(lineNumberId);
-        if (textarea && lineNumContainer) {
-            lineNumContainer.style.transform = `translateY(-${textarea.scrollTop}px)`;
-        }
-    }
-
-    function formatBytes(bytes) {
-        if (bytes === 0) return '0 B';
-        if (bytes < 1024) return bytes + ' B';
-        return (bytes / 1024).toFixed(1) + ' KB';
-    }
-
-    function updateSideStatus(side) {
-        const raw = document.getElementById(`text-${side}`);
-        const selStart = raw.selectionStart || 0;
-        const textBefore = raw.value.substring(0, selStart);
-        const line = textBefore.split('\n').length;
-        const col = textBefore.length - textBefore.lastIndexOf('\n');
-        const inputBytes = new Blob([raw.value]).size;
-        const charCount = raw.value.length;
-
-        document.getElementById(`${side}-status`).innerText = `Ln: ${line}, Col: ${col} | 글자수: ${charCount.toLocaleString()}자`;
-        document.getElementById(`${side}-size`).innerText = `Size: ${formatBytes(inputBytes)}`;
-        updateLineNumbers(`text-${side}`, `${side}-line-numbers`, side);
-    }
-
-    function loadSampleText() {
-        const sampleLeft = `// 1. 기존 유저 인증 함수
-function authenticateUser(username, password) {
-    if (username === "admin" && password === "1234") {
-        console.log("로그인 성공");
-        return true;
-    }
-    return false;
-}`;
-        const sampleRight = `// 1. 보안 강화된 유저 인증 함수
-async function authenticateUser(username, passwordHash) {
-    const isValid = await verifySecureHash(username, passwordHash);
-    if (isValid) {
-        console.log("[보안인증] 로그인 완료");
-        return { status: 200, auth: true };
-    }
-    return { status: 401, auth: false };
-}`;
-        document.getElementById('text-left').value = sampleLeft;
-        document.getElementById('text-right').value = sampleRight;
-        recordHistory('left');
-        recordHistory('right');
-        updateSideStatus('left');
-        updateSideStatus('right');
-        executeDiffCheckerEngine();
-    }
-
-    function clearTextSource(targetId, side) {
-        const textarea = document.getElementById(targetId);
-        if (!textarea || !textarea.value) return;
-        textarea.value = '';
-        recordHistory(side);
-        updateSideStatus(side);
-        textarea.focus();
-    }
-
-    function swapTextContents() {
-        const leftArea = document.getElementById('text-left');
-        const rightArea = document.getElementById('text-right');
-        if (!leftArea || !rightArea) return;
-        
-        recordHistory('left');
-        recordHistory('right');
-
-        const tempVal = leftArea.value;
-        leftArea.value = rightArea.value;
-        rightArea.value = tempVal;
-
-        const tempUndo = [...undoStacks.left];
-        undoStacks.left = [...undoStacks.right];
-        undoStacks.right = tempUndo;
-
-        const tempRedo = [...redoStacks.left];
-        redoStacks.left = [...redoStacks.right];
-        redoStacks.right = tempRedo;
-
-        updateSideStatus('left');
-        updateSideStatus('right');
-        triggerDiffEngineIfActive();
-    }
-
-    function copyInputSource(targetId, label) {
-        const text = document.getElementById(targetId).value;
-        if (!text) {
-            alert(`${label} 텍스트 박스가 비어 있습니다.`);
-            return;
-        }
-        navigator.clipboard.writeText(text).then(() => {
-            alert(`${label} 텍스트가 클립보드에 복사되었습니다.`);
-        });
-    }
-
-    function triggerDiffEngineIfActive() {
-        const dashboard = document.getElementById('similarity-dashboard');
-        if (dashboard && dashboard.style.display === 'flex') {
-            executeDiffCheckerEngine();
-        }
-    }
-
-    function executeDiffCheckerEngine() {
-        let sourceLeft = document.getElementById('text-left').value;
-        let sourceRight = document.getElementById('text-right').value;
-        const tableBody = document.getElementById('diff-table-body');
-        const dashboard = document.getElementById('similarity-dashboard');
-
-        if (!sourceLeft && !sourceRight) {
-            tableBody.innerHTML = '<div class="diff-row"><div class="diff-num">-</div><div class="diff-text row-empty">입력된 데이터가 없습니다.</div></div>';
-            dashboard.style.display = 'none';
-            return;
+            }, 300);
         }
 
-        const EngineClass = window.diff_match_patch || (typeof diff_match_patch !== 'undefined' ? diff_match_patch : null);
-        if (!EngineClass) {
-            alert("엔진 로드 중입니다. 잠시 후 다시 시도해 주세요.");
-            return;
-        }
-
-        const ignoreSpace = document.getElementById('chk-ignore-space').checked;
-        const ignoreCase = document.getElementById('chk-ignore-case').checked;
-
-        let cleanLeft = sourceLeft.replace(/\\n/g, '\n').replace(/\r/g, '');
-        let cleanRight = sourceRight.replace(/\\n/g, '\n').replace(/\r/g, '');
-
-        if (ignoreSpace) {
-            cleanLeft = cleanLeft.replace(/[ \t]+/g, ' ');
-            cleanRight = cleanRight.replace(/[ \t]+/g, ' ');
-        }
-
-        if (ignoreCase) {
-            cleanLeft = cleanLeft.toLowerCase();
-            cleanRight = cleanRight.toLowerCase();
-        }
-
-        try {
-            const dmp = new EngineClass();
-            const diffs = dmp.diff_main(cleanLeft, cleanRight);
-            dmp.diff_cleanupSemantic(diffs);
-            dmp.diff_cleanupEfficiency(diffs);
-
-            let commonChars = 0;
-            let deletedChars = 0;
-            let insertedChars = 0;
-
-            diffs.forEach(part => {
-                const op = part[0];
-                const length = part[1].length;
-                if (op === 0) commonChars += length;
-                else if (op === -1) deletedChars += length;
-                else if (op === 1) insertedChars += length;
-            });
-
-            const totalLeftLen = commonChars + deletedChars;
-            const totalRightLen = commonChars + insertedChars;
-            const maxLen = Math.max(totalLeftLen, totalRightLen);
-
-            const unifiedRatio = maxLen > 0 ? ((commonChars / maxLen) * 100).toFixed(2) : "0.00";
-
-            document.getElementById('val-match-percentage').innerHTML = `<span>${unifiedRatio}%</span>`;
-            document.getElementById('val-match-detail').innerText = `공통 글자 수: ${commonChars.toLocaleString()}자 / 최대 분량: ${maxLen.toLocaleString()}자`;
-            dashboard.style.display = 'flex';
-
-            let lines = [""], currentLineIdx = 0;
-            let lineChangeStatus = [false];
-
-            diffs.forEach((part) => {
-                const op = part[0];
-                const segments = part[1].split('\n');
-
-                segments.forEach((segment, sIdx) => {
-                    if (sIdx > 0) {
-                        currentLineIdx++;
-                        lines[currentLineIdx] = "";
-                        lineChangeStatus[currentLineIdx] = false;
-                    }
-
-                    if (!segment) return;
-
-                    const text = segment.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                    
-                    if (op === 0) {
-                        lines[currentLineIdx] += text;
-                    } else {
-                        lineChangeStatus[currentLineIdx] = true;
-                        if (op === 1) {
-                            lines[currentLineIdx] += "<ins>" + text + "</ins>";
-                        } else if (op === -1) {
-                            lines[currentLineIdx] += "<del>" + text + "</del>";
-                        }
-                    }
-                });
-            });
-
-            let tableHtml = "";
-            lines.forEach((lineContent, idx) => {
-                const isChanged = lineChangeStatus[idx];
-                const rowClass = isChanged ? "diff-row row-modified" : "diff-row";
-                
-                tableHtml += `<div class="${rowClass}" data-changed="${isChanged}">
-                    <div class="diff-num">${idx + 1}</div>
-                    <div class="diff-text">${lineContent || " "}</div>
-                </div>`;
-            });
-
-            tableBody.innerHTML = tableHtml;
-            toggleChangesFilter();
-
-        } catch (err) {
-            tableBody.innerHTML = '<div class="diff-row"><div class="diff-num">-</div><div class="diff-text row-empty" style="color:var(--diff-del-text);">연산 오류가 발생했습니다. 입력 창을 확인해 주세요.</div></div>';
-            dashboard.style.display = 'none';
-        }
-    }
-
-    function toggleChangesFilter() {
-        const showOnlyChanges = document.getElementById('chk-only-changes').checked;
-        const rows = document.querySelectorAll('#diff-table-body .diff-row');
-        
-        rows.forEach(row => {
-            const isChanged = row.getAttribute('data-changed') === 'true';
-            if (showOnlyChanges && !isChanged && row.querySelector('.diff-num').innerText !== '-') {
-                row.classList.add('hide');
-            } else {
-                row.classList.remove('hide');
-            }
-        });
-
-        const subButtons = document.querySelectorAll('.btn-orange-mode, .btn-red-mode, .btn-teal-mode, .btn-green-mode');
-        subButtons.forEach(btn => {
-            btn.style.display = showOnlyChanges ? 'block' : 'none';
-        });
-
-        const allCopyBtn = document.querySelector('.btn-all-mode');
-        if (allCopyBtn) {
-            if (showOnlyChanges) {
-                allCopyBtn.innerText = "변경된 줄 비교 결과만 복사";
-                allCopyBtn.title = "변경된 줄에 대해서만 원본/수정본이 섞인 결과가 복사됩니다.";
-            } else {
-                allCopyBtn.innerText = "비교 결과 전체 복사";
-                allCopyBtn.title = "문서 전체(변경되지 않은 줄 포함) 결과가 복사됩니다.";
-            }
-        }
-    }
-
-    function copySelectiveDiffResult(mode) {
-        const rows = document.querySelectorAll('#diff-table-body .diff-row');
-        const isFiltered = document.getElementById('chk-only-changes').checked;
-        let textAccumulator = [];
-
-        rows.forEach(row => {
-            if (row.classList.contains('hide')) return;
-
-            const textNode = row.querySelector('.diff-text');
-            if (textNode && !textNode.classList.contains('row-empty')) {
-                const cloneNode = textNode.cloneNode(true);
-
-                if (isFiltered) {
-                    if (mode === 'ins') {
-                        const deletes = cloneNode.querySelectorAll('del');
-                        deletes.forEach(d => d.remove());
-                        textAccumulator.push(cloneNode.innerText);
-                    } else if (mode === 'del') {
-                        const inserts = cloneNode.querySelectorAll('ins');
-                        inserts.forEach(i => i.remove());
-                        textAccumulator.push(cloneNode.innerText);
-                    } else if (mode === 'ins-only') {
-                        const insElements = cloneNode.querySelectorAll('ins');
-                        let pieces = [];
-                        insElements.forEach(ins => pieces.push(ins.innerText));
-                        if (pieces.length > 0) textAccumulator.push(pieces.join(' '));
-                    } else if (mode === 'del-only') {
-                        const delElements = cloneNode.querySelectorAll('del');
-                        let pieces = [];
-                        delElements.forEach(del => pieces.push(del.innerText));
-                        if (pieces.length > 0) textAccumulator.push(pieces.join(' '));
-                    } else {
-                        textAccumulator.push(cloneNode.innerText);
-                    }
-                } else {
-                    if (mode === 'ins') {
-                        const deletes = cloneNode.querySelectorAll('del');
-                        deletes.forEach(d => d.remove());
-                        textAccumulator.push(cloneNode.innerText);
-                    } else if (mode === 'del') {
-                        const inserts = cloneNode.querySelectorAll('ins');
-                        inserts.forEach(i => i.remove());
-                        textAccumulator.push(cloneNode.innerText);
-                    }
-                    textAccumulator.push(cloneNode.innerText);
+        function handleCustomHistoryKeys(e, side) {
+            const isCtrl = e.ctrlKey || e.metaKey,
+                key = e.key.toLowerCase(),
+                textarea = document.getElementById(`text-${side}`);
+            if (isCtrl && key === 'z' && !e.shiftKey) {
+                if (undoStacks[side].length > 1) {
+                    e.preventDefault();
+                    redoStacks[side].push(undoStacks[side].pop());
+                    textarea.value = undoStacks[side][undoStacks[side].length - 1];
+                    updateSideStatus(side);
+                }
+            } else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
+                if (redoStacks[side].length > 0) {
+                    e.preventDefault();
+                    const nextState = redoStacks[side].pop();
+                    undoStacks[side].push(nextState);
+                    textarea.value = nextState;
+                    updateSideStatus(side);
                 }
             }
-        });
-
-        if (textAccumulator.length === 0) {
-            alert("복사할 대상 텍스트 내역이 존재하지 않습니다.");
-            return;
         }
 
-        const finalOutputString = textAccumulator.join('\n');
-        navigator.clipboard.writeText(finalOutputString).then(() => {
-            let logMsg = "";
-            if (mode === 'all') logMsg = "비교 결과 전체 복사가 완료되었습니다.";
-            else if (mode === 'ins') logMsg = isFiltered ? "변경된 줄의 [수정 후 줄 복사]가 완료되었습니다." : "수정본 기준 전체 내용이 복사되었습니다.";
-            else if (mode === 'del') logMsg = isFiltered ? "변경된 줄의 [수정 전 줄 복사]가 완료되었습니다." : "원본 기준 전체 내용이 복사되었습니다.";
-            else if (mode === 'ins-only') logMsg = "변경된 줄 내의 [수정된 글자만 복사]가 완료되었습니다!";
-            else if (mode === 'del-only') logMsg = "변경된 줄 내의 [삭제된 글자만 복사]가 완료되었습니다!";
-            alert(logMsg);
-        }).catch(() => {
-            alert("복사 실패. 브라우저 보안 설정을 확인하세요.");
-        });
-    }
+        function updateLineNumbers(textareaId, lineNumberId, side) {
+            const textarea = document.getElementById(textareaId),
+                lineNumContainer = document.getElementById(lineNumberId);
+            const lines = textarea.value ? textarea.value.split('\n').length : 1;
+            if (side === 'left' && lines === lastLeftLines) return;
+            if (side === 'right' && lines === lastRightLines) return;
+            if (side === 'left') lastLeftLines = lines;
+            else lastRightLines = lines;
+            let html = '';
+            for (let i = 1; i <= lines; i++) {
+                html += `<div class="line-num-item">${i}</div>`;
+            }
+            lineNumContainer.innerHTML = html;
+        }
 
-    window.onload = () => {
-        const leftArea = document.getElementById('text-left');
-        const rightArea = document.getElementById('text-right');
+        function syncScroll(textareaId, lineNumberId) {
+            const textarea = document.getElementById(textareaId),
+                lineNumContainer = document.getElementById(lineNumberId);
+            if (textarea && lineNumContainer) lineNumContainer.style.transform = `translateY(-${textarea.scrollTop}px)`;
+        }
 
-        leftArea.addEventListener('input', () => handleInputHistory('left'));
-        rightArea.addEventListener('input', () => handleInputHistory('right'));
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            if (bytes < 1024) return bytes + ' B';
+            return (bytes / 1024).toFixed(1) + ' KB';
+        }
 
-        leftArea.addEventListener('keydown', (e) => handleCustomHistoryKeys(e, 'left'));
-        rightArea.addEventListener('keydown', (e) => handleCustomHistoryKeys(e, 'right'));
+        function updateSideStatus(side) {
+            const raw = document.getElementById(`text-${side}`),
+                selStart = raw.selectionStart || 0;
+            const textBefore = raw.value.substring(0, selStart),
+                line = textBefore.split('\n').length;
+            const col = textBefore.length - textBefore.lastIndexOf('\n'),
+                inputBytes = new Blob([raw.value]).size;
+            document.getElementById(`${side}-status`).innerText = `Ln: ${line}, Col: ${col} | 글자수: ${raw.value.length.toLocaleString()}자`;
+            document.getElementById(`${side}-size`).innerText = `Size: ${formatBytes(inputBytes)}`;
+            updateLineNumbers(`text-${side}`, `${side}-line-numbers`, side);
+        }
 
-        leftArea.addEventListener('scroll', () => syncScroll('text-left', 'left-line-numbers'));
-        rightArea.addEventListener('scroll', () => syncScroll('text-right', 'right-line-numbers'));
+        function loadSampleText() {
+            document.getElementById('text-left').value = '// 1. 기존 유저 인증 함수\nfunction authenticateUser(username, password) {\n    if (username === "admin" && password === "1234") return true;\n    return false;\n}';
+            document.getElementById('text-right').value = '// 1. 보안 강화된 유저 인증 함수\nasync function authenticateUser(username, passwordHash) {\n    const isValid = await verifySecureHash(username, passwordHash);\n    if (isValid) return { status: 200, auth: true };\n    return { status: 401, auth: false };\n}';
+            recordHistory('left');
+            recordHistory('right');
+            updateSideStatus('left');
+            updateSideStatus('right');
+            executeDiffCheckerEngine();
+        }
 
-        leftArea.addEventListener('click', () => updateSideStatus('left'));
-        leftArea.addEventListener('keyup', () => updateSideStatus('left'));
-        leftArea.addEventListener('mouseup', () => updateSideStatus('left'));
+        function clearTextSource(targetId, side) {
+            const textarea = document.getElementById(targetId);
+            if (!textarea || !textarea.value) return;
+            textarea.value = '';
+            recordHistory(side);
+            updateSideStatus(side);
+            textarea.focus();
+        }
 
-        rightArea.addEventListener('click', () => updateSideStatus('right'));
-        rightArea.addEventListener('keyup', () => updateSideStatus('right'));
-        rightArea.addEventListener('mouseup', () => updateSideStatus('right'));
+        function swapTextContents() {
+            const leftArea = document.getElementById('text-left'),
+                rightArea = document.getElementById('text-right');
+            recordHistory('left');
+            recordHistory('right');
+            const tempVal = leftArea.value;
+            leftArea.value = rightArea.value;
+            rightArea.value = tempVal;
+            updateSideStatus('left');
+            updateSideStatus('right');
+            triggerDiffEngineIfActive();
+        }
 
-        recordHistory('left');
-        recordHistory('right');
-        updateSideStatus('left');
-        updateSideStatus('right');
-    };
-</script>
-<div id="dwk-footer"></div>
-<script src="../nav.js"></script>
+        function copyInputSource(targetId, label) {
+            const text = document.getElementById(targetId).value;
+            if (!text) {
+                alert(`${label} 박스가 비어 있습니다.`);
+                return;
+            }
+            navigator.clipboard.writeText(text).then(() => alert(`${label} 텍스트가 복사되었습니다.`));
+        }
+
+        function triggerDiffEngineIfActive() {
+            if (document.getElementById('similarity-dashboard').style.display === 'flex') executeDiffCheckerEngine();
+        }
+
+        function executeDiffCheckerEngine() {
+            let sourceLeft = document.getElementById('text-left').value;
+            let sourceRight = document.getElementById('text-right').value;
+            const tableBody = document.getElementById('diff-table-body'),
+                dashboard = document.getElementById('similarity-dashboard');
+            if (!sourceLeft && !sourceRight) {
+                tableBody.innerHTML = '<div class="diff-row"><div class="diff-num">-</div><div class="diff-text row-empty">입력된 데이터가 없습니다.</div></div>';
+                dashboard.style.display = 'none';
+                return;
+            }
+            const EngineClass = window.diff_match_patch || diff_match_patch;
+            const ignoreSpace = document.getElementById('chk-ignore-space').checked;
+            const ignoreCase = document.getElementById('chk-ignore-case').checked;
+            let cleanLeft = sourceLeft.replace(/\r/g, ''),
+                cleanRight = sourceRight.replace(/\r/g, '');
+            if (ignoreSpace) {
+                cleanLeft = cleanLeft.replace(/[ \t]+/g, ' ');
+                cleanRight = cleanRight.replace(/[ \t]+/g, ' ');
+            }
+            if (ignoreCase) {
+                cleanLeft = cleanLeft.toLowerCase();
+                cleanRight = cleanRight.toLowerCase();
+            }
+
+            try {
+                const dmp = new EngineClass(),
+                    diffs = dmp.diff_main(cleanLeft, cleanRight);
+                dmp.diff_cleanupSemantic(diffs);
+                dmp.diff_cleanupEfficiency(diffs);
+                let common = 0,
+                    del = 0,
+                    ins = 0;
+                diffs.forEach(p => {
+                    if (p[0] === 0) common += p[1].length;
+                    else if (p[0] === -1) del += p[1].length;
+                    else ins += p[1].length;
+                });
+                const maxLen = Math.max(common + del, common + ins);
+                const ratio = maxLen > 0 ? ((common / maxLen) * 100).toFixed(2) : "0.00";
+                document.getElementById('val-match-percentage').innerHTML = `<span>${ratio}%</span>`;
+                document.getElementById('val-match-detail').innerText = `공통 글자 수: ${common.toLocaleString()}자 / 최대 분량: ${maxLen.toLocaleString()}자`;
+                dashboard.style.display = 'flex';
+
+                let lines = [""],
+                    currentLineIdx = 0,
+                    lineChangeStatus = [false];
+                diffs.forEach(part => {
+                    part[1].split('\n').forEach((seg, sIdx) => {
+                        if (sIdx > 0) {
+                            currentLineIdx++;
+                            lines[currentLineIdx] = "";
+                            lineChangeStatus[currentLineIdx] = false;
+                        }
+                        if (!seg) return;
+                        const text = seg.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                        if (part[0] === 0) lines[currentLineIdx] += text;
+                        else {
+                            lineChangeStatus[currentLineIdx] = true;
+                            lines[currentLineIdx] += part[0] === 1 ? `<ins>${text}</ins>` : `<del>${text}</del>`;
+                        }
+                    });
+                });
+
+                let tableHtml = "";
+                lines.forEach((content, idx) => {
+                    const isChanged = lineChangeStatus[idx];
+                    tableHtml += `<div class="${isChanged ? "diff-row row-modified" : "diff-row"}" data-changed="${isChanged}">
+                    <div class="diff-num">${idx + 1}</div><div class="diff-text">${content || " "}</div></div>`;
+                });
+                tableBody.innerHTML = tableHtml;
+                toggleChangesFilter();
+            } catch (err) {
+                tableBody.innerHTML = '<div class="diff-row"><div class="diff-num">-</div><div class="diff-text row-empty">연산 오류 발생</div></div>';
+                dashboard.style.display = 'none';
+            }
+        }
+
+        function toggleChangesFilter() {
+            const showOnly = document.getElementById('chk-only-changes').checked;
+            document.querySelectorAll('#diff-table-body .diff-row').forEach(row => {
+                if (showOnly && row.getAttribute('data-changed') !== 'true' && row.querySelector('.diff-num').innerText !== '-') row.classList.add('hide');
+                else row.classList.remove('hide');
+            });
+            document.querySelectorAll('.btn-orange-mode, .btn-red-mode, .btn-teal-mode, .btn-green-mode').forEach(b => b.style.display = showOnly ? 'block' : 'none');
+        }
+
+        function copySelectiveDiffResult(mode) {
+            const rows = document.querySelectorAll('#diff-table-body .diff-row');
+            let acc = [];
+            rows.forEach(row => {
+                if (row.classList.contains('hide')) return;
+                const textNode = row.querySelector('.diff-text');
+                if (textNode && !textNode.classList.contains('row-empty')) {
+                    const clone = textNode.cloneNode(true);
+                    if (mode === 'ins') {
+                        clone.querySelectorAll('del').forEach(d => d.remove());
+                        acc.push(clone.innerText);
+                    } else if (mode === 'del') {
+                        clone.querySelectorAll('ins').forEach(i => i.remove());
+                        acc.push(clone.innerText);
+                    } else if (mode === 'ins-only') {
+                        clone.querySelectorAll('ins').forEach(i => acc.push(i.innerText));
+                    } else if (mode === 'del-only') {
+                        clone.querySelectorAll('del').forEach(d => acc.push(d.innerText));
+                    } else {
+                        acc.push(clone.innerText);
+                    }
+                }
+            });
+            if (!acc.length) {
+                alert("복사할 내용이 없습니다.");
+                return;
+            }
+            navigator.clipboard.writeText(acc.join('\n')).then(() => alert("복사되었습니다!"));
+        }
+
+        window.onload = () => {
+            ['left', 'right'].forEach(side => {
+                const el = document.getElementById(`text-${side}`);
+                el.addEventListener('input', () => handleInputHistory(side));
+                el.addEventListener('keydown', (e) => handleCustomHistoryKeys(e, side));
+                el.addEventListener('scroll', () => syncScroll(`text-${side}`, `${side}-line-numbers`));
+                ['click', 'keyup', 'mouseup'].forEach(ev => el.addEventListener(ev, () => updateSideStatus(side)));
+                recordHistory(side);
+                updateSideStatus(side);
+            });
+        };
+    </script>
+    <div id="dwk-footer"></div>
+    <script src="../nav.js"></script>
 </body>
+
 </html>
