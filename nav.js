@@ -24,7 +24,7 @@
         { name: '웹 색상 스튜디오 & UI 가독성', tag: 'COLOR', url: `${HOST_URL}/color/`, keywords: 'contrast wcag 명도대비 대비비 palette 색상표' }
     ];
 
-    // 1. 메타태그 주입
+    // 1. 공통 메타태그 주입
     const commonMetaHTML = `
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>">
         <meta property="og:type" content="website">
@@ -33,7 +33,7 @@
     `;
     document.head.insertAdjacentHTML('beforeend', commonMetaHTML);
 
-    // 2. 글로벌 네비게이션 HTML (3대 카테고리 완벽 분리)
+    // 2. 글로벌 네비게이션 HTML (다크모드 토글 버튼 추가)
     const navHTML = `
     <header class="dwk-global-nav">
         <div class="nav-left">
@@ -42,7 +42,6 @@
                 <span class="dwk-brand-text">DevWorKit</span>
             </a>
             <nav class="nav-menu">
-                <!-- 1. 텍스트 / 문서 도구 (4종) -->
                 <div class="nav-dropdown" id="dropdown-text">
                     <button class="nav-dropbtn" onclick="toggleMobileNav(event, 'dropdown-text')">텍스트/문서 ▾</button>
                     <div class="nav-dropdown-content">
@@ -53,7 +52,6 @@
                     </div>
                 </div>
 
-                <!-- 2. 개발 / 데이터 도구 (4종) -->
                 <div class="nav-dropdown" id="dropdown-data">
                     <button class="nav-dropbtn" onclick="toggleMobileNav(event, 'dropdown-data')">개발/데이터 ▾</button>
                     <div class="nav-dropdown-content">
@@ -64,7 +62,6 @@
                     </div>
                 </div>
 
-                <!-- 3. 시스템 / 디자인 도구 (5종) -->
                 <div class="nav-dropdown" id="dropdown-util">
                     <button class="nav-dropbtn" onclick="toggleMobileNav(event, 'dropdown-util')">시스템/디자인 ▾</button>
                     <div class="nav-dropdown-content">
@@ -79,12 +76,13 @@
         </div>
         
         <div class="nav-right">
-            <!-- GNB 실시간 빠른 도구 검색 -->
             <div class="nav-search-wrapper" id="nav-search-container">
                 <input type="text" id="gnb-search-input" class="gnb-search-input" placeholder="도구 빠른 검색..." oninput="handleGnbSearch(this.value)" onfocus="handleGnbFocus()" autocomplete="off">
                 <span class="gnb-search-icon">🔍</span>
                 <div class="gnb-search-results" id="gnb-search-results"></div>
             </div>
+
+            <button id="theme-toggle-btn" class="theme-toggle-btn" onclick="toggleTheme()" title="다크/라이트 모드 전환">🌙</button>
 
             <a href="${HOST_URL}/about.html" class="nav-link-sub">소개/문의</a>
             <a href="${HOST_URL}/guide/" class="nav-link-sub">가이드</a>
@@ -107,7 +105,7 @@
     </footer>
     `;
 
-    // 4. 스타일시트
+    // 4. 스타일시트 (GNB + 전역 다크모드 테마 룰)
     const navCSS = `
     <style>
         .dwk-global-nav {
@@ -199,8 +197,9 @@
             }
         }
 
-        .nav-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+        .nav-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
         
+        /* GNB 검색창: 화이트 배경 */
         .nav-search-wrapper {
             position: relative;
             display: flex;
@@ -214,7 +213,7 @@
             font-weight: 600;
             padding: 6px 28px 6px 12px;
             border-radius: 6px;
-            width: 140px;
+            width: 135px;
             outline: none;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             transition: all 0.2s ease;
@@ -224,7 +223,7 @@
             font-weight: 500;
         }
         .gnb-search-input:focus {
-            width: 210px;
+            width: 190px;
             border-color: #0284c7 !important;
             box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25) !important;
         }
@@ -275,6 +274,26 @@
             font-weight: 800;
         }
 
+        /* 다크모드 토글 버튼 */
+        .theme-toggle-btn {
+            background: #1f2937;
+            border: 1px solid #374151;
+            color: #f3f4f6;
+            cursor: pointer;
+            padding: 5px 9px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .theme-toggle-btn:hover {
+            background: #374151;
+            border-color: #4b5563;
+        }
+
         .nav-link-sub {
             color: #9ca3af;
             font-size: 13px;
@@ -295,6 +314,7 @@
         }
         .nav-right .nav-hub-btn:hover { color: #7dd3fc; }
 
+        /* 푸터 스타일 */
         .dwk-global-footer {
             border-top: 1px solid #dee2e6;
             padding: 24px 40px;
@@ -311,6 +331,7 @@
             width: 100%;
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
         }
         .dwk-footer-links {
             display: flex;
@@ -325,8 +346,91 @@
         .dwk-footer-links a:hover { color: #0284c7; }
         .dwk-footer-copy { color: #94a3b8; font-size: 12px; }
 
+        /* ========================================================= */
+        /* 🌑 전역 다크모드 (body.dark-theme) 일괄 오버라이드 룰셋   */
+        /* ========================================================= */
+        body.dark-theme {
+            background-color: #0b0f19 !important;
+            color: #f1f5f9 !important;
+        }
+        body.dark-theme .hero-title,
+        body.dark-theme h1,
+        body.dark-theme h2,
+        body.dark-theme h3 {
+            color: #f8fafc !important;
+        }
+        body.dark-theme .hero-desc,
+        body.dark-theme p,
+        body.dark-theme .desc-text {
+            color: #94a3b8 !important;
+        }
+        body.dark-theme .tool-card,
+        body.dark-theme .tool-box,
+        body.dark-theme .container,
+        body.dark-theme .main-container {
+            background-color: #131b2e !important;
+            border-color: #1e293b !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+        }
+        body.dark-theme .tool-card:hover {
+            border-color: #38bdf8 !important;
+        }
+        body.dark-theme .search-input,
+        body.dark-theme textarea,
+        body.dark-theme input[type="text"],
+        body.dark-theme select {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+        body.dark-theme .filter-chip {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #cbd5e1 !important;
+        }
+        body.dark-theme .filter-chip:hover {
+            background-color: #334155 !important;
+            color: #ffffff !important;
+        }
+        body.dark-theme .filter-chip.active {
+            background-color: #38bdf8 !important;
+            color: #0f172a !important;
+            border-color: #38bdf8 !important;
+        }
+        body.dark-theme .dwk-global-footer {
+            background-color: #0b0f19 !important;
+            border-top-color: #1e293b !important;
+            color: #64748b !important;
+        }
+        body.dark-theme .dwk-footer-links a {
+            color: #94a3b8 !important;
+        }
+        body.dark-theme .dwk-footer-links a:hover {
+            color: #38bdf8 !important;
+        }
+        body.dark-theme .guide-banner,
+        body.dark-theme .info-box {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #cbd5e1 !important;
+        }
+
+        /* 다크모드 시 GNB 검색결과 팝업 */
+        body.dark-theme .gnb-search-results {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+        }
+        body.dark-theme .gnb-search-results a {
+            color: #f1f5f9 !important;
+            border-bottom-color: #334155 !important;
+        }
+        body.dark-theme .gnb-search-results a:hover {
+            background-color: #0f172a !important;
+            color: #38bdf8 !important;
+        }
+
         /* 모바일 최적화 */
-        @media (max-width: 820px) {
+        @media (max-width: 860px) {
             .dwk-global-nav { padding: 0 12px; height: 50px; }
             .nav-left { gap: 8px; }
             .nav-brand { gap: 6px; }
@@ -334,8 +438,8 @@
             .nav-dropbtn { font-size: 11.5px; padding: 12px 3px; }
             .nav-link-sub { display: none; }
             .nav-hub-btn { font-size: 12px; }
-            .gnb-search-input { width: 90px; font-size: 11px; padding: 5px 20px 5px 6px; }
-            .gnb-search-input:focus { width: 130px; }
+            .gnb-search-input { width: 85px; font-size: 11px; padding: 5px 18px 5px 6px; }
+            .gnb-search-input:focus { width: 125px; }
             .gnb-search-results { width: 210px; }
 
             .nav-dropdown-content {
@@ -360,17 +464,37 @@
     document.head.insertAdjacentHTML('beforeend', navCSS);
     document.body.insertAdjacentHTML('afterbegin', navHTML);
 
-    // 5. 푸터 주입 및 서브페이지 로고 뱃지 소프트 틴트 동기화
-    window.addEventListener('DOMContentLoaded', () => {
-        const targetContainer = document.getElementById('dwk-footer');
-        if (targetContainer) {
-            targetContainer.innerHTML = footerHTML;
+    // 5. 다크모드 초기화 및 테마 토글 함수
+    function initTheme() {
+        const savedTheme = localStorage.getItem('dwk_theme');
+        const isDark = savedTheme === 'dark';
+        if (isDark) {
+            document.body.classList.add('dark-theme');
         } else {
-            document.body.insertAdjacentHTML('beforeend', footerHTML);
+            document.body.classList.remove('dark-theme');
         }
+        updateToggleBtnIcon();
+    }
 
+    function updateToggleBtnIcon() {
+        const btn = document.getElementById('theme-toggle-btn');
+        if (!btn) return;
+        const isDark = document.body.classList.contains('dark-theme');
+        btn.innerHTML = isDark ? '☀️' : '🌙';
+    }
+
+    window.toggleTheme = function () {
+        const isDark = document.body.classList.toggle('dark-theme');
+        localStorage.setItem('dwk_theme', isDark ? 'dark' : 'light');
+        updateToggleBtnIcon();
+        applyBadgeColors();
+    };
+
+    // 6. 개별 도구 페이지 뱃지 소프트 틴트 동기화
+    function applyBadgeColors() {
         const path = window.location.pathname.toLowerCase();
         const headerBadge = document.querySelector('.card-badge, .logo-badge, .tool-badge, .header-badge');
+        const isDark = document.body.classList.contains('dark-theme');
         
         if (headerBadge) {
             headerBadge.style.borderRadius = '6px';
@@ -378,28 +502,41 @@
             headerBadge.style.padding = '4px 9px';
             headerBadge.style.letterSpacing = '0.5px';
 
-            // 1. 텍스트 / 문서 (Soft Sky Blue)
+            // 1. 텍스트 / 문서 (Sky Blue 계열)
             if (path.includes('/strget/') || path.includes('/counter/') || path.includes('/strcmp/') || path.includes('/markdown/')) {
-                headerBadge.style.backgroundColor = '#e0f2fe';
-                headerBadge.style.color = '#0369a1';
-                headerBadge.style.border = '1px solid #bae6fd';
+                headerBadge.style.backgroundColor = isDark ? '#082f49' : '#e0f2fe';
+                headerBadge.style.color = isDark ? '#7dd3fc' : '#0369a1';
+                headerBadge.style.border = isDark ? '1px solid #0369a1' : '1px solid #bae6fd';
             }
-            // 2. 개발 / 데이터 (Soft Violet)
+            // 2. 개발 / 데이터 (Violet 계열)
             else if (path.includes('/fsee/') || path.includes('/coder/') || path.includes('/beautify/') || path.includes('/json-viewer/')) {
-                headerBadge.style.backgroundColor = '#ede9fe';
-                headerBadge.style.color = '#6d28d9';
-                headerBadge.style.border = '1px solid #ddd6fe';
+                headerBadge.style.backgroundColor = isDark ? '#2e1065' : '#ede9fe';
+                headerBadge.style.color = isDark ? '#c4b5fd' : '#6d28d9';
+                headerBadge.style.border = isDark ? '1px solid #5b21b6' : '1px solid #ddd6fe';
             }
-            // 3. 시스템 / 디자인 (Soft Teal)
+            // 3. 시스템 / 디자인 (Teal 계열)
             else if (path.includes('/time/') || path.includes('/hash/') || path.includes('/qrm/') || path.includes('/cron/') || path.includes('/color/')) {
-                headerBadge.style.backgroundColor = '#ccfbf1';
-                headerBadge.style.color = '#0f766e';
-                headerBadge.style.border = '1px solid #99f6e4';
+                headerBadge.style.backgroundColor = isDark ? '#042f2e' : '#ccfbf1';
+                headerBadge.style.color = isDark ? '#5eead4' : '#0f766e';
+                headerBadge.style.border = isDark ? '1px solid #115e59' : '1px solid #99f6e4';
             }
+        }
+    }
+
+    // 7. DOM 로드 시 실행
+    window.addEventListener('DOMContentLoaded', () => {
+        initTheme();
+        applyBadgeColors();
+
+        const targetContainer = document.getElementById('dwk-footer');
+        if (targetContainer) {
+            targetContainer.innerHTML = footerHTML;
+        } else {
+            document.body.insertAdjacentHTML('beforeend', footerHTML);
         }
     });
 
-    // 6. GNB 검색 핸들러
+    // 8. GNB 실시간 검색 핸들러
     window.handleGnbFocus = function () {
         const input = document.getElementById('gnb-search-input');
         if (input.value.trim().length > 0) {
@@ -424,7 +561,7 @@
         );
 
         if (filtered.length === 0) {
-            resultsBox.innerHTML = '<div style="padding:12px;color:#64748b;font-size:12px;text-align:center;">검색 결과가 없습니다.</div>';
+            resultsBox.innerHTML = '<div style="padding:12px;color:#94a3b8;font-size:12px;text-align:center;">검색 결과가 없습니다.</div>';
         } else {
             resultsBox.innerHTML = filtered.map(t => `
                 <a href="${t.url}">
@@ -436,9 +573,9 @@
         resultsBox.style.display = 'block';
     };
 
-    // 모바일 터치 토글
+    // 9. 모바일 터치 토글
     window.toggleMobileNav = function (e, dropdownId) {
-        if (window.innerWidth <= 820) {
+        if (window.innerWidth <= 860) {
             e.preventDefault();
             e.stopPropagation();
             const target = document.getElementById(dropdownId);
