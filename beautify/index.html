@@ -355,8 +355,7 @@
                     <textarea id="raw-code" class="code-textarea" placeholder="여기에 소스 코드를 입력하거나 [📂 파일 열기]를 눌러보세요..." spellcheck="false"></textarea>
                 </div>
                 <div class="editor-status-bar">
-                    <span id="input-status">Ln: 1, Col: 1</span>
-                    <span id="output-char" style="margin-left: 8px;">| 글자수: 0자</span>
+                    <span id="input-status">Ln: 1, Col: 1 | 글자수: 0자</span>
                     <span id="input-size">Size: 0 B</span>
                 </div>
             </div>
@@ -386,8 +385,7 @@
                     <iframe id="preview-frame"></iframe>
                 </div>
                 <div class="editor-status-bar">
-                    <span id="output-status">Ln: 1, Col: 1</span>
-                    <span id="output-char" style="margin-left: 8px;">| 글자수: 0자</span>
+                    <span id="output-status">Ln: 1, Col: 1 | 글자수: 0자</span>
                     <span id="output-size">Size: 0 B</span>
                 </div>
             </div>
@@ -599,7 +597,7 @@
         return (bytes / 1024).toFixed(1) + ' KB';
     }
 
-function updateInputStatus() {
+    function updateInputStatus() {
         const raw = document.getElementById('raw-code');
         const selStart = raw.selectionStart || 0;
         const textBefore = raw.value.substring(0, selStart);
@@ -608,8 +606,7 @@ function updateInputStatus() {
         const inputBytes = new Blob([raw.value]).size;
         const charCount = raw.value.length;
         
-        document.getElementById('input-status').innerText = `Ln: ${line}, Col: ${col}`;
-        document.getElementById('input-char').innerText = `| 글자수: ${charCount.toLocaleString()}자`; // 👈 화면에 렌더링
+        document.getElementById('input-status').innerText = `Ln: ${line}, Col: ${col} | 글자수: ${charCount.toLocaleString()}자`;
         document.getElementById('input-size').innerText = `Size: ${formatBytes(inputBytes)}`;
         updateLineNumbers('raw-code', 'input-line-numbers', true);
     }
@@ -623,8 +620,7 @@ function updateInputStatus() {
         const outBytes = new Blob([out.value]).size;
         const charCount = out.value.length;
         
-        document.getElementById('output-status').innerText = `Ln: ${outLine}, Col: ${outCol}`;
-        document.getElementById('output-char').innerText = `| 글자수: ${charCount.toLocaleString()}자`; // 👈 화면에 렌더링
+        document.getElementById('output-status').innerText = `Ln: ${outLine}, Col: ${outCol} | 글자수: ${charCount.toLocaleString()}자`;
         document.getElementById('output-size').innerText = `Size: ${formatBytes(outBytes)}`;
         updateLineNumbers('formatted-code', 'output-line-numbers', false);
     }
