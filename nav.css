@@ -239,12 +239,12 @@
 /* ========================================================================= */
 
 html.dark-theme {
-    /* 웹 전체를 부드러운 다크 Slate 톤으로 자동 반전 */
-    filter: invert(92%) hue-rotate(180deg) brightness(95%) contrast(95%);
+    /* 칙칙한 잿빛을 없애고 세련된 다크 블루 톤으로 생동감 부여 */
+    filter: invert(93%) hue-rotate(200deg) brightness(102%) contrast(92%) saturate(130%);
     background-color: #ffffff;
 }
 
-/* GNB, 푸터, 미디어, 다이어그램은 반전에서 제외하여 원래 다크/원색 유지 */
+/* 상단 GNB, 푸터, 미디어, 뱃지는 색감 왜곡 없이 원본 그대로 유지 */
 html.dark-theme .dwk-global-nav,
 html.dark-theme .dwk-global-footer,
 html.dark-theme img,
@@ -255,10 +255,10 @@ html.dark-theme .mermaid,
 html.dark-theme .interactive-canvas,
 html.dark-theme [class*="badge"],
 html.dark-theme .card-badge {
-    filter: invert(100%) hue-rotate(180deg);
+    filter: invert(100%) hue-rotate(160deg) saturate(90%);
 }
 
-/* 다크모드 시 스크롤바 최적화 */
+/* 스크롤바 */
 html.dark-theme ::-webkit-scrollbar-thumb {
     background-color: #cbd5e1;
 }
