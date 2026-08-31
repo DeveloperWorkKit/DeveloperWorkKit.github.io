@@ -26,7 +26,6 @@
             min-height: 100vh;
         }
 
-        /* 히어로 헤더 여백 밸런스 */
         .hero-section {
             text-align: center;
             padding: 80px 20px 32px 20px;
@@ -59,7 +58,6 @@
             max-width: 600px;
         }
 
-        /* 검색 및 필터 컨트롤 바 */
         .control-section {
             max-width: 680px;
             width: 100%;
@@ -135,7 +133,6 @@
             border-color: #0f172a;
         }
 
-        /* Flex Grid 컨테이너 (자동 중앙/대칭 정렬) */
         .hub-container {
             max-width: 1160px;
             width: 100%;
@@ -198,7 +195,6 @@
             border-color: #cbd5e1;
         }
 
-        /* ===== 1+2번 결합: 카테고리별 소프트 틴트 뱃지 시스템 ===== */
         .card-badge {
             display: inline-block;
             font-size: 11px;
@@ -211,27 +207,23 @@
             border: 1px solid transparent;
         }
 
-        /* 카테고리 1: 텍스트 / 문서 도구군 (Soft Sky Blue) */
         .badge-cat-text {
             background-color: #e0f2fe;
             color: #0369a1;
             border-color: #bae6fd;
         }
 
-        /* 카테고리 2: 개발 / 데이터 도구군 (Soft Violet) */
         .badge-cat-data {
             background-color: #ede9fe;
             color: #6d28d9;
             border-color: #ddd6fe;
         }
 
-        /* 카테고리 3: 시스템 / 디자인 유틸군 (Soft Teal) */
         .badge-cat-util {
             background-color: #ccfbf1;
             color: #0f766e;
             border-color: #99f6e4;
         }
-        /* ======================================================= */
 
         .tool-card h3 {
             font-size: 19px;
@@ -282,6 +274,7 @@
 
     <main class="hub-container">
         <div class="card-grid" id="card-grid">
+            <!-- [그룹 1: 텍스트 / 문서 도구] -->
             <a href="./strget/" class="tool-link" data-category="text" data-keywords="문자열 추출기 strget 정규식 이메일 전화번호 regex extract">
                 <div class="tool-card">
                     <span class="card-badge badge-cat-text">STRGET</span>
@@ -314,6 +307,7 @@
                 </div>
             </a>
 
+            <!-- [그룹 2: 개발 / 데이터 도구] -->
             <a href="./fsee/" class="tool-link" data-category="data" data-keywords="폴더 구조 엑셀 fsee tree folder directory zip excel 스프레드시트">
                 <div class="tool-card">
                     <span class="card-badge badge-cat-data">FSEE</span>
@@ -346,6 +340,7 @@
                 </div>
             </a>
 
+            <!-- [그룹 3: 시스템 / 디자인 유틸] -->
             <a href="./time/" class="tool-link" data-category="util" data-keywords="타임스탬프 변환기 time unix timestamp epoch kst utc 시간 날짜 date">
                 <div class="tool-card">
                     <span class="card-badge badge-cat-util">TIME</span>
