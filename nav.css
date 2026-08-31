@@ -235,7 +235,7 @@
 .dwk-footer-copy { color: #94a3b8; font-size: 12px; }
 
 /* ========================================================================= */
-/* 🌑 전역 다크모드 완결판 (body.dark-theme)                                 */
+/* 🌑 전역 다크모드 완벽 교정 (body.dark-theme)                              */
 /* ========================================================================= */
 
 body.dark-theme {
@@ -283,22 +283,38 @@ body.dark-theme .badge-util {
     border: 1px solid #115e59 !important;
 }
 
-/* 3. 일반 텍스트 span 보호 */
-body.dark-theme span:not(.gnb-result-tag):not(.dwk-logo-badge):not(.card-badge):not(.logo-badge):not(.highlight):not(.highlight-duplicate):not(.highlight-active):not([class*="badge"]) {
-    color: inherit;
-}
-
-/* 4. 컨테이너 & 패널 & 가이드 & 박스 일괄 다크화 */
-body.dark-theme .control-box,
-body.dark-theme .display-box,
+/* 3. [COLOR & 전체] 가이드 영역 가독성 복구 */
 body.dark-theme .guide-box,
 body.dark-theme .info-box,
+body.dark-theme [class*="guide"] {
+    background-color: #131b2e !important;
+    border-color: #1e293b !important;
+    color: #cbd5e1 !important;
+}
+body.dark-theme .guide-box strong,
+body.dark-theme .guide-box b,
+body.dark-theme [class*="guide"] strong {
+    color: #38bdf8 !important;
+}
+body.dark-theme .guide-box span,
+body.dark-theme .guide-box li,
+body.dark-theme [class*="guide"] span {
+    color: #94a3b8 !important;
+}
+body.dark-theme .guide-box a,
+body.dark-theme [class*="guide"] a {
+    background: #1e293b !important;
+    border-color: #38bdf8 !important;
+    color: #38bdf8 !important;
+}
+
+/* 4. 컨테이너 & 패널 & 카드 일괄 다크화 */
+body.dark-theme .control-box,
+body.dark-theme .display-box,
 body.dark-theme .tool-card,
 body.dark-theme .tool-box,
 body.dark-theme .container,
 body.dark-theme .main-container,
-body.dark-theme .guide-banner,
-body.dark-theme .control-section,
 body.dark-theme .panel,
 body.dark-theme .left-panel,
 body.dark-theme .right-panel,
@@ -312,28 +328,75 @@ body.dark-theme [class*="grid"] > div {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* 5. [STRCMP, QRM, CRON] 하얀색 결과창 및 프리뷰 완벽 다크화 */
-body.dark-theme #diff-result,
+/* 5. [STRCMP] 라인 넘버 거터 및 Diff 결과 테이블 완벽 다크화 */
+body.dark-theme .diff-result-box,
 body.dark-theme .diff-box,
 body.dark-theme .diff-output,
-body.dark-theme .diff-container,
-body.dark-theme .scan-result-box,
-body.dark-theme .drop-zone,
-body.dark-theme .upload-box,
-body.dark-theme .next-run-box,
-body.dark-theme .cron-result-box,
-body.dark-theme .cron-info-box,
-body.dark-theme .schedule-box,
-body.dark-theme .cron-preview-area,
-body.dark-theme [id*="scan-result"],
-body.dark-theme [id*="diff-view"],
-body.dark-theme [id*="next-runs"] {
+body.dark-theme #diff-result,
+body.dark-theme [id*="diff"],
+body.dark-theme .diff-table,
+body.dark-theme table,
+body.dark-theme th,
+body.dark-theme td,
+body.dark-theme tr {
     background-color: #0b0f19 !important;
     border-color: #1e293b !important;
-    color: #e2e8f0 !important;
+    color: #cbd5e1 !important;
+}
+body.dark-theme .line-number,
+body.dark-theme .line-numbers,
+body.dark-theme .editor-gutter,
+body.dark-theme .gutter,
+body.dark-theme [class*="gutter"],
+body.dark-theme [class*="line-num"] {
+    background-color: #0b0f19 !important;
+    border-color: #1e293b !important;
+    color: #475569 !important;
 }
 
-/* 6. [MARKDOWN] 에디터 및 렌더링 뷰어 다크 최적화 (KaTeX/Mermaid 보호) */
+/* 6. [CRON & QRM] 상단/하단 결과창 및 대기창 하얀색 박멸 */
+body.dark-theme .cron-display-box,
+body.dark-theme .cron-screen,
+body.dark-theme .cron-preview,
+body.dark-theme .cron-result,
+body.dark-theme [class*="cron-display"],
+body.dark-theme [id*="cron-display"],
+body.dark-theme [class*="scan-result"],
+body.dark-theme [id*="scan-result"],
+body.dark-theme .drop-zone,
+body.dark-theme .upload-box,
+body.dark-theme .drag-zone {
+    background-color: #0b0f19 !important;
+    border-color: #1e293b !important;
+    color: #f8fafc !important;
+}
+
+/* 7. [CRON, STRCMP 등] 모든 입력창 및 인풋(readonly 포함) 다크 강제 */
+body.dark-theme textarea,
+body.dark-theme input[type="text"],
+body.dark-theme input[type="number"],
+body.dark-theme input[type="search"],
+body.dark-theme input[type="date"],
+body.dark-theme input[type="time"],
+body.dark-theme input[type="datetime-local"],
+body.dark-theme input[readonly],
+body.dark-theme select,
+body.dark-theme .test-textarea,
+body.dark-theme .backdrop,
+body.dark-theme .text-area-container,
+body.dark-theme .regex-input-wrapper {
+    background-color: #0b0f19 !important;
+    border-color: #1e293b !important;
+    color: #f8fafc !important;
+    color-scheme: dark;
+}
+
+body.dark-theme textarea::placeholder,
+body.dark-theme input::placeholder {
+    color: #475569 !important;
+}
+
+/* 8. [MARKDOWN] KaTeX 수식 및 Mermaid 다이어그램 보호 */
 body.dark-theme .markdown-body,
 body.dark-theme #preview-content,
 body.dark-theme .preview-container {
@@ -353,7 +416,6 @@ body.dark-theme .markdown-body .callout {
     border-left-color: #38bdf8 !important;
     color: #cbd5e1 !important;
 }
-/* KaTeX 수식 및 Mermaid 다이어그램 텍스트/SVG 보존 */
 body.dark-theme .katex,
 body.dark-theme .katex-display {
     color: #f8fafc !important;
@@ -362,41 +424,14 @@ body.dark-theme .mermaid svg {
     filter: brightness(0.9) contrast(1.1);
 }
 
-/* 7. [COLOR] 웹 색상 스튜디오의 실시간 캔버스 격리 (다크모드 오버라이드 제외) */
+/* 9. [COLOR] 실시간 캔버스 격리 */
 body.dark-theme #color-preview-card,
 body.dark-theme .live-preview-box,
 body.dark-theme .interactive-canvas {
-    /* 캔버스는 사용자가 설정한 색상/배경을 유지 */
     border-color: #334155 !important;
 }
 
-/* 8. 입력창 & 셀렉트 & 에디터 거터 */
-body.dark-theme textarea,
-body.dark-theme input[type="text"],
-body.dark-theme input[type="number"],
-body.dark-theme input[type="search"],
-body.dark-theme input[type="date"],
-body.dark-theme input[type="time"],
-body.dark-theme input[type="datetime-local"],
-body.dark-theme select,
-body.dark-theme .test-textarea,
-body.dark-theme .backdrop,
-body.dark-theme .text-area-container,
-body.dark-theme .regex-input-wrapper,
-body.dark-theme .line-numbers,
-body.dark-theme .editor-gutter {
-    background-color: #0b0f19 !important;
-    border-color: #1e293b !important;
-    color: #f8fafc !important;
-    color-scheme: dark;
-}
-
-body.dark-theme textarea::placeholder,
-body.dark-theme input::placeholder {
-    color: #475569 !important;
-}
-
-/* 9. 버튼 가독성 전면 보호 (초록/파랑 액션 버튼 흰색 글자 유지) */
+/* 10. 버튼 가독성 보호 (초록/파랑 액션 버튼 흰 글씨 유지) */
 body.dark-theme .btn-copy-excel,
 body.dark-theme .btn-primary,
 body.dark-theme .btn-success,
@@ -426,7 +461,7 @@ body.dark-theme .btn-preset.active {
     color: #ffffff !important;
 }
 
-/* 10. 형광펜 & Diff 비교 하이라이트 */
+/* 11. 형광펜 & Diff 비교 하이라이트 */
 body.dark-theme .highlight {
     background-color: #854d0e !important;
     color: transparent !important;
@@ -450,7 +485,7 @@ body.dark-theme .diff-removed, body.dark-theme del {
     color: #fca5a5 !important;
 }
 
-/* 11. 메인 필터칩 & 푸터 & GNB 검색결과 */
+/* 12. 메인 필터칩 & 푸터 & GNB 검색결과 */
 body.dark-theme .filter-chip {
     background-color: #1e293b !important;
     border-color: #334155 !important;
