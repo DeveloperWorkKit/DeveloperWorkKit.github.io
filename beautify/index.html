@@ -599,7 +599,7 @@
         return (bytes / 1024).toFixed(1) + ' KB';
     }
 
-    function updateInputStatus() {
+function updateInputStatus() {
         const raw = document.getElementById('raw-code');
         const selStart = raw.selectionStart || 0;
         const textBefore = raw.value.substring(0, selStart);
@@ -609,6 +609,7 @@
         const charCount = raw.value.length;
         
         document.getElementById('input-status').innerText = `Ln: ${line}, Col: ${col}`;
+        document.getElementById('input-char').innerText = `| 글자수: ${charCount.toLocaleString()}자`; // 👈 화면에 렌더링
         document.getElementById('input-size').innerText = `Size: ${formatBytes(inputBytes)}`;
         updateLineNumbers('raw-code', 'input-line-numbers', true);
     }
@@ -623,6 +624,7 @@
         const charCount = out.value.length;
         
         document.getElementById('output-status').innerText = `Ln: ${outLine}, Col: ${outCol}`;
+        document.getElementById('output-char').innerText = `| 글자수: ${charCount.toLocaleString()}자`; // 👈 화면에 렌더링
         document.getElementById('output-size').innerText = `Size: ${formatBytes(outBytes)}`;
         updateLineNumbers('formatted-code', 'output-line-numbers', false);
     }
