@@ -103,7 +103,7 @@
 
     document.body.insertAdjacentHTML('afterbegin', navHTML);
 
-    // 5. 다크모드 초기화 & 토글
+    // 5. 다크모드 초기화 & 토글 (html 태그 타겟팅)
     function initTheme() {
         const savedTheme = localStorage.getItem('dwk_theme');
         if (savedTheme === 'dark') {
@@ -125,43 +125,40 @@
         const isDark = document.documentElement.classList.toggle('dark-theme');
         localStorage.setItem('dwk_theme', isDark ? 'dark' : 'light');
         updateToggleBtnIcon();
+        applyBadgeColors();
     };
 
-    // 6. 메인 허브 및 서브페이지 로고 뱃지 색상 자동 보정
+    // 6. 메인 허브 및 가이드 페이지 4대 네온 뱃지 동기화
     function applyBadgeColors() {
-        const path = window.location.pathname.toLowerCase();
-        const isDark = document.body.classList.contains('dark-theme');
+        const textTools = ['STRGET', 'COUNTER', 'STRCMP', 'MARKDOWN'];
+        const dataTools = ['FSEE', 'CODER', 'BEAUTIFY', 'JSON'];
+        const utilTools = ['TIME', 'HASH', 'QRM', 'CRON', 'COLOR'];
 
-        // 메인 허브 카드 뱃지 일괄 카테고리 태깅
-        document.querySelectorAll('.tool-card').forEach(card => {
-            const badge = card.querySelector('.card-badge');
-            const cat = card.getAttribute('data-category');
-            if (badge && cat) {
-                badge.setAttribute('data-cat', cat);
+        document.querySelectorAll('.card-badge, .logo-badge, .tool-badge, .badge').forEach(badge => {
+            const txt = badge.innerText.trim().toUpperCase();
+            badge.style.borderRadius = '4px';
+            badge.style.fontWeight = '800';
+            badge.style.padding = '2px 7px';
+            badge.style.fontSize = '11.5px';
+
+            if (textTools.includes(txt)) {
+                badge.style.backgroundColor = '#e0f2fe';
+                badge.style.color = '#0369a1';
+                badge.style.border = '1px solid #bae6fd';
+            } else if (dataTools.includes(txt)) {
+                badge.style.backgroundColor = '#ede9fe';
+                badge.style.color = '#6d28d9';
+                badge.style.border = '1px solid #ddd6fe';
+            } else if (utilTools.includes(txt)) {
+                badge.style.backgroundColor = '#ccfbf1';
+                badge.style.color = '#0f766e';
+                badge.style.border = '1px solid #99f6e4';
+            } else {
+                badge.style.backgroundColor = '#ffe4e6';
+                badge.style.color = '#e11d48';
+                badge.style.border = '1px solid #fecdd3';
             }
         });
-
-        // 서브페이지 헤더 뱃지 처리
-        const headerBadge = document.querySelector('.card-badge, .logo-badge, .tool-badge, .header-badge');
-        if (headerBadge && !document.querySelector('.hero-section')) {
-            headerBadge.style.borderRadius = '6px';
-            headerBadge.style.fontWeight = '800';
-            headerBadge.style.padding = '4px 9px';
-
-            if (path.includes('/strget/') || path.includes('/counter/') || path.includes('/strcmp/') || path.includes('/markdown/')) {
-                headerBadge.style.backgroundColor = isDark ? '#082f49' : '#e0f2fe';
-                headerBadge.style.color = isDark ? '#7dd3fc' : '#0369a1';
-                headerBadge.style.border = isDark ? '1px solid #0369a1' : '1px solid #bae6fd';
-            } else if (path.includes('/fsee/') || path.includes('/coder/') || path.includes('/beautify/') || path.includes('/json-viewer/')) {
-                headerBadge.style.backgroundColor = isDark ? '#2e1065' : '#ede9fe';
-                headerBadge.style.color = isDark ? '#c4b5fd' : '#6d28d9';
-                headerBadge.style.border = isDark ? '1px solid #5b21b6' : '1px solid #ddd6fe';
-            } else if (path.includes('/time/') || path.includes('/hash/') || path.includes('/qrm/') || path.includes('/cron/') || path.includes('/color/')) {
-                headerBadge.style.backgroundColor = isDark ? '#042f2e' : '#ccfbf1';
-                headerBadge.style.color = isDark ? '#5eead4' : '#0f766e';
-                headerBadge.style.border = isDark ? '1px solid #115e59' : '1px solid #99f6e4';
-            }
-        }
     }
 
     // 7. DOM 로드 완료 시
