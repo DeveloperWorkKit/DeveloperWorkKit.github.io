@@ -76,7 +76,7 @@
         {
             name: 'QR 코드 생성기',
             tag: 'QR',
-            url: `${HOST_URL}/QR/`,
+            url: `${HOST_URL}/qr/`,
             keywords: 'qr code 큐알코드 생성기 generator svg png'
         },
         {
@@ -133,7 +133,7 @@
                     <div class="nav-dropdown-content">
                         <a href="${HOST_URL}/time/">타임스탬프 변환기 (TIME)</a>
                         <a href="${HOST_URL}/hash/">UUID & 해시 생성기 (HASH)</a>
-                        <a href="${HOST_URL}/QR/">QR 코드 생성기 (QR)</a>
+                        <a href="${HOST_URL}/qr/">QR 코드 생성기 (QR)</a>
                         <a href="${HOST_URL}/cron/">크론탭 주기 생성기 (CRON)</a>
                         <a href="${HOST_URL}/color/">웹 색상 스튜디오 (COLOR)</a>
                     </div>
