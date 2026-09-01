@@ -1,4 +1,4 @@
-// nav.js
+// nav.js - DevWorKit 글로벌 내비게이션 & 파스텔 틴트 뱃지 엔진
 (function () {
     const HOST_URL = 'https://developerworkkit.github.io';
 
@@ -29,7 +29,7 @@
         { name: '웹 색상 스튜디오 & UI 가독성', tag: 'COLOR', url: `${HOST_URL}/color/`, keywords: 'contrast wcag 명도대비 대비비 palette 색상표' }
     ];
 
-    // 3. 글로벌 GNB HTML (모바일 전용 라벨 분기 적용)
+    // 3. 글로벌 GNB HTML
     const navHTML = `
     <header class="dwk-global-nav">
         <div class="nav-left">
@@ -109,7 +109,7 @@
 
     document.body.insertAdjacentHTML('afterbegin', navHTML);
 
-    // 5. 스마트 다크모드 초기화 & 토글 (html 태그 타겟팅)
+    // 5. 다크모드 초기화 & 토글
     function initTheme() {
         const savedTheme = localStorage.getItem('dwk_theme');
         if (savedTheme === 'dark') {
@@ -134,7 +134,7 @@
         applyBadgeColors();
     };
 
-    // 6. 메인 허브 & 가이드 페이지 뱃지 매트 파스텔 틴트 동기화
+    // 6. 메인 허브 & 가이드 페이지 뱃지 매트 파스텔 틴트 동기화 엔진
     function applyBadgeColors() {
         const textTools = ['STRGET', 'COUNTER', 'STRCMP', 'MARKDOWN'];
         const dataTools = ['FSEE', 'CODER', 'BEAUTIFY', 'JSON'];
@@ -184,7 +184,7 @@
     // 8. GNB 검색
     window.handleGnbFocus = function () {
         const input = document.getElementById('gnb-search-input');
-        if (input.value.trim().length > 0) {
+        if (input && input.value.trim().length > 0) {
             document.getElementById('gnb-search-results').style.display = 'block';
         }
     };
@@ -192,7 +192,8 @@
     window.handleGnbSearch = function (query) {
         const q = query.trim().toLowerCase();
         const resultsBox = document.getElementById('gnb-search-results');
-        
+        if (!resultsBox) return;
+
         if (q.length === 0) {
             resultsBox.innerHTML = '';
             resultsBox.style.display = 'none';
