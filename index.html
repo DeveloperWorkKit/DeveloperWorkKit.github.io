@@ -161,7 +161,10 @@
         }
 
         @media (max-width: 960px) {
-            .hero-title { font-size: 32px; }
+            .hero-title {
+                font-size: 32px;
+            }
+
             .tool-link {
                 flex: 0 0 calc((100% - 24px) / 2);
                 max-width: calc((100% - 24px) / 2);
@@ -173,7 +176,10 @@
                 flex: 0 0 100%;
                 max-width: 100%;
             }
-            .hero-section { padding: 60px 16px 24px 16px; }
+
+            .hero-section {
+                padding: 60px 16px 24px 16px;
+            }
         }
 
         .tool-card {
@@ -274,7 +280,6 @@
 
     <main class="hub-container">
         <div class="card-grid" id="card-grid">
-            <!-- [그룹 1: 텍스트 / 문서 도구] -->
             <a href="./strget/" class="tool-link" data-category="text" data-keywords="문자열 추출기 strget 정규식 이메일 전화번호 regex extract">
                 <div class="tool-card">
                     <span class="card-badge badge-cat-text">STRGET</span>
@@ -291,10 +296,10 @@
                 </div>
             </a>
 
-            <a href="./strcmp/" class="tool-link" data-category="text" data-keywords="텍스트 문서 비교 strcmp diff 문자열 차이점 비교 대조 code compare">
+            <a href="./strcmp/" class="tool-link" data-category="text" data-keywords="텍스트 코드 비교기 strcmp diff 문자열 차이점 비교 대조 code compare">
                 <div class="tool-card">
                     <span class="card-badge badge-cat-text">STRCMP</span>
-                    <h3>텍스트 문서 비교</h3>
+                    <h3>텍스트 & 코드 비교기</h3>
                     <p>두 텍스트 또는 소스코드 간의 차이점(Diff)을 라인 및 단어 단위로 대조하여 변경 사항을 시각화합니다.</p>
                 </div>
             </a>
@@ -307,11 +312,10 @@
                 </div>
             </a>
 
-            <!-- [그룹 2: 개발 / 데이터 도구] -->
-            <a href="./fsee/" class="tool-link" data-category="data" data-keywords="폴더 구조 엑셀 fsee tree folder directory zip excel 스프레드시트">
+            <a href="./fsee/" class="tool-link" data-category="data" data-keywords="폴더 구조 엑셀 변환기 fsee tree folder directory zip excel 스프레드시트">
                 <div class="tool-card">
                     <span class="card-badge badge-cat-data">FSEE</span>
-                    <h3>폴더 구조 엑셀</h3>
+                    <h3>폴더 구조 엑셀 변환기</h3>
                     <p>디렉터리 및 ZIP 압축 파일의 계층 구조를 트리 인덴트가 적용된 스프레드시트 형태로 변환합니다.</p>
                 </div>
             </a>
@@ -340,7 +344,6 @@
                 </div>
             </a>
 
-            <!-- [그룹 3: 시스템 / 디자인 유틸] -->
             <a href="./time/" class="tool-link" data-category="util" data-keywords="타임스탬프 변환기 time unix timestamp epoch kst utc 시간 날짜 date">
                 <div class="tool-card">
                     <span class="card-badge badge-cat-util">TIME</span>
@@ -357,10 +360,10 @@
                 </div>
             </a>
 
-            <a href="./qrm/" class="tool-link" data-category="util" data-keywords="qr 마스터 qrm qr code 큐알코드 생성기 generator vector svg png">
+            <a href="./qrm/" class="tool-link" data-category="util" data-keywords="qr 코드 생성기 qrm qr code 큐알코드 생성기 generator vector svg png">
                 <div class="tool-card">
                     <span class="card-badge badge-cat-util">QRM</span>
-                    <h3>QR 마스터</h3>
+                    <h3>QR 코드 생성기</h3>
                     <p>URL 및 텍스트 데이터를 벡터 기반 QR 코드로 생성하고 이미지 파일로 내보냅니다.</p>
                 </div>
             </a>
@@ -376,7 +379,7 @@
             <a href="./color/" class="tool-link" data-category="util" data-keywords="웹 색상 스튜디오 ui 가독성 color contrast wcag 명도대비 대비비 palette 색상표">
                 <div class="tool-card">
                     <span class="card-badge badge-cat-util">COLOR</span>
-                    <h3>웹 색상 스튜디오 & UI 가독성</h3>
+                    <h3>웹 색상 스튜디오</h3>
                     <p>주 텍스트, 본문, 배경색 3채널의 W3C WCAG 2.1 명도 대비비를 실시간 검증하고 토큰 코드를 생성합니다.</p>
                 </div>
             </a>
