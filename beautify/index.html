@@ -4,16 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>코드 뷰티파이어 & 웹 뷰어 | DevWorKit</title>
+    <title>코드 뷰티파이어 & 웹 뷰어 (Code Beautifier) | DevWorKit</title>
+    <meta name="description" content="HTML, CSS, JavaScript 실시간 코드 정렬, 2칸/4칸 들여쓰기 포맷팅, Minify 한 줄 압축 및 전체화면 웹 뷰어">
+    <link rel="stylesheet" href="../nav.css">
     <style>
         :root {
-            --primary-blue: #007bff;
-            --primary-blue-hover: #0056b3;
-            --bg-light: #f8f9fa;
-            --border-color: #dee2e6;
-            --text-main: #333333;
-            --text-muted: #666666;
-            --teal-brand: #0d9488;
+            --primary-violet: #7c3aed;
+            --primary-violet-hover: #6d28d9;
+            --bg-light: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
         }
 
         body {
@@ -27,40 +28,10 @@
             min-height: 100vh;
         }
 
-        header {
-            border-bottom: 1px solid var(--border-color);
-            padding: 20px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .logo-badge {
-            background: var(--teal-brand);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .logo-text {
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: #111111;
-        }
-
         .page-wrapper {
             display: block;
             max-width: 1100px;
-            margin: 20px auto 40px auto;
+            margin: 30px auto 40px auto;
             padding: 0 20px;
             box-sizing: border-box;
             width: 100%;
@@ -70,25 +41,45 @@
             margin-bottom: 25px;
         }
 
-        .intro-title {
-            font-size: 22px;
+        .intro-header-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .tool-tag-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11.5px;
             font-weight: 800;
-            color: #111827;
-            margin: 0 0 6px 0;
+            letter-spacing: -0.2px;
+            background-color: #ede9fe;
+            color: #6d28d9;
+            border: 1px solid #ddd6fe;
+        }
+
+        .intro-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
             letter-spacing: -0.5px;
         }
 
         .intro-desc {
-            font-size: 14px;
+            font-size: 14.5px;
             color: var(--text-muted);
             margin: 0 0 16px 0;
+            line-height: 1.6;
         }
 
         .guide-box {
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 16px 20px;
+            border-radius: 10px;
+            padding: 18px 22px;
             font-size: 13.5px;
             color: #334155;
             line-height: 1.6;
@@ -107,43 +98,7 @@
         }
 
         .guide-list li {
-            margin-bottom: 4px;
-        }
-
-        .guide-banner-row {
-            margin-top: 14px;
-            padding-top: 12px;
-            border-top: 1px dashed #cbd5e1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-            color: #475569;
-            white-space: nowrap;
-        }
-
-        .guide-banner-text {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .guide-banner-btn {
-            color: #2563eb;
-            font-weight: 700;
-            text-decoration: none;
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            padding: 5px 12px;
-            border-radius: 6px;
-            white-space: nowrap;
-            margin-left: 12px;
-            flex-shrink: 0;
-            display: inline-block;
-        }
-
-        .guide-banner-btn:hover {
-            background: #dbeafe;
+            margin-bottom: 5px;
         }
 
         .main-container {
@@ -173,7 +128,7 @@
             font-size: 13px;
             font-weight: 700;
             border: 1px solid var(--border-color);
-            background-color: var(--bg-light);
+            background-color: #ffffff;
             border-radius: 6px;
             cursor: pointer;
             color: var(--text-muted);
@@ -181,9 +136,9 @@
         }
 
         .tab-btn.active {
-            background-color: var(--primary-blue);
+            background-color: var(--primary-violet);
             color: #ffffff;
-            border-color: var(--primary-blue);
+            border-color: var(--primary-violet);
         }
 
         .select-indent {
@@ -213,13 +168,14 @@
         }
 
         .action-btn:hover {
-            background-color: #e2e8f0;
+            background-color: #f1f5f9;
         }
 
         .converter-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
+            align-items: stretch;
         }
 
         @media (max-width: 900px) {
@@ -230,25 +186,40 @@
 
         .panel-box {
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 16px;
             background-color: #ffffff;
             display: flex;
             flex-direction: column;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            box-sizing: border-box;
+            height: 100%;
         }
 
+        /* 좌우 헤더 높이 및 수직 축 완전 일치 */
         .panel-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            min-height: 36px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
         }
 
         .panel-title {
             font-size: 13.5px;
             font-weight: 700;
-            color: #1e293b;
+            color: #0f172a;
+            display: inline-flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .panel-header-action {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 30px;
         }
 
         .editor-wrapper {
@@ -300,6 +271,7 @@
             font-family: Consolas, "Courier New", monospace !important;
             font-size: 13px !important;
             line-height: 21px !important;
+            color: #0f172a;
             border: none;
             box-sizing: border-box;
             resize: none;
@@ -323,7 +295,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 6px;
+            margin-top: 8px;
             font-size: 11.5px;
             color: #64748b;
             font-family: "Consolas", monospace;
@@ -333,29 +305,31 @@
         .view-switch-btn {
             background: #f1f5f9;
             border: 1px solid #cbd5e1;
-            padding: 5px 10px;
+            padding: 4px 9px;
             font-size: 12px;
             font-weight: 600;
             border-radius: 4px;
             cursor: pointer;
             color: #475569;
+            line-height: 1.4;
         }
 
         .view-switch-btn.active {
-            background: var(--primary-blue);
+            background: var(--primary-violet);
             color: #ffffff;
-            border-color: var(--primary-blue);
+            border-color: var(--primary-violet);
         }
 
         .btn-mini-primary {
             background-color: #10b981;
             color: #fff;
             border: 1px solid #10b981;
-            padding: 5px 12px;
+            padding: 4px 11px;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             border-radius: 4px;
             cursor: pointer;
+            line-height: 1.4;
         }
 
         .btn-mini-primary:hover {
@@ -365,7 +339,7 @@
         .btn-fullscreen {
             background: #f8fafc;
             border: 1px solid #cbd5e1;
-            padding: 5px 10px;
+            padding: 4px 9px;
             font-size: 12px;
             font-weight: 700;
             border-radius: 4px;
@@ -374,17 +348,138 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
+            line-height: 1.4;
         }
 
         .btn-fullscreen:hover {
             background: #e2e8f0;
         }
 
+        /* [SEO & 애드센스 고유 콘텐츠 보강 섹션] */
+        .seo-article-box {
+            margin-top: 48px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 36px 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            line-height: 1.8;
+            color: #334155;
+        }
+
+        .seo-article-box h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 16px 0;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+            letter-spacing: -0.4px;
+        }
+
+        .seo-article-box h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 24px 0 8px 0;
+        }
+
+        .seo-article-box p {
+            font-size: 14.5px;
+            margin: 0 0 14px 0;
+        }
+
+        .seo-article-box ul {
+            font-size: 14px;
+            padding-left: 20px;
+            margin: 8px 0 20px 0;
+        }
+
+        .seo-article-box li {
+            margin-bottom: 6px;
+        }
+
+        .faq-item {
+            margin-top: 16px;
+            padding: 14px 18px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .faq-q {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 14.5px;
+            margin-bottom: 6px;
+        }
+
+        .faq-a {
+            font-size: 14px;
+            color: #475569;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .guide-nav-banner {
+            margin-top: 28px;
+            background: #f5f3ff;
+            border: 1px solid #ddd6fe;
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .guide-nav-text {
+            font-size: 14px;
+            color: #6d28d9;
+            font-weight: 700;
+        }
+
+        .guide-nav-btn {
+            background: #7c3aed;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: background-color 0.15s;
+        }
+
+        .guide-nav-btn:hover {
+            background: #6d28d9;
+        }
+
+        @media (max-width: 640px) {
+            .guide-nav-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .guide-nav-btn {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+        }
+
         .bottom-ad-box {
             max-width: 1100px;
             width: 100%;
-            margin: 25px auto 10px auto;
+            margin: 30px auto 10px auto;
             text-align: center;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .bottom-ad-box ins.adsbygoogle[data-ad-status="unfilled"],
+        .bottom-ad-box ins.adsbygoogle:empty {
+            display: none !important;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.8/beautify.min.js"></script>
@@ -394,31 +489,22 @@
 
 <body>
 
-    <header>
-        <div class="logo-area">
-            <span class="logo-badge">BEAUTIFY</span>
-            <span class="logo-text">코드 뷰티파이어 & 웹 뷰어</span>
-        </div>
-    </header>
-
     <div class="page-wrapper">
         <div class="intro-section">
-            <h2 class="intro-title">HTML, CSS, JS 실시간 코드 정렬, 압축 및 웹 렌더링 뷰어입니다.</h2>
-            <p class="intro-desc">들여쓰기 정렬, 한 줄 압축(Minify), 파일 열기/다운로드, 그리고 실시간 브라우저 전체화면 렌더링을 지원합니다.</p>
+            <div class="intro-header-row">
+                <span class="tool-tag-badge">BEAUTIFY</span>
+                <h1 class="intro-title">코드 뷰티파이어 & 웹 뷰어</h1>
+            </div>
+            <p class="intro-desc">HTML, CSS, JavaScript 코드를 표준 들여쓰기로 즉시 정렬하고, 한 줄 압축(Minify) 및 실시간 브라우저 렌더링 화면을 확인합니다.</p>
 
             <div class="guide-box">
                 <strong>코드 뷰티파이어 사용 방법 안내:</strong>
                 <ol class="guide-list">
-                    <li>코드를 직접 입력하거나 <b>[📂 파일 열기]</b> 또는 <b>[샘플 불러오기]</b>를 클릭합니다.</li>
+                    <li>코드를 직접 입력하거나 <b>[📂 파일 열기]</b> 또는 <b>[샘플]</b>을 클릭합니다.</li>
                     <li>상단에서 <b>HTML, JavaScript, CSS</b> 언어 모드와 <b>들여쓰기(2칸/4칸/탭)</b> 옵션을 선택합니다.</li>
                     <li><b>[⚡ 압축 (Minify)]</b> 버튼을 누르면 즉시 한 줄로 압축되며, <b>[⛶ 전체화면]</b>으로 새 탭에서 전체 웹페이지로 실행할 수 있습니다.</li>
                     <li>양쪽 에디터 어디든 마우스로 클릭하면 실시간 행/열 번호(<b>Ln, Col</b>)와 파일 크기를 즉시 확인할 수 있습니다.</li>
                 </ol>
-
-                <div class="guide-banner-row">
-                    <span class="guide-banner-text">📘 <span style="font-weight: 700; color: #0f172a;">코드 포맷터의 동작 원리와 들여쓰기 표준 규칙</span>이 궁금하신가요?</span>
-                    <a href="../guide/beautify-guide.html" class="guide-banner-btn">실무 가이드 보기 →</a>
-                </div>
             </div>
         </div>
 
@@ -452,9 +538,11 @@
                 <div class="panel-box">
                     <div class="panel-header">
                         <span class="panel-title">원본 소스 코드</span>
-                        <label style="font-size: 12px; color: #64748b; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                            <input type="checkbox" id="auto-update" checked> 실시간 자동 정렬
-                        </label>
+                        <div class="panel-header-action">
+                            <label style="font-size: 12px; color: #64748b; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; user-select: none;">
+                                <input type="checkbox" id="auto-update" checked style="margin: 0;"> 실시간 자동 정렬
+                            </label>
+                        </div>
                     </div>
                     <div class="editor-wrapper">
                         <div class="gutter-container">
@@ -480,7 +568,7 @@
                                 <button class="view-switch-btn" id="btn-view-preview" onclick="switchOutputMode('preview')">화면 미리보기</button>
                             </div>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 6px;">
+                        <div class="panel-header-action">
                             <button class="btn-fullscreen" onclick="openInNewTab()" title="새 창 전체화면으로 웹페이지를 띄웁니다.">⛶ 전체화면</button>
                             <button class="btn-mini-primary" id="btn-copy" onclick="copyResult()">결과 복사</button>
                         </div>
@@ -500,6 +588,39 @@
                     </div>
                 </div>
             </div>
+
+            <!-- [SEO & 애드센스 고유 콘텐츠 보강 섹션] -->
+            <article class="seo-article-box">
+                <h2>코드 뷰티파이어(Beautifier)와 웹 뷰어의 실무 동작 원리</h2>
+                <p><strong>DevWorKit 코드 뷰티파이어 & 웹 뷰어</strong>는 줄바꿈과 들여쓰기가 깨진 소스 코드를 표준 코딩 컨벤션에 맞추어 깔끔하게 포맷팅하고, HTML/CSS/JS 코드가 브라우저에서 실제로 렌더링되는 화면을 실시간 샌드박스로 검증할 수 있는 개발자 툴킷입니다.</p>
+
+                <h3>1. AST(추상 구문 트리) 기반 포맷팅과 인덴트 규칙</h3>
+                <p>단순히 엔터(줄바꿈)나 공백을 무작정 삽입하는 방식은 문자열 리터럴 내부의 공백까지 훼손할 위험이 있습니다. 본 도구는 오픈소스 표준 파서인 <code>js-beautify</code> 엔진을 탑재하여 다음과 같이 문맥을 완벽히 보존합니다.</p>
+                <ul>
+                    <li><strong>언어별 맞춤형 파싱:</strong> HTML 태그의 계층 구조, CSS 룰셋 블록(<code>{}</code>), 자바스크립트 함수 및 제어문 스코프를 구문 분석하여 2칸(Space 2), 4칸(Space 4), 탭(Tab) 중 지정된 인덴트로 정확히 들여씁니다.</li>
+                    <li><strong>한 줄 압축(Minify) 최적화:</strong> 프로덕션 배포 시 네트워크 트래픽 절감을 위해 불필요한 주석, 공백, 줄바꿈을 완벽히 제거하여 파일 용량을 최대 40~60% 경량화합니다.</li>
+                    <li><strong>실시간 행/열(Ln, Col) 상태 추적:</strong> 에디터 내부의 커서 위치를 실시간 모니터링하여 오류 발생 줄을 즉시 찾아낼 수 있습니다.</li>
+                </ul>
+
+                <h3>2. 실시간 독립 샌드박스 렌더링과 전체화면 뷰어</h3>
+                <p>HTML 탭에서는 우측 상단의 <strong>[화면 미리보기]</strong> 토글을 통해 별도의 로컬 웹서버 구동 없이 브라우저 메모리상에서 `iframe`을 이용해 결과물을 렌더링합니다. <strong>[⛶ 전체화면]</strong> 버튼을 클릭하면 팝업 블록 없이 새 탭에서 실제 완성된 웹페이지처럼 반응형 UI를 직접 테스트할 수 있습니다.</p>
+
+                <h3>3. 자주 묻는 질문 (FAQ)</h3>
+                <div class="faq-item">
+                    <div class="faq-q">Q. 입력한 소스 코드가 외부 서버로 전송되거나 노출될 위험이 있나요?</div>
+                    <div class="faq-a">A. 전혀 없습니다. DevWorKit의 코드 뷰티파이어는 100% 클라이언트 사이드 자바스크립트 엔진으로 구동됩니다. 사용자의 PC 브라우저 내부에서만 연산이 수행되며 어떠한 코드 데이터도 외부 서버로 전송되지 않습니다.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">Q. 프론트엔드 실무에서는 보통 2칸과 4칸 중 어떤 들여쓰기를 권장하나요?</div>
+                    <div class="faq-a">A. 모던 웹 개발(React, Vue, Node.js 등) 및 Google, Airbnb 스타일 가이드에서는 가로 스크롤을 줄이고 가독성을 높이기 위해 <strong>2 Spaces(2칸 들여쓰기)</strong>를 사실상의 업계 표준으로 채택하고 있습니다. 백엔드(Java, C++, Python) 코드인 경우 <strong>4 Spaces</strong>를 권장합니다.</div>
+                </div>
+
+                <!-- 최하단 실무 심화 가이드 이동 배너 -->
+                <div class="guide-nav-banner">
+                    <span class="guide-nav-text">📘 코드 포맷터의 동작 원리와 들여쓰기 표준 규칙이 궁금하신가요?</span>
+                    <a href="../guide/beautify-guide.html" class="guide-nav-btn">실무 가이드 보기 →</a>
+                </div>
+            </article>
         </div>
     </div>
 
@@ -590,7 +711,6 @@
                 recordCodeHistory();
             }, 300);
         }
-        // ============================================
 
         const samples = {
             html: '<!DOCTYPE html>\n<html>\n<head>\n<style>\nbody { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 30px; background: #f0fdf4; margin: 0; }\n.card { background: white; padding: 24px; border-radius: 12px; border: 1px solid #86efac; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }\nh1 { color: #166534; font-size: 22px; margin: 0 0 10px 0; }\np { color: #15803d; font-size: 14.5px; line-height: 1.6; margin: 0 0 16px 0; }\nbutton { background: #16a34a; color: white; border: none; padding: 9px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13.5px; }\nbutton:hover { background: #15803d; }\n</style>\n</head>\n<body>\n<div class="card">\n<h1>🎉 실시간 렌더링 뷰어 정상 작동!</h1>\n<p>HTML/CSS/JS 코드를 작성하면 즉시 우측 화면에 브라우저 렌더링 결과물이 실시간으로 나타납니다.</p>\n<button onclick="alert(\'자바스크립트 동작도 정상입니다!\')">클릭 테스트</button>\n</div>\n</body>\n</html>',
