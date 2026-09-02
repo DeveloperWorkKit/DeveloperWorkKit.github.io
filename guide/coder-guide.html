@@ -70,21 +70,40 @@
         }
 
         .article-section {
-            margin-bottom: 32px;
+            margin-bottom: 36px;
         }
 
         .article-section h2 {
             font-size: 19px;
             font-weight: 700;
             color: #1e293b;
-            margin: 0 0 12px 0;
+            margin: 0 0 14px 0;
+        }
+
+        .article-section h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 20px 0 8px 0;
         }
 
         .article-section p {
             font-size: 14.5px;
-            line-height: 1.75;
+            line-height: 1.8;
             color: #475569;
-            margin: 0 0 12px 0;
+            margin: 0 0 14px 0;
+        }
+
+        .article-section ul {
+            font-size: 14.5px;
+            line-height: 1.8;
+            color: #475569;
+            padding-left: 20px;
+            margin: 8px 0 16px 0;
+        }
+
+        .article-section li {
+            margin-bottom: 6px;
         }
 
         .code-block {
@@ -95,7 +114,7 @@
             font-family: Consolas, Monaco, "Courier New", monospace;
             font-size: 13px;
             overflow-x: auto;
-            margin: 14px 0;
+            margin: 16px 0;
             line-height: 1.6;
             white-space: pre;
         }
@@ -106,7 +125,7 @@
             border: 1px solid #ddd6fe;
             border-radius: 8px;
             padding: 18px 20px;
-            margin-top: 28px;
+            margin-top: 36px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -168,24 +187,47 @@
             <h1 class="article-title">Base64 인코딩 원리와 실무 한글 깨짐 해결법</h1>
 
             <section class="article-section">
-                <h2>1. Base64 인코딩이란 무엇인가?</h2>
-                <p>Base64는 8비트 이진 데이터(Binary Data)를 공통으로 인쇄 가능한 64개의 ASCII 문자셋([A-Z, a-z, 0-9, +, /])으로 변환하는 대표적인 바이너리-텍스트 인코딩 방식입니다. 주로 네트워크 프로토콜(HTTP, 이메일 MIME) 환경에서 데이터의 유실이나 제어 문자로 인한 깨짐 현상을 방지하기 위해 사용됩니다.</p>
+                <h2>1. Base64 인코딩이란 무엇이며 왜 사용하는가?</h2>
+                <p>Base64는 8비트 이진 데이터(Binary Data)를 네트워크 전송 과정에서 유실이나 변형 우려가 없는 64개의 안전한 ASCII 문자셋(<code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>+</code>, <code>/</code>)으로 변환하는 대표적인 인코딩 기법입니다.</p>
+                <p>초기의 이메일(SMTP)이나 레거시 네트워크 프로토콜은 텍스트 전송에 최적화되어 있어, 이미지, 압축파일, 바이너리 토큰 등의 이진 데이터를 그대로 전송하면 시스템별 개행 문자 처리나 제어 부호 충돌로 인해 데이터가 심각하게 손상되었습니다. Base64는 모든 데이터를 공통 텍스트 문자로 치환하여 이러한 플랫폼 간 호환성 문제를 근본적으로 해결합니다.</p>
             </section>
 
             <section class="article-section">
-                <h2>2. 자바스크립트 실무에서 한글(UTF-8) 깨짐이 발생하는 이유</h2>
-                <p>브라우저 기본 내장 API인 <code>window.btoa()</code> 함수는 문자 1개당 1바이트(ASCII) 기준 데이터만 처리하도록 설계되어 있습니다. 2바이트 이상을 사용하는 UTF-8 한글 문자열을 전달할 경우 즉시 <code>InvalidCharacterError</code>(DOMException) 예외가 발생하거나 디코딩 시 글자가 깨지는 현상이 발생합니다.</p>
-                <div class="code-block">// 안전한 UTF-8 문자열 Base64 변환 함수 예시
-                    function safeBase64Encode(str) {
-                    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => {
-                    return String.fromCharCode('0x' + p1);
-                    }));
-                    }</div>
+                <h2>2. 3바이트를 4바이트로 쪼개는 Base64 수학적 변환 원리</h2>
+                <p>Base64의 핵심 원리는 3바이트(24비트) 크기의 데이터 묶음을 6비트씩 4개로 쪼개어 각각을 64진법 인덱스로 매핑하는 것입니다.</p>
+                <ul>
+                    <li><strong>비트 팽창:</strong> 3바이트 데이터가 4바이트 문자로 늘어나기 때문에, Base64로 인코딩된 데이터의 용량은 원본 대비 약 **33% 증가**합니다.</li>
+                    <li><strong>패딩(Padding):</strong> 원본 바이트가 3바이트로 딱 떨어지지 않고 1바이트나 2바이트가 남을 경우, 부족한 빈자리를 비트 0으로 채우고 끝에 등호 기호(<code>=</code> 또는 <code>==</code>)를 붙여 패딩 처리를 수행합니다.</li>
+                </ul>
             </section>
 
             <section class="article-section">
-                <h2>3. 무료 온라인 변환 도구 활용</h2>
-                <p>복잡한 코드 작성 없이 안전하게 브라우저 환경에서 즉시 텍스트 및 URL, Base64 데이터를 상호 변환할 수 있습니다.</p>
+                <h2>3. 자바스크립트 환경에서 한글(UTF-8) 깨짐이 발생하는 결정적 원인</h2>
+                <p>웹 프론트엔드 개발 시 가장 흔하게 겪는 실수가 브라우저 내장 함수인 <code>window.btoa()</code>를 한글 문자열에 바로 사용하는 것입니다. <code>btoa()</code>는 엄격하게 라틴 1바이트(ISO-8859-1) 문자셋만 지원하도록 구현되어 있습니다.</p>
+                <p>UTF-8 환경에서 한글은 글자당 2~3바이트를 차지하므로, 이를 그대로 <code>btoa()</code>에 넣으면 바이트 범위를 초과하여 <code>InvalidCharacterError</code> 예외가 발생하거나 디코딩 시 복원이 불가능한 문자로 깨지게 됩니다. 따라서 문자열을 먼저 URI 컴포넌트 형식으로 바이트 직렬화한 뒤 Base64로 변환해야 합니다.</p>
+                <div class="code-block">// 실무 표준: 한글(UTF-8) 깨짐 없는 안전한 Base64 인코딩 함수
+function safeBase64Encode(str) {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => {
+        return String.fromCharCode('0x' + p1);
+    }));
+}
+
+// 안전한 디코딩 함수
+function safeBase64Decode(str) {
+    return decodeURIComponent(atob(str).split('').map(c => {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+}</div>
+            </section>
+
+            <section class="article-section">
+                <h2>4. URL 인코딩(Percent Encoding)과의 차이점</h2>
+                <p>Base64가 바이너리를 안전한 텍스트로 압축·포장하는 용도라면, URL 인코딩은 웹 주소(URL) 체계에서 충돌을 일으키는 특수문자(공백, 슬래시, 물음표 등)를 퍼센트 기호(<code>%</code>)와 16진수 조합으로 치환하여 파라미터 유실을 방지하는 통신 규격입니다. 개발 시 데이터의 성격과 전송 환경에 맞춰 올바른 인코딩 방식을 선택해야 합니다.</p>
+            </section>
+
+            <section class="article-section">
+                <h2>5. 무료 온라인 변환 도구 활용</h2>
+                <p>복잡한 자바스크립트 변환 코드를 직접 구현하지 않고도 브라우저 환경에서 즉시 텍스트, URL, Base64 데이터를 안전하게 상호 변환할 수 있습니다.</p>
                 <div class="tool-banner">
                     <span class="tool-banner-text">🛠️ DevWorKit 실시간 Base64 & URL 변환기 사용해보기</span>
                     <a href="../coder/" class="tool-banner-btn">도구로 이동 →</a>
