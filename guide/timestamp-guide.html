@@ -1,151 +1,289 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unix Epoch Timestamp 개념과 KST/UTC 시간대 변환 완벽 가이드 - DevWorkKit</title>
-  <meta name="description" content="서버 개발과 데이터베이스에서 필수적인 유닉스 타임스탬프의 원리와 타임존 변환 팁을 정리합니다.">
-  <link rel="stylesheet" href="../style.css">
-  <style>
-    body {
-      background-color: #f8fafc;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      color: #334155;
-    }
-    .article-container {
-      max-width: 860px;
-      margin: 40px auto 80px auto;
-      padding: 0 20px;
-    }
-    .back-link {
-      display: inline-block;
-      margin-bottom: 20px;
-      color: #64748b;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-    }
-    .back-link:hover { color: #2563eb; }
-    .article-card {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      padding: 40px 48px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    }
-    .article-badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 700;
-      color: #ffffff;
-      background-color: #10b981;
-      margin-bottom: 16px;
-    }
-    .article-title {
-      font-size: 28px;
-      font-weight: 800;
-      color: #0f172a;
-      line-height: 1.35;
-      margin: 0 0 24px 0;
-      border-bottom: 2px solid #f1f5f9;
-      padding-bottom: 20px;
-    }
-    .article-section { margin-bottom: 32px; }
-    .article-section h2 {
-      font-size: 20px;
-      font-weight: 700;
-      color: #1e293b;
-      margin: 0 0 12px 0;
-    }
-    .article-section p {
-      font-size: 15px;
-      line-height: 1.75;
-      color: #475569;
-      margin: 0 0 12px 0;
-    }
-    .code-block {
-      background: #1e293b;
-      color: #f8fafc;
-      padding: 16px;
-      border-radius: 8px;
-      font-family: Consolas, Monaco, "Courier New", Courier, monospace;
-      font-size: 13px;
-      overflow-x: auto;
-      margin: 14px 0;
-      line-height: 1.5;
-    }
-    .tool-banner {
-      background: #ecfdf5;
-      border: 1px solid #a7f3d0;
-      border-radius: 8px;
-      padding: 18px 20px;
-      margin-top: 28px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .tool-banner-text {
-      font-size: 14px;
-      color: #065f46;
-      font-weight: 600;
-    }
-    .tool-banner-btn {
-      background: #10b981;
-      color: #ffffff;
-      padding: 8px 16px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    .tool-banner-btn:hover { background: #059669; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unix Epoch Timestamp 개념과 KST/UTC 시간대 변환 완벽 가이드 | DevWorKit</title>
+    <meta name="description" content="서버 개발과 데이터베이스에서 필수적인 유닉스 에포크 타임스탬프의 원리, 초와 밀리초 단위 차이, 2038년 문제 및 KST/UTC 오프셋 완벽 정리 가이드">
+    <link rel="stylesheet" href="../nav.css">
+    <style>
+        body {
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #334155;
+        }
+
+        .article-container {
+            max-width: 860px;
+            margin: 40px auto 80px auto;
+            padding: 0 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: color 0.15s;
+        }
+
+        .back-link:hover {
+            color: #059669;
+        }
+
+        .article-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 40px 48px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 시간/유틸 카테고리 에메랄드 뱃지 */
+        .article-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+            background-color: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+            margin-bottom: 16px;
+        }
+
+        .article-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.35;
+            margin: 0 0 24px 0;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .article-section {
+            margin-bottom: 36px;
+        }
+
+        .article-section h2 {
+            font-size: 19px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 14px 0;
+        }
+
+        .article-section h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 20px 0 8px 0;
+        }
+
+        .article-section p {
+            font-size: 14.5px;
+            line-height: 1.85;
+            color: #475569;
+            margin: 0 0 14px 0;
+        }
+
+        .article-section ul {
+            color: #475569;
+            font-size: 14.5px;
+            line-height: 1.85;
+            padding-left: 20px;
+            margin: 8px 0 16px 0;
+        }
+
+        .article-section li {
+            margin-bottom: 6px;
+        }
+
+        .code-block {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 18px 20px;
+            border-radius: 8px;
+            font-family: Consolas, Monaco, "Courier New", monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 16px 0;
+            line-height: 1.6;
+            white-space: pre;
+        }
+
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 18px 0;
+            font-size: 13.5px;
+        }
+
+        .table-custom th,
+        .table-custom td {
+            border: 1px solid #cbd5e1;
+            padding: 10px 14px;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        .table-custom th {
+            background: #f1f5f9;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .tool-banner {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin-top: 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .tool-banner-text {
+            font-size: 14px;
+            color: #065f46;
+            font-weight: 700;
+        }
+
+        .tool-banner-btn {
+            background: #059669;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: background-color 0.15s;
+        }
+
+        .tool-banner-btn:hover {
+            background: #047857;
+        }
+
+        @media (max-width: 640px) {
+            .article-card {
+                padding: 24px 20px;
+            }
+
+            .article-title {
+                font-size: 22px;
+            }
+
+            .tool-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .tool-banner-btn {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-  <div id="dwk-nav"></div>
+    <main class="article-container">
+        <a href="index.html" class="back-link">← 가이드 목록으로 돌아가기</a>
 
-  <main class="article-container">
-    <a href="index.html" class="back-link">← 블로그 목록으로 돌아가기</a>
-    
-    <article class="article-card">
-      <span class="article-badge">TIME</span>
-      <h1 class="article-title">Unix Epoch Timestamp 개념과 KST/UTC 시간대 변환 완벽 가이드</h1>
+        <article class="article-card">
+            <span class="article-badge">TIME</span>
+            <h1 class="article-title">Unix Epoch Timestamp 개념과 KST/UTC 시간대 변환 완벽 가이드</h1>
 
-      <section class="article-section">
-        <h2>1. Unix Epoch Timestamp란 무엇인가?</h2>
-        <p>유닉스 타임스탬프(Unix Timestamp)는 1970년 1월 1일 00:00:00 UTC(협정 세계시)를 기점으로 현재까지 경과한 시간을 '초(Seconds)' 또는 '밀리초(Milliseconds)' 단위의 정수로 나타낸 표기법입니다. 전 세계의 서버와 데이터베이스 간 시간 데이터를 일관되게 동기화하고 연산할 때 사용됩니다.</p>
-      </section>
+            <section class="article-section">
+                <h2>1. Unix Epoch Timestamp의 기원과 컴퓨터 시스템의 시간 정의</h2>
+                <p>유닉스 타임스탬프(Unix Epoch Time 또는 POSIX Time)는 1970년 1월 1일 00:00:00 UTC(협정 세계시)를 기점인 '에포크(Epoch)'로 삼아, 그 순간부터 현재까지 경과한 시간을 정수 형태로 누적한 표기법입니다. 전 세계의 수많은 서버, 데이터베이스, 모바일 기기가 물리적으로 서로 다른 시간대(Timezone)에 위치하더라도 동일한 시점 데이터를 오차 없이 동기화하기 위해 도입된 표준 체계입니다.</p>
+                <p>과거에는 각 지역별 현지 시각(Local Time)을 데이터베이스에 그대로 문자열 형태로 저장하곤 했습니다. 그러나 서머타임(Daylight Saving Time)이 적용되거나 서버의 로케일 설정이 바뀌는 순간 데이터의 전후 인과관계가 뒤바뀌고 정렬이 무너지는 대형 장애가 발생했습니다. 유닉스 타임스탬프는 지구상 어디에서 측정하든 동일한 순간에는 동일한 단일 정수 값을 갖기 때문에, 분산 시스템의 트랜잭션 순서 보장과 글로벌 서비스 개발에서 대체 불가능한 표준으로 채택되었습니다.</p>
+            </section>
 
-      <section class="article-section">
-        <h2>2. 실무에서 시간 계산 시 주의할 점 (초 vs 밀리초)</h2>
-        <p>백엔드 시스템(Python, PHP, C 언어 등)은 일반적으로 10자리 단위의 '초(Seconds)'를 반환하는 반면, 프론트엔드 자바스크립트의 <code>Date.now()</code>나 Java 시스템은 13자리 단위의 '밀리초(Milliseconds)'를 기본으로 사용합니다. 자릿수를 혼동할 경우 1970년대로 계산되는 오류가 발생하므로 변환 전 반드시 자릿수를 확인해야 합니다.</p>
-        <div class="code-block">
-// 자바스크립트 초/밀리초 단위 타임스탬프 변환 예제
-const currentEpochMs = Date.now(); // 13자리 밀리초
-const currentEpochSec = Math.floor(currentEpochMs / 1000); // 10자리 초
+            <section class="article-section">
+                <h2>2. 실무 개발에서 가장 흔한 타임스탬프 자릿수 혼동 (초 vs 밀리초)</h2>
+                <p>소프트웨어 엔지니어링 실무에서 가장 빈번하게 마주치는 시간 관련 버그는 바로 **타임스탬프의 자릿수 단위 불일치**입니다. 시스템 환경과 프로그래밍 언어에 따라 기준 단위가 완전히 상이합니다:</p>
 
-// 타임스탬프를 한국 시간(KST, UTC+9) 문자열로 변환
-const kstDateString = new Date(currentEpochMs).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
-        </div>
-      </section>
+                <table class="table-custom">
+                    <thead>
+                        <tr>
+                            <th>구분</th>
+                            <th>자릿수 규격</th>
+                            <th>대표 활용 환경</th>
+                            <th>값 예시 (2026년 기준)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>초 (Seconds)</strong></td>
+                            <td>10자리 정수</td>
+                            <td>C/C++, Python (<code>time.time()</code>), PHP, MySQL (<code>UNIX_TIMESTAMP()</code>), Linux OS 커널</td>
+                            <td><code>1773000000</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>밀리초 (Milliseconds)</strong></td>
+                            <td>13자리 정수</td>
+                            <td>JavaScript (<code>Date.now()</code>, <code>getTime()</code>), Java (<code>System.currentTimeMillis()</code>), MongoDB</td>
+                            <td><code>1773000000000</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>마이크로/나노초</strong></td>
+                            <td>16자리 / 19자리</td>
+                            <td>Go (<code>time.Now().UnixNano()</code>), Rust, 고빈도 주식 트레이딩(HFT) 인프라</td>
+                            <td><code>1773000000000000000</code></td>
+                        </tr>
+                    </tbody>
+                </table>
 
-      <section class="article-section">
-        <h2>3. 무료 온라인 타임스탬프 변환기 활용</h2>
-        <p>복잡한 계산식 없이 10자리 초와 13자리 밀리초 타임스탬프를 한국 표준시(KST) 및 UTC 표준시로 1초 만에 상호 변환할 수 있습니다.</p>
-        <div class="tool-banner">
-          <span class="tool-banner-text">🛠️ DevWorkKit 실시간 타임스탬프 변환기 사용해보기</span>
-          <a href="../time/" class="tool-banner-btn">도구로 이동 →</a>
-        </div>
-      </section>
-    </article>
-  </main>
+                <p>가장 치명적인 실수는 백엔드 API에서 전달받은 10자리(초) 타임스탬프를 자바스크립트의 <code>new Date(timestamp)</code>에 그대로 넘기는 경우입니다. 자바스크립트는 인자값을 13자리 밀리초로 기대하므로, 1,000배 작은 값이 전달되어 화면에 '1970년 1월 21일'과 같이 에포크 직후의 엉뚱한 과거 시점이 렌더링됩니다. 따라서 프론트엔드 연산 전 <strong>11자리 이하인 경우 반드시 1,000을 곱해주는 전처리</strong>가 필수적입니다.</p>
 
-  <script src="../nav.js"></script>
+                <div class="code-block">// 실무 표준 자바스크립트 타임스탬프 안전 파싱 함수
+                    function parseTimestampSafe(rawTimestamp) {
+                    let ts = Number(rawTimestamp);
+                    if (isNaN(ts)) return null;
+
+                    // 10자리(초 단위) 입력 시 13자리(밀리초)로 자동 승격 보정
+                    if (String(rawTimestamp).length <= 11) { ts=ts * 1000; } const date=new Date(ts); return { kst: date.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }), utc: date.toUTCString(), iso: date.toISOString(), rawEpochMs: ts }; }</div>
+            </section>
+
+            <section class="article-section">
+                <h2>3. UTC 오프셋과 한국 표준시(KST, UTC+09:00)의 시간 연산</h2>
+                <p>타임스탬프 자체는 타임존 개념이 없는 절대적인 찰나의 순간이지만, 이를 사람의 눈으로 확인할 수 있는 날짜 문자열로 렌더링할 때는 반드시 타임존 오프셋(Offset)이 더해져야 합니다.</p>
+                <p>한국 표준시(KST)는 그리니치 천문대 기준인 UTC보다 **9시간 빠른 <code>UTC+09:00</code>**을 고정 사용합니다. 초 단위로는 <code>32,400초</code>, 밀리초 단위로는 <code>32,400,000ms</code>의 시차가 발생합니다. 만약 백엔드 데이터베이스에 날짜 문자열을 기록할 때 로컬 시간대를 명시하지 않고 <code>2026-03-01 10:00:00</code>으로만 저장하면, 해외 서버 인프라(AWS 기본 UTC 환경)에서 9시간이 차감된 새벽 1시로 잘못 계산되는 장애가 발생합니다. 따라서 REST API 통신 시에는 항상 유닉스 정수 타임스탬프나 <code>2026-03-01T10:00:00+09:00</code> 형태의 <strong>ISO 8601 표준 포맷</strong>으로 교환해야 합니다.</p>
+            </section>
+
+            <section class="article-section">
+                <h2>4. 2038년 문제(Year 2038 Problem / Y2038)의 기술적 본질</h2>
+                <p>컴퓨팅 역사에서 Y2K(밀레니엄 버그)에 비견되는 중요한 구조적 한계가 바로 <strong>2038년 문제</strong>입니다. 초기 유닉스 C 언어 표준에서 타임스탬프를 저장하는 <code>time_t</code> 데이터 타입을 **32비트 부호 있는 정수(signed 32-bit int)**로 정의했기 때문에 발생합니다.</p>
+                <p>32비트 부호 있는 정수가 표현할 수 있는 최댓값은 $2^{31}-1 = 2,147,483,647$입니다. 이 숫자는 정확히 <strong>2038년 1월 19일 03:14:07 UTC</strong>를 가리킵니다. 1초가 더 흐르는 순간 최상위 비트(MSB)가 1로 바뀌며 음수 최솟값($-2,147,483,648$)으로 오버플로우되어, 시스템 시간이 1901년 12월 13일 20:45:52로 회귀하게 됩니다. 오늘날 대부분의 운영체제와 64비트 아키텍처는 <code>time_t</code>를 64비트 정수로 확장하여 약 2,920억 년 동안 안전한 구조를 확보했습니다.</p>
+            </section>
+
+            <section class="article-section">
+                <h2>5. DevWorKit 온라인 타임스탬프 변환기 활용</h2>
+                <p>복잡한 타임존 계산과 자릿수 환산 공식을 직접 계산할 필요 없이, 브라우저 화면에서 실시간 10자리/13자리 타임스탬프를 한국 시간(KST), UTC 표준시, ISO 8601 형식으로 즉시 상호 변환할 수 있습니다. 100% 클라이언트 로컬 메모리에서 동작하여 기업의 민감한 보안 로그 시간 정보도 안전하게 검증할 수 있습니다.</p>
+
+                <div class="tool-banner">
+                    <span class="tool-banner-text">🛠️ DevWorKit 실시간 타임스탬프 변환기 사용해보기</span>
+                    <a href="../time/" class="tool-banner-btn">도구로 이동 →</a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <div id="dwk-footer"></div>
+    <script src="../nav.js"></script>
 </body>
+
 </html>
