@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>글자수 & 바이트 계산기 | DevWorKit</title>
+    <title>글자수 & 바이트 계산기 (EUC-KR / UTF-8) | DevWorKit</title>
+    <meta name="description" content="공백 포함/제외 글자 수와 채용 사이트 및 공공기관 지원 표준인 EUC-KR, 웹 표준 UTF-8 바이트를 실시간으로 정밀 측정합니다.">
+    <link rel="stylesheet" href="../nav.css">
     <style>
         :root {
-            --primary-blue: #007bff;
-            --primary-blue-hover: #0056b3;
-            --bg-light: #f8f9fa;
-            --border-color: #dee2e6;
-            --text-main: #333333;
-            --text-muted: #666666;
+            --primary-blue: #0284c7;
+            --primary-blue-hover: #0369a1;
+            --bg-light: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
         }
 
         body {
@@ -25,72 +28,149 @@
             min-height: 100vh;
         }
 
-        header {
-            border-bottom: 1px solid var(--border-color);
-            padding: 20px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo-area { display: flex; align-items: center; gap: 8px; }
-        .logo-badge { background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
-        .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
-
         .page-wrapper {
             display: block;
             max-width: 1100px;
-            margin: 20px auto 40px auto;
+            margin: 30px auto 40px auto;
             padding: 0 20px;
             box-sizing: border-box;
             width: 100%;
         }
 
-        .intro-section { margin-bottom: 25px; }
-        .intro-title { font-size: 22px; font-weight: 800; color: #111827; margin: 0 0 6px 0; letter-spacing: -0.5px; }
-        .intro-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 16px 0; }
+        .intro-section {
+            margin-bottom: 25px;
+        }
+
+        .intro-header-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .tool-tag-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+
+        .intro-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .intro-desc {
+            font-size: 14.5px;
+            color: var(--text-muted);
+            margin: 0 0 16px 0;
+            line-height: 1.6;
+        }
+
         .guide-box {
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 16px 20px;
+            border-radius: 10px;
+            padding: 18px 22px;
             font-size: 13.5px;
             color: #334155;
             line-height: 1.6;
         }
-        .guide-box strong { display: block; margin-bottom: 8px; color: #0f172a; font-size: 14px; }
-        .guide-list { margin: 0; padding-left: 18px; }
-        .guide-list li { margin-bottom: 4px; }
 
-        .main-container { width: 100%; margin: 0 auto; box-sizing: border-box; }
+        .guide-box strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #0f172a;
+            font-size: 14px;
+        }
+
+        .guide-list {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .guide-list li {
+            margin-bottom: 5px;
+        }
+
+        .main-container {
+            width: 100%;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
 
         .stat-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
+            gap: 16px;
             margin-bottom: 20px;
         }
-        @media (max-width: 800px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+
+        @media (max-width: 800px) {
+            .stat-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
 
         .stat-card {
-            background-color: var(--bg-light);
+            background-color: #ffffff;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 16px;
+            border-radius: 10px;
+            padding: 18px 16px;
             text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            transition: transform 0.15s ease;
         }
-        .stat-card.highlight-card { background-color: #e7f5ff; border-color: #74c0fc; }
-        .stat-title { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
-        .stat-value { font-size: 24px; font-weight: 800; color: #111111; }
-        .stat-card.highlight-card .stat-value { color: var(--primary-blue); }
-        .stat-unit { font-size: 13px; font-weight: normal; color: var(--text-muted); margin-left: 2px; }
+
+        .stat-card.highlight-card {
+            background-color: #f0f9ff;
+            border-color: #bae6fd;
+        }
+
+        .stat-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .stat-card.highlight-card .stat-title {
+            color: #0369a1;
+        }
+
+        .stat-value {
+            font-size: 26px;
+            font-weight: 900;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+        }
+
+        .stat-card.highlight-card .stat-value {
+            color: var(--primary-blue);
+        }
+
+        .stat-unit {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-left: 2px;
+        }
 
         .editor-container {
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 20px;
             background-color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            box-sizing: border-box;
         }
 
         .editor-header {
@@ -102,253 +182,397 @@
             gap: 8px;
         }
 
-        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
         .btn-action {
             background-color: #ffffff;
             border: 1px solid var(--border-color);
             padding: 6px 12px;
             font-size: 12.5px;
             font-weight: 600;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             color: var(--text-main);
             transition: all 0.15s;
         }
-        .btn-action:hover { background-color: #e9ecef; }
-        .btn-primary { background-color: var(--primary-blue); color: white; border-color: var(--primary-blue); }
-        .btn-primary:hover { background-color: var(--primary-blue-hover); }
+
+        .btn-action:hover {
+            background-color: #f1f5f9;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-blue-hover);
+        }
 
         textarea.counter-textarea {
             width: 100%;
             height: 380px;
-            padding: 15px;
-            font-size: 15px;
-            line-height: 1.6;
+            padding: 16px;
+            font-size: 14.5px;
+            line-height: 1.7;
             font-family: inherit;
+            color: #0f172a;
             border: 1px solid var(--border-color);
-            border-radius: 6px;
+            border-radius: 8px;
             box-sizing: border-box;
             resize: vertical;
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
-        textarea.counter-textarea:focus { border-color: var(--primary-blue); }
+
+        textarea.counter-textarea:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+        }
 
         .sub-stats {
-            margin-top: 15px;
+            margin-top: 16px;
             display: flex;
-            gap: 20px;
-            font-size: 13px;
+            gap: 24px;
+            font-size: 13.5px;
             color: var(--text-muted);
             flex-wrap: wrap;
         }
 
-        .bottom-ad-box { max-width: 1100px; width: 100%; margin: 25px auto 10px auto; text-align: center; }
+        .sub-stats strong {
+            color: #0f172a;
+        }
+
+        /* [SEO & 애드센스 고유 콘텐츠 보강 섹션] */
+        .seo-article-box {
+            margin-top: 48px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 36px 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            line-height: 1.8;
+            color: #334155;
+        }
+
+        .seo-article-box h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 16px 0;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+            letter-spacing: -0.4px;
+        }
+
+        .seo-article-box h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 24px 0 8px 0;
+        }
+
+        .seo-article-box p {
+            font-size: 14.5px;
+            margin: 0 0 14px 0;
+        }
+
+        .seo-article-box ul {
+            font-size: 14px;
+            padding-left: 20px;
+            margin: 8px 0 20px 0;
+        }
+
+        .seo-article-box li {
+            margin-bottom: 6px;
+        }
+
+        .faq-item {
+            margin-top: 16px;
+            padding: 14px 18px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .faq-q {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 14.5px;
+            margin-bottom: 6px;
+        }
+
+        .faq-a {
+            font-size: 14px;
+            color: #475569;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .bottom-ad-box {
+            max-width: 1100px;
+            width: 100%;
+            margin: 30px auto 10px auto;
+            text-align: center;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        /* 빈 광고 슬롯 초록선 자동 방지 */
+        .bottom-ad-box ins.adsbygoogle[data-ad-status="unfilled"],
+        .bottom-ad-box ins.adsbygoogle:empty {
+            display: none !important;
+        }
     </style>
 </head>
+
 <body>
 
-<header>
-    <div class="logo-area">
-        <span class="logo-badge">COUNTER</span>
-        <span class="logo-text">글자수 & 바이트 계산기</span>
-    </div>
-</header>
+    <div class="page-wrapper">
+        <div class="intro-section">
+            <div class="intro-header-row">
+                <span class="tool-tag-badge">COUNTER</span>
+                <h1 class="intro-title">글자수 & 바이트 계산기</h1>
+            </div>
+            <p class="intro-desc">공백 포함/제외 글자 수와 취업 자기소개서, 공공기관 제출용 EUC-KR 및 웹 표준 UTF-8 바이트 용량을 실시간으로 정밀 측정합니다.</p>
 
-<div class="page-wrapper">
-    <div class="intro-section">
-        <h2 class="intro-title">자기소개서 및 문서의 분량을 실시간으로 측정하는 글자수 계산기입니다.</h2>
-        <p class="intro-desc">공백 포함/제외 글자 수와 대기업/공공기관 지원 표준인 EUC-KR 및 UTF-8 바이트를 정밀 계산합니다.</p>
-        
-        <div class="guide-box">
-            <strong>글자수 및 바이트 계산기 사용 방법 안내:</strong>
-            <ol class="guide-list">
-                <li>하단 입력창에 글을 직접 작성하거나 <b>[샘플 불러오기]</b>를 클릭하여 테스트 내용을 채웁니다.</li>
-                <li>상단 카드에서 <b>공백 포함/제외 글자 수</b>와 <b>EUC-KR(한글 2Byte, 줄바꿈 2Byte)</b> 바이트를 실시간으로 확인합니다.</li>
-                <li>불필요한 띄어쓰기가 많을 때는 <b>[연속 공백 정리]</b>, 문단 정돈 시 <b>[빈 줄 제거]</b> 기능을 사용합니다.</li>
-                <li>완성된 글은 <b>[본문 복사]</b> 버튼을 눌러 원클릭으로 클립보드에 담아 채용 사이트에 붙여넣을 수 있습니다.</li>
-            </ol>
-        </div>
-    </div>
-
-    <div class="main-container">
-        <div class="stat-grid">
-            <div class="stat-card highlight-card">
-                <div class="stat-title">공백 포함 글자수</div>
-                <div class="stat-value" id="cnt-with-space">0<span class="stat-unit">자</span></div>
-            </div>
-            <div class="stat-card highlight-card">
-                <div class="stat-title">공백 제외 글자수</div>
-                <div class="stat-value" id="cnt-without-space">0<span class="stat-unit">자</span></div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-title">EUC-KR (자소서/공공기관)</div>
-                <div class="stat-value" id="cnt-bytes-euckr">0<span class="stat-unit">Byte</span></div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-title">UTF-8 (웹/모바일 표준)</div>
-                <div class="stat-value" id="cnt-bytes-utf8">0<span class="stat-unit">Byte</span></div>
+            <div class="guide-box">
+                <strong>글자수 및 바이트 계산기 사용 방법 안내:</strong>
+                <ol class="guide-list">
+                    <li>하단 입력창에 글을 직접 작성하거나 <b>[샘플 불러오기]</b>를 클릭하여 테스트 내용을 채웁니다.</li>
+                    <li>상단 카드에서 <b>공백 포함/제외 글자 수</b>와 채용 사이트 기준 <b>EUC-KR(한글 2Byte, 줄바꿈 2Byte)</b> 용량을 실시간 확인합니다.</li>
+                    <li>불필요한 띄어쓰기가 많을 때는 <b>[연속 공백 정리]</b>, 문단 정돈 시 <b>[빈 줄 제거]</b> 기능을 사용합니다.</li>
+                    <li>작성이 완료되면 <b>[본문 복사]</b> 버튼을 눌러 채용 포털 지원서 양식에 바로 붙여넣을 수 있습니다.</li>
+                </ol>
             </div>
         </div>
 
-        <div class="editor-container">
-            <div class="editor-header">
-                <span style="font-size: 14px; font-weight: 700;">본문 내용 작성</span>
-                <div class="btn-group">
-                    <button class="btn-action" onclick="loadSampleText()">샘플 불러오기</button>
-                    <button class="btn-action" onclick="removeExtraSpaces()">연속 공백 정리</button>
-                    <button class="btn-action" onclick="removeBlankLines()">빈 줄 제거</button>
-                    <button class="btn-action" onclick="clearText()">초기화</button>
-                    <button class="btn-action btn-primary" onclick="copyText()">본문 복사</button>
+        <div class="main-container">
+            <div class="stat-grid">
+                <div class="stat-card highlight-card">
+                    <div class="stat-title">공백 포함 글자수</div>
+                    <div class="stat-value" id="cnt-with-space">0<span class="stat-unit">자</span></div>
+                </div>
+                <div class="stat-card highlight-card">
+                    <div class="stat-title">공백 제외 글자수</div>
+                    <div class="stat-value" id="cnt-without-space">0<span class="stat-unit">자</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">EUC-KR (자소서/채용포털)</div>
+                    <div class="stat-value" id="cnt-bytes-euckr">0<span class="stat-unit">Byte</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">UTF-8 (웹/모바일 표준)</div>
+                    <div class="stat-value" id="cnt-bytes-utf8">0<span class="stat-unit">Byte</span></div>
                 </div>
             </div>
 
-            <textarea id="main-textarea" class="counter-textarea" placeholder="여기에 텍스트를 입력하거나 [샘플 불러오기]를 눌러보세요. 글자 수와 바이트 수가 실시간으로 계산됩니다."></textarea>
+            <div class="editor-container">
+                <div class="editor-header">
+                    <span style="font-size: 14px; font-weight: 700; color: #0f172a;">본문 내용 작성</span>
+                    <div class="btn-group">
+                        <button class="btn-action" onclick="loadSampleText()">샘플 불러오기</button>
+                        <button class="btn-action" onclick="removeExtraSpaces()">연속 공백 정리</button>
+                        <button class="btn-action" onclick="removeBlankLines()">빈 줄 제거</button>
+                        <button class="btn-action" onclick="clearText()">초기화</button>
+                        <button class="btn-action btn-primary" onclick="copyText()">본문 복사</button>
+                    </div>
+                </div>
 
-            <div class="sub-stats">
-                <span>단어 수: <strong id="cnt-words" style="color: #111;">0</strong>개</span>
-                <span>줄(Line) 수: <strong id="cnt-lines" style="color: #111;">0</strong>줄</span>
-                <span>예상 읽기 시간: 약 <strong id="read-time" style="color: #111;">0</strong>분</span>
+                <textarea id="main-textarea" class="counter-textarea" placeholder="여기에 텍스트를 입력하거나 [샘플 불러오기]를 눌러보세요. 글자 수와 바이트 수가 실시간으로 계산됩니다."></textarea>
+
+                <div class="sub-stats">
+                    <span>단어 수: <strong id="cnt-words">0</strong>개</span>
+                    <span>줄(Line) 수: <strong id="cnt-lines">0</strong>줄</span>
+                    <span>예상 읽기 시간: 약 <strong id="read-time">0</strong>분</span>
+                </div>
             </div>
+
+            <!-- [애드센스 승인용 고유 텍스트 & 실무 원리 가이드 영역] -->
+            <article class="seo-article-box">
+                <h2>글자수 및 바이트 계산기의 실무 동작 원리와 인코딩 기준</h2>
+                <p><strong>DevWorKit 글자수 & 바이트 계산기</strong>는 취업 자기소개서, 대입 원서, 공공기관 보고서, 마케팅 광고 카피 등 글자 수 제한이 엄격한 문서를 작성할 때 인코딩 규격별 실제 용량을 오차 없이 측정해 주는 실무 툴킷입니다.</p>
+
+                <h3>1. EUC-KR과 UTF-8 바이트 계산 방식의 결정적 차이</h3>
+                <p>국내 다수의 채용 포털(사람인, 잡코리아, 공기업 채용 시스템 등)과 레거시 데이터베이스는 한글을 <strong>EUC-KR(또는 CP949)</strong> 규격으로 산정합니다. 반면 최신 웹 브라우저, 글로벌 클라우드 서비스는 <strong>UTF-8</strong> 규격을 채택하고 있습니다.</p>
+                <ul>
+                    <li><strong>EUC-KR 기준:</strong> 영문·숫자·공백은 1바이트, 한글은 1글자당 <strong>2바이트</strong>로 계산됩니다.</li>
+                    <li><strong>UTF-8 기준:</strong> 영문·숫자·공백은 1바이트이지만, 한글 및 다국어 유니코드는 1글자당 <strong>3바이트</strong>로 처리됩니다.</li>
+                    <li>따라서 동일하게 한글 500자를 작성하더라도 EUC-KR에서는 약 1,000바이트이지만, UTF-8 시스템에서는 약 1,500바이트로 측정되므로 제출 기관의 기준을 정확히 파악해야 합니다.</li>
+                </ul>
+
+                <h3>2. 자기소개서 작성 시 줄바꿈(엔터) 바이트 계산 주의사항</h3>
+                <p>많은 구직자들이 서류 접수 마감 직전 겪는 대표적인 오류가 바로 '엔터(줄바꿈) 키'로 인한 글자수 초과 현상입니다. 윈도우 기반 서버 환경에서는 줄바꿈 문자를 <code>CRLF(\r\n)</code>로 인식하여 줄을 한 번 바꿀 때마다 <strong>2바이트</strong>가 가산됩니다. 본 계산기는 줄바꿈 문자까지 실제 채용 전산망 기준(2바이트)에 맞추어 정확하게 계산합니다.</p>
+
+                <h3>3. 자주 묻는 질문 (FAQ)</h3>
+                <div class="faq-item">
+                    <div class="faq-q">Q. 작성 중인 자기소개서 내용이 서버에 저장되거나 유출될 위험이 있나요?</div>
+                    <div class="faq-a">A. 전혀 없습니다. DevWorKit의 글자 수 및 바이트 계산 엔진은 사용자의 PC 웹 브라우저(자바스크립트 메모리) 안에서만 실시간으로 연산됩니다. 어떠한 텍스트 데이터도 외부 데이터베이스로 전송되지 않으므로 안심하고 작성하실 수 있습니다.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">Q. 취업 포털 사이트의 바이트 수와 왜 1~2바이트씩 차이가 날 수 있나요?</div>
+                    <div class="faq-a">A. 각 기업 채용 페이지마다 공백을 특수문자로 처리하거나 줄바꿈을 1바이트(LF) 혹은 2바이트(CRLF)로 처리하는 내부 규칙이 미세하게 다를 수 있습니다. 안전한 서류 제출을 위해 시스템 상한선보다 약 10~20바이트 정도 여유를 두고 작성하시는 것을 권장합니다.</div>
+                </div>
+            </article>
         </div>
     </div>
-</div>
 
-<div class="bottom-ad-box">
-    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3823705730142714" data-ad-slot="3894691126" data-ad-format="auto" data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-</div>
+    <div class="bottom-ad-box">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3823705730142714" data-ad-slot="3894691126" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
 
-<script>
-    const textUndoStack = [];
-    const textRedoStack = [];
-    let textTimer = null;
+    <script>
+        const textUndoStack = [];
+        const textRedoStack = [];
+        let textTimer = null;
 
-    function recordTextHistory() {
-        const el = document.getElementById('main-textarea');
-        if (!el) return;
-        const state = { val: el.value, selStart: el.selectionStart, selEnd: el.selectionEnd, scrollTop: el.scrollTop };
-        if (textUndoStack.length === 0 || textUndoStack[textUndoStack.length - 1].val !== state.val) {
-            textUndoStack.push(state);
-            if (textUndoStack.length > 50) textUndoStack.shift();
-            textRedoStack.length = 0;
-        }
-    }
-
-    function handleTextInput() {
-        updateStats();
-        clearTimeout(textTimer);
-        textTimer = setTimeout(() => { recordTextHistory(); }, 300);
-    }
-
-    function handleTextKeyDown(e) {
-        const isCtrl = e.ctrlKey || e.metaKey;
-        const key = e.key.toLowerCase();
-        const el = document.getElementById('main-textarea');
-        if (isCtrl && key === 'z' && !e.shiftKey) {
-            if (textUndoStack.length > 1) {
-                e.preventDefault();
-                textRedoStack.push(textUndoStack.pop());
-                applyTextState(el, textUndoStack[textUndoStack.length - 1]);
-            }
-        } else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
-            if (textRedoStack.length > 0) {
-                e.preventDefault();
-                const next = textRedoStack.pop();
-                textUndoStack.push(next);
-                applyTextState(el, next);
+        function recordTextHistory() {
+            const el = document.getElementById('main-textarea');
+            if (!el) return;
+            const state = {
+                val: el.value,
+                selStart: el.selectionStart,
+                selEnd: el.selectionEnd,
+                scrollTop: el.scrollTop
+            };
+            if (textUndoStack.length === 0 || textUndoStack[textUndoStack.length - 1].val !== state.val) {
+                textUndoStack.push(state);
+                if (textUndoStack.length > 50) textUndoStack.shift();
+                textRedoStack.length = 0;
             }
         }
-    }
 
-    function applyTextState(el, state) {
-        el.value = state.val;
-        updateStats();
-        setTimeout(() => {
-            el.focus();
-            el.setSelectionRange(state.selStart, state.selEnd);
-            el.scrollTop = state.scrollTop;
-        }, 0);
-    }
-
-    function loadSampleText() {
-        const sample = `[지원 동기 및 포부 예시]\n\n끊임없는 배움과 도전을 통해 가치를 창출하는 웹 개발자입니다.\n\n복잡한 업무 흐름과 반복 수작업을 자동화하여 팀 전체의 생산성을 극대화했던 경험이 있습니다.\n\nDevWorKit 플랫폼 구축 프로젝트에 동참하여 실무 중심의 고성능 웹 유틸리티 서비스를 개발하고 싶습니다.`;
-        const el = document.getElementById('main-textarea');
-        el.value = sample;
-        recordTextHistory();
-        updateStats();
-    }
-
-    function getEucKrBytes(str) {
-        let bytes = 0;
-        for (let i = 0; i < str.length; i++) {
-            const code = str.charCodeAt(i);
-            bytes += (code <= 0x007f && code !== 10 && code !== 13) ? 1 : 2;
+        function handleTextInput() {
+            updateStats();
+            clearTimeout(textTimer);
+            textTimer = setTimeout(() => {
+                recordTextHistory();
+            }, 300);
         }
-        return bytes;
-    }
 
-    function getUtf8Bytes(str) {
-        return new TextEncoder().encode(str).length;
-    }
+        function handleTextKeyDown(e) {
+            const isCtrl = e.ctrlKey || e.metaKey;
+            const key = e.key.toLowerCase();
+            const el = document.getElementById('main-textarea');
+            if (isCtrl && key === 'z' && !e.shiftKey) {
+                if (textUndoStack.length > 1) {
+                    e.preventDefault();
+                    textRedoStack.push(textUndoStack.pop());
+                    applyTextState(el, textUndoStack[textUndoStack.length - 1]);
+                }
+            } else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
+                if (textRedoStack.length > 0) {
+                    e.preventDefault();
+                    const next = textRedoStack.pop();
+                    textUndoStack.push(next);
+                    applyTextState(el, next);
+                }
+            }
+        }
 
-    function updateStats() {
-        const text = document.getElementById('main-textarea').value;
-        const withSpace = text.length;
-        const withoutSpace = text.replace(/\s/g, '').length;
-        const euckrBytes = getEucKrBytes(text);
-        const utf8Bytes = getUtf8Bytes(text);
-        const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
-        const lines = text === '' ? 0 : text.split('\n').length;
-        const readTime = Math.ceil(withSpace / 500);
+        function applyTextState(el, state) {
+            el.value = state.val;
+            updateStats();
+            setTimeout(() => {
+                el.focus();
+                el.setSelectionRange(state.selStart, state.selEnd);
+                el.scrollTop = state.scrollTop;
+            }, 0);
+        }
 
-        document.getElementById('cnt-with-space').innerHTML = `${withSpace.toLocaleString()}<span class="stat-unit">자</span>`;
-        document.getElementById('cnt-without-space').innerHTML = `${withoutSpace.toLocaleString()}<span class="stat-unit">자</span>`;
-        document.getElementById('cnt-bytes-euckr').innerHTML = `${euckrBytes.toLocaleString()}<span class="stat-unit">Byte</span>`;
-        document.getElementById('cnt-bytes-utf8').innerHTML = `${utf8Bytes.toLocaleString()}<span class="stat-unit">Byte</span>`;
-        document.getElementById('cnt-words').innerText = words.toLocaleString();
-        document.getElementById('cnt-lines').innerText = lines.toLocaleString();
-        document.getElementById('read-time').innerText = readTime;
-    }
+        function loadSampleText() {
+            const sample = `[지원 동기 및 포부 예시]\n\n끊임없는 배움과 도전을 통해 가치를 창출하는 웹 개발자입니다.\n\n복잡한 업무 흐름과 반복 수작업을 자동화하여 팀 전체의 생산성을 극대화했던 경험이 있습니다.\n\nDevWorKit 플랫폼 구축 프로젝트에 동참하여 실무 중심의 고성능 웹 유틸리티 서비스를 개발하고 싶습니다.`;
+            const el = document.getElementById('main-textarea');
+            el.value = sample;
+            recordTextHistory();
+            updateStats();
+        }
 
-    function removeExtraSpaces() {
-        const textarea = document.getElementById('main-textarea');
-        textarea.value = textarea.value.replace(/[ \t]+/g, ' ');
-        recordTextHistory();
-        updateStats();
-    }
+        function getEucKrBytes(str) {
+            let bytes = 0;
+            for (let i = 0; i < str.length; i++) {
+                const code = str.charCodeAt(i);
+                bytes += (code <= 0x007f && code !== 10 && code !== 13) ? 1 : 2;
+            }
+            return bytes;
+        }
 
-    function removeBlankLines() {
-        const textarea = document.getElementById('main-textarea');
-        textarea.value = textarea.value.split('\n').filter(line => line.trim() !== '').join('\n');
-        recordTextHistory();
-        updateStats();
-    }
+        function getUtf8Bytes(str) {
+            return new TextEncoder().encode(str).length;
+        }
 
-    function clearText() {
-        const textarea = document.getElementById('main-textarea');
-        if (!textarea.value) return;
-        textarea.value = '';
-        recordTextHistory();
-        updateStats();
-        textarea.focus();
-    }
+        function updateStats() {
+            const text = document.getElementById('main-textarea').value;
+            const withSpace = text.length;
+            const withoutSpace = text.replace(/\s/g, '').length;
+            const euckrBytes = getEucKrBytes(text);
+            const utf8Bytes = getUtf8Bytes(text);
+            const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+            const lines = text === '' ? 0 : text.split('\n').length;
+            const readTime = Math.ceil(withSpace / 500);
 
-    function copyText() {
-        const text = document.getElementById('main-textarea').value;
-        if (!text) { alert('복사할 텍스트가 없습니다.'); return; }
-        navigator.clipboard.writeText(text).then(() => { alert('본문 텍스트가 클립보드에 복사되었습니다!'); });
-    }
+            document.getElementById('cnt-with-space').innerHTML = `${withSpace.toLocaleString()}<span class="stat-unit">자</span>`;
+            document.getElementById('cnt-without-space').innerHTML = `${withoutSpace.toLocaleString()}<span class="stat-unit">자</span>`;
+            document.getElementById('cnt-bytes-euckr').innerHTML = `${euckrBytes.toLocaleString()}<span class="stat-unit">Byte</span>`;
+            document.getElementById('cnt-bytes-utf8').innerHTML = `${utf8Bytes.toLocaleString()}<span class="stat-unit">Byte</span>`;
+            document.getElementById('cnt-words').innerText = words.toLocaleString();
+            document.getElementById('cnt-lines').innerText = lines.toLocaleString();
+            document.getElementById('read-time').innerText = readTime;
+        }
 
-    window.onload = () => {
-        const textarea = document.getElementById('main-textarea');
-        textarea.addEventListener('input', handleTextInput);
-        textarea.addEventListener('keydown', handleTextKeyDown);
-        recordTextHistory();
-        updateStats();
-    };
-</script>
-<div id="dwk-footer"></div>
-<script src="../nav.js"></script>
+        function removeExtraSpaces() {
+            const textarea = document.getElementById('main-textarea');
+            textarea.value = textarea.value.replace(/[ \t]+/g, ' ');
+            recordTextHistory();
+            updateStats();
+        }
+
+        function removeBlankLines() {
+            const textarea = document.getElementById('main-textarea');
+            textarea.value = textarea.value.split('\n').filter(line => line.trim() !== '').join('\n');
+            recordTextHistory();
+            updateStats();
+        }
+
+        function clearText() {
+            const textarea = document.getElementById('main-textarea');
+            if (!textarea.value) return;
+            textarea.value = '';
+            recordTextHistory();
+            updateStats();
+            textarea.focus();
+        }
+
+        function copyText() {
+            const text = document.getElementById('main-textarea').value;
+            if (!text) {
+                alert('복사할 텍스트가 없습니다.');
+                return;
+            }
+            navigator.clipboard.writeText(text).then(() => {
+                alert('본문 텍스트가 클립보드에 복사되었습니다!');
+            });
+        }
+
+        window.onload = () => {
+            const textarea = document.getElementById('main-textarea');
+            textarea.addEventListener('input', handleTextInput);
+            textarea.addEventListener('keydown', handleTextKeyDown);
+            recordTextHistory();
+            updateStats();
+        };
+    </script>
+
+    <div id="dwk-footer"></div>
+    <script src="../nav.js"></script>
 </body>
+
 </html>
