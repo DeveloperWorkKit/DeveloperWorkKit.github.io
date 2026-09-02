@@ -423,6 +423,7 @@
                 </div>
             </div>
 
+            <!-- [애드센스 승인용 고유 텍스트 & 실무 원리 가이드 영역] -->
             <article class="seo-article-box">
                 <h2>글자수 및 바이트 계산기의 실무 동작 원리와 인코딩 기준</h2>
                 <p><strong>DevWorKit 글자수 & 바이트 계산기</strong>는 취업 자기소개서, 대입 원서, 공공기관 보고서, 마케팅 광고 카피 등 글자 수 제한이 엄격한 문서를 작성할 때 인코딩 규격별 실제 용량을 오차 없이 측정하고, 브라우저 내장 TTS 음성 출력을 통해 문장 가독성을 오감으로 검증할 수 있는 실무 툴킷입니다.</p>
@@ -608,7 +609,7 @@
             });
         }
 
-        // ===== TTS 음성 출력 함수 (선택 영역 하이라이트 싱크 유지) =====
+        // ===== TTS 음성 출력 함수 (모바일 키보드 팝업 방지 및 싱크 유지) =====
         function speakText() {
             if (!('speechSynthesis' in window)) {
                 alert('현재 브라우저가 음성 합성(TTS) 기능을 지원하지 않습니다.');
@@ -671,13 +672,19 @@
 
         function playSpeechWithHighlight(text, msg, baseOffset) {
             const textarea = document.getElementById('main-textarea');
+            
+            // 모바일 환경 판별 (iOS / Android)
+            const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+            // 모바일에서는 읽는 동안 소프트 키보드가 안 뜨도록 일시적으로 readonly 처리
+            if (isMobile) {
+                textarea.setAttribute('readonly', 'true');
+            }
+
             currentUtterance = new SpeechSynthesisUtterance(text);
             currentUtterance.lang = 'ko-KR';
             currentUtterance.rate = 1.0;
             currentUtterance.pitch = 1.0;
-
-            // 모바일 기기 여부 판별 (iOS / Android)
-            const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
             currentUtterance.onboundary = (event) => {
                 if (event.name === 'word' || event.name === 'sentence') {
@@ -686,10 +693,8 @@
                     const currentStart = baseOffset + charIndex;
                     const currentEnd = Math.min(textarea.value.length, currentStart + wordLength);
                     
-                    textarea.focus();
-
-                    // PC 환경에서는 선택 블록 싱크 유지, 모바일 환경에서는 선택 해제 방지 및 부드러운 스크롤에 집중
                     if (!isMobile) {
+                        textarea.focus();
                         try {
                             textarea.setSelectionRange(currentStart, currentEnd);
                         } catch (e) {}
@@ -710,8 +715,10 @@
 
             currentUtterance.onend = () => {
                 showToast('✨ 음성 재생이 완료되었습니다.');
-                textarea.focus();
-                if (!isMobile) {
+                if (isMobile) {
+                    textarea.removeAttribute('readonly');
+                } else {
+                    textarea.focus();
                     textarea.setSelectionRange(baseOffset, baseOffset + text.length);
                 }
             };
@@ -719,8 +726,8 @@
             window.speechSynthesis.speak(currentUtterance);
             showToast(msg);
 
-            textarea.focus();
             if (!isMobile) {
+                textarea.focus();
                 textarea.setSelectionRange(baseOffset, baseOffset + text.length);
             }
         }
@@ -728,6 +735,10 @@
         function stopSpeech() {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
+                const textarea = document.getElementById('main-textarea');
+                if (textarea) {
+                    textarea.removeAttribute('readonly');
+                }
                 showToast('⏹ 음성 출력이 중단되었습니다.');
             }
         }
