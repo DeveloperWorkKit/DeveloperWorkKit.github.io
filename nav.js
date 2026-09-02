@@ -58,7 +58,7 @@
         {
             name: 'JSON 포맷터 & 검사기',
             tag: 'JSON',
-            url: `${HOST_URL}/json-viewer/`,
+            url: `${HOST_URL}/json/`,
             keywords: 'formatter validator json format parse 구문오류'
         },
         {
@@ -122,7 +122,7 @@
                         <a href="${HOST_URL}/fsee/">폴더 구조 엑셀 변환기 (FSEE)</a>
                         <a href="${HOST_URL}/coder/">Base64 & URL 변환기 (CODER)</a>
                         <a href="${HOST_URL}/beautify/">코드 뷰티파이어 & 뷰어 (BEAUTIFY)</a>
-                        <a href="${HOST_URL}/json-viewer/">JSON 포맷터 & 검사기 (JSON)</a>
+                        <a href="${HOST_URL}/json/">JSON 포맷터 & 검사기 (JSON)</a>
                     </div>
                 </div>
 
