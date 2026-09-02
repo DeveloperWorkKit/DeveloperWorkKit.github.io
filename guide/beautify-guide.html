@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>코드 뷰티파이어(Beautifier)의 동작 원리와 들여쓰기 표준 가이드 | DevWorKit</title>
-    <meta name="description" content="코드 뷰티파이어의 AST 파싱 원리와 2칸 vs 4칸 들여쓰기 표준 가이드">
+    <meta name="description" content="코드 뷰티파이어의 AST 구문 분석 원리부터 2칸 vs 4칸 들여쓰기 표준 규격, Minify 압축 최적화 기술까지 완벽 정리 실무 가이드">
     <link rel="stylesheet" href="../nav.css">
     <style>
         body {
@@ -70,32 +70,39 @@
         }
 
         .article-section {
-            margin-bottom: 32px;
+            margin-bottom: 36px;
         }
 
         .article-section h2 {
             font-size: 19px;
             font-weight: 700;
             color: #1e293b;
-            margin: 0 0 12px 0;
+            margin: 0 0 14px 0;
+        }
+
+        .article-section h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 20px 0 8px 0;
         }
 
         .article-section p {
             font-size: 14.5px;
-            line-height: 1.75;
+            line-height: 1.8;
             color: #475569;
-            margin: 0 0 12px 0;
+            margin: 0 0 14px 0;
         }
 
-        ul {
+        .article-section ul {
             color: #475569;
             font-size: 14.5px;
-            line-height: 1.75;
+            line-height: 1.8;
             padding-left: 20px;
             margin: 8px 0 16px 0;
         }
 
-        li {
+        .article-section li {
             margin-bottom: 6px;
         }
 
@@ -107,9 +114,29 @@
             font-family: Consolas, Monaco, "Courier New", monospace;
             font-size: 13px;
             overflow-x: auto;
-            margin: 14px 0;
+            margin: 16px 0;
             line-height: 1.6;
             white-space: pre;
+        }
+
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 18px 0;
+            font-size: 13.5px;
+        }
+
+        .table-custom th,
+        .table-custom td {
+            border: 1px solid #cbd5e1;
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        .table-custom th {
+            background: #f1f5f9;
+            font-weight: 800;
+            color: #0f172a;
         }
 
         /* 개발/데이터 카테고리 파스텔 바이올렛 도구 배너 */
@@ -118,7 +145,7 @@
             border: 1px solid #ddd6fe;
             border-radius: 8px;
             padding: 18px 20px;
-            margin-top: 28px;
+            margin-top: 36px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -180,38 +207,80 @@
             <h1 class="article-title">코드 뷰티파이어(Beautifier)의 동작 원리와 들여쓰기 표준 가이드</h1>
 
             <section class="article-section">
-                <h2>1. 코드 뷰티파이(Code Beautifying)란?</h2>
-                <p>코드 뷰티파이어는 공백, 줄바꿈, 괄호 위치 등이 엉망이거나 한 줄로 압축(Minify)된 소스 코드를 구문 트리(AST) 분석을 통해 일관된 표준 들여쓰기 규칙으로 재정렬해 주는 도구입니다.</p>
+                <h2>1. 코드 뷰티파이어(Code Beautifier)의 본질과 필요성</h2>
+                <p>소프트웨어 엔지니어링에서 소스 코드는 컴퓨터가 해석하는 명령어 세트인 동시에, 사람이 읽고 유지보수하는 협업의 매개체입니다. 실무 개발 환경에서는 여러 개발자의 서로 다른 코딩 습관, 외부 라이브러리 분석 과정에서 마주하는 한 줄 압축(Minify) 코드, 레거시 시스템의 무분별한 탭 혼용 등으로 인해 코드의 가독성이 급격히 저하되는 문제가 발생합니다.</p>
+                <p><strong>코드 뷰티파이어(Code Beautifier / Formatter)</strong>는 뒤엉킨 공백, 제각각인 줄바꿈, 어긋난 중괄호 블록을 특정 언어의 표준 컨벤션에 맞춰 자동으로 재정돈해 주는 정적 분석 도구입니다. 단순히 텍스트를 보기 좋게 만드는 심미적 기능을 넘어, 괄호 짝 누락이나 스코프(Scope) 오염과 같은 잠재적 논리 오류를 빠르게 식별할 수 있도록 돕습니다.</p>
             </section>
 
             <section class="article-section">
-                <h2>2. 들여쓰기 2칸(Space 2) vs 4칸(Space 4) 표준</h2>
-                <p>프로그래밍 언어와 프레임워크마다 권장하는 표준 스타일 가이드가 다릅니다.</p>
+                <h2>2. 뷰티파이어의 내부 파이프라인: AST(추상 구문 트리) 파싱</h2>
+                <p>많은 초급 개발자가 뷰티파이어를 단순한 정규표현식(Regex) 기반의 문자열 치환기로 오해하곤 합니다. 그러나 단순 치환 방식은 <code>console.log("if (a > 0) {")</code>과 같이 문자열 리터럴 내부에 포함된 코드 유사 텍스트까지 잘못 건드려 문법 에러를 유발합니다. 전문적인 포맷터 엔진(js-beautify, Prettier 등)은 다음과 같은 3단계 컴파일러 파이프라인을 거칩니다:</p>
                 <ul>
-                    <li><strong>2칸 들여쓰기</strong>: HTML, CSS, JavaScript(React, Vue, Node.js), JSON 등 중첩 깊이가 깊은 프론트엔드 환경에서 주로 사용됩니다.</li>
-                    <li><strong>4칸 들여쓰기</strong>: Python(PEP8), Java, C/C++ 등 구조적 블록 구분이 명확해야 하는 백엔드 환경에서 표준으로 권장됩니다.</li>
+                    <li><strong>어휘 분석 (Lexical Analysis / Tokenizing):</strong> 원시 코드 텍스트를 순회하며 키워드(<code>function</code>, <code>if</code>), 식별자, 연산자, 문자열, 주석 등의 원자 단위인 '토큰(Token)' 스트림으로 분해합니다.</li>
+                    <li><strong>구문 분석 (Syntax Analysis & AST 구성):</strong> 토큰들의 계층적 문맥을 해석하여 중첩 스코프와 조건문, 반복문 관계를 나타내는 트리 구조인 <strong>AST(Abstract Syntax Tree)</strong>를 메모리상에 빌드합니다.</li>
+                    <li><strong>코드 재생성 (Code Generation & Pretty Printing):</strong> 구축된 트리를 루트부터 탐색하면서, 사전 정의된 들여쓰기 규칙(2칸/4칸/탭)과 연산자 전후 공백 규격에 맞춰 새로운 문자열로 직렬화(Serialize)하여 출력합니다.</li>
                 </ul>
+
+                <div class="code-block">// [난독화 및 압축된 원본 코드 예시]
+function processUserData(u,auth){if(!u||!auth){return null;}const r={id:u.id,role:u.role||"guest"};return r;}
+
+// [AST 파싱을 거쳐 4칸 인덴트로 복원된 표준 코드]
+function processUserData(u, auth) {
+    if (!u || !auth) {
+        return null;
+    }
+    const r = {
+        id: u.id,
+        role: u.role || "guest"
+    };
+    return r;
+}</div>
             </section>
 
             <section class="article-section">
-                <h2>3. AST 기반 포맷팅 처리 원리 예시</h2>
-                <div class="code-block">// 엉망인 원본 코드
-                    function test(a,b){if(a>0){return a+b;}return 0;}
+                <h2>3. 들여쓰기 표준 전쟁: 2 Spaces vs 4 Spaces vs Tab</h2>
+                <p>들여쓰기 규칙은 개발 팀 내에서 가장 많은 논쟁이 벌어지는 주제 중 하나입니다. 각 진영의 논리와 현대 프로그래밍 언어 생태계의 표준 경향은 다음과 같이 정립되어 있습니다:</p>
 
-                    // 뷰티파이어를 거친 표준 정렬 결과
-                    function test(a, b) {
-                    if (a > 0) {
-                    return a + b;
-                    }
-                    return 0;
-                    }</div>
+                <table class="table-custom">
+                    <thead>
+                        <tr>
+                            <th>구분</th>
+                            <th>대표 활용 생태계</th>
+                            <th>핵심 장점 및 실무 채택 이유</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>2 Spaces</strong></td>
+                            <td>HTML, CSS, JavaScript, React, Vue, JSON</td>
+                            <td>웹 프론트엔드는 JSX 태그 중첩과 비동기 콜백으로 인해 코드 깊이가 깊어지기 쉽습니다. 2칸 들여쓰기는 화면의 가로 폭(Horizontal Space)을 절약하여 노트북이나 분할 모니터 환경에서 가로 스크롤을 최소화합니다.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>4 Spaces</strong></td>
+                            <td>Java, C/C++, Python (PEP 8 표준)</td>
+                            <td>블록 계층 구조가 한눈에 명확하게 들어오며, 들여쓰기 자체가 문법적 스코프를 결정하는 언어(Python)에서 시각적 가시성을 극대화하기 위해 사실상 강제되는 표준입니다.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hard Tab</strong></td>
+                            <td>Go (gofmt 공식 표준), 일부 C 임베디드</td>
+                            <td>파일 내에 탭 문자(<code>\t</code>) 1바이트만 저장되므로 용량이 절약되며, 개발자 각자가 IDE 설정에서 원하는 너비(2칸, 4칸, 8칸)로 자유롭게 렌더링할 수 있는 접근성(Accessibility)의 이점이 있습니다.</td>
+                        </tr>
+                    </tbody>
+                </table>
             </section>
 
             <section class="article-section">
-                <h2>4. DevWorKit 온라인 코드 뷰티파이어 & 웹 뷰어</h2>
-                <p>별도의 확장 프로그램 설치 없이 브라우저에서 HTML, CSS, JavaScript 코드를 즉시 2칸/4칸/Tab 단위로 정렬하고, 작성된 HTML 화면을 실시간으로 미리 볼 수 있습니다.</p>
+                <h2>4. 압축(Minify)과 정렬(Beautify)의 실무 적용과 주의점</h2>
+                <p>상용 프로덕션 환경에 웹 애플리케이션을 배포할 때는 네트워크 전송 속도 향상과 로딩 시간 단축을 위해 불필요한 공백, 개행, 주석을 전부 제거하는 <strong>Minify(코드 경량화)</strong> 처리를 수행합니다. 본 도구의 <code>⚡ 압축 (Minify)</code> 기능은 배포 직전 파일의 용량을 최대 40~60%까지 즉각 경량화해 줍니다.</p>
+                <p>반대로 외부에서 배포된 서드파티 스크립트나 CDN 라이브러리를 디버깅할 때는 압축된 한 줄 코드를 읽을 수 없으므로, <strong>뷰티파이어를 통해 가독성을 복원한 후 실시간 렌더링 뷰어로 UI 동작을 검증</strong>하는 것이 일반적인 실무 워크플로우입니다.</p>
+            </section>
+
+            <section class="article-section">
+                <h2>5. DevWorKit 온라인 코드 뷰티파이어 & 웹 뷰어 활용</h2>
+                <p>별도의 Node.js 환경이나 VS Code 확장 플러그인을 설치하지 않고도 웹 브라우저 메모리상에서 HTML, CSS, JavaScript 코드를 즉각 정렬하고 한 줄로 압축할 수 있습니다. 특히 HTML 모드에서는 <strong>우측 샌드박스 화면 미리보기 및 새 창 전체화면 기능</strong>을 통해 작성된 마크업의 실제 렌더링 결과를 1초 만에 테스트할 수 있습니다.</p>
+
                 <div class="tool-banner">
-                    <span class="tool-banner-text">🛠️ DevWorKit 실시간 코드 뷰티파이어 사용해보기</span>
+                    <span class="tool-banner-text">🛠️ DevWorKit 실시간 코드 뷰티파이어 & 웹 뷰어 사용해보기</span>
                     <a href="../beautify/" class="tool-banner-btn">도구로 이동 →</a>
                 </div>
             </section>
