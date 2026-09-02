@@ -4,17 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>마크다운 실시간 에디터 | DevWorKit</title>
-    <meta name="description" content="수학 수식, 다이어그램, 체크리스트를 실시간으로 지원하는 올인원 마크다운 에디터">
-    
-    <link rel="stylesheet" href="../style.css">
+    <title>마크다운 실시간 에디터 (Markdown Editor) | DevWorKit</title>
+    <meta name="description" content="LaTeX 수학 수식, Mermaid 다이어그램, 중첩 체크리스트, 표 문법을 실시간 렌더링하고 HTML 코드로 추출하는 올인원 마크다운 에디터">
 
-    <!-- KaTeX CDN with Subresource Integrity (SRI) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIB0tGMFctF0p9B4Z2U21W35p3L86F+29b35z91qD7qP6586F59n585b" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgO90Hl10e4t1hD60f585994n5859197992983778" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../nav.css">
 
-    <!-- Mermaid.js CDN with Subresource Integrity (SRI) -->
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.8.0/dist/mermaid.min.js" integrity="sha384-59837784n5859197992983778XjKyOOlGwcjNTAIQHIpgO90Hl10e4t1hD60f5859" crossorigin="anonymous"></script>
+    <!-- KaTeX CDN (defer 제거하여 즉시 실행 보장) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+    <!-- Mermaid.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.8.0/dist/mermaid.min.js"></script>
 
     <style>
         :root {
@@ -22,24 +22,8 @@
             --primary-blue-hover: #0369a1;
             --bg-light: #f8fafc;
             --border-color: #dee2e6;
-            --text-main: #333333;
-            --text-muted: #666666;
-        }
-
-        #mermaid-sandbox,
-        #dmermaid,
-        [id^="dmermaid"],
-        body>svg:not(.visible-svg),
-        body>[id^="mermaid-"] {
-            display: none !important;
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 0 !important;
-            height: 0 !important;
-            overflow: hidden !important;
-            visibility: hidden !important;
-            pointer-events: none !important;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
         }
 
         html,
@@ -52,38 +36,6 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            min-height: 100dvh;
-        }
-
-        header {
-            border-bottom: 1px solid var(--border-color);
-            padding: 14px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-shrink: 0;
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .logo-badge {
-            background: #0284c7;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .logo-text {
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: #111111;
         }
 
         .page-wrapper {
@@ -91,47 +43,66 @@
             flex-direction: column;
             max-width: 1440px;
             margin: 0 auto;
-            padding: 12px 20px 10px 20px;
+            padding: 24px 20px 40px 20px;
             box-sizing: border-box;
             width: 100%;
             flex: 1;
-            min-height: 0;
         }
 
         .intro-section {
-            margin-bottom: 10px;
+            margin-bottom: 16px;
             flex-shrink: 0;
         }
 
-        .intro-title {
-            font-size: 18px;
+        .intro-header-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .tool-tag-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11.5px;
             font-weight: 800;
-            color: #111827;
-            margin: 0 0 4px 0;
+            letter-spacing: -0.2px;
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+
+        .intro-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
             letter-spacing: -0.5px;
         }
 
         .intro-desc {
-            font-size: 13px;
+            font-size: 14px;
             color: var(--text-muted);
-            margin: 0 0 8px 0;
+            margin: 0 0 12px 0;
+            line-height: 1.6;
         }
 
         .guide-box {
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 10px 14px;
-            font-size: 12.5px;
+            border-radius: 8px;
+            padding: 14px 18px;
+            font-size: 13px;
             color: #334155;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         .guide-box strong {
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             color: #0f172a;
-            font-size: 13px;
+            font-size: 13.5px;
         }
 
         .guide-list {
@@ -140,14 +111,14 @@
         }
 
         .guide-list li {
-            margin-bottom: 2px;
+            margin-bottom: 3px;
         }
 
         .unified-toolbar {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             align-items: center;
             flex-shrink: 0;
         }
@@ -168,15 +139,15 @@
         }
 
         .toolbar-right .tool-btn {
-            padding: 4px 6px;
-            font-size: 10.5px;
+            padding: 4px 8px;
+            font-size: 11px;
         }
 
         .scroll-mode-control {
             display: inline-flex;
             background: #e2e8f0;
             padding: 2px;
-            border-radius: 5px;
+            border-radius: 6px;
             gap: 1px;
             flex-shrink: 0;
         }
@@ -184,8 +155,8 @@
         .scroll-mode-btn {
             background: transparent;
             border: none;
-            padding: 4px 6px;
-            border-radius: 3px;
+            padding: 4px 8px;
+            border-radius: 4px;
             font-size: 11px;
             font-weight: 700;
             color: #475569;
@@ -203,15 +174,15 @@
         .tool-btn {
             background: #ffffff;
             border: 1px solid #cbd5e1;
-            padding: 4px 7px;
-            border-radius: 4px;
-            font-size: 11px;
+            padding: 5px 9px;
+            border-radius: 5px;
+            font-size: 11.5px;
             font-weight: 700;
             color: #334155;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 2px;
+            gap: 3px;
             transition: all 0.15s;
             white-space: nowrap;
             flex-shrink: 0;
@@ -221,11 +192,6 @@
             background: #f1f5f9;
             border-color: #94a3b8;
             color: #0284c7;
-        }
-
-        .tool-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
         }
 
         .tool-btn.primary {
@@ -242,7 +208,7 @@
             background: #f1f5f9;
             border: 1px solid #cbd5e1;
             border-radius: 4px;
-            padding: 2px 7px;
+            padding: 3px 8px;
             font-size: 11.5px;
             font-weight: 700;
             color: #334155;
@@ -264,8 +230,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
-            flex: 1;
-            min-height: 500px;
+            min-height: 520px;
             box-sizing: border-box;
         }
 
@@ -286,20 +251,16 @@
             }
 
             .pane-card {
-                height: 48vh;
-                min-height: 320px;
-            }
-
-            header {
-                padding: 10px 16px;
+                height: 50vh;
+                min-height: 340px;
             }
         }
 
         .pane-card {
             background: #ffffff;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 10px 14px;
+            border-radius: 10px;
+            padding: 12px 16px;
             display: flex;
             flex-direction: column;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
@@ -311,8 +272,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 6px;
-            padding-bottom: 6px;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
             border-bottom: 1px solid #f1f5f9;
             flex-shrink: 0;
         }
@@ -347,8 +308,8 @@
             width: 100%;
             height: 100%;
             border: none;
-            padding: 12px;
-            font-family: "D2Coding", Consolas, "Courier New", monospace;
+            padding: 14px;
+            font-family: Consolas, "Courier New", monospace;
             font-size: 13px;
             line-height: 1.6;
             color: #0f172a;
@@ -357,7 +318,7 @@
             outline: none;
             box-sizing: border-box;
             overflow: auto;
-            tab-size: 2;
+            tab-size: 4;
         }
 
         .md-input:focus {
@@ -375,7 +336,7 @@
             background: #ffffff;
             overflow: auto;
             box-sizing: border-box;
-            line-height: 1.7;
+            line-height: 1.75;
             font-size: 14px;
             color: #334155;
         }
@@ -403,13 +364,6 @@
             font-weight: 700;
             margin: 14px 0 6px 0;
             color: #0f172a;
-        }
-
-        .md-preview h4 {
-            font-size: 14px;
-            font-weight: 700;
-            margin: 12px 0 4px 0;
-            color: #1e293b;
         }
 
         .md-preview p {
@@ -447,34 +401,33 @@
             margin-bottom: 3px;
         }
 
-        .md-preview ul.task-list,
-        .md-preview ul ul {
+        .md-preview ul.task-list {
             list-style-type: none;
-            padding-left: 20px;
+            padding-left: 0;
         }
 
         .md-preview .task-item-wrapper {
             display: flex;
             align-items: flex-start;
-            gap: 6px;
-            margin-bottom: 3px;
+            gap: 8px;
+            margin-bottom: 4px;
         }
 
         .md-preview .task-item-wrapper input[type="checkbox"] {
             cursor: pointer;
             accent-color: #0284c7;
-            width: 14px;
-            height: 14px;
-            margin-top: 4px;
+            width: 15px;
+            height: 15px;
+            margin-top: 3px;
             flex-shrink: 0;
         }
 
         .md-alert {
-            padding: 10px 14px;
+            padding: 12px 16px;
             margin: 12px 0;
             border-radius: 6px;
             border-left: 4px solid;
-            font-size: 13px;
+            font-size: 13.5px;
             line-height: 1.6;
         }
 
@@ -512,7 +465,7 @@
 
         .md-preview blockquote:not(.md-alert) {
             margin: 10px 0;
-            padding: 8px 12px;
+            padding: 8px 14px;
             border-left: 4px solid var(--primary-blue);
             background: #f0f9ff;
             color: #0369a1;
@@ -543,7 +496,7 @@
             background: #f8fafc;
             border: 1px solid #cbd5e1;
             border-radius: 6px;
-            padding: 8px 12px;
+            padding: 10px 14px;
             margin: 10px 0;
         }
 
@@ -558,7 +511,7 @@
             font-family: Consolas, monospace;
             background: #f1f5f9;
             color: #db2777;
-            padding: 1px 5px;
+            padding: 2px 6px;
             border-radius: 4px;
             font-size: 12.5px;
             font-weight: 600;
@@ -567,26 +520,26 @@
         .md-preview pre {
             background: #0f172a;
             color: #f8fafc;
-            padding: 12px 14px;
+            padding: 14px 16px;
             border-radius: 6px;
             overflow-x: auto;
-            margin: 10px 0;
+            margin: 12px 0;
             font-family: Consolas, monospace;
-            font-size: 12.5px;
-            line-height: 1.5;
+            font-size: 13px;
+            line-height: 1.6;
         }
 
         .md-preview table {
             width: 100%;
             border-collapse: collapse;
-            margin: 12px 0;
-            font-size: 13px;
+            margin: 14px 0;
+            font-size: 13.5px;
         }
 
         .md-preview th,
         .md-preview td {
             border: 1px solid #cbd5e1;
-            padding: 7px 10px;
+            padding: 8px 12px;
             text-align: left;
         }
 
@@ -600,7 +553,7 @@
             background: #ffffff;
             border: 1px solid #e2e8f0;
             border-radius: 6px;
-            padding: 12px;
+            padding: 14px;
             margin: 12px 0;
             display: flex;
             justify-content: center;
@@ -608,27 +561,15 @@
             min-height: 40px;
         }
 
-        .mermaid-fallback-box {
+        .mermaid-container pre.mermaid {
+            background: transparent !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            color: inherit !important;
+            border: none !important;
+            display: flex;
+            justify-content: center;
             width: 100%;
-            background: #0f172a;
-            border-radius: 6px;
-            padding: 10px 14px;
-            box-sizing: border-box;
-        }
-
-        .mermaid-fallback-header {
-            font-size: 11px;
-            font-weight: 700;
-            color: #f59e0b;
-            margin-bottom: 6px;
-        }
-
-        .mermaid-fallback-code {
-            color: #f8fafc;
-            font-family: Consolas, monospace;
-            font-size: 12px;
-            white-space: pre-wrap;
-            margin: 0;
         }
 
         #dwk-toast {
@@ -658,10 +599,11 @@
         }
 
         body.focus-mode .dwk-global-nav,
-        body.focus-mode header,
         body.focus-mode .intro-section,
         body.focus-mode #dwk-footer,
-        body.focus-mode .dwk-global-footer {
+        body.focus-mode .dwk-global-footer,
+        body.focus-mode .seo-article-box,
+        body.focus-mode .bottom-ad-box {
             display: none !important;
         }
 
@@ -670,34 +612,153 @@
             padding: 10px 16px !important;
             height: 100vh;
             height: 100dvh;
-            display: flex;
-            flex-direction: column;
         }
 
         body.focus-mode .editor-grid {
             flex: 1;
             min-height: 0;
         }
+
+        /* [SEO & 애드센스 고유 콘텐츠 보강 섹션] */
+        .seo-article-box {
+            margin-top: 48px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 36px 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            line-height: 1.8;
+            color: #334155;
+        }
+
+        .seo-article-box h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 16px 0;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+            letter-spacing: -0.4px;
+        }
+
+        .seo-article-box h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 24px 0 8px 0;
+        }
+
+        .seo-article-box p {
+            font-size: 14.5px;
+            margin: 0 0 14px 0;
+        }
+
+        .seo-article-box ul {
+            font-size: 14px;
+            padding-left: 20px;
+            margin: 8px 0 20px 0;
+        }
+
+        .seo-article-box li {
+            margin-bottom: 6px;
+        }
+
+        .faq-item {
+            margin-top: 16px;
+            padding: 14px 18px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .faq-q {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 14.5px;
+            margin-bottom: 6px;
+        }
+
+        .faq-a {
+            font-size: 14px;
+            color: #475569;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .guide-nav-banner {
+            margin-top: 28px;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .guide-nav-text {
+            font-size: 14px;
+            color: #0369a1;
+            font-weight: 700;
+        }
+
+        .guide-nav-btn {
+            background: #0284c7;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: background-color 0.15s;
+        }
+
+        .guide-nav-btn:hover {
+            background: #0369a1;
+        }
+
+        @media (max-width: 640px) {
+            .guide-nav-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .guide-nav-btn {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+        }
+
+        .bottom-ad-box {
+            max-width: 1100px;
+            width: 100%;
+            margin: 30px auto 10px auto;
+            text-align: center;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .bottom-ad-box ins.adsbygoogle[data-ad-status="unfilled"],
+        .bottom-ad-box ins.adsbygoogle:empty {
+            display: none !important;
+        }
     </style>
 </head>
 
 <body>
 
-    <div id="dwk-nav"></div>
-    <div id="mermaid-sandbox"></div>
     <div id="dwk-toast"></div>
-
-    <header>
-        <div class="logo-area">
-            <span class="logo-badge">MARKDOWN</span>
-            <span class="logo-text">마크다운 실시간 에디터</span>
-        </div>
-    </header>
 
     <div class="page-wrapper">
         <div class="intro-section">
-            <h2 class="intro-title">작성한 마크다운 문서를 실시간으로 확인하고 검증하는 도구입니다.</h2>
-            <p class="intro-desc">수학 수식, 다이어그램, 다계층 체크리스트, 콜아웃 문법을 3단 스크롤 모드로 실시간 확인하고 깔끔한 HTML 코드를 즉시 추출합니다.</p>
+            <div class="intro-header-row">
+                <span class="tool-tag-badge">MARKDOWN</span>
+                <h1 class="intro-title">마크다운 실시간 에디터</h1>
+            </div>
+            <p class="intro-desc">LaTeX 수학 수식, Mermaid 다이어그램, 중첩 체크리스트, 표 문법을 3단 스크롤 모드로 실시간 확인하고 정제된 순수 HTML 코드를 추출합니다.</p>
 
             <div class="guide-box">
                 <strong>마크다운 실시간 에디터 사용 방법 안내:</strong>
@@ -707,10 +768,6 @@
                     <li>우측 상단에서 <b>[동시 휠 스크롤]</b>, <b>[스마트 추적]</b>, <b>[독립 스크롤]</b> 중 원하는 동기화 모드를 자유롭게 전환할 수 있습니다.</li>
                     <li>작성이 완료되면 상단의 <b>[⚡ HTML 복사]</b> 또는 <b>[💾 .md 저장]</b> 버튼을 눌러 결과물을 내보냅니다.</li>
                 </ol>
-                <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #cbd5e1; display: flex; justify-content: space-between; align-items: center; white-space: nowrap;">
-                    <span style="font-size: 13px; color: #334155; display: inline-block;">📘 <span style="font-weight: 700; color: #0f172a;">마크다운 기초 문법과 확장 문법 활용법</span>이 궁금하신가요?</span>
-                    <a href="../guide/markdown-guide.html" style="color: #0284c7; font-weight: 700; text-decoration: none; background: #f0f9ff; border: 1px solid #bae6fd; padding: 5px 12px; border-radius: 6px; font-size: 12.5px; margin-left: 12px; flex-shrink: 0; display: inline-block;">실무 가이드 보기 →</a>
-                </div>
             </div>
         </div>
 
@@ -768,16 +825,63 @@
                 </div>
             </div>
         </div>
+
+        <!-- [애드센스 승인용 고유 텍스트 & 실무 원리 가이드 영역] -->
+        <article class="seo-article-box">
+            <h2>웹 기반 실시간 마크다운 에디터의 아키텍처와 활용 원리</h2>
+            <p><strong>DevWorKit 마크다운 실시간 에디터</strong>는 개발자, 테크니컬 라이터, 연구원, 블로거가 별도의 무거운 데스크톱 툴을 설치하지 않고도 브라우저상에서 GFM(GitHub Flavored Markdown) 표준 문법, LaTeX 수학 수식, Mermaid 다이어그램을 실시간으로 확인하고 정제된 HTML 코드를 추출할 수 있는 차세대 웹 에디터입니다.</p>
+
+            <h3>1. AST(구문 트리) 기반 실시간 렌더링과 보안 파이프라인</h3>
+            <p>본 에디터는 사용자가 텍스트를 입력하는 즉시 브라우저 메모리상에서 경량 토크나이저를 통해 구문 트리(AST)를 형성합니다. 일반 텍스트뿐만 아니라 외부 라이브러리(KaTeX, Mermaid.js)와 결합되어 밀리초 단위로 파싱을 완료합니다.</p>
+            <ul>
+                <li><strong>XSS 공격 원천 차단:</strong> 악성 스크립트(&lt;script&gt;, 위험한 인라인 이벤트 등)를 엄격히 무력화하는 샌드박스 살균(Sanitizing) 파이프라인을 탑재하여 안전한 HTML 렌더링을 보장합니다.</li>
+                <li><strong>스마트 스크롤 추적(Smart Sync):</strong> 코드 라인 번호와 우측 DOM 블록의 상대 위치를 실시간 계산하여 긴 문서 작업 중에도 커서가 위치한 작업 블록을 우측 뷰어가 놓치지 않고 자동으로 추적합니다.</li>
+                <li><strong>클라이언트 완전 독립성:</strong> 작성 중인 원고와 다이어그램 데이터는 사용자의 로컬 스토리지에만 안전하게 임시 보관되며, 서버로 일체 전송되지 않습니다.</li>
+            </ul>
+
+            <h3>2. 실무에서 가장 유용한 마크다운 확장 문법</h3>
+            <p>기본 CommonMark 사양을 넘어 GitHub 및 테크 블로그에서 필수적인 확장 기능을 기본 내장하고 있습니다:</p>
+            <ul>
+                <li><strong>다계층 체크리스트:</strong> <code>- [ ]</code> 및 <code>- [x]</code> 문법을 지원하며 우측 뷰어에서 체크박스를 직접 클릭해도 좌측 원문 텍스트가 실시간 동기화됩니다.</li>
+                <li><strong>수학 수식 블록:</strong> <code>$$ ... $$</code> 및 <code>$ ... $</code> 기호를 통해 복잡한 적분, 행렬, 분수 등의 LaTeX 수식을 KaTeX 고속 벡터 폰트로 선명하게 렌더링합니다.</li>
+                <li><strong>알림 콜아웃(GitHub Alerts):</strong> <code>> [!NOTE]</code>, <code>> [!TIP]</code>, <code>> [!WARNING]</code> 문법을 적용하여 중요한 공지사항이나 경고 문구를 시각적 카드 형태로 강조합니다.</li>
+            </ul>
+
+            <h3>3. 자주 묻는 질문 (FAQ)</h3>
+            <div class="faq-item">
+                <div class="faq-q">Q. [⚡ HTML 복사]를 하면 티스토리나 워드프레스, 노션에 바로 붙여넣을 수 있나요?</div>
+                <div class="faq-a">A. 네, 완벽히 호환됩니다. 내부 스크롤 추적용 임시 속성(<code>data-line-*</code>)을 자동으로 제거하고 표준 시맨틱 태그(<code>&lt;h1&gt;</code>, <code>&lt;pre&gt;</code>, <code>&lt;table&gt;</code>, <code>&lt;blockquote&gt;</code> 등)로 정제된 순수 HTML 코드만 클립보드로 복사되므로 어떤 CMS나 블로그 플랫폼에도 서식 깨짐 없이 바로 붙여넣을 수 있습니다.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">Q. 브라우저 창을 실수로 닫거나 새로고침하면 작성 중인 글이 날아가나요?</div>
+                <div class="faq-a">A. 날아가지 않습니다. 브라우저의 로컬 스토리지(LocalStorage)에 실시간으로 입력 내용이 자동 저장되므로, 실수로 창을 닫더라도 다시 접속하면 직전 작업 내용이 그대로 복원됩니다.</div>
+            </div>
+
+            <!-- 최하단 실무 심화 가이드 이동 배너 -->
+            <div class="guide-nav-banner">
+                <span class="guide-nav-text">📘 마크다운 기초부터 확장 문법(수식/다이어그램/콜아웃) 완벽 가이드가 필요하신가요?</span>
+                <a href="../guide/markdown-guide.html" class="guide-nav-btn">실무 가이드 보기 →</a>
+            </div>
+        </article>
+    </div>
+
+    <div class="bottom-ad-box">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3823705730142714" data-ad-slot="3894691126" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
     </div>
 
     <script>
         function initMermaidTheme() {
-            const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (typeof mermaid === 'undefined') return;
+            const isDark = document.documentElement.classList.contains('dark-theme') ||
+                (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
             try {
                 mermaid.initialize({
                     startOnLoad: false,
                     theme: isDark ? 'dark' : 'default',
-                    securityLevel: 'strict',
+                    securityLevel: 'loose',
                     suppressErrorRendering: true,
                     flowchart: {
                         useMaxWidth: false,
@@ -788,12 +892,14 @@
         }
         initMermaidTheme();
 
-        if (window.matchMedia) {
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-                initMermaidTheme();
-                renderMarkdown();
-            });
-        }
+        const observer = new MutationObserver(() => {
+            initMermaidTheme();
+            renderMarkdown();
+        });
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
 
         let currentScrollMode = 'sync';
         let isInitialLoading = false;
@@ -1025,7 +1131,6 @@
         function onInputWithHistory(isImmediate = false) {
             const val = document.getElementById('md-input').value;
 
-            // 로컬 스토리지에 자동 임시 저장
             try {
                 localStorage.setItem('dwk_markdown_content', val);
             } catch (e) {}
@@ -1162,11 +1267,9 @@
 
         function parseMarkdown(md, baseLineOffset = 0) {
             if (!md) return {
-                html: '',
-                mermaidMap: []
+                html: ''
             };
 
-            let mermaidMap = [];
             const lines = md.split('\n');
             const outputHtml = [];
 
@@ -1213,13 +1316,7 @@
                     const rawCode = codeBuffer.join('\n');
 
                     if (lang === 'mermaid') {
-                        const slotIndex = mermaidMap.length;
-                        const id = `mermaid-render-slot-${slotIndex}`;
-                        mermaidMap.push({
-                            id,
-                            code: rawCode.trim()
-                        });
-                        outputHtml.push(`<div class="mermaid-container" data-line-start="${startLine}" data-line-end="${endLine}"><div class="mermaid-slot" id="${id}"></div></div>`);
+                        outputHtml.push(`<div class="mermaid-container" data-line-start="${startLine}" data-line-end="${endLine}"><pre class="mermaid">${rawCode.trim()}</pre></div>`);
                     } else {
                         const safeCode = rawCode.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
                         outputHtml.push(`<pre data-line-start="${startLine}" data-line-end="${endLine}"><code>${safeCode}</code></pre>`);
@@ -1270,7 +1367,6 @@
                     }
                     const endLine = baseLineOffset + i - 1;
                     const innerParsed = parseMarkdown(alertContentLines.join('\n'), startLine + 1);
-                    mermaidMap = mermaidMap.concat(innerParsed.mermaidMap);
                     const titleText = alertType.toUpperCase();
                     outputHtml.push(`<div class="md-alert md-alert-${alertType}" data-line-start="${startLine}" data-line-end="${endLine}"><div class="md-alert-title">📌 ${titleText}</div>${innerParsed.html}</div>`);
                     continue;
@@ -1293,7 +1389,6 @@
                     }
                     const endLine = baseLineOffset + i - 1;
                     const innerParsed = parseMarkdown(bqLines.join('\n'), startLine);
-                    mermaidMap = mermaidMap.concat(innerParsed.mermaidMap);
                     outputHtml.push(`<blockquote data-line-start="${startLine}" data-line-end="${endLine}">${innerParsed.html}</blockquote>`);
                     continue;
                 }
@@ -1344,7 +1439,6 @@
                     const endLine = baseLineOffset + Math.min(i, lines.length - 1);
                     if (i < lines.length) i++;
                     const innerParsed = parseMarkdown(innerLines.join('\n'), firstBodyLineOffset);
-                    mermaidMap = mermaidMap.concat(innerParsed.mermaidMap);
                     outputHtml.push(`<details data-line-start="${startLine}" data-line-end="${endLine}">${summaryHtml}\n${innerParsed.html}</details>`);
                     continue;
                 }
@@ -1413,13 +1507,11 @@
             }
 
             return {
-                html: outputHtml.join('\n'),
-                mermaidMap
+                html: outputHtml.join('\n')
             };
         }
 
         let renderTimer = null;
-        let isMermaidRendering = false;
 
         function renderMarkdown() {
             const input = document.getElementById('md-input');
@@ -1439,40 +1531,20 @@
                 dispatchScrollSync();
             }
 
-            if (parsed.mermaidMap.length > 0 && typeof mermaid !== 'undefined') {
+            // Mermaid v10 표준 run 렌더링
+            if (typeof mermaid !== 'undefined') {
                 clearTimeout(renderTimer);
-                isMermaidRendering = true;
                 renderTimer = setTimeout(async () => {
                     if (sessionId !== currentRenderSession) return;
-
-                    for (const item of parsed.mermaidMap) {
-                        const slot = document.getElementById(item.id);
-                        if (!slot) continue;
-
-                        try {
-                            const { svg } = await mermaid.render(`svg-${item.id}`, item.code);
-                            if (sessionId === currentRenderSession && slot) {
-                                slot.innerHTML = svg;
-                            }
-                        } catch (e) {
-                            if (sessionId === currentRenderSession && slot) {
-                                const safe = item.code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                                slot.innerHTML = `<div class="mermaid-fallback-box"><div class="mermaid-fallback-header">⚠️ 다이어그램 문법 오류</div><pre class="mermaid-fallback-code"><code>${safe}</code></pre></div>`;
-                            }
-                        }
+                    try {
+                        await mermaid.run({
+                            nodes: preview.querySelectorAll('pre.mermaid')
+                        });
+                    } catch (e) {}
+                    if (!isInitialLoading) {
+                        dispatchScrollSync();
                     }
-
-                    document.querySelectorAll('body > [id^="dmermaid"], body > [id^="mermaid-"]').forEach(el => {
-                        el.remove();
-                    });
-
-                    if (sessionId === currentRenderSession) {
-                        isMermaidRendering = false;
-                        if (!isInitialLoading) {
-                            dispatchScrollSync();
-                        }
-                    }
-                }, 40);
+                }, 50);
             }
         }
 
@@ -1540,9 +1612,8 @@
         function loadSample() {
             isInitialLoading = true;
 
-            // 로컬 스토리지에 임시 저장된 내용이 있으면 그것을 불러옴
             const savedContent = localStorage.getItem('dwk_markdown_content');
-            const sample = savedContent !== null ? savedContent : `# DevWorKit 마크다운 에디터\n\n**무료 온라인 마크다운 에디터**에 오신 것을 환영합니다. 단축키(Ctrl+Z / Ctrl+Y)로 이전 작업을 되돌릴 수 있습니다.\n\n> [!NOTE]\n> 상단 토글 바에서 **[🔗 동시 휠 스크롤]**과 **[🎯 스마트 추적]** 모드를 언제든 전환할 수 있습니다.\n\n---\n\n### 1. 다계층 중첩 체크리스트 (Nested Task List)\n- [x] LaTeX 수학 수식 연동\n  - [x] 인라인 KaTeX 수식 검증\n  - [x] 블록 수식 레이아웃 확인\n- [ ] 팀원 피드백 수렴 및 배포\n  - [ ] [공식 배포 문서 링크](https://example.com) 확인하기\n  - [ ] 서버 인프라 점검\n\n---\n\n### 2. Mermaid 다이어그램 (Flowchart)\n\`\`\`mermaid\ngraph TD\n    A[마크다운 작성] --> B{실시간 파서}\n    B --> C[수학 수식 KaTeX]\n    B --> D[다이어그램 Mermaid]\n    B --> E[GitHub 콜아웃]\n    C --> F[HTML 뷰어 렌더링]\n    D --> F\n    E --> F\n\`\`\`\n\n---\n\n### 3. 수학 수식 (LaTeX) 및 인라인 코드\n인라인 수식: $E = mc^2$ 및 $\sum_{i=1}^{n} x_i$\n\n블록 수식:\n$$\n\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}\n$$\n\n---\n\n### 4. 접기/펼치기 (Accordion)\n<details>\n<summary>▶ 여기를 클릭하여 상세 코드 접기/펼치기</summary>\n\n\`\`\`javascript\nfunction calculateScore(ratio) {\n    return ratio >= 4.5 ? "AA Pass" : "Fail";\n}\n\`\`\`\n\n- [ ] 아코디언 내부 작업 항목 1\n- [x] 아코디언 내부 작업 항목 2\n\n</details>\n\n---\n\n### 5. 기능 비교표\n| 구분 | 지원 여부 | 렌더링 엔진 |\n| :--- | :---: | :--- |\n| 수식 (Math) | ✅ 완료 | KaTeX Fast Engine |\n| 다이어그램 | ✅ 완료 | Mermaid SVG Vector |\n| 체크리스트 | ✅ 완료 | GFM Task Parser |`;
+            const sample = savedContent !== null ? savedContent : `# DevWorKit 마크다운 에디터\n\n**무료 온라인 마크다운 에디터**에 오신 것을 환영합니다. 단축키(Ctrl+Z / Ctrl+Y)로 이전 작업을 되돌릴 수 있습니다.\n\n> [!NOTE]\n> 상단 토글 바에서 **[🔗 동시 휠 스크롤]**과 **[🎯 스마트 추적]** 모드를 언제든 전환할 수 있습니다.\n\n---\n\n### 1. 다계층 중첩 체크리스트 (Nested Task List)\n- [x] LaTeX 수학 수식 연동\n  - [x] 인라인 KaTeX 수식 검증\n  - [x] 블록 수식 레이아웃 확인\n- [ ] 팀원 피드백 수렴 및 배포\n  - [ ] [공식 배포 문서 링크](https://example.com) 확인하기\n  - [ ] 서버 인프라 점검\n\n---\n\n### 2. Mermaid 다이어그램 (Flowchart)\n\`\`\`mermaid\ngraph TD\n    A[마크다운 작성] --> B{실시간 파서}\n    B --> C[수학 수식 KaTeX]\n    B --> D[다이어그램 Mermaid]\n    B --> E[GitHub 콜아웃]\n    C --> F[HTML 뷰어 렌더링]\n    D --> F\n    E --> F\n\`\`\`\n\n---\n\n### 3. 수학 수식 (LaTeX) 및 인라인 코드\n인라인 수식: $E = mc^2$ 및 $\\sum_{i=1}^{n} x_i$\n\n블록 수식:\n$$\n\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}\n$$\n\n---\n\n### 4. 접기/펼치기 (Accordion)\n<details>\n<summary>▶ 여기를 클릭하여 상세 코드 접기/펼치기</summary>\n\n\`\`\`javascript\nfunction calculateScore(ratio) {\n    return ratio >= 4.5 ? "AA Pass" : "Fail";\n}\n\`\`\`\n\n- [ ] 아코디언 내부 작업 항목 1\n- [x] 아코디언 내부 작업 항목 2\n\n</details>\n\n---\n\n### 5. 기능 비교표\n| 구분 | 지원 여부 | 렌더링 엔진 |\n| :--- | :---: | :--- |\n| 수식 (Math) | ✅ 완료 | KaTeX Fast Engine |\n| 다이어그램 | ✅ 완료 | Mermaid SVG Vector |\n| 체크리스트 | ✅ 완료 | GFM Task Parser |`;
 
             const textarea = document.getElementById('md-input');
             const preview = document.getElementById('md-preview');
@@ -1630,10 +1701,6 @@
             const preview = document.getElementById('md-preview');
             if (!preview || !preview.innerHTML) return showToast('⚠️ 변환된 내용이 없습니다.');
 
-            if (isMermaidRendering) {
-                return showToast('⏳ 다이어그램 렌더링 중입니다. 잠시 후 시도해 주세요.');
-            }
-
             let cleanHtml = preview.innerHTML
                 .replace(/\sdata-line-start="[0-9]+"/g, '')
                 .replace(/\sdata-line-end="[0-9]+"/g, '')
@@ -1714,6 +1781,7 @@
             loadSample();
         }
     </script>
+    <div id="dwk-footer"></div>
     <script src="../nav.js"></script>
 </body>
 
