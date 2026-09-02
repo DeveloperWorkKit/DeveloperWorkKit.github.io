@@ -4,15 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON 포맷터 & 유효성 검사기 | DevWorKit</title>
+    <title>JSON 포맷터 & 유효성 검사기 (JSON Formatter) | DevWorKit</title>
+    <meta name="description" content="복잡한 JSON 데이터의 실시간 2칸/4칸 들여쓰기 정렬, 한 줄 압축(Minify), 문법 오류(Syntax Error) 검출 및 TypeScript 인터페이스 자동 변환 도구">
+    <link rel="stylesheet" href="../nav.css">
     <style>
         :root {
-            --primary-blue: #007bff;
-            --primary-blue-hover: #0056b3;
-            --bg-light: #f8f9fa;
-            --border-color: #dee2e6;
-            --text-main: #333333;
-            --text-muted: #666666;
+            --primary-violet: #7c3aed;
+            --primary-violet-hover: #6d28d9;
+            --bg-light: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
             --error-red: #ef4444;
             --success-green: #10b981;
         }
@@ -28,40 +30,10 @@
             min-height: 100vh;
         }
 
-        header {
-            border-bottom: 1px solid var(--border-color);
-            padding: 20px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .logo-badge {
-            background: #8b5cf6;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .logo-text {
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: #111111;
-        }
-
         .page-wrapper {
             display: block;
             max-width: 1100px;
-            margin: 20px auto 40px auto;
+            margin: 30px auto 40px auto;
             padding: 0 20px;
             box-sizing: border-box;
             width: 100%;
@@ -71,27 +43,47 @@
             margin-bottom: 25px;
         }
 
-        .intro-title {
-            font-size: 22px;
+        .intro-header-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .tool-tag-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11.5px;
             font-weight: 800;
-            color: #111827;
-            margin: 0 0 6px 0;
+            letter-spacing: -0.2px;
+            background-color: #ede9fe;
+            color: #6d28d9;
+            border: 1px solid #ddd6fe;
+        }
+
+        .intro-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
             letter-spacing: -0.5px;
         }
 
         .intro-desc {
-            font-size: 14px;
+            font-size: 14.5px;
             color: var(--text-muted);
             margin: 0 0 16px 0;
+            line-height: 1.6;
         }
 
         .guide-box {
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 16px 20px;
+            border-radius: 10px;
+            padding: 18px 22px;
             font-size: 13.5px;
-            color: #344155;
+            color: #334155;
             line-height: 1.6;
         }
 
@@ -108,43 +100,7 @@
         }
 
         .guide-list li {
-            margin-bottom: 4px;
-        }
-
-        .guide-banner-row {
-            margin-top: 14px;
-            padding-top: 12px;
-            border-top: 1px dashed #cbd5e1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-            color: #475569;
-            white-space: nowrap;
-        }
-
-        .guide-banner-text {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .guide-banner-btn {
-            color: #2563eb;
-            font-weight: 700;
-            text-decoration: none;
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            padding: 5px 12px;
-            border-radius: 6px;
-            white-space: nowrap;
-            margin-left: 12px;
-            flex-shrink: 0;
-            display: inline-block;
-        }
-
-        .guide-banner-btn:hover {
-            background: #dbeafe;
+            margin-bottom: 5px;
         }
 
         .main-container {
@@ -177,15 +133,16 @@
             border: 1px solid var(--border-color);
             padding: 7px 14px;
             font-size: 13px;
-            font-weight: 600;
-            border-radius: 5px;
+            font-weight: 700;
+            border-radius: 6px;
             cursor: pointer;
             color: var(--text-main);
             transition: all 0.15s;
         }
 
         .btn-action:hover {
-            background-color: #e9ecef;
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
         }
 
         .status-bar {
@@ -193,7 +150,7 @@
             padding: 10px 14px;
             border-radius: 6px;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             display: none;
             word-break: break-all;
         }
@@ -216,6 +173,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
+            align-items: stretch;
         }
 
         @media (max-width: 900px) {
@@ -226,25 +184,32 @@
 
         .editor-box {
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 16px;
             background-color: #ffffff;
             display: flex;
             flex-direction: column;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            box-sizing: border-box;
+            height: 100%;
         }
 
+        /* 좌우 헤더 높이 완벽 일치 */
         .editor-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            min-height: 36px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
         }
 
         .editor-title {
             font-size: 13.5px;
             font-weight: 700;
-            color: #1e293b;
+            color: #0f172a;
+            display: inline-flex;
+            align-items: center;
         }
 
         .btn-box-action {
@@ -255,16 +220,17 @@
             cursor: pointer;
             border: 1px solid transparent;
             transition: all 0.15s;
+            line-height: 1.4;
         }
 
         .btn-box-run {
-            background-color: var(--primary-blue);
+            background-color: var(--primary-violet);
             color: #ffffff;
-            border-color: var(--primary-blue);
+            border-color: var(--primary-violet);
         }
 
         .btn-box-run:hover {
-            background-color: var(--primary-blue-hover);
+            background-color: var(--primary-violet-hover);
         }
 
         .btn-box-copy {
@@ -277,7 +243,6 @@
             background-color: #059669;
         }
 
-        /* 고성능 에디터 래퍼 & 거터 */
         .editor-wrapper {
             display: flex;
             height: 540px;
@@ -327,6 +292,7 @@
             font-family: Consolas, "Courier New", monospace !important;
             font-size: 13px !important;
             line-height: 21px !important;
+            color: #0f172a;
             border: none;
             box-sizing: border-box;
             resize: none;
@@ -342,49 +308,161 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 6px;
+            margin-top: 8px;
             font-size: 11.5px;
             color: #64748b;
             font-family: "Consolas", monospace;
             padding: 0 4px;
         }
 
+        /* [SEO & 애드센스 고유 콘텐츠 보강 섹션] */
+        .seo-article-box {
+            margin-top: 48px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 36px 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            line-height: 1.8;
+            color: #334155;
+        }
+
+        .seo-article-box h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 16px 0;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+            letter-spacing: -0.4px;
+        }
+
+        .seo-article-box h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 24px 0 8px 0;
+        }
+
+        .seo-article-box p {
+            font-size: 14.5px;
+            margin: 0 0 14px 0;
+        }
+
+        .seo-article-box ul {
+            font-size: 14px;
+            padding-left: 20px;
+            margin: 8px 0 20px 0;
+        }
+
+        .seo-article-box li {
+            margin-bottom: 6px;
+        }
+
+        .faq-item {
+            margin-top: 16px;
+            padding: 14px 18px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .faq-q {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 14.5px;
+            margin-bottom: 6px;
+        }
+
+        .faq-a {
+            font-size: 14px;
+            color: #475569;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* 최하단 실무 가이드 연결 배너 */
+        .guide-nav-banner {
+            margin-top: 28px;
+            background: #f5f3ff;
+            border: 1px solid #ddd6fe;
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .guide-nav-text {
+            font-size: 14px;
+            color: #6d28d9;
+            font-weight: 700;
+        }
+
+        .guide-nav-btn {
+            background: #7c3aed;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: background-color 0.15s;
+        }
+
+        .guide-nav-btn:hover {
+            background: #6d28d9;
+        }
+
+        @media (max-width: 640px) {
+            .guide-nav-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .guide-nav-btn {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+        }
+
         .bottom-ad-box {
             max-width: 1100px;
             width: 100%;
-            margin: 25px auto 10px auto;
+            margin: 30px auto 10px auto;
             text-align: center;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .bottom-ad-box ins.adsbygoogle[data-ad-status="unfilled"],
+        .bottom-ad-box ins.adsbygoogle:empty {
+            display: none !important;
         }
     </style>
 </head>
 
 <body>
 
-    <header>
-        <div class="logo-area">
-            <span class="logo-badge">JSON</span>
-            <span class="logo-text">JSON 포맷터 & 유효성 검사기</span>
-        </div>
-    </header>
-
     <div class="page-wrapper">
         <div class="intro-section">
-            <h2 class="intro-title">복잡하고 엉킨 JSON 데이터를 보기 쉽게 정렬하고 검사하는 도구입니다.</h2>
-            <p class="intro-desc">한 줄로 뭉개진 데이터의 들여쓰기 포맷 정돈, 공백 압축, 문법 오류 실시간 검출을 무료로 제공합니다.</p>
+            <div class="intro-header-row">
+                <span class="tool-tag-badge">JSON</span>
+                <h1 class="intro-title">JSON 포맷터 & 유효성 검사기</h1>
+            </div>
+            <p class="intro-desc">복잡하게 엉킨 JSON 데이터를 2칸/4칸 표준 들여쓰기로 정렬하고, 실시간 문법 오류 검출 및 TypeScript 인터페이스 자동 변환을 지원합니다.</p>
 
             <div class="guide-box">
                 <strong>JSON 포맷터 및 검사기 사용 방법 안내:</strong>
                 <ol class="guide-list">
                     <li>좌측 입력창에 JSON 데이터를 입력하거나 상단의 <b>[샘플 불러오기]</b>를 클릭합니다.</li>
-                    <li>좌측 상단의 파란색 <b>[정렬 실행 ▶]</b> 버튼을 누르면 우측 화면에 읽기 좋은 들여쓰기 형태로 변환됩니다.</li>
-                    <li>상단 옵션 바에서 <b>4칸 정렬, 1줄 압축(Minify), TypeScript 변환</b> 등 원하는 모드로 바로 실행할 수도 있습니다.</li>
+                    <li>좌측 상단의 보라색 <b>[정렬 실행 ▶]</b> 버튼을 누르면 우측 화면에 읽기 좋은 들여쓰기 형태로 변환됩니다.</li>
+                    <li>상단 옵션 바에서 <b>4칸 정렬, 1줄 압축(Minify), TypeScript 변환</b> 등 원하는 모드를 바로 실행할 수 있습니다.</li>
                     <li>에디터 내에서 <b>Ctrl + Z (실행 취소)</b> 및 <b>Ctrl + Y (다시 실행)</b>를 완벽하게 지원합니다.</li>
                 </ol>
-
-                <div class="guide-banner-row">
-                    <span class="guide-banner-text">📘 <span style="font-weight: 700; color: #0f172a;">JSON 문법 오류와 실무 파싱 팁</span>이 궁금하신가요?</span>
-                    <a href="../guide/json-format-guide.html" class="guide-banner-btn">실무 가이드 보기 →</a>
-                </div>
             </div>
         </div>
 
@@ -447,6 +525,39 @@
                     </div>
                 </div>
             </div>
+
+            <!-- [애드센스 승인용 고유 텍스트 & 실무 원리 가이드 영역] -->
+            <article class="seo-article-box">
+                <h2>JSON 유효성 검증과 데이터 직렬화의 실무 아키텍처</h2>
+                <p><strong>DevWorKit JSON 포맷터 & 유효성 검사기</strong>는 마이크로서비스 아키텍처(MSA), RESTful API 통신, NoSQL 데이터베이스(MongoDB 등) 연동 과정에서 교환되는 JSON 데이터의 문법적 무결성을 검증하고 생산성을 높여주는 올인원 파싱 도구입니다.</p>
+
+                <h3>1. RFC 8259 표준 문법과 실무 구문 에러(Syntax Error)</h3>
+                <p>JSON은 JavaScript 객체 표기법에서 파생되었으나, 언어 독립적인 엄격한 텍스트 데이터 교환 표준(RFC 8259)을 따릅니다. 실무에서 가장 빈번하게 발생하는 파싱 장애 유형은 다음과 같습니다:</p>
+                <ul>
+                    <li><strong>마지막 쉼표(Trailing Comma):</strong> 객체의 마지막 프로퍼티나 배열의 마지막 원소 뒤에 콤마(<code>,</code>)가 붙어 있으면 자바스크립트에서는 허용되나 표준 JSON 파서에서는 <code>Unexpected token }</code> 에러를 뿜으며 실행이 중단됩니다.</li>
+                    <li><strong>따옴표 규격 위반:</strong> 키(Key)와 문자열 값은 오직 <strong>큰따옴표(Double Quote, <code>"</code>)</strong>로만 감싸야 하며 작은따옴표(<code>'</code>)나 백틱(<code>`</code>)은 문법 위반입니다.</li>
+                    <li><strong>제어 문자 및 이스케이프:</strong> 줄바꿈(CRLF)이나 탭 문자가 이스케이프 시퀀스(<code>\n</code>, <code>\t</code>) 없이 문자열 리터럴 내에 날것으로 존재할 경우 파싱 실패를 유발합니다.</li>
+                </ul>
+
+                <h3>2. TypeScript Interface 자동 추론 매핑 엔진</h3>
+                <p>본 도구는 유효한 JSON 데이터를 입력받는 즉시 재귀적 타입 추론을 수행하여 클라이언트 사이드에서 프론트엔드 개발에 필수적인 <strong>TypeScript 인터페이스(Interface) 코드</strong>를 생성합니다. 원시 타입(string, number, boolean)뿐만 아니라 중첩 객체(Record) 및 제네릭 배열(Array) 타입을 자동으로 식별하여 타이핑 공수를 대폭 단축시킵니다.</p>
+
+                <h3>3. 자주 묻는 질문 (FAQ)</h3>
+                <div class="faq-item">
+                    <div class="faq-q">Q. 회사 API의 인증 토큰이나 사용자 개인정보를 검사해도 안전한가요?</div>
+                    <div class="faq-a">A. 네, 완벽히 안전합니다. DevWorKit의 모든 포맷팅 및 검증 알고리즘은 사용자의 웹 브라우저 내부 메모리(V8 JavaScript Engine) 상에서만 100% 로컬 처리됩니다. 백엔드 서버나 외부 데이터베이스로 데이터가 일체 전송되지 않습니다.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">Q. 수십 메가바이트(MB)에 달하는 대용량 JSON 파일도 브라우저 멈춤 없이 정렬되나요?</div>
+                    <div class="faq-a">A. 브라우저의 네이티브 C++ 구현체인 <code>JSON.parse()</code>와 <code>JSON.stringify()</code>를 직접 호출하여 처리 속도를 최적화했습니다. 브라우저 메모리가 허용하는 한 수십만 행의 데이터도 수초 내에 포맷팅할 수 있습니다.</div>
+                </div>
+
+                <!-- 최하단 실무 심화 가이드 이동 배너 -->
+                <div class="guide-nav-banner">
+                    <span class="guide-nav-text">📘 JSON 문법 오류 트러블슈팅과 TypeScript 인터페이스 변환 노하우가 궁금하신가요?</span>
+                    <a href="../guide/json-guide.html" class="guide-nav-btn">실무 가이드 보기 →</a>
+                </div>
+            </article>
         </div>
     </div>
 
@@ -530,7 +641,6 @@
                 recordInputHistory();
             }, 300);
         }
-        // ============================================
 
         function updateLineNumbers(textareaId, lineNumberId, isInput) {
             const textarea = document.getElementById(textareaId);
