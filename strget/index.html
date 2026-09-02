@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>문자열 추출기 | DevWorKit</title>
+    <title>문자열 추출기 (Regex Parser) | DevWorKit</title>
+    <meta name="description" content="비정형 텍스트 뭉치에서 이메일, 한국 휴대폰 번호, IP 주소, 날짜 등 원하는 패턴을 정규식으로 실시간 추출하고 엑셀 표로 복사합니다.">
+    <link rel="stylesheet" href="../nav.css">
     <style>
         :root {
-            --primary-blue: #007bff;
-            --primary-blue-hover: #0056b3;
-            --bg-light: #f8f9fa;
-            --border-color: #dee2e6;
-            --text-main: #333333;
-            --text-muted: #666666;
+            --primary-blue: #0284c7;
+            --primary-blue-hover: #0369a1;
+            --bg-light: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
         }
 
         body {
@@ -25,56 +28,108 @@
             min-height: 100vh;
         }
 
-        header {
-            border-bottom: 1px solid var(--border-color);
-            padding: 20px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo-area { display: flex; align-items: center; gap: 8px; }
-        .logo-badge { background: #ef4444; color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
-        .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
-
         .page-wrapper {
             display: block;
             max-width: 1100px;
-            margin: 20px auto 40px auto;
+            margin: 30px auto 40px auto;
             padding: 0 20px;
             box-sizing: border-box;
             width: 100%;
         }
 
-        .intro-section { margin-bottom: 25px; }
-        .intro-title { font-size: 22px; font-weight: 800; color: #111827; margin: 0 0 6px 0; letter-spacing: -0.5px; }
-        .intro-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 16px 0; }
+        .intro-section {
+            margin-bottom: 25px;
+        }
+
+        .intro-header-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .tool-tag-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+
+        .intro-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .intro-desc {
+            font-size: 14.5px;
+            color: var(--text-muted);
+            margin: 0 0 16px 0;
+            line-height: 1.6;
+        }
+
         .guide-box {
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 16px 20px;
+            border-radius: 10px;
+            padding: 18px 22px;
             font-size: 13.5px;
             color: #334155;
             line-height: 1.6;
         }
-        .guide-box strong { display: block; margin-bottom: 8px; color: #0f172a; font-size: 14px; }
-        .guide-list { margin: 0; padding-left: 18px; }
-        .guide-list li { margin-bottom: 4px; }
 
-        .main-container { width: 100%; margin: 0; padding: 0; box-sizing: border-box; }
-        .panel-grid { display: grid; grid-template-columns: 400px 1fr; gap: 24px; }
-        @media (max-width: 900px) { .panel-grid { grid-template-columns: 1fr; } }
+        .guide-box strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #0f172a;
+            font-size: 14px;
+        }
+
+        .guide-list {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .guide-list li {
+            margin-bottom: 5px;
+        }
+
+        .main-container {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .panel-grid {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 920px) {
+            .panel-grid {
+                grid-template-columns: 1fr;
+            }
+        }
 
         .control-box {
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 20px;
             background-color: #ffffff;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            gap: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            box-sizing: border-box;
         }
 
         .form-group label {
@@ -82,28 +137,49 @@
             font-size: 13.5px;
             font-weight: 700;
             margin-bottom: 8px;
-            color: #111111;
+            color: #0f172a;
         }
 
-        .preset-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+        }
+
         .btn-preset {
             padding: 8px 6px;
             background-color: var(--bg-light);
             border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 12.5px;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             text-align: center;
             transition: all 0.15s;
+            color: #334155;
         }
-        .btn-preset:hover, .btn-preset.active {
+
+        .btn-preset:hover,
+        .btn-preset.active {
             border-color: var(--primary-blue);
             color: var(--primary-blue);
-            background-color: #e7f5ff;
+            background-color: #f0f9ff;
         }
-        .btn-preset-custom { grid-column: span 2; background-color: #e9ecef; border-style: dashed; color: #495057; }
-        .btn-preset-custom:hover, .btn-preset-custom.active { border-style: solid; border-color: var(--primary-blue); color: var(--primary-blue); background-color: #e7f5ff; }
+
+        .btn-preset-custom {
+            grid-column: span 2;
+            background-color: #f1f5f9;
+            border-style: dashed;
+            color: #475569;
+        }
+
+        .btn-preset-custom:hover,
+        .btn-preset-custom.active {
+            border-style: solid;
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+            background-color: #f0f9ff;
+        }
 
         .regex-input-wrapper {
             display: flex;
@@ -111,9 +187,10 @@
             background: var(--bg-light);
             padding: 6px 10px;
             border: 1px solid var(--border-color);
-            border-radius: 4px;
+            border-radius: 6px;
             margin-top: 4px;
         }
+
         .regex-input-wrapper input {
             border: none;
             background: transparent;
@@ -122,585 +199,1018 @@
             font-family: "Consolas", monospace;
             font-size: 13px;
             font-weight: 700;
-            color: #495057;
+            color: #334155;
         }
-        .regex-input-wrapper input[readonly] { cursor: not-allowed; color: #6c757d; }
-        .regex-input-wrapper input:not([readonly]) { color: #111111; background-color: #ffffff; box-shadow: inset 0 0 0 1px var(--primary-blue); padding: 4px 8px; border-radius: 3px; }
-        .regex-input-wrapper input:focus { outline: none; }
 
-        .custom-save-zone { display: none; flex-direction: column; gap: 6px; margin-top: 8px; padding: 10px; background-color: var(--bg-light); border: 1px solid var(--border-color); border-radius: 4px; }
-        .save-input-row, .saved-select-row { display: flex; gap: 6px; }
-        .save-input-row input, .saved-select-row select { flex: 1; padding: 5px 8px; font-size: 12px; border: 1px solid var(--border-color); border-radius: 4px; background-color: #fff; }
+        .regex-input-wrapper input[readonly] {
+            cursor: not-allowed;
+            color: #64748b;
+        }
 
-        .btn-sub-action { background-color: #ffffff; border: 1px solid var(--border-color); padding: 4px 8px; font-size: 11.5px; font-weight: 600; border-radius: 4px; cursor: pointer; white-space: nowrap; }
-        .btn-sub-action:hover { background-color: #e9ecef; }
-        .btn-sub-danger { color: #dc3545; }
-        .btn-sub-danger:hover { background-color: #fff5f5; border-color: #dc3545; }
+        .regex-input-wrapper input:not([readonly]) {
+            color: #0f172a;
+            background-color: #ffffff;
+            box-shadow: inset 0 0 0 1px var(--primary-blue);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
 
-        .option-toggle-group { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
-        .opt-label { display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: #495057; cursor: pointer; user-select: none; }
-        .opt-label input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--primary-blue); cursor: pointer; }
+        .regex-input-wrapper input:focus {
+            outline: none;
+        }
+
+        .custom-save-zone {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 8px;
+            padding: 10px;
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+
+        .save-input-row,
+        .saved-select-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .save-input-row input,
+        .saved-select-row select {
+            flex: 1;
+            padding: 5px 8px;
+            font-size: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: #fff;
+        }
+
+        .btn-sub-action {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 5px 10px;
+            font-size: 11.5px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-sub-action:hover {
+            background-color: #f1f5f9;
+        }
+
+        .btn-sub-danger {
+            color: #dc2626;
+        }
+
+        .btn-sub-danger:hover {
+            background-color: #fef2f2;
+            border-color: #fca5a5;
+        }
+
+        .option-toggle-group {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .opt-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .opt-label input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            accent-color: var(--primary-blue);
+            cursor: pointer;
+        }
 
         .display-box {
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 20px;
             background-color: #ffffff;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            box-sizing: border-box;
         }
-        .display-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 
-        .drag-sample-bar { display: none; background-color: #e7f5ff; border: 1px solid #74c0fc; border-radius: 4px; padding: 8px 12px; margin-bottom: 10px; align-items: center; justify-content: space-between; font-size: 13px; color: #1864ab; }
-        .btn-drag-apply { background-color: var(--primary-blue); color: white; border: none; padding: 4px 10px; font-size: 12px; font-weight: 600; border-radius: 4px; cursor: pointer; }
-        .btn-drag-apply:hover { background-color: var(--primary-blue-hover); }
+        .display-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
 
-        .btn-mini-action { background-color: #ffffff; border: 1px solid var(--border-color); padding: 4px 10px; font-size: 12px; font-weight: 600; border-radius: 4px; cursor: pointer; color: var(--text-main); }
-        .btn-mini-action:hover { background-color: #e9ecef; }
+        .drag-sample-bar {
+            display: none;
+            background-color: #e0f2fe;
+            border: 1px solid #bae6fd;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-bottom: 10px;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #0369a1;
+        }
 
-        .text-area-container { position: relative; width: 100%; flex: 1; min-height: 380px; background: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; }
-        .backdrop, .test-textarea { position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; box-sizing: border-box; font-size: 13.5px; line-height: 1.6; font-family: "Consolas", monospace; white-space: pre-wrap; word-break: break-all; }
-        .test-textarea { background: transparent; color: #111111; resize: none; border: none; z-index: 2; overflow-y: scroll; padding: 12px; outline: none; }
-        .backdrop { color: transparent; pointer-events: none; overflow-y: scroll; z-index: 1; background-color: #ffffff; border: none; padding: 12px; }
+        .btn-drag-apply {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-        .highlight { background-color: #ffeb3b; color: transparent; border-radius: 2px; }
-        .highlight-duplicate { background-color: #e0e0e0; border-bottom: 2px solid #ff9800; color: transparent; border-radius: 2px; }
-        .highlight-active { background-color: #ff9800 !important; color: transparent; border-radius: 2px; box-shadow: 0 0 0 2px #e65100; }
+        .btn-drag-apply:hover {
+            background-color: var(--primary-blue-hover);
+        }
 
-        .bottom-action-zone { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; gap: 10px; flex-wrap: wrap; }
-        .copy-group { display: flex; gap: 8px; }
-        .btn-copy-matches { background-color: var(--primary-blue); color: white; border: none; padding: 8px 14px; font-size: 13px; font-weight: 600; border-radius: 4px; cursor: pointer; }
-        .btn-copy-matches:hover { background-color: var(--primary-blue-hover); }
-        .btn-copy-excel { background-color: #198754; color: white; border: none; padding: 8px 14px; font-size: 13px; font-weight: 600; border-radius: 4px; cursor: pointer; }
-        .btn-copy-excel:hover { background-color: #157347; }
+        .btn-mini-action {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            color: var(--text-main);
+        }
 
-        .match-nav-group { display: flex; align-items: center; gap: 6px; }
-        .btn-nav-match { background-color: #ffffff; border: 1px solid var(--border-color); padding: 3px 8px; font-size: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; }
-        .btn-nav-match:hover { background-color: #e9ecef; }
-        .match-count-badge { font-size: 13px; font-weight: bold; color: var(--text-muted); }
-        .bottom-ad-box { max-width: 1100px; width: 100%; margin: 25px auto 10px auto; text-align: center; }
+        .btn-mini-action:hover {
+            background-color: #f1f5f9;
+        }
+
+        .text-area-container {
+            position: relative;
+            width: 100%;
+            flex: 1;
+            min-height: 380px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .backdrop,
+        .test-textarea {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            box-sizing: border-box;
+            font-size: 13.5px;
+            line-height: 1.6;
+            font-family: "Consolas", monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .test-textarea {
+            background: transparent;
+            color: #0f172a;
+            resize: none;
+            border: none;
+            z-index: 2;
+            overflow-y: scroll;
+            padding: 12px;
+            outline: none;
+        }
+
+        .backdrop {
+            color: transparent;
+            pointer-events: none;
+            overflow-y: scroll;
+            z-index: 1;
+            background-color: #ffffff;
+            border: none;
+            padding: 12px;
+        }
+
+        .highlight {
+            background-color: #fef08a;
+            color: transparent;
+            border-radius: 2px;
+        }
+
+        .highlight-duplicate {
+            background-color: #e2e8f0;
+            border-bottom: 2px solid #f97316;
+            color: transparent;
+            border-radius: 2px;
+        }
+
+        .highlight-active {
+            background-color: #fb923c !important;
+            color: transparent;
+            border-radius: 2px;
+            box-shadow: 0 0 0 2px #ea580c;
+        }
+
+        .bottom-action-zone {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .copy-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-copy-matches {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-copy-matches:hover {
+            background-color: var(--primary-blue-hover);
+        }
+
+        .btn-copy-excel {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-copy-excel:hover {
+            background-color: #059669;
+        }
+
+        .match-nav-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-nav-match {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 4px 9px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-nav-match:hover {
+            background-color: #f1f5f9;
+        }
+
+        .match-count-badge {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        /* [SEO & 애드센스 고유 콘텐츠 보강 섹션] */
+        .seo-article-box {
+            margin-top: 48px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 36px 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            line-height: 1.8;
+            color: #334155;
+        }
+
+        .seo-article-box h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 16px 0;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+            letter-spacing: -0.4px;
+        }
+
+        .seo-article-box h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 24px 0 8px 0;
+        }
+
+        .seo-article-box p {
+            font-size: 14.5px;
+            margin: 0 0 14px 0;
+        }
+
+        .seo-article-box ul {
+            font-size: 14px;
+            padding-left: 20px;
+            margin: 8px 0 20px 0;
+        }
+
+        .seo-article-box li {
+            margin-bottom: 6px;
+        }
+
+        .faq-item {
+            margin-top: 16px;
+            padding: 14px 18px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .faq-q {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 14.5px;
+            margin-bottom: 6px;
+        }
+
+        .faq-a {
+            font-size: 14px;
+            color: #475569;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* 하단 실무 가이드 연결 배너 */
+        .guide-nav-banner {
+            margin-top: 28px;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .guide-nav-text {
+            font-size: 14px;
+            color: #0369a1;
+            font-weight: 700;
+        }
+
+        .guide-nav-btn {
+            background: #0284c7;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: background-color 0.15s;
+        }
+
+        .guide-nav-btn:hover {
+            background: #0369a1;
+        }
+
+        @media (max-width: 640px) {
+            .guide-nav-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .guide-nav-btn {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+        }
+
+        .bottom-ad-box {
+            max-width: 1100px;
+            width: 100%;
+            margin: 30px auto 10px auto;
+            text-align: center;
+        }
     </style>
 </head>
+
 <body>
 
-<header>
-    <div class="logo-area">
-        <span class="logo-badge">STRGET</span>
-        <span class="logo-text">문자열 추출기</span>
-    </div>
-</header>
-
-<div class="page-wrapper">
-    <div class="intro-section">
-        <h2 class="intro-title">긴 텍스트에서 원하는 패턴의 데이터만 고속으로 추출하는 도구입니다.</h2>
-        <p class="intro-desc">이메일, 전화번호, 숫자, 날짜 및 커스텀 정규식 패턴을 실시간으로 매칭하고 엑셀 표로 복사합니다.</p>
-        
-        <div class="guide-box">
-            <strong>문자열 추출기 사용 방법 안내:</strong>
-            <ol class="guide-list">
-                <li>우측 본문 입력창에 데이터를 입력하거나 <b>[샘플 불러오기]</b>를 클릭하여 테스트 데이터를 로드합니다.</li>
-                <li>좌측에서 <b>[이메일 매칭], [전화번호], [숫자]</b> 등 원하는 추출 프리셋 버튼을 클릭합니다.</li>
-                <li>본문에서 실시간으로 형광펜 강조된 단어를 확인하고, 하단의 <b>[엑셀/CSV용 표 형태로 복사]</b>를 눌러 클립보드에 저장합니다.</li>
-                <li>원하는 특정 서식이 있는 경우 <b>[사용자 지정 패턴 입력]</b>을 통해 정규식을 직접 작성하고 브라우저에 영구 저장할 수 있습니다.</li>
-            </ol>
-            <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #cbd5e1; display: flex; justify-content: space-between; align-items: center; white-space: nowrap;">
-                <span style="font-size: 13px; color: #334155; display: inline-block;">📘 <span style="font-weight: 700; color: #0f172a;">정규표현식(Regex)을 이용한 이메일·전화번호 추출법</span>이 궁금하신가요?</span>
-                <a href="../guide/strget-guide.html" style="color: #2563eb; font-weight: 700; text-decoration: none; background: #eff6ff; border: 1px solid #bfdbfe; padding: 5px 12px; border-radius: 6px; font-size: 12.5px; margin-left: 12px; flex-shrink: 0; display: inline-block;">실무 가이드 보기 →</a>
+    <div class="page-wrapper">
+        <div class="intro-section">
+            <div class="intro-header-row">
+                <span class="tool-tag-badge">STRGET</span>
+                <h1 class="intro-title">문자열 추출기</h1>
             </div>
+            <p class="intro-desc">대용량 텍스트나 로그 문서에서 이메일, 전화번호, 숫자, 날짜 및 사용자 지정 정규표현식(Regex) 패턴을 실시간 매칭하여 표 형태로 복사합니다.</p>
+
+            <div class="guide-box">
+                <strong>문자열 추출기 사용 방법 안내:</strong>
+                <ol class="guide-list">
+                    <li>우측 본문 입력창에 비정형 텍스트를 입력하거나 <b>[샘플 불러오기]</b>를 클릭하여 테스트 데이터를 로드합니다.</li>
+                    <li>좌측 프리셋 영역에서 <b>[이메일 매칭], [전화번호], [숫자]</b> 등 원하는 정규식 추출 버튼을 클릭합니다.</li>
+                    <li>본문에서 실시간 형광펜 강조 결과를 확인하고, 하단의 <b>[엑셀/CSV용 표 형태로 복사]</b>를 눌러 클립보드에 저장합니다.</li>
+                    <li>특수한 패턴이 필요한 경우 <b>[사용자 지정 패턴 입력]</b>을 선택하여 정규식을 직접 입력하고 브라우저에 저장할 수 있습니다.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="main-container">
+            <!-- 1. 도구 인터랙션 패널 그리드 (여기서 정상 종료) -->
+            <div class="panel-grid">
+                <div class="control-box">
+                    <div class="form-group">
+                        <label>추출 프리셋 선택</label>
+                        <div class="preset-grid">
+                            <button class="btn-preset" onclick="applyPreset('\\d+', this)">숫자만 추출</button>
+                            <button class="btn-preset" id="preset-kor" onclick="applyPreset('[가-힣ㄱ-ㅎㅏ-ㅣ]+', this)">한글만 추출</button>
+                            <button class="btn-preset" onclick="applyPreset('[a-zA-Z]+', this)">영문자만 추출</button>
+                            <button class="btn-preset" onclick="applyPreset('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}', this)">이메일 매칭</button>
+                            <button class="btn-preset" onclick="applyPreset('\\d{2,3}-\\d{3,4}-\\d{4}', this)">전화번호 매칭</button>
+                            <button class="btn-preset" onclick="applyPreset('[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s]+', this)">특수문자만 추출</button>
+                            <button class="btn-preset" onclick="applyPreset('\\s+', this)">공백(스페이스) 추출</button>
+                            <button class="btn-preset" onclick="applyPreset('\\d{4}-\\d{2}-\\d{2}', this)">날짜(YYYY-MM-DD)</button>
+                            <button class="btn-preset btn-preset-custom" id="preset-custom" onclick="enableCustomMode(this)">사용자 지정 패턴 입력</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regex-pattern">추출 정규식 형식 :</label>
+                        <div class="regex-input-wrapper">
+                            <input type="text" id="regex-pattern" value="[가-힣ㄱ-ㅎㅏ-ㅣ]+" placeholder="[사용자 지정] 선택 시 직접 편집 가능" readonly oninput="handlePatternInput()">
+                        </div>
+
+                        <div class="custom-save-zone" id="custom-save-zone">
+                            <div class="save-input-row">
+                                <input type="text" id="custom-pattern-name" placeholder="저장할 패턴 이름 입력">
+                                <button class="btn-sub-action" onclick="saveUserPattern()">저장</button>
+                            </div>
+                            <div class="saved-select-row">
+                                <select id="saved-pattern-select" onchange="loadSelectedPattern()">
+                                    <option value="">-- 저장된 패턴 목록 --</option>
+                                </select>
+                                <button class="btn-sub-action btn-sub-danger" onclick="deleteSelectedPattern()">삭제</button>
+                            </div>
+                        </div>
+
+                        <div class="option-toggle-group">
+                            <label class="opt-label"><input type="checkbox" id="chk-group-words" checked onchange="toggleWordGrouping()"> 연속 단어 단위로 묶어서 추출</label>
+                            <label class="opt-label"><input type="checkbox" id="chk-unique-matches" onchange="handleTextProcess()"> 중복 데이터 제거 후 추출 (중복은 회색 표시)</label>
+                            <label class="opt-label"><input type="checkbox" id="chk-case-sensitive" onchange="handleTextProcess()"> 영문 대소문자 구분 (Case Sensitive)</label>
+                            <label class="opt-label"><input type="checkbox" id="chk-masking-data" onchange="handleTextProcess()"> 복사 시 추출 데이터 개인정보 마스킹 (***)</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="display-box">
+                    <div class="display-header">
+                        <span style="font-size: 14px; font-weight: 700; color: #0f172a;">본문 텍스트 데이터 입력</span>
+                        <div style="display: flex; gap: 6px;">
+                            <button class="btn-mini-action" onclick="loadSampleText()">샘플 불러오기</button>
+                            <button class="btn-mini-action" onclick="clearInputText()">초기화</button>
+                        </div>
+                    </div>
+
+                    <div class="drag-sample-bar" id="drag-sample-bar">
+                        <span>선택한 샘플: <strong id="drag-sample-text"></strong></span>
+                        <button class="btn-drag-apply" onclick="applyDraggedPattern()">이 모양 패턴 전체 찾기</button>
+                    </div>
+
+                    <div class="text-area-container">
+                        <div class="backdrop" id="backdrop-view"></div>
+                        <textarea id="test-text-input" class="test-textarea" placeholder="여기에 대량의 문서나 로그 텍스트를 붙여넣거나, [샘플 불러오기]를 눌러 실시간 파싱을 테스트해 보세요." onscroll="syncScroll()"></textarea>
+                    </div>
+
+                    <div class="bottom-action-zone">
+                        <div class="copy-group">
+                            <button class="btn-copy-matches" onclick="copyMatchedResults('text')">추출 데이터 모아서 복사</button>
+                            <button class="btn-copy-excel" onclick="copyMatchedResults('excel')">엑셀/CSV용 표 형태로 복사</button>
+                        </div>
+
+                        <div class="match-nav-group">
+                            <button class="btn-nav-match" onmousedown="event.preventDefault()" onclick="navigateMatch(-1)" title="이전 매칭 위치로 이동">▲ 이전</button>
+                            <button class="btn-nav-match" onmousedown="event.preventDefault()" onclick="navigateMatch(1)" title="다음 매칭 위치로 이동">▼ 다음</button>
+                            <div class="match-count-badge" id="match-status">매칭 데이터: 0건</div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- .panel-grid 종료 -->
+
+            <!-- 2. 애드센스 승인용 고유 아티클 & FAQ & 최하단 가이드 배너 (그리드 하단에 와이드 배치) -->
+            <article class="seo-article-box">
+                <h2>문자열 추출기(STRGET)의 실무 활용 가이드 및 파싱 원리</h2>
+                <p><strong>DevWorKit 문자열 추출기</strong>는 비정형 텍스트 뭉치, 웹 스크랩 결과물, 데이터베이스 덤프, 서버 액세스 로그 등 정돈되지 않은 원천 데이터에서 사용자가 필요로 하는 핵심 정보만을 고속으로 추출하는 클라이언트 사이드 파싱 유틸리티입니다.</p>
+
+                <h3>1. 비정형 데이터 정제와 정규표현식(Regex)의 역할</h3>
+                <p>실무에서 고객 상담 내역, 설문조사 결과, 이메일 본문 등을 취합하다 보면 주소, 연락처, 주문번호 등이 줄바꿈 없이 섞여 있는 경우가 많습니다. 이를 사람이 직접 수작업으로 복사·붙여넣기할 경우 상당한 시간과 인적 오류(Human Error)가 발생합니다. 본 도구는 자바스크립트의 정규식 엔진을 최적화하여 브라우저 메모리상에서 실시간으로 패턴을 탐색하므로 수만 줄의 데이터도 1초 내에 파싱합니다.</p>
+
+                <h3>2. 실무에서 가장 빈번하게 사용되는 핵심 추출 패턴</h3>
+                <ul>
+                    <li><strong>이메일 주소 일괄 수집:</strong> <code>[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}</code> 패턴을 적용하여 본문 속 수백 개의 메일 주소를 탭 구분자 표 형태로 즉시 추출합니다.</li>
+                    <li><strong>국내 휴대폰 및 일반 전화번호:</strong> <code>\d{2,3}-\d{3,4}-\d{4}</code> 정규식을 사용하여 하이픈이 포함된 모든 연락처 형식을 탐지합니다.</li>
+                    <li><strong>날짜 데이터 표준화:</strong> <code>\d{4}-\d{2}-\d{2}</code> 형식을 매칭하여 문서에 흩어져 있는 거래일자 및 접수일자를 시간순으로 분류할 수 있습니다.</li>
+                </ul>
+
+                <h3>3. 자주 묻는 질문 (FAQ)</h3>
+                <div class="faq-item">
+                    <div class="faq-q">Q. 입력한 개인정보나 기밀 텍스트가 외부 서버로 전송되나요?</div>
+                    <div class="faq-a">A. 전혀 전송되지 않습니다. DevWorKit의 모든 문자열 파싱 로직은 사용자의 웹 브라우저 로컬(Client-Side JavaScript) 환경에서만 100% 처리되며, 외부 서버나 데이터베이스로 텍스트를 저장하거나 전송하지 않으므로 안전합니다.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">Q. 엑셀로 복사했을 때 한 셀에 몰아서 들어가지 않나요?</div>
+                    <div class="faq-a">A. <strong>[엑셀/CSV용 표 형태로 복사]</strong> 버튼은 클립보드에 TSV(Tab-Separated Values) 규격으로 데이터를 생성합니다. 엑셀이나 구글 스프레드시트에서 Ctrl+V를 누르면 번호와 추출 데이터가 각 행과 열에 정확히 정렬되어 붙여넣어집니다.</div>
+                </div>
+
+                <!-- 최하단 실무 심화 가이드 이동 배너 -->
+                <div class="guide-nav-banner">
+                    <span class="guide-nav-text">📘 정규표현식(Regex)을 이용한 이메일·전화번호 추출법이 더 궁금하신가요?</span>
+                    <a href="../guide/strget-guide.html" class="guide-nav-btn">실무 가이드 보기 →</a>
+                </div>
+            </article>
         </div>
     </div>
 
-    <div class="main-container">
-        <div class="panel-grid">
-            <div class="control-box">
-                <div class="form-group">
-                    <label>추출 프리셋</label>
-                    <div class="preset-grid">
-                        <button class="btn-preset" onclick="applyPreset('\\d+', this)">숫자만 추출</button>
-                        <button class="btn-preset" id="preset-kor" onclick="applyPreset('[가-힣ㄱ-ㅎㅏ-ㅣ]+', this)">한글만 추출</button>
-                        <button class="btn-preset" onclick="applyPreset('[a-zA-Z]+', this)">영문자만 추출</button>
-                        <button class="btn-preset" onclick="applyPreset('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}', this)">이메일 매칭</button>
-                        <button class="btn-preset" onclick="applyPreset('\\d{2,3}-\\d{3,4}-\\d{4}', this)">전화번호 매칭</button>
-                        <button class="btn-preset" onclick="applyPreset('[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s]+', this)">특수문자만 추출</button>
-                        <button class="btn-preset" onclick="applyPreset('\\s+', this)">공백(스페이스) 추출</button>
-                        <button class="btn-preset" onclick="applyPreset('\\d{4}-\\d{2}-\\d{2}', this)">날짜(YYYY-MM-DD)</button>
-                        <button class="btn-preset btn-preset-custom" id="preset-custom" onclick="enableCustomMode(this)">사용자 지정 패턴 입력</button>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="regex-pattern">추출 정규식 형식 :</label>
-                    <div class="regex-input-wrapper">
-                        <input type="text" id="regex-pattern" value="[가-힣ㄱ-ㅎㅏ-ㅣ]+" placeholder="[사용자 지정] 선택 시 수정 가능" readonly oninput="handlePatternInput()">
-                    </div>
-
-                    <div class="custom-save-zone" id="custom-save-zone">
-                        <div class="save-input-row">
-                            <input type="text" id="custom-pattern-name" placeholder="저장할 패턴 이름 입력">
-                            <button class="btn-sub-action" onclick="saveUserPattern()">저장</button>
-                        </div>
-                        <div class="saved-select-row">
-                            <select id="saved-pattern-select" onchange="loadSelectedPattern()">
-                                <option value="">-- 저장된 패턴 목록 --</option>
-                            </select>
-                            <button class="btn-sub-action btn-sub-danger" onclick="deleteSelectedPattern()">삭제</button>
-                        </div>
-                    </div>
-                    
-                    <div class="option-toggle-group">
-                        <label class="opt-label"><input type="checkbox" id="chk-group-words" checked onchange="toggleWordGrouping()"> 연속 단어 단위로 묶어서 추출</label>
-                        <label class="opt-label"><input type="checkbox" id="chk-unique-matches" onchange="handleTextProcess()"> 중복 데이터 제거 후 추출 (중복은 회색 표시)</label>
-                        <label class="opt-label"><input type="checkbox" id="chk-case-sensitive" onchange="handleTextProcess()"> 영문 대소문자 구분 (Case Sensitive)</label>
-                        <label class="opt-label"><input type="checkbox" id="chk-masking-data" onchange="handleTextProcess()"> 복사 시 추출 데이터 개인정보 마스킹 (***)</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="display-box">
-                <div class="display-header">
-                    <span style="font-size: 14px; font-weight: 700; color: #111111;">본문 데이터 입력</span>
-                    <div style="display: flex; gap: 6px;">
-                        <button class="btn-mini-action" onclick="loadSampleText()">샘플 불러오기</button>
-                        <button class="btn-mini-action" onclick="clearInputText()">초기화</button>
-                    </div>
-                </div>
-
-                <div class="drag-sample-bar" id="drag-sample-bar">
-                    <span>선택한 샘플: <strong id="drag-sample-text"></strong></span>
-                    <button class="btn-drag-apply" onclick="applyDraggedPattern()">이 모양 패턴 전체 찾기</button>
-                </div>
-                
-                <div class="text-area-container">
-                    <div class="backdrop" id="backdrop-view"></div>
-                    <textarea id="test-text-input" class="test-textarea" placeholder="여기에 테스트할 텍스트를 입력하거나, [샘플 불러오기]를 눌러보세요." onscroll="syncScroll()"></textarea>
-                </div>
-
-                <div class="bottom-action-zone">
-                    <div class="copy-group">
-                        <button class="btn-copy-matches" onclick="copyMatchedResults('text')">추출 데이터 모아서 복사</button>
-                        <button class="btn-copy-excel" onclick="copyMatchedResults('excel')">엑셀/CSV용 표 형태로 복사</button>
-                    </div>
-
-                    <div class="match-nav-group">
-                        <button class="btn-nav-match" onmousedown="event.preventDefault()" onclick="navigateMatch(-1)" title="이전 매칭 위치로 이동">▲ 이전</button>
-                        <button class="btn-nav-match" onmousedown="event.preventDefault()" onclick="navigateMatch(1)" title="다음 매칭 위치로 이동">▼ 다음</button>
-                        <div class="match-count-badge" id="match-status">매칭 데이터: 0건</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="bottom-ad-box">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3823705730142714" data-ad-slot="3894691126" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
     </div>
-</div>
 
-<div class="bottom-ad-box">
-    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3823705730142714" data-ad-slot="3894691126" data-ad-format="auto" data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-</div>
+    <script>
+        let currentMatchedList = [];
+        let rawAllPositions = [];
+        let matchPositions = [];
+        let currentMatchIndex = -1;
+        let isCustomMode = false;
 
-<script>
-    let currentMatchedList = [];
-    let rawAllPositions = []; 
-    let matchPositions = [];  
-    let currentMatchIndex = -1; 
-    let isCustomMode = false;
+        const textUndoStack = [];
+        const textRedoStack = [];
+        let textTimer = null;
 
-    const textUndoStack = [];
-    const textRedoStack = [];
-    let textTimer = null;
-
-    function recordTextHistory() {
-        const el = document.getElementById('test-text-input');
-        if (!el) return;
-        const state = { val: el.value, selStart: el.selectionStart, selEnd: el.selectionEnd, scrollTop: el.scrollTop };
-        if (textUndoStack.length === 0 || textUndoStack[textUndoStack.length - 1].val !== state.val) {
-            textUndoStack.push(state);
-            if (textUndoStack.length > 50) textUndoStack.shift();
-            textRedoStack.length = 0;
-        }
-    }
-
-    function handleTextInput() {
-        handleTextProcess();
-        clearTimeout(textTimer);
-        textTimer = setTimeout(() => { recordTextHistory(); }, 300);
-    }
-
-    function handleTextKeyDown(e) {
-        const isCtrl = e.ctrlKey || e.metaKey;
-        const key = e.key.toLowerCase();
-        const el = document.getElementById('test-text-input');
-
-        if (isCtrl && key === 'z' && !e.shiftKey) {
-            if (textUndoStack.length > 1) {
-                e.preventDefault();
-                textRedoStack.push(textUndoStack.pop());
-                applyTextState(el, textUndoStack[textUndoStack.length - 1]);
-            }
-        } else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
-            if (textRedoStack.length > 0) {
-                e.preventDefault();
-                const next = textRedoStack.pop();
-                textUndoStack.push(next);
-                applyTextState(el, next);
+        function recordTextHistory() {
+            const el = document.getElementById('test-text-input');
+            if (!el) return;
+            const state = {
+                val: el.value,
+                selStart: el.selectionStart,
+                selEnd: el.selectionEnd,
+                scrollTop: el.scrollTop
+            };
+            if (textUndoStack.length === 0 || textUndoStack[textUndoStack.length - 1].val !== state.val) {
+                textUndoStack.push(state);
+                if (textUndoStack.length > 50) textUndoStack.shift();
+                textRedoStack.length = 0;
             }
         }
-    }
 
-    function applyTextState(el, state) {
-        el.value = state.val;
-        handleTextProcess();
-        setTimeout(() => {
-            el.focus();
-            el.setSelectionRange(state.selStart, state.selEnd);
-            el.scrollTop = state.scrollTop;
-            syncScroll();
-        }, 0);
-    }
+        function handleTextInput() {
+            handleTextProcess();
+            clearTimeout(textTimer);
+            textTimer = setTimeout(() => {
+                recordTextHistory();
+            }, 300);
+        }
 
-    let generatedDragPattern = "";
+        function handleTextKeyDown(e) {
+            const isCtrl = e.ctrlKey || e.metaKey;
+            const key = e.key.toLowerCase();
+            const el = document.getElementById('test-text-input');
 
-    function handleTextClickOrMouseUp(e) {
-        const textarea = document.getElementById('test-text-input');
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
-        const selectedText = textarea.value.substring(start, end).trim();
+            if (isCtrl && key === 'z' && !e.shiftKey) {
+                if (textUndoStack.length > 1) {
+                    e.preventDefault();
+                    textRedoStack.push(textUndoStack.pop());
+                    applyTextState(el, textUndoStack[textUndoStack.length - 1]);
+                }
+            } else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
+                if (textRedoStack.length > 0) {
+                    e.preventDefault();
+                    const next = textRedoStack.pop();
+                    textUndoStack.push(next);
+                    applyTextState(el, next);
+                }
+            }
+        }
 
-        const sampleBar = document.getElementById('drag-sample-bar');
-        const sampleTextEl = document.getElementById('drag-sample-text');
+        function applyTextState(el, state) {
+            el.value = state.val;
+            handleTextProcess();
+            setTimeout(() => {
+                el.focus();
+                el.setSelectionRange(state.selStart, state.selEnd);
+                el.scrollTop = state.scrollTop;
+                syncScroll();
+            }, 0);
+        }
 
-        if (start === end && matchPositions.length > 0) {
-            const clickPos = start;
-            let foundIdx = matchPositions.findIndex(p => clickPos >= p.start && clickPos <= p.end);
-            
-            if (foundIdx !== -1) {
-                currentMatchIndex = foundIdx;
-                highlightActiveMatchInBackdrop();
-                document.getElementById('match-status').innerText = `매칭: ${currentMatchIndex + 1} / ${matchPositions.length}건`;
+        let generatedDragPattern = "";
+
+        function handleTextClickOrMouseUp(e) {
+            const textarea = document.getElementById('test-text-input');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end).trim();
+
+            const sampleBar = document.getElementById('drag-sample-bar');
+            const sampleTextEl = document.getElementById('drag-sample-text');
+
+            if (start === end && matchPositions.length > 0) {
+                const clickPos = start;
+                let foundIdx = matchPositions.findIndex(p => clickPos >= p.start && clickPos <= p.end);
+
+                if (foundIdx !== -1) {
+                    currentMatchIndex = foundIdx;
+                    highlightActiveMatchInBackdrop();
+                    document.getElementById('match-status').innerText = `매칭: ${currentMatchIndex + 1} / ${matchPositions.length}건`;
+                } else {
+                    let rawIdx = rawAllPositions.findIndex(p => clickPos >= p.start && clickPos <= p.end);
+                    if (rawIdx !== -1) {
+                        const clickedWord = rawAllPositions[rawIdx].raw;
+                        let targetUniqueIdx = matchPositions.findIndex(p => p.raw === clickedWord);
+                        if (targetUniqueIdx !== -1) {
+                            currentMatchIndex = targetUniqueIdx;
+                            navigateMatch(0);
+                        }
+                    }
+                }
+                sampleBar.style.display = 'none';
+                return;
+            }
+
+            if (selectedText.length > 0 && selectedText.length < 100) {
+                generatedDragPattern = analyzeTextPattern(selectedText);
+                sampleTextEl.innerText = selectedText.length > 25 ? selectedText.substring(0, 25) + '...' : selectedText;
+                sampleBar.style.display = 'flex';
             } else {
-                let rawIdx = rawAllPositions.findIndex(p => clickPos >= p.start && clickPos <= p.end);
-                if (rawIdx !== -1) {
-                    const clickedWord = rawAllPositions[rawIdx].raw;
-                    let targetUniqueIdx = matchPositions.findIndex(p => p.raw === clickedWord);
-                    if (targetUniqueIdx !== -1) {
-                        currentMatchIndex = targetUniqueIdx;
-                        navigateMatch(0);
+                sampleBar.style.display = 'none';
+            }
+        }
+
+        function analyzeTextPattern(str) {
+            let patternResult = "";
+            let currentType = null;
+
+            function getType(char) {
+                if (/[0-9]/.test(char)) return 'digit';
+                if (/[a-zA-Z]/.test(char)) return 'alpha';
+                if (/[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(char)) return 'kor';
+                if (/\s/.test(char)) return 'space';
+                return 'special';
+            }
+
+            function appendPattern(type, charSegment) {
+                if (type === 'digit') patternResult += `\\d+`;
+                else if (type === 'alpha') patternResult += `[a-zA-Z]+`;
+                else if (type === 'kor') patternResult += `[가-힣ㄱ-ㅎㅏ-ㅣ]+`;
+                else if (type === 'space') patternResult += `\\s*`;
+                else if (type === 'special') {
+                    for (let c of charSegment) {
+                        patternResult += c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                     }
                 }
             }
-            sampleBar.style.display = 'none';
-            return;
-        }
 
-        if (selectedText.length > 0 && selectedText.length < 100) {
-            generatedDragPattern = analyzeTextPattern(selectedText);
-            sampleTextEl.innerText = selectedText.length > 25 ? selectedText.substring(0, 25) + '...' : selectedText;
-            sampleBar.style.display = 'flex';
-        } else {
-            sampleBar.style.display = 'none';
-        }
-    }
+            let charSegment = "";
+            for (let i = 0; i < str.length; i++) {
+                const char = str[i];
+                const type = getType(char);
 
-    function analyzeTextPattern(str) {
-        let patternResult = "";
-        let currentType = null;
-
-        function getType(char) {
-            if (/[0-9]/.test(char)) return 'digit';
-            if (/[a-zA-Z]/.test(char)) return 'alpha';
-            if (/[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(char)) return 'kor';
-            if (/\s/.test(char)) return 'space';
-            return 'special';
-        }
-
-        function appendPattern(type, charSegment) {
-            if (type === 'digit') patternResult += `\\d+`;
-            else if (type === 'alpha') patternResult += `[a-zA-Z]+`;
-            else if (type === 'kor') patternResult += `[가-힣ㄱ-ㅎㅏ-ㅣ]+`;
-            else if (type === 'space') patternResult += `\\s*`;
-            else if (type === 'special') {
-                for (let c of charSegment) {
-                    patternResult += c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                if (type !== currentType) {
+                    if (currentType !== null) appendPattern(currentType, charSegment);
+                    currentType = type;
+                    charSegment = char;
+                } else {
+                    charSegment += char;
                 }
             }
+            if (currentType !== null) appendPattern(currentType, charSegment);
+            return patternResult;
         }
 
-        let charSegment = "";
-        for (let i = 0; i < str.length; i++) {
-            const char = str[i];
-            const type = getType(char);
+        function applyDraggedPattern() {
+            if (!generatedDragPattern) return;
+            enableCustomMode(document.getElementById('preset-custom'));
+            document.getElementById('regex-pattern').value = generatedDragPattern;
+            handleTextProcess();
+            document.getElementById('drag-sample-bar').style.display = 'none';
+        }
 
-            if (type !== currentType) {
-                if (currentType !== null) appendPattern(currentType, charSegment);
-                currentType = type;
-                charSegment = char;
-            } else {
-                charSegment += char;
+        const patternUndoStack = [];
+        const patternRedoStack = [];
+        let patternTimer = null;
+
+        function recordPatternHistory() {
+            const el = document.getElementById('regex-pattern');
+            if (!el || el.readOnly) return;
+            const state = {
+                val: el.value,
+                selStart: el.selectionStart,
+                selEnd: el.selectionEnd
+            };
+            if (patternUndoStack.length === 0 || patternUndoStack[patternUndoStack.length - 1].val !== state.val) {
+                patternUndoStack.push(state);
+                if (patternUndoStack.length > 50) patternUndoStack.shift();
+                patternRedoStack.length = 0;
             }
         }
-        if (currentType !== null) appendPattern(currentType, charSegment);
-        return patternResult;
-    }
 
-    function applyDraggedPattern() {
-        if (!generatedDragPattern) return;
-        enableCustomMode(document.getElementById('preset-custom'));
-        document.getElementById('regex-pattern').value = generatedDragPattern;
-        handleTextProcess();
-        document.getElementById('drag-sample-bar').style.display = 'none';
-    }
-
-    const patternUndoStack = [];
-    const patternRedoStack = [];
-    let patternTimer = null;
-
-    function recordPatternHistory() {
-        const el = document.getElementById('regex-pattern');
-        if (!el || el.readOnly) return;
-        const state = { val: el.value, selStart: el.selectionStart, selEnd: el.selectionEnd };
-        if (patternUndoStack.length === 0 || patternUndoStack[patternUndoStack.length - 1].val !== state.val) {
-            patternUndoStack.push(state);
-            if (patternUndoStack.length > 50) patternUndoStack.shift();
-            patternRedoStack.length = 0;
+        function handlePatternInput() {
+            handleTextProcess();
+            clearTimeout(patternTimer);
+            patternTimer = setTimeout(() => {
+                recordPatternHistory();
+            }, 300);
         }
-    }
 
-    function handlePatternInput() {
-        handleTextProcess();
-        clearTimeout(patternTimer);
-        patternTimer = setTimeout(() => { recordPatternHistory(); }, 300);
-    }
-
-    function loadSampleText() {
-        const sample = `[샘플 업무 데이터 안내]\n안녕하세요. DevWorKit 프로젝트 지원팀 담당자 홍길동(hong@workkit.io)입니다.\n신규 프로젝트 문의는 010-1234-5678 또는 대표번호 02-987-6543으로 연락 부탁드립니다.\n프로젝트 시작일은 2026-03-01이며, 최종 납품 기한은 2026-08-31까지입니다.\n추가 문의: support@developerworkkit.github.io, contact@workkit.io`;
-        const el = document.getElementById('test-text-input');
-        el.value = sample;
-        recordTextHistory();
-        handleTextProcess();
-    }
-
-    function getStoredPatterns() {
-        const data = localStorage.getItem('strget_custom_patterns_v2');
-        return data ? JSON.parse(data) : {};
-    }
-
-    function refreshPatternSelect() {
-        const patterns = getStoredPatterns();
-        const select = document.getElementById('saved-pattern-select');
-        select.innerHTML = '<option value="">-- 저장된 패턴 목록 --</option>';
-        for (let name in patterns) {
-            const option = document.createElement('option');
-            option.value = name; option.textContent = name;
-            select.appendChild(option);
+        function loadSampleText() {
+            const sample = `[샘플 업무 데이터 안내]\n안녕하세요. DevWorKit 프로젝트 지원팀 담당자 홍길동(hong@workkit.io)입니다.\n신규 프로젝트 문의는 010-1234-5678 또는 대표번호 02-987-6543으로 연락 부탁드립니다.\n프로젝트 시작일은 2026-03-01이며, 최종 납품 기한은 2026-08-31까지입니다.\n추가 문의: support@developerworkkit.github.io, contact@workkit.io`;
+            const el = document.getElementById('test-text-input');
+            el.value = sample;
+            recordTextHistory();
+            handleTextProcess();
         }
-    }
 
-    function saveUserPattern() {
-        const nameInput = document.getElementById('custom-pattern-name');
-        const name = nameInput.value.trim();
-        const pattern = document.getElementById('regex-pattern').value;
-        if (!name || !pattern) { alert('이름과 패턴을 입력해 주세요.'); return; }
-        const patterns = getStoredPatterns();
-        patterns[name] = {
-            pattern,
-            groupWords: document.getElementById('chk-group-words').checked,
-            uniqueMatches: document.getElementById('chk-unique-matches').checked,
-            caseSensitive: document.getElementById('chk-case-sensitive').checked,
-            maskingData: document.getElementById('chk-masking-data').checked
-        };
-        localStorage.setItem('strget_custom_patterns_v2', JSON.stringify(patterns));
-        nameInput.value = ''; refreshPatternSelect(); alert('저장되었습니다!');
-    }
+        function getStoredPatterns() {
+            const data = localStorage.getItem('strget_custom_patterns_v2');
+            return data ? JSON.parse(data) : {};
+        }
 
-    function loadSelectedPattern() {
-        const select = document.getElementById('saved-pattern-select');
-        const data = getStoredPatterns()[select.value];
-        if (!data) return;
-        document.getElementById('regex-pattern').value = data.pattern;
-        document.getElementById('chk-group-words').checked = !!data.groupWords;
-        document.getElementById('chk-unique-matches').checked = !!data.uniqueMatches;
-        document.getElementById('chk-case-sensitive').checked = !!data.caseSensitive;
-        document.getElementById('chk-masking-data').checked = !!data.maskingData;
-        handleTextProcess();
-    }
-
-    function deleteSelectedPattern() {
-        const select = document.getElementById('saved-pattern-select');
-        if (!select.value) return;
-        if (confirm(`'${select.value}' 패턴을 삭제하시겠습니까?`)) {
+        function refreshPatternSelect() {
             const patterns = getStoredPatterns();
-            delete patterns[select.value];
+            const select = document.getElementById('saved-pattern-select');
+            select.innerHTML = '<option value="">-- 저장된 패턴 목록 --</option>';
+            for (let name in patterns) {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                select.appendChild(option);
+            }
+        }
+
+        function saveUserPattern() {
+            const nameInput = document.getElementById('custom-pattern-name');
+            const name = nameInput.value.trim();
+            const pattern = document.getElementById('regex-pattern').value;
+            if (!name || !pattern) {
+                alert('이름과 패턴을 입력해 주세요.');
+                return;
+            }
+            const patterns = getStoredPatterns();
+            patterns[name] = {
+                pattern,
+                groupWords: document.getElementById('chk-group-words').checked,
+                uniqueMatches: document.getElementById('chk-unique-matches').checked,
+                caseSensitive: document.getElementById('chk-case-sensitive').checked,
+                maskingData: document.getElementById('chk-masking-data').checked
+            };
             localStorage.setItem('strget_custom_patterns_v2', JSON.stringify(patterns));
-            refreshPatternSelect(); alert('삭제되었습니다.');
-        }
-    }
-
-    function applyPreset(pattern, btn) {
-        isCustomMode = false;
-        document.getElementById('custom-save-zone').style.display = 'none';
-        document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
-        if(btn) btn.classList.add('active');
-        const patternInput = document.getElementById('regex-pattern');
-        patternInput.readOnly = true;
-        const isGrouped = document.getElementById('chk-group-words').checked;
-        if (!/@|\\d\{/.test(pattern)) {
-            let cleanPattern = pattern.replace(/\+$/, '');
-            patternInput.value = isGrouped ? cleanPattern + '+' : cleanPattern;
-        } else { patternInput.value = pattern; }
-        handleTextProcess();
-    }
-
-    function enableCustomMode(btn) {
-        isCustomMode = true;
-        document.getElementById('custom-save-zone').style.display = 'flex';
-        refreshPatternSelect();
-        document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
-        if(btn) btn.classList.add('active');
-        const patternInput = document.getElementById('regex-pattern');
-        patternInput.readOnly = false;
-        patternInput.focus();
-        recordPatternHistory();
-        handleTextProcess();
-    }
-
-    function toggleWordGrouping() {
-        if (!isCustomMode) applyPreset(document.getElementById('regex-pattern').value, document.querySelector('.btn-preset.active'));
-    }
-
-    function applyMasking(text) {
-        if (text.includes('@')) return text.replace(/(^[^@]{1,3})[^@]*(@.*$)/, '$1***$2');
-        if (/^\d{2,3}-\d{3,4}-\d{4}$/.test(text)) return text.replace(/(\d{2,3}-)\d{3,4}(-\d{4})/, '$1****$2');
-        return text.substring(0, 1) + '*'.repeat(text.length - 1);
-    }
-
-    function handleTextProcess() {
-        let pattern = document.getElementById('regex-pattern').value;
-        const inputTextArea = document.getElementById('test-text-input');
-        const backdrop = document.getElementById('backdrop-view');
-        const statusBadge = document.getElementById('match-status');
-        const isUnique = document.getElementById('chk-unique-matches').checked;
-        const isCaseSensitive = document.getElementById('chk-case-sensitive').checked;
-        const isMasked = document.getElementById('chk-masking-data').checked;
-        const flags = isCaseSensitive ? 'g' : 'gi';
-
-        let savedPos = (currentMatchIndex >= 0 && matchPositions && matchPositions[currentMatchIndex]) ? matchPositions[currentMatchIndex] : null;
-        let text = inputTextArea.value;
-        currentMatchedList = []; rawAllPositions = []; matchPositions = [];
-
-        if (!pattern || !text) {
-            backdrop.innerHTML = escapeHtml(text);
-            statusBadge.innerText = "매칭 데이터: 0건";
-            currentMatchIndex = -1; return;
+            nameInput.value = '';
+            refreshPatternSelect();
+            alert('저장되었습니다!');
         }
 
-        try {
-            const regex = new RegExp(pattern, flags);
-            let match;
-            while ((match = regex.exec(text)) !== null) {
-                rawAllPositions.push({ start: match.index, end: match.index + match[0].length, raw: match[0] });
-                if (!regex.global) break;
+        function loadSelectedPattern() {
+            const select = document.getElementById('saved-pattern-select');
+            const data = getStoredPatterns()[select.value];
+            if (!data) return;
+            document.getElementById('regex-pattern').value = data.pattern;
+            document.getElementById('chk-group-words').checked = !!data.groupWords;
+            document.getElementById('chk-unique-matches').checked = !!data.uniqueMatches;
+            document.getElementById('chk-case-sensitive').checked = !!data.caseSensitive;
+            document.getElementById('chk-masking-data').checked = !!data.maskingData;
+            handleTextProcess();
+        }
+
+        function deleteSelectedPattern() {
+            const select = document.getElementById('saved-pattern-select');
+            if (!select.value) return;
+            if (confirm(`'${select.value}' 패턴을 삭제하시겠습니까?`)) {
+                const patterns = getStoredPatterns();
+                delete patterns[select.value];
+                localStorage.setItem('strget_custom_patterns_v2', JSON.stringify(patterns));
+                refreshPatternSelect();
+                alert('삭제되었습니다.');
+            }
+        }
+
+        function applyPreset(pattern, btn) {
+            isCustomMode = false;
+            document.getElementById('custom-save-zone').style.display = 'none';
+            document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            const patternInput = document.getElementById('regex-pattern');
+            patternInput.readOnly = true;
+            const isGrouped = document.getElementById('chk-group-words').checked;
+            if (!/@|\\d\{/.test(pattern)) {
+                let cleanPattern = pattern.replace(/\+$/, '');
+                patternInput.value = isGrouped ? cleanPattern + '+' : cleanPattern;
+            } else {
+                patternInput.value = pattern;
+            }
+            handleTextProcess();
+        }
+
+        function enableCustomMode(btn) {
+            isCustomMode = true;
+            document.getElementById('custom-save-zone').style.display = 'flex';
+            refreshPatternSelect();
+            document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            const patternInput = document.getElementById('regex-pattern');
+            patternInput.readOnly = false;
+            patternInput.focus();
+            recordPatternHistory();
+            handleTextProcess();
+        }
+
+        function toggleWordGrouping() {
+            if (!isCustomMode) applyPreset(document.getElementById('regex-pattern').value, document.querySelector('.btn-preset.active'));
+        }
+
+        function applyMasking(text) {
+            if (text.includes('@')) return text.replace(/(^[^@]{1,3})[^@]*(@.*$)/, '$1***$2');
+            if (/^\d{2,3}-\d{3,4}-\d{4}$/.test(text)) return text.replace(/(\d{2,3}-)\d{3,4}(-\d{4})/, '$1****$2');
+            return text.substring(0, 1) + '*'.repeat(text.length - 1);
+        }
+
+        function handleTextProcess() {
+            let pattern = document.getElementById('regex-pattern').value;
+            const inputTextArea = document.getElementById('test-text-input');
+            const backdrop = document.getElementById('backdrop-view');
+            const statusBadge = document.getElementById('match-status');
+            const isUnique = document.getElementById('chk-unique-matches').checked;
+            const isCaseSensitive = document.getElementById('chk-case-sensitive').checked;
+            const isMasked = document.getElementById('chk-masking-data').checked;
+            const flags = isCaseSensitive ? 'g' : 'gi';
+
+            let savedPos = (currentMatchIndex >= 0 && matchPositions && matchPositions[currentMatchIndex]) ? matchPositions[currentMatchIndex] : null;
+            let text = inputTextArea.value;
+            currentMatchedList = [];
+            rawAllPositions = [];
+            matchPositions = [];
+
+            if (!pattern || !text) {
+                backdrop.innerHTML = escapeHtml(text);
+                statusBadge.innerText = "매칭 데이터: 0건";
+                currentMatchIndex = -1;
+                return;
             }
 
-            if (isUnique) {
-                let seen = new Set(), fM = [], fP = [];
-                rawAllPositions.forEach(pos => {
-                    const key = isCaseSensitive ? pos.raw : pos.raw.toLowerCase();
-                    if (!seen.has(key)) { seen.add(key); fM.push(pos.raw); fP.push(pos); }
+            try {
+                const regex = new RegExp(pattern, flags);
+                let match;
+                while ((match = regex.exec(text)) !== null) {
+                    rawAllPositions.push({
+                        start: match.index,
+                        end: match.index + match[0].length,
+                        raw: match[0]
+                    });
+                    if (!regex.global) break;
+                }
+
+                if (isUnique) {
+                    let seen = new Set(),
+                        fM = [],
+                        fP = [];
+                    rawAllPositions.forEach(pos => {
+                        const key = isCaseSensitive ? pos.raw : pos.raw.toLowerCase();
+                        if (!seen.has(key)) {
+                            seen.add(key);
+                            fM.push(pos.raw);
+                            fP.push(pos);
+                        }
+                    });
+                    currentMatchedList = isMasked ? fM.map(m => applyMasking(m)) : fM;
+                    matchPositions = fP;
+                } else {
+                    currentMatchedList = isMasked ? rawAllPositions.map(m => applyMasking(m.raw)) : rawAllPositions.map(m => m.raw);
+                    matchPositions = rawAllPositions;
+                }
+
+                if (savedPos && matchPositions.length > 0) {
+                    let newIdx = matchPositions.findIndex(p => p.start === savedPos.start);
+                    if (newIdx === -1) newIdx = matchPositions.findIndex(p => p.raw === savedPos.raw);
+                    currentMatchIndex = newIdx !== -1 ? newIdx : 0;
+                } else if (matchPositions.length > 0 && currentMatchIndex !== -1) {
+                    currentMatchIndex = 0;
+                } else {
+                    currentMatchIndex = -1;
+                }
+
+                let htmlResult = "",
+                    lastIndex = 0,
+                    seenWords = new Set();
+                rawAllPositions.forEach((pos, idx) => {
+                    htmlResult += escapeHtml(text.substring(lastIndex, pos.start));
+                    const checkKey = isCaseSensitive ? pos.raw : pos.raw.toLowerCase();
+                    const isDup = isUnique && seenWords.has(checkKey);
+                    seenWords.add(checkKey);
+                    let uniqueIdx = matchPositions.findIndex(p => p.start === pos.start && p.end === pos.end);
+                    let className = isDup ? "highlight-duplicate" : "highlight";
+                    if (uniqueIdx !== -1 && uniqueIdx === currentMatchIndex) className += " highlight-active";
+                    htmlResult += `<span class="${className}" id="match-tag-${uniqueIdx}">${escapeHtml(pos.raw)}</span>`;
+                    lastIndex = pos.end;
                 });
-                currentMatchedList = isMasked ? fM.map(m => applyMasking(m)) : fM;
-                matchPositions = fP;
-            } else {
-                currentMatchedList = isMasked ? rawAllPositions.map(m => applyMasking(m.raw)) : rawAllPositions.map(m => m.raw);
-                matchPositions = rawAllPositions;
+                htmlResult += escapeHtml(text.substring(lastIndex));
+                backdrop.innerHTML = htmlResult.replace(/\n/g, '<br>') + (text.endsWith('\n') ? '<br>&nbsp;' : '');
+
+                if (currentMatchIndex !== -1 && matchPositions[currentMatchIndex]) {
+                    statusBadge.innerText = `매칭: ${currentMatchIndex + 1} / ${matchPositions.length}건`;
+                } else {
+                    statusBadge.innerText = `매칭 데이터: ${currentMatchedList.length}건`;
+                }
+            } catch (err) {
+                backdrop.innerHTML = escapeHtml(text).replace(/\n/g, '<br>');
+                statusBadge.innerText = "매칭 데이터: 0건";
             }
+            syncScroll();
+        }
 
-            if (savedPos && matchPositions.length > 0) {
-                let newIdx = matchPositions.findIndex(p => p.start === savedPos.start);
-                if (newIdx === -1) newIdx = matchPositions.findIndex(p => p.raw === savedPos.raw);
-                currentMatchIndex = newIdx !== -1 ? newIdx : 0;
-            } else if (matchPositions.length > 0 && currentMatchIndex !== -1) {
-                currentMatchIndex = 0;
-            } else { currentMatchIndex = -1; }
-
-            let htmlResult = "", lastIndex = 0, seenWords = new Set();
-            rawAllPositions.forEach((pos, idx) => {
-                htmlResult += escapeHtml(text.substring(lastIndex, pos.start));
-                const checkKey = isCaseSensitive ? pos.raw : pos.raw.toLowerCase();
-                const isDup = isUnique && seenWords.has(checkKey);
-                seenWords.add(checkKey);
-                let uniqueIdx = matchPositions.findIndex(p => p.start === pos.start && p.end === pos.end);
-                let className = isDup ? "highlight-duplicate" : "highlight";
-                if (uniqueIdx !== -1 && uniqueIdx === currentMatchIndex) className += " highlight-active";
-                htmlResult += `<span class="${className}" id="match-tag-${uniqueIdx}">${escapeHtml(pos.raw)}</span>`;
-                lastIndex = pos.end;
-            });
-            htmlResult += escapeHtml(text.substring(lastIndex));
-            backdrop.innerHTML = htmlResult.replace(/\n/g, '<br>') + (text.endsWith('\n') ? '<br>&nbsp;' : '');
-            
-            if (currentMatchIndex !== -1 && matchPositions[currentMatchIndex]) {
-                statusBadge.innerText = `매칭: ${currentMatchIndex + 1} / ${matchPositions.length}건`;
-            } else {
-                statusBadge.innerText = `매칭 데이터: ${currentMatchedList.length}건`;
+        function highlightActiveMatchInBackdrop() {
+            document.querySelectorAll('.highlight-active').forEach(el => el.classList.remove('highlight-active'));
+            if (currentMatchIndex !== -1) {
+                const activeTag = document.getElementById(`match-tag-${currentMatchIndex}`);
+                if (activeTag) activeTag.classList.add('highlight-active');
             }
-        } catch (err) {
-            backdrop.innerHTML = escapeHtml(text).replace(/\n/g, '<br>');
-            statusBadge.innerText = "매칭 데이터: 0건";
         }
-        syncScroll();
-    }
 
-    function highlightActiveMatchInBackdrop() {
-        document.querySelectorAll('.highlight-active').forEach(el => el.classList.remove('highlight-active'));
-        if (currentMatchIndex !== -1) {
-            const activeTag = document.getElementById(`match-tag-${currentMatchIndex}`);
-            if (activeTag) activeTag.classList.add('highlight-active');
+        function navigateMatch(direction) {
+            if (!matchPositions.length) return;
+            currentMatchIndex = (currentMatchIndex + direction + matchPositions.length) % matchPositions.length;
+            const target = matchPositions[currentMatchIndex];
+            const textarea = document.getElementById('test-text-input');
+            highlightActiveMatchInBackdrop();
+            textarea.focus();
+            textarea.setSelectionRange(target.start, target.end);
+            document.getElementById('match-status').innerText = `매칭: ${currentMatchIndex + 1} / ${matchPositions.length}건`;
         }
-    }
 
-    function navigateMatch(direction) {
-        if (!matchPositions.length) return;
-        currentMatchIndex = (currentMatchIndex + direction + matchPositions.length) % matchPositions.length;
-        const target = matchPositions[currentMatchIndex];
-        const textarea = document.getElementById('test-text-input');
-        highlightActiveMatchInBackdrop();
-        textarea.focus();
-        textarea.setSelectionRange(target.start, target.end);
-        document.getElementById('match-status').innerText = `매칭: ${currentMatchIndex + 1} / ${matchPositions.length}건`;
-    }
+        function copyMatchedResults(format) {
+            if (!currentMatchedList.length) {
+                alert("추출할 데이터가 없습니다.");
+                return;
+            }
+            const textToCopy = format === 'excel' ? "번호\t추출 데이터\n" + currentMatchedList.map((item, idx) => `${idx + 1}\t${item}`).join('\n') : currentMatchedList.join('\n');
+            navigator.clipboard.writeText(textToCopy).then(() => alert("복사되었습니다!"));
+        }
 
-    function copyMatchedResults(format) {
-        if (!currentMatchedList.length) { alert("추출할 데이터가 없습니다."); return; }
-        const textToCopy = format === 'excel' ? "번호\t추출 데이터\n" + currentMatchedList.map((item, idx) => `${idx + 1}\t${item}`).join('\n') : currentMatchedList.join('\n');
-        navigator.clipboard.writeText(textToCopy).then(() => alert("복사되었습니다!"));
-    }
+        function clearInputText() {
+            const textarea = document.getElementById('test-text-input');
+            textarea.value = '';
+            recordTextHistory();
+            handleTextProcess();
+            textarea.focus();
+        }
 
-    function clearInputText() {
-        const textarea = document.getElementById('test-text-input');
-        textarea.value = ''; recordTextHistory(); handleTextProcess(); textarea.focus();
-    }
+        function syncScroll() {
+            const inputTextArea = document.getElementById('test-text-input');
+            const backdrop = document.getElementById('backdrop-view');
+            backdrop.scrollTop = inputTextArea.scrollTop;
+            backdrop.scrollLeft = inputTextArea.scrollLeft;
+        }
 
-    function syncScroll() {
-        const inputTextArea = document.getElementById('test-text-input');
-        const backdrop = document.getElementById('backdrop-view');
-        backdrop.scrollTop = inputTextArea.scrollTop;
-        backdrop.scrollLeft = inputTextArea.scrollLeft;
-    }
+        function escapeHtml(str) {
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
 
-    function escapeHtml(str) {
-        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    }
+        window.onload = () => {
+            const textEl = document.getElementById('test-text-input');
+            textEl.addEventListener('input', handleTextInput);
+            textEl.addEventListener('keydown', handleTextKeyDown);
+            textEl.addEventListener('mouseup', handleTextClickOrMouseUp);
+            recordTextHistory();
+            document.getElementById('preset-kor').classList.add('active');
+            handleTextProcess();
+        };
+    </script>
 
-    window.onload = () => {
-        const textEl = document.getElementById('test-text-input');
-        textEl.addEventListener('input', handleTextInput);
-        textEl.addEventListener('keydown', handleTextKeyDown);
-        textEl.addEventListener('mouseup', handleTextClickOrMouseUp);
-        recordTextHistory();
-        document.getElementById('preset-kor').classList.add('active');
-        handleTextProcess();
-    };
-</script>
-<div id="dwk-footer"></div>
-<script src="../nav.js"></script>
+    <div id="dwk-footer"></div>
+    <script src="../nav.js"></script>
 </body>
+
 </html>
