@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마크다운(Markdown) 기초부터 확장 문법까지 완벽 가이드 | DevWorKit</title>
-    <meta name="description" content="기본 마크다운 문법부터 LaTeX 수식, Mermaid 다이어그램, GitHub 콜아웃까지 완벽 정리 가이드">
+    <title>마크다운(Markdown) 실전 문법 치트키 & 작성 가이드 | DevWorKit</title>
+    <meta name="description" content="마크다운 기본 문법부터 KaTeX 수학 수식, Mermaid 다이어그램, GitHub 콜아웃까지 실무에서 바로 써먹는 작성법 치트키">
     <link rel="stylesheet" href="../nav.css">
     <style>
         body {
@@ -90,7 +90,7 @@
         .code-block {
             background: #0f172a;
             color: #f8fafc;
-            padding: 18px 20px;
+            padding: 16px 20px;
             border-radius: 8px;
             font-family: Consolas, Monaco, "Courier New", monospace;
             font-size: 13px;
@@ -180,93 +180,99 @@
 
 <body>
 
+    <div id="dwk-nav"></div>
+
     <main class="article-container">
         <a href="index.html" class="back-link">← 가이드 목록으로 돌아가기</a>
 
         <article class="article-card">
             <span class="article-badge">MARKDOWN</span>
-            <h1 class="article-title">마크다운(Markdown) 기초부터 확장 문법까지 완벽 가이드</h1>
+            <h1 class="article-title">마크다운(Markdown) 실전 문법 치트키 & 작성 가이드</h1>
 
             <section class="article-section">
-                <h2>1. 헤딩과 텍스트 스타일</h2>
-                <p>기본 텍스트 서식을 직관적인 기호로 정의합니다.</p>
-                <div class="code-block"># H1 대제목
-                    ## H2 중제목
-                    ### H3 소제목
+                <h2>1. 기본 텍스트 서식 및 헤딩</h2>
+                <p>문서의 구조를 잡고 텍스트를 강조하는 가장 기본적인 마크다운 문법입니다.</p>
+                <div class="code-block"># H1 제목 (가장 큰 대제목)
+## H2 중간 제목
+### H3 소제목
 
-                    **굵은 글씨**, *기울임 글씨*, ~~취소선~~, ==형광펜 강조==</div>
+**굵은 글씨 (Bold)**
+*기울임 글씨 (Italic)*
+~~취소선 (Strikethrough)~~
+==형광펜 강조 (Mark)==
+`인라인 코드 (Code)`</div>
             </section>
 
             <section class="article-section">
-                <h2>2. 리스트 및 체크리스트 (Task List)</h2>
-                <p>순서가 없거나 있는 목록 및 체크박스 할 일 목록을 작성합니다.</p>
-                <div class="code-block">- 일반 글머리 기호 1
-                    - 일반 글머리 기호 2
+                <h2>2. 리스트 및 인터랙티브 체크리스트</h2>
+                <p>글머리 기호 목록과 우측 뷰어에서 직접 클릭해 토글할 수 있는 체크박스 문법입니다.</p>
+                <div class="code-block">- 일반 글머리 기호 항목 1
+  - 하위 들여쓰기 항목 A
+- 일반 글머리 기호 항목 2
 
-                    1. 순서가 있는 번호 목록
-                    2. 두 번째 순서
+1. 순서가 있는 번호 목록 1
+2. 순서가 있는 번호 목록 2
 
-                    - [x] 완료된 작업 항목
-                    - [ ] 아직 진행 중인 작업 항목</div>
+- [x] 완료된 작업 항목
+- [ ] 미완료된 작업 항목</div>
             </section>
 
             <section class="article-section">
-                <h2>3. 링크, 이미지 및 인용구</h2>
-                <p>외부 링크, 이미지 임베드, GitHub 스타일의 알림 콜아웃을 구성합니다.</p>
-                <div class="code-block">[구글 바로가기](https://google.com)
-                    ![이미지 대체 텍스트](https://example.com/image.png)
+                <h2>3. 링크, 이미지 및 인용구 (Callout)</h2>
+                <p>외부 링크, 이미지 임베드 및 GitHub 스타일의 알림 박스(Callout) 작성법입니다.</p>
+                <div class="code-block">[DevWorKit 바로가기](https://developerworkkit.github.io)
+![대체 텍스트](https://example.com/image.png)
 
-                    > 일반 인용구 텍스트입니다.
+> 일반 인용구 텍스트 영역입니다.
 
-                    > [!NOTE]
-                    > 여기에 강조할 공지사항이나 핵심 안내 텍스트를 작성하세요.</div>
+> [!NOTE]
+> 중요 공지나 팁을 시각적으로 강조하는 알림 콜아웃 박스입니다.</div>
             </section>
 
             <section class="article-section">
-                <h2>4. 표(Table) 문법</h2>
-                <p>파이프(<code>|</code>) 기호를 사용하여 표 레이아웃을 생성합니다.</p>
-                <table class="table-custom">
-                    <thead>
-                        <tr>
-                            <th>문법 작성 예시</th>
-                            <th>실제 렌더링 결과</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><code>| 이름 | 역할 |</code><br><code>| :--- | :--- |</code><br><code>| DevWorKit | 툴킷 |</code></td>
-                            <td>정렬된 테이블 데이터 표로 자동 변환</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <h2>4. 표(Table) 및 접기/펼치기 (Details)</h2>
+                <p>파이프 기호(<code>|</code>)를 이용한 표 정렬과 긴 본문을 숨길 수 있는 아코디언 태그입니다.</p>
+                <div class="code-block">| 기능명 | 지원 여부 | 단축키 |
+| :--- | :---: | :---: |
+| 실시간 렌더링 | ✅ 지원 | Ctrl+S |
+| HTML 변환 | ✅ 지원 | Ctrl+C |
+
+<details>
+<summary>▶ 클릭하여 상세 내용 접기/펼치기</summary>
+
+여기에 숨겨둘 상세 설명이나 긴 소스코드를 자유롭게 작성합니다.
+
+</details></div>
             </section>
 
             <section class="article-section">
-                <h2>5. LaTeX 수학 수식</h2>
-                <p>KaTeX 수식 렌더러를 통해 인라인 및 블록 수식을 표현합니다.</p>
+                <h2>5. 고급 확장: LaTeX 수학 수식과 Mermaid 다이어그램</h2>
+                <p>복잡한 수식과 순서도(Flowchart)를 텍스트 코드로 즉시 렌더링합니다.</p>
                 <div class="code-block">인라인 수식: $E = mc^2$
 
-                    블록 수식:
-                    $$
-                    \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}
-                    $$</div>
+블록 수식:
+$$
+\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}
+$$
+
+```mermaid
+graph TD
+    A[마크다운 작성] --> B{실시간 파서}
+    B --> C[KaTeX 수식]
+    B --> D[Mermaid 다이어그램]
+    C --> E[HTML 뷰어]
+    D --> E
+```</div>
             </section>
 
             <section class="article-section">
-                <h2>6. Mermaid 플로우차트 다이어그램</h2>
-                <p>텍스트 코드로 벡터 다이어그램과 순서도를 즉시 렌더링합니다.</p>
-                <div class="code-block">```mermaid
-                    graph TD
-                    A[시작] --> B{조건 분기}
-                    B -->|Yes| C[성공]
-                    B -->|No| D[재시도]
-                    ```</div>
+                <h2>6. 실시간 마크다운 에디터 바로가기</h2>
+                <p>지금 바로 브라우저에서 위 문법들을 테스트하고 정제된 순수 HTML 코드를 추출해 보세요.</p>
+                <div class="tool-banner">
+                    <span class="tool-banner-text">🛠️ DevWorKit 실시간 마크다운 에디터 사용해보기</span>
+                    <a href="../markdown/" class="tool-banner-btn">도구로 이동 →</a>
+                </div>
             </section>
-
-            <div class="tool-banner">
-                <span class="tool-banner-text">🛠️ DevWorKit 실시간 마크다운 에디터 사용해보기</span>
-                <a href="../markdown/" class="tool-banner-btn">도구로 이동 →</a>
-            </div>
         </article>
     </main>
 
