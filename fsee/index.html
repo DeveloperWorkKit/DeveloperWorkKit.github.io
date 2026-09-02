@@ -4,17 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>폴더 구조 엑셀 변환기 | DevWorKit</title>
+    <title>폴더 구조 엑셀 변환기 (FSEE) | DevWorKit</title>
+    <meta name="description" content="디렉터리 및 ZIP 압축 파일 내부의 계층 구조를 트리 인덴트가 적용된 엑셀(.xlsx) 스프레드시트로 즉시 변환하고 다운로드합니다.">
+    <link rel="stylesheet" href="../nav.css">
     <style>
         :root {
-            --primary-blue: #007bff;
-            --primary-blue-hover: #0056b3;
-            --primary-green: #28a745;
-            --primary-green-hover: #1e7e34;
-            --bg-light: #f8f9fa;
-            --border-color: #dee2e6;
-            --text-main: #333333;
-            --text-muted: #666666;
+            --primary-blue: #0284c7;
+            --primary-blue-hover: #0369a1;
+            --primary-green: #10b981;
+            --primary-green-hover: #059669;
+            --bg-light: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
         }
 
         body {
@@ -28,135 +30,179 @@
             min-height: 100vh;
         }
 
-        header {
-            border-bottom: 1px solid var(--border-color);
-            padding: 20px 40px;
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .logo-badge {
-            background: var(--primary-blue);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .logo-text {
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: #111111;
-        }
-
-        .main-container {
+        .page-wrapper {
+            display: block;
             max-width: 1100px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 30px 20px;
+            margin: 30px auto 40px auto;
+            padding: 0 20px;
             box-sizing: border-box;
-            flex: 1;
+            width: 100%;
         }
 
         .intro-section {
             margin-bottom: 25px;
         }
 
-        .intro-section h1 {
-            font-size: 22px;
+        .intro-header-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .tool-tag-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11.5px;
             font-weight: 800;
-            color: #111827;
-            margin: 0 0 6px 0;
+            letter-spacing: -0.2px;
+            background-color: #ede9fe;
+            color: #6d28d9;
+            border: 1px solid #ddd6fe;
+        }
+
+        .intro-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
             letter-spacing: -0.5px;
         }
 
-        .intro-section p {
-            font-size: 14px;
+        .intro-desc {
+            font-size: 14.5px;
             color: var(--text-muted);
             margin: 0 0 16px 0;
+            line-height: 1.6;
         }
 
-        .guide-section {
+        .guide-box {
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 16px 20px;
+            border-radius: 10px;
+            padding: 18px 22px;
             font-size: 13.5px;
             color: #334155;
-            line-height: 1.6;
-            margin-bottom: 25px;
+            line-height: 1.7;
         }
 
-        .guide-section h2 {
+        .guide-box strong.guide-header {
+            display: block;
+            margin-bottom: 8px;
+            color: #0f172a;
             font-size: 14px;
             font-weight: 800;
-            color: #0f172a;
-            margin: 0 0 8px 0;
         }
 
         .guide-list {
-            padding-left: 18px;
+            padding-left: 20px;
             margin: 0;
         }
 
         .guide-list li {
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+        }
+
+        .guide-list strong {
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .main-container {
+            width: 100%;
+            margin: 0 auto;
+            box-sizing: border-box;
         }
 
         .dashboard-panel {
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 25px;
+            border-radius: 12px;
+            padding: 28px;
             background-color: #ffffff;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            box-sizing: border-box;
         }
 
         #click-zone {
             width: 100%;
-            height: 160px;
-            border: 2px dashed #ced4da;
-            border-radius: 6px;
+            min-height: 170px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 10px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             background-color: var(--bg-light);
             cursor: pointer;
-            transition: background-color 0.15s, border-color 0.15s;
+            transition: all 0.15s ease;
+            box-sizing: border-box;
+            padding: 20px;
+            text-align: center;
         }
 
-        #click-zone:hover {
-            background-color: #e9ecef;
-            border-color: var(--primary-blue);
+        #click-zone.dragover {
+            background-color: #f5f3ff;
+            border-color: #7c3aed;
+            transform: scale(1.005);
+        }
+
+        .zone-icon {
+            font-size: 36px;
+            margin-bottom: 8px;
         }
 
         .zone-text {
-            font-size: 14px;
-            color: #495057;
-            font-weight: 600;
+            font-size: 15px;
+            color: #1e293b;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .zone-subtext {
+            font-size: 12.5px;
+            color: #64748b;
         }
 
         .btn-group {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 12px;
+            margin-top: 24px;
+            flex-wrap: wrap;
         }
 
         .btn {
             border: none;
-            padding: 11px 24px;
+            padding-top: 12px;
+            padding-bottom: 12px;
+            padding-left: 20px;
+            padding-right: 22px;
             color: white;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 14px;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background-color 0.15s;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        .btn .btn-icon {
+            font-size: 15px;
+            line-height: 1;
+            display: inline-block;
+            margin-left: -2px;
+        }
+
+        .btn .btn-label {
+            display: inline-block;
+            line-height: 1;
+            letter-spacing: -0.2px;
         }
 
         .btn-folder {
@@ -183,12 +229,13 @@
             margin-top: 20px;
             background-color: var(--bg-light);
             padding: 12px;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 600;
+            border-radius: 6px;
+            font-size: 13.5px;
+            font-weight: 700;
             color: var(--text-main);
             text-align: center;
             letter-spacing: -0.3px;
+            border: 1px solid var(--border-color);
         }
 
         .modal-overlay {
@@ -197,7 +244,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(15, 23, 42, 0.45);
             backdrop-filter: blur(2px);
             display: flex;
             align-items: center;
@@ -216,41 +263,47 @@
         .modal-box {
             background: white;
             padding: 30px;
-            border-radius: 8px;
+            border-radius: 12px;
             width: 380px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
             text-align: center;
+            box-sizing: border-box;
         }
 
         .modal-box h3 {
             margin-top: 0;
-            color: #111111;
+            color: #0f172a;
             font-size: 18px;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 10px;
         }
 
         .modal-box p {
             color: var(--text-muted);
-            font-size: 13px;
-            margin-bottom: 20px;
+            font-size: 13.5px;
+            margin-bottom: 22px;
             line-height: 1.5;
         }
 
         .modal-btn-group {
             display: flex;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .modal-btn {
-            padding: 9px 18px;
-            border-radius: 4px;
-            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-weight: 700;
             cursor: pointer;
             border: none;
             font-size: 13px;
             color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: opacity 0.15s;
         }
 
         .m-btn-f {
@@ -269,11 +322,84 @@
             background-color: var(--primary-green-hover);
         }
 
+        /* [SEO & 애드센스 고유 콘텐츠 보강 섹션] */
+        .seo-article-box {
+            margin-top: 48px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 36px 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            line-height: 1.8;
+            color: #334155;
+        }
+
+        .seo-article-box h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 16px 0;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+            letter-spacing: -0.4px;
+        }
+
+        .seo-article-box h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 24px 0 8px 0;
+        }
+
+        .seo-article-box p {
+            font-size: 14.5px;
+            margin: 0 0 14px 0;
+        }
+
+        .seo-article-box ul {
+            font-size: 14px;
+            padding-left: 20px;
+            margin: 8px 0 20px 0;
+        }
+
+        .seo-article-box li {
+            margin-bottom: 6px;
+        }
+
+        .faq-item {
+            margin-top: 16px;
+            padding: 14px 18px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .faq-q {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 14.5px;
+            margin-bottom: 6px;
+        }
+
+        .faq-a {
+            font-size: 14px;
+            color: #475569;
+            margin: 0;
+            line-height: 1.6;
+        }
+
         .bottom-ad-box {
             max-width: 1100px;
             width: 100%;
-            margin: 25px auto 10px auto;
+            margin: 30px auto 10px auto;
             text-align: center;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .bottom-ad-box ins.adsbygoogle[data-ad-status="unfilled"],
+        .bottom-ad-box ins.adsbygoogle:empty {
+            display: none !important;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -282,48 +408,89 @@
 
 <body>
 
-    <header>
-        <div class="logo-area">
-            <span class="logo-badge">FSEE</span>
-            <span class="logo-text">폴더 구조 엑셀 변환기</span>
-        </div>
-    </header>
-
-    <div class="main-container">
+    <div class="page-wrapper">
         <div class="intro-section">
-            <h1>폴더내 파일명을 보기 쉽게 엑셀로 추출하는 사이트입니다.</h1>
-            <p>폴더 또는 ZIP내의 파일명을 엑셀 문서로 추출할 수 있습니다.</p>
-        </div>
-
-        <div class="guide-section">
-            <h2>디렉토리 구조 분석 및 추출 방법 안내:</h2>
-            <ol class="guide-list">
-                <li>중앙의 회색 점선 영역을 클릭하거나 하단의 전용 버튼을 활용하여 파일/폴더 데이터를 로드합니다.</li>
-                <li><strong>폴더 선택</strong> 기능을 이용하면 웹 브라우저의 내부 제약을 우회하여 완벽한 하위 트리를 스캔합니다.</li>
-                <li>압축 파일 내부 문서 구조가 필요한 경우 <strong>파일 / ZIP 선택</strong>을 통해 별도의 압축 해제 없이 즉시 목록을 추출할 수 있습니다.</li>
-                <li>스캔이 완료되면 각 하위 폴더별 계층 구조가 시각적으로 정돈된 인덴트 분리형 엑셀(.xlsx) 파일이 자동으로 생성되어 다운로드됩니다.</li>
-            </ol>
-        </div>
-
-        <div class="dashboard-panel">
-            <div id="click-zone"><span class="zone-text">여기를 클릭하거나 드래그하여 분석할 대상을 지정하세요</span></div>
-            <div class="btn-group">
-                <button class="btn btn-folder" id="btn-folder-picker">폴더 선택</button>
-                <label class="btn btn-zip" for="all-file-input">파일 / ZIP 선택</label>
+            <div class="intro-header-row">
+                <span class="tool-tag-badge">FSEE</span>
+                <h1 class="intro-title">폴더 구조 엑셀 변환기</h1>
             </div>
-            <input type="file" id="all-file-input" multiple>
-            <input type="file" id="pure-folder-input" webkitdirectory directory multiple>
-            <div id="status">선택 대기중</div>
+            <p class="intro-desc">로컬 폴더 트리나 ZIP 압축 파일 내부의 디렉터리 경로를 스캔하여 계층별 인덴트가 적용된 스프레드시트(.xlsx) 파일로 즉시 추출합니다.</p>
+
+            <div class="guide-box">
+                <strong class="guide-header">디렉토리 구조 분석 및 추출 방법 안내:</strong>
+                <ol class="guide-list">
+                    <li>중앙 점선 영역을 클릭하거나 하단 버튼을 통해 분석할 폴더 또는 압축 파일을 지정합니다.</li>
+                    <li><strong>[폴더 선택]</strong> 기능을 이용하면 크롬/엣지 브라우저의 파일 시스템 API를 통해 방대한 하위 디렉터리를 고속 스캔합니다.</li>
+                    <li>압축 파일 내부 구조가 필요한 경우 <strong>[파일 / ZIP 선택]</strong>을 통해 별도의 압축 해제 없이 파일 목록을 즉시 추출합니다.</li>
+                    <li>스캔이 완료되면 폴더 깊이(Depth)별로 정돈된 엑셀(.xlsx) 파일이 자동으로 생성되어 다운로드됩니다.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="main-container">
+            <div class="dashboard-panel">
+                <div id="click-zone">
+                    <span class="zone-icon">📁</span>
+                    <span class="zone-text">여기를 클릭하거나 폴더/ZIP 파일을 드래그하여 놓으세요</span>
+                    <span class="zone-subtext">로컬 환경에서만 안전하게 고속으로 파싱됩니다</span>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-folder" id="btn-folder-picker">
+                        <span class="btn-icon">📁</span>
+                        <span class="btn-label">폴더 선택</span>
+                    </button>
+                    <label class="btn btn-zip" for="all-file-input">
+                        <span class="btn-icon">📦</span>
+                        <span class="btn-label">파일 / ZIP 선택</span>
+                    </label>
+                </div>
+                <input type="file" id="all-file-input" multiple>
+                <input type="file" id="pure-folder-input" webkitdirectory directory multiple>
+                <div id="status">선택 대기중</div>
+            </div>
+
+            <!-- [애드센스 승인용 고유 텍스트 & 실무 원리 가이드 영역] -->
+            <article class="seo-article-box">
+                <h2>디렉터리 파일 트리 엑셀 변환의 실무 필요성과 원리</h2>
+                <p><strong>DevWorKit 폴더 구조 엑셀 변환기(FSEE)</strong>는 사내 프로젝트 산출물 정리, 서버 인프라 데이터 백업 검증, 외주 개발 납품 파일 검수 등 복잡한 폴더 계층 구조를 직관적인 표(Spreadsheet) 형태로 보고해야 하는 실무자를 위한 자동화 유틸리티입니다.</p>
+
+                <h3>1. 계층별 시각적 인덴트(Tree Indent)와 폴더 우선 정렬</h3>
+                <p>일반적인 단순 알파벳 순서 정렬은 폴더와 파일이 뒤섞여 가독성을 떨어뜨립니다. 본 도구는 탐색기(Explorer) 표준 방식을 적용하여 <strong>폴더(Directory)를 파일보다 항상 상단에 우선 배치</strong>하고, 그 아래에 파일들을 가나다순으로 정렬합니다.</p>
+                <ul>
+                    <li><strong>차수별 컬럼 분리:</strong> 상위 폴더부터 하위 디렉터리까지 <code>1차 폴더명</code>, <code>2차 폴더명</code>, <code>3차 폴더명</code> 컬럼으로 분리 배치하여 피벗 테이블 및 필터 적용이 용이합니다.</li>
+                    <li><strong>트리 기호(└) 자동 적용:</strong> 상위 폴더가 전환되는 첫 위치에만 <code>└</code> 시각 기호를 조합하고 중복 상위 폴더는 공란으로 비워 직관적인 트리 뷰를 완성합니다.</li>
+                    <li><strong>메타데이터 분리:</strong> 파일명뿐만 아니라 <strong>확장자(Extension)</strong>와 <strong>전체 절대경로</strong>를 별도 열로 추출하여 특정 확장자(.pdf, .java, .xlsx 등)만 선별 필터링할 수 있습니다.</li>
+                </ul>
+
+                <h3>2. ZIP 압축 파일의 인메모리(In-Memory) 스트리밍 파싱</h3>
+                <p>수 기가바이트(GB)에 달하는 대용량 ZIP 파일의 목록만 확인하고 싶을 때, 압축을 푸는 과정은 상당한 디스크 용량과 시간을 소모합니다. 본 도구는 JSZip 라이브러리를 통해 압축 해제 없이 헤더 청크만 메모리상에서 직접 탐색하므로 1초 내에 내부 파일 트리를 엑셀로 추출합니다.</p>
+
+                <h3>3. 자주 묻는 질문 (FAQ)</h3>
+                <div class="faq-item">
+                    <div class="faq-q">Q. 회사 기밀 폴더나 소스코드를 선택해도 외부 서버로 파일이 업로드되지 않나요?</div>
+                    <div class="faq-a">A. 전혀 업로드되지 않습니다. DevWorKit은 모던 웹 표준인 <code>showDirectoryPicker</code> 및 로컬 FileReader API를 사용하여 사용자의 웹 브라우저 내부 메모리에서만 파일 목록을 읽고 엑셀을 빌드합니다. 파일의 실제 내용(Content)은 일체 열람하거나 전송하지 않으며, 오직 경로와 파일명만 처리됩니다.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">Q. 수만 개 이상의 파일이 들어 있는 대형 폴더도 처리가 가능한가요?</div>
+                    <div class="faq-a">A. 네, 처리 가능합니다. <strong>[폴더 선택]</strong> 버튼 클릭 시 비동기 제너레이터(Async Iterator) 패턴을 적용하여 브라우저 멈춤 현상(Freezing) 없이 수만 개의 파일 경로를 순차적으로 스캔하고 SheetJS 엔진을 통해 엑셀 바이너리를 생성합니다.</div>
+                </div>
+            </article>
         </div>
     </div>
 
     <div class="modal-overlay" id="custom-modal">
         <div class="modal-box">
             <h3>분석 대상 선택</h3>
-            <p>가져오고자 하는 로컬 데이터의 구조 유형에 맞는<br>적절한 매핑 버튼을 눌러주세요.</p>
+            <p>가져오고자 하는 로컬 데이터의 구조 유형에 맞는<br>적절한 방식을 선택해 주세요.</p>
             <div class="modal-btn-group">
-                <button class="modal-btn m-btn-f" id="modal-select-folder">폴더 분석하기</button>
-                <button class="modal-btn m-btn-z" id="modal-select-file">파일 / ZIP 분석하기</button>
+                <button class="modal-btn m-btn-f" id="modal-select-folder">
+                    <span class="btn-icon">📁</span>
+                    <span>폴더 분석하기</span>
+                </button>
+                <button class="modal-btn m-btn-z" id="modal-select-file">
+                    <span class="btn-icon">📦</span>
+                    <span>파일 / ZIP 분석하기</span>
+                </button>
             </div>
         </div>
     </div>
@@ -356,6 +523,95 @@
             if (e.target === customModal) customModal.classList.remove('active');
         });
 
+        // 드래그 앤 드롭 이벤트 핸들러 장착
+        ['dragenter', 'dragover'].forEach(eventName => {
+            clickZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                clickZone.classList.add('dragover');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            clickZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                clickZone.classList.remove('dragover');
+            }, false);
+        });
+
+        clickZone.addEventListener('drop', async (e) => {
+            const items = e.dataTransfer.items;
+            const files = e.dataTransfer.files;
+
+            if (items && items.length > 0 && items[0].webkitGetAsEntry) {
+                statusDiv.innerText = "드롭된 폴더/파일 스캔 중...";
+                let fileArray = [];
+
+                async function traverseEntry(entry, currentPath) {
+                    if (entry.isFile) {
+                        return new Promise((resolve) => {
+                            entry.file(file => {
+                                fileArray.push({
+                                    path: currentPath + file.name,
+                                    name: file.name,
+                                    isDir: false
+                                });
+                                resolve();
+                            });
+                        });
+                    } else if (entry.isDirectory) {
+                        const reader = entry.createReader();
+                        return new Promise((resolve) => {
+                            reader.readEntries(async (entries) => {
+                                for (let subEntry of entries) {
+                                    // [수정] 불필요한 루트 폴더명 중첩 결합 방지
+                                    const nextPath = currentPath === "" ? (entry.name + "/") : (currentPath + entry.name + "/");
+                                    await traverseEntry(subEntry, nextPath);
+                                }
+                                resolve();
+                            });
+                        });
+                    }
+                }
+
+                try {
+                    let rootFolderName = "드롭폴더";
+                    for (let i = 0; i < items.length; i++) {
+                        const entry = items[i].webkitGetAsEntry();
+                        if (entry) {
+                            if (i === 0 && entry.isDirectory) rootFolderName = entry.name;
+                            // [수정] 첫 진입 시 빈 문자열 전달하여 루트 이름 중복 방지
+                            await traverseEntry(entry, "");
+                        }
+                    }
+
+                    if (fileArray.length === 1 && fileArray[0].name.toLowerCase().endsWith('.zip')) {
+                        const fakeFile = files[0];
+                        parseZipAndDownload(fakeFile);
+                    } else if (fileArray.length > 0) {
+                        processAndDownloadExcel(fileArray, `${rootFolderName}_구조분석.xlsx`);
+                    } else {
+                        statusDiv.innerText = "감지된 파일이 없습니다.";
+                    }
+                } catch (err) {
+                    statusDiv.innerText = "드롭 처리 중 오류가 발생했습니다.";
+                }
+            } else if (files && files.length > 0) {
+                if (files.length === 1 && files[0].name.toLowerCase().endsWith('.zip')) {
+                    parseZipAndDownload(files[0]);
+                } else {
+                    let fileArray = Array.from(files).map(f => ({
+                        path: f.name,
+                        name: f.name,
+                        isDir: false
+                    }));
+                    processAndDownloadExcel(fileArray, "드롭파일_추출결과.xlsx");
+                }
+            }
+        });
+
+        // 1. 최신 File System Access API 폴더 선택
         btnFolderPicker.addEventListener('click', async () => {
             try {
                 const dirHandle = await window.showDirectoryPicker();
@@ -363,21 +619,40 @@
                 let fileArray = [];
                 async function scan(handle, currentPath = "") {
                     for await (const entry of handle.values()) {
-                        if (entry.kind === 'file') fileArray.push({
-                            path: currentPath + entry.name,
+                        if (entry.kind === 'file') {
+                            fileArray.push({
+                                path: currentPath + entry.name,
+                                name: entry.name,
+                                isDir: false
+                            });
+                        } else if (entry.kind === 'directory') {
+                            // [수정] File System API 루트 중첩 방지 정규화
+                            const nextPath = currentPath === "" ? (handle.name + "/") : (currentPath + handle.name + "/");
+                            await scan(entry, nextPath);
+                        }
+                    }
+                }
+
+                // 최상위 루트 핸들 탐색 시 중복 방지를 위해 빈 문자열 전달
+                for await (const entry of dirHandle.values()) {
+                    if (entry.kind === 'file') {
+                        fileArray.push({
+                            path: entry.name,
                             name: entry.name,
                             isDir: false
                         });
-                        else if (entry.kind === 'directory') await scan(entry, currentPath + entry.name + "/");
+                    } else if (entry.kind === 'directory') {
+                        await scan(entry, entry.name + "/");
                     }
                 }
-                await scan(dirHandle, dirHandle.name + "/");
-                processAndDownloadExcel(fileArray, `${dirHandle.name}_종합대시보드.xlsx`);
+
+                processAndDownloadExcel(fileArray, `${dirHandle.name}_구조분석.xlsx`);
             } catch (e) {
-                if (e.name !== 'AbortError') statusDiv.innerText = "오류 발생";
+                if (e.name !== 'AbortError') statusDiv.innerText = "오류 발생 또는 권한 거부";
             }
         });
 
+        // 2. 레거시 폴더 input 선택
         pureFolderInput.addEventListener('change', function(e) {
             if (!e.target.files.length) return;
             let fileArray = Array.from(e.target.files).map(f => ({
@@ -385,9 +660,10 @@
                 name: f.name,
                 isDir: false
             }));
-            processAndDownloadExcel(fileArray, "선택폴더_추출결과.xlsx");
+            processAndDownloadExcel(fileArray, "폴더구조_추출결과.xlsx");
         });
 
+        // 3. 파일 / ZIP 파일 선택
         allFileInput.addEventListener('change', function(e) {
             if (!e.target.files.length) return;
             if (e.target.files.length === 1 && e.target.files[0].name.toLowerCase().endsWith('.zip')) {
@@ -398,105 +674,196 @@
                     name: f.name,
                     isDir: false
                 }));
-                processAndDownloadExcel(fileArray, "선택파일_추출결과.xlsx");
+                processAndDownloadExcel(fileArray, "파일목록_추출결과.xlsx");
             }
         });
 
+        // ZIP 내부 경로 정규화
         function parseZipAndDownload(file) {
+            statusDiv.innerText = "ZIP 아카이브 구조 분석 중...";
             const reader = new FileReader();
             reader.onload = function(evt) {
                 JSZip.loadAsync(evt.target.result).then(function(zip) {
                     let tempArray = [];
-                    zip.forEach(function(relativePath, zipEntry) {
-                        if (!zipEntry.dir) {
-                            const parts = relativePath.split('/');
-                            tempArray.push({
-                                path: file.name.replace(".zip", "") + "/" + relativePath,
-                                name: parts[parts.length - 1],
-                                isDir: false
-                            });
-                        }
+                    const zipRootName = file.name.replace(/\.zip$/i, "");
+
+                    let entries = [];
+                    zip.forEach((relPath, entry) => {
+                        if (!entry.dir) entries.push(relPath);
                     });
-                    processAndDownloadExcel(tempArray, `${file.name.replace(".zip", "")}_ZIP대시보드.xlsx`);
+
+                    let hasSingleRoot = false;
+                    if (entries.length > 0) {
+                        const firstSlash = entries[0].indexOf('/');
+                        if (firstSlash !== -1) {
+                            const candidateRoot = entries[0].substring(0, firstSlash);
+                            hasSingleRoot = entries.every(p => p.startsWith(candidateRoot + '/'));
+                        }
+                    }
+
+                    entries.forEach(relPath => {
+                        const parts = relPath.split('/');
+                        const finalPath = hasSingleRoot ? relPath : (zipRootName + "/" + relPath);
+                        tempArray.push({
+                            path: finalPath,
+                            name: parts[parts.length - 1],
+                            isDir: false
+                        });
+                    });
+
+                    processAndDownloadExcel(tempArray, `${zipRootName}_ZIP구조.xlsx`);
+                }).catch(() => {
+                    statusDiv.innerText = "ZIP 파싱 실패: 손상되었거나 암호화된 파일입니다.";
                 });
             };
             reader.readAsArrayBuffer(file);
         }
 
+        // 탐색기 표준 정렬 적용: 같은 폴더 내에서 폴더가 파일보다 항상 위에 오도록 정렬
         function processAndDownloadExcel(fileArray, outputName) {
-            if (!fileArray.length) return;
-            fileArray.sort((a, b) => a.path.localeCompare(b.path, undefined, {
-                numeric: true,
-                sensitivity: 'base'
-            }));
-            let maxDepth = 0;
-            let parsedRows = fileArray.map(item => {
-                let splitted = item.path.split('/');
-                if (splitted.length > maxDepth) maxDepth = splitted.length;
-                return splitted;
-            });
-            let headers = [];
-            for (let i = 1; i < maxDepth; i++) headers.push(`${i}차 폴더명`);
-            headers.push("최종 파일명", "확장자", "전체 절대경로");
+            if (!fileArray.length) {
+                statusDiv.innerText = "추출할 파일이 없습니다.";
+                return;
+            }
 
-            const wb = XLSX.utils.book_new(),
-                ws = {};
-            headers.forEach((h, c) => ws[XLSX.utils.encode_cell({
-                r: 0,
-                c
-            })] = {
-                v: h,
-                t: 's'
+            fileArray.sort((itemA, itemB) => {
+                const partsA = itemA.path.split('/');
+                const partsB = itemB.path.split('/');
+                const maxLen = Math.max(partsA.length, partsB.length);
+
+                for (let i = 0; i < maxLen; i++) {
+                    const nodeA = partsA[i];
+                    const nodeB = partsB[i];
+
+                    if (nodeA === undefined) return -1;
+                    if (nodeB === undefined) return 1;
+
+                    const isFileA = (i === partsA.length - 1);
+                    const isFileB = (i === partsB.length - 1);
+
+                    if (!isFileA && isFileB) return -1;
+                    if (isFileA && !isFileB) return 1;
+
+                    const cmp = nodeA.localeCompare(nodeB, undefined, {
+                        numeric: true,
+                        sensitivity: 'base'
+                    });
+                    if (cmp !== 0) return cmp;
+                }
+                return 0;
             });
-            let prevParts = [];
-            parsedRows.forEach((rowParts, rIdx) => {
-                let r = rIdx + 1,
-                    isSame = true;
-                rowParts.forEach((part, c) => {
-                    if (c < maxDepth - 1) {
-                        const cellRef = XLSX.utils.encode_cell({
-                            r,
-                            c
-                        });
-                        ws[cellRef] = {
-                            v: (isSame && prevParts[c] === part && part !== "") ? "\u0020\u0020\u2514\u0020" + part : part,
-                            t: 's'
-                        };
-                        if (!(isSame && prevParts[c] === part)) isSame = false;
-                    }
-                });
-                let name = rowParts[rowParts.length - 1] || "";
-                let ext = name.includes('.') ? name.split('.').pop() : "없음";
+
+            let maxDirDepth = 0;
+            const parsedData = fileArray.map(item => {
+                const parts = item.path.split('/');
+                const fileName = parts.pop();
+                const dirParts = parts;
+                if (dirParts.length > maxDirDepth) maxDirDepth = dirParts.length;
+                return {
+                    dirs: dirParts,
+                    fileName: fileName,
+                    fullPath: item.path
+                };
+            });
+
+            const headers = [];
+            for (let i = 1; i <= maxDirDepth; i++) {
+                headers.push(`${i}차 폴더명`);
+            }
+            headers.push("파일명", "확장자", "전체 절대경로");
+
+            const wb = XLSX.utils.book_new();
+            const ws = {};
+
+            headers.forEach((h, c) => {
                 ws[XLSX.utils.encode_cell({
-                    r,
-                    c: maxDepth - 1
+                    r: 0,
+                    c
                 })] = {
-                    v: name,
+                    v: h,
                     t: 's'
                 };
+            });
+
+            let prevDirs = [];
+            parsedData.forEach((row, rIdx) => {
+                const r = rIdx + 1;
+                let isSameParent = true;
+
+                for (let c = 0; c < maxDirDepth; c++) {
+                    const currentDir = row.dirs[c] || "";
+                    let displayVal = "";
+
+                    if (currentDir) {
+                        if (isSameParent && prevDirs[c] === currentDir) {
+                            displayVal = "";
+                        } else {
+                            displayVal = (c > 0 ? "  └ " : "") + currentDir;
+                            isSameParent = false;
+                        }
+                    } else {
+                        isSameParent = false;
+                    }
+
+                    ws[XLSX.utils.encode_cell({
+                        r,
+                        c
+                    })] = {
+                        v: displayVal,
+                        t: 's'
+                    };
+                }
+
+                const fileCol = maxDirDepth;
                 ws[XLSX.utils.encode_cell({
                     r,
-                    c: maxDepth
+                    c: fileCol
+                })] = {
+                    v: row.fileName,
+                    t: 's'
+                };
+
+                const extCol = maxDirDepth + 1;
+                const ext = row.fileName.includes('.') ? row.fileName.split('.').pop() : "없음";
+                ws[XLSX.utils.encode_cell({
+                    r,
+                    c: extCol
                 })] = {
                     v: ext,
                     t: 's'
                 };
+
+                const pathCol = maxDirDepth + 2;
                 ws[XLSX.utils.encode_cell({
                     r,
-                    c: maxDepth + 1
+                    c: pathCol
                 })] = {
-                    v: fileArray[rIdx].path,
+                    v: row.fullPath,
                     t: 's'
                 };
-                prevParts = rowParts;
+
+                prevDirs = row.dirs;
             });
+
             ws['!ref'] = XLSX.utils.encode_range({
                 r: 0,
                 c: 0
             }, {
-                r: fileArray.length,
+                r: parsedData.length,
                 c: headers.length - 1
             });
+
+            const colWidths = headers.map(() => ({
+                wch: 18
+            }));
+            colWidths[maxDirDepth] = {
+                wch: 28
+            };
+            colWidths[maxDirDepth + 2] = {
+                wch: 45
+            };
+            ws['!cols'] = colWidths;
+
             XLSX.utils.book_append_sheet(wb, ws, "폴더구조");
             XLSX.writeFile(wb, outputName);
             statusDiv.innerText = "엑셀 다운로드 완료!";
