@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Base64 & URL 변환기 | DevWorKit</title>
+    <title>Base64 & URL 변환기 (Encoder / Decoder) | DevWorKit</title>
+    <meta name="description" content="한글(UTF-8) 깨짐 없는 실시간 Base64 인코딩·디코딩, URL 인코드 및 HTML 엔티티 변환 도구">
+    <link rel="stylesheet" href="../nav.css">
     <style>
         :root {
-            --primary-blue: #007bff;
-            --primary-blue-hover: #0056b3;
-            --bg-light: #f8f9fa;
-            --border-color: #dee2e6;
-            --text-main: #333333;
-            --text-muted: #666666;
+            --primary-violet: #7c3aed;
+            --primary-violet-hover: #6d28d9;
+            --bg-light: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
         }
 
         body {
@@ -25,97 +28,107 @@
             min-height: 100vh;
         }
 
-        header {
-            border-bottom: 1px solid var(--border-color);
-            padding: 20px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo-area { display: flex; align-items: center; gap: 8px; }
-        .logo-badge { background: #06b6d4; color: white; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; }
-        .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #111111; }
-
         .page-wrapper {
             display: block;
             max-width: 1100px;
-            margin: 20px auto 40px auto;
+            margin: 30px auto 40px auto;
             padding: 0 20px;
             box-sizing: border-box;
             width: 100%;
         }
 
-        /* 사용 안내 가이드 */
-        .intro-section { margin-bottom: 25px; }
-        .intro-title { font-size: 22px; font-weight: 800; color: #111827; margin: 0 0 6px 0; letter-spacing: -0.5px; }
-        .intro-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 16px 0; }
+        .intro-section {
+            margin-bottom: 25px;
+        }
+
+        .intro-header-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        /* 개발/데이터 카테고리 소프트 바이올렛 뱃지 */
+        .tool-tag-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+            background-color: #ede9fe;
+            color: #6d28d9;
+            border: 1px solid #ddd6fe;
+        }
+
+        .intro-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .intro-desc {
+            font-size: 14.5px;
+            color: var(--text-muted);
+            margin: 0 0 16px 0;
+            line-height: 1.6;
+        }
+
         .guide-box {
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 16px 20px;
+            border-radius: 10px;
+            padding: 18px 22px;
             font-size: 13.5px;
             color: #334155;
             line-height: 1.6;
         }
-        .guide-box strong { display: block; margin-bottom: 8px; color: #0f172a; font-size: 14px; }
-        .guide-list { margin: 0; padding-left: 18px; }
-        .guide-list li { margin-bottom: 4px; }
 
-        /* 완벽한 1줄 가이드 배너 (블로그 링크) */
-        .guide-banner-row {
-            margin-top: 14px;
-            padding-top: 12px;
-            border-top: 1px dashed #cbd5e1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-            color: #475569;
-            white-space: nowrap;
-        }
-        .guide-banner-text {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .guide-banner-btn {
-            color: #2563eb;
-            font-weight: 700;
-            text-decoration: none;
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            padding: 5px 12px;
-            border-radius: 6px;
-            white-space: nowrap;
-            margin-left: 12px;
-            flex-shrink: 0;
-            display: inline-block;
-        }
-        .guide-banner-btn:hover {
-            background: #dbeafe;
+        .guide-box strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #0f172a;
+            font-size: 14px;
         }
 
-        .main-container { width: 100%; margin: 0 auto; box-sizing: border-box; }
+        .guide-list {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .guide-list li {
+            margin-bottom: 5px;
+        }
+
+        .main-container {
+            width: 100%;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
 
         .tab-group {
             display: flex;
             gap: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
         }
 
-        .tab-sub-group { display: flex; gap: 6px; flex-wrap: wrap; }
+        .tab-sub-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
 
         .tab-btn {
-            padding: 9px 16px;
+            padding: 8px 14px;
             font-size: 13px;
             font-weight: 700;
             border: 1px solid var(--border-color);
-            background-color: var(--bg-light);
+            background-color: #ffffff;
             border-radius: 6px;
             cursor: pointer;
             color: var(--text-muted);
@@ -123,9 +136,9 @@
         }
 
         .tab-btn.active {
-            background-color: var(--primary-blue);
+            background-color: var(--primary-violet);
             color: #ffffff;
-            border-color: var(--primary-blue);
+            border-color: var(--primary-violet);
         }
 
         .converter-grid {
@@ -134,16 +147,21 @@
             gap: 20px;
         }
 
-        @media (max-width: 850px) { .converter-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 850px) {
+            .converter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
 
         .panel-box {
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 20px;
             background-color: #ffffff;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            box-sizing: border-box;
         }
 
         .panel-header {
@@ -153,254 +171,435 @@
             margin-bottom: 10px;
         }
 
-        .panel-title { font-size: 14px; font-weight: 700; }
+        .panel-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+        }
 
         .btn-mini {
             background-color: #ffffff;
             border: 1px solid var(--border-color);
-            padding: 4px 10px;
+            padding: 5px 12px;
             font-size: 12px;
             font-weight: 600;
             border-radius: 4px;
             cursor: pointer;
+            color: var(--text-main);
         }
 
-        .btn-mini:hover { background-color: #e9ecef; }
-        .btn-mini-primary { background-color: #10b981; color: #fff; border-color: #10b981; }
-        .btn-mini-primary:hover { background-color: #059669; }
+        .btn-mini:hover {
+            background-color: #f1f5f9;
+        }
+
+        .btn-mini-primary {
+            background-color: #10b981;
+            color: #fff;
+            border-color: #10b981;
+            font-weight: 700;
+        }
+
+        .btn-mini-primary:hover {
+            background-color: #059669;
+        }
 
         textarea.code-textarea {
             width: 100%;
             height: 380px;
-            padding: 15px;
-            font-size: 14px;
-            line-height: 1.5;
+            padding: 14px;
+            font-size: 13.5px;
+            line-height: 1.6;
             font-family: "Consolas", monospace;
+            color: #0f172a;
             border: 1px solid var(--border-color);
             border-radius: 6px;
             box-sizing: border-box;
             resize: vertical;
             outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        textarea.code-textarea:focus { border-color: var(--primary-blue); }
+        textarea.code-textarea:focus {
+            border-color: var(--primary-violet);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+        }
+
+        /* [SEO & 애드센스 고유 콘텐츠 보강 섹션] */
+        .seo-article-box {
+            margin-top: 48px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 36px 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            line-height: 1.8;
+            color: #334155;
+        }
+
+        .seo-article-box h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 16px 0;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+            letter-spacing: -0.4px;
+        }
+
+        .seo-article-box h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 24px 0 8px 0;
+        }
+
+        .seo-article-box p {
+            font-size: 14.5px;
+            margin: 0 0 14px 0;
+        }
+
+        .seo-article-box ul {
+            font-size: 14px;
+            padding-left: 20px;
+            margin: 8px 0 20px 0;
+        }
+
+        .seo-article-box li {
+            margin-bottom: 6px;
+        }
+
+        .faq-item {
+            margin-top: 16px;
+            padding: 14px 18px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .faq-q {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 14.5px;
+            margin-bottom: 6px;
+        }
+
+        .faq-a {
+            font-size: 14px;
+            color: #475569;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* 최하단 실무 가이드 연결 배너 */
+        .guide-nav-banner {
+            margin-top: 28px;
+            background: #f5f3ff;
+            border: 1px solid #ddd6fe;
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .guide-nav-text {
+            font-size: 14px;
+            color: #6d28d9;
+            font-weight: 700;
+        }
+
+        .guide-nav-btn {
+            background: #7c3aed;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: background-color 0.15s;
+        }
+
+        .guide-nav-btn:hover {
+            background: #6d28d9;
+        }
+
+        @media (max-width: 640px) {
+            .guide-nav-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .guide-nav-btn {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+        }
 
         .bottom-ad-box {
             max-width: 1100px;
             width: 100%;
-            margin: 25px auto 10px auto;
+            margin: 30px auto 10px auto;
             text-align: center;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .bottom-ad-box ins.adsbygoogle[data-ad-status="unfilled"],
+        .bottom-ad-box ins.adsbygoogle:empty {
+            display: none !important;
         }
     </style>
 </head>
+
 <body>
 
-<header>
-    <div class="logo-area">
-        <span class="logo-badge">CODER</span>
-        <span class="logo-text">Base64 & URL 변환기</span>
-    </div>
-</header>
-
-<div class="page-wrapper">
-    <!-- 사용 안내 가이드 -->
-    <div class="intro-section">
-        <h2 class="intro-title">한글(UTF-8) 깨짐 없는 실시간 Base64 및 URL 인코더·디코더입니다.</h2>
-        <p class="intro-desc">웹 개발 및 데이터 전송 시 필수적인 Base64, URL Encoding, HTML 엔티티를 즉시 변환합니다.</p>
-        
-        <div class="guide-box">
-            <strong>Base64 / URL 변환기 사용 방법 안내:</strong>
-            <ol class="guide-list">
-                <li>변환할 내용을 직접 입력하거나 상단의 <b>[샘플 불러오기]</b>를 클릭합니다.</li>
-                <li>상단 탭에서 <b>Base64 인코드/디코드, URL 인코드/디코드, HTML 엔티티</b> 중 원하는 모드를 선택합니다.</li>
-                <li>오른쪽 창에 실시간으로 출력된 변환 결과를 확인하고 <b>[결과 복사]</b>를 클릭하여 클립보드에 담습니다.</li>
-                <li>모든 연산은 브라우저 내부에서 즉시 수행되므로 개인정보나 비밀 토큰도 안전하게 변환할 수 있습니다.</li>
-            </ol>
-            
-            <div class="guide-banner-row">
-                <span class="guide-banner-text">📘 <span style="font-weight: 700; color: #0f172a;">Base64 동작 원리와 한글 깨짐 해결법</span>이 궁금하신가요?</span>
-                <a href="../guide/coder-guide.html" class="guide-banner-btn">실무 가이드 보기 →</a>
+    <div class="page-wrapper">
+        <!-- 사용 안내 가이드 -->
+        <div class="intro-section">
+            <div class="intro-header-row">
+                <span class="tool-tag-badge">CODER</span>
+                <h1 class="intro-title">Base64 & URL 변환기</h1>
             </div>
-        </div>
-    </div>
+            <p class="intro-desc">한글(UTF-8) 깨짐 없는 실시간 Base64 인코딩·디코딩과 URL 인코드, HTML 엔티티 변환을 클라이언트 메모리 상에서 안전하게 처리합니다.</p>
 
-    <div class="main-container">
-        <div class="tab-group">
-            <div class="tab-sub-group">
-                <button class="tab-btn active" onclick="setMode('base64-encode', this)">Base64 인코드</button>
-                <button class="tab-btn" onclick="setMode('base64-decode', this)">Base64 디코드</button>
-                <button class="tab-btn" onclick="setMode('url-encode', this)">URL 인코드</button>
-                <button class="tab-btn" onclick="setMode('url-decode', this)">URL 디코드</button>
-                <button class="tab-btn" onclick="setMode('html-encode', this)">HTML 엔티티</button>
-            </div>
-            <div class="tab-sub-group">
-                <button class="tab-btn" onclick="loadSampleText()">샘플 불러오기</button>
-                <button class="tab-btn" onclick="clearInput()">초기화</button>
+            <div class="guide-box">
+                <strong>Base64 / URL 변환기 사용 방법 안내:</strong>
+                <ol class="guide-list">
+                    <li>변환할 내용을 직접 입력하거나 상단의 <b>[샘플 불러오기]</b>를 클릭하여 테스트 데이터를 로드합니다.</li>
+                    <li>상단 탭에서 <b>Base64 인코드/디코드, URL 인코드/디코드, HTML 엔티티</b> 중 원하는 변환 모드를 선택합니다.</li>
+                    <li>오른쪽 창에 실시간으로 출력된 결과물을 확인하고 <b>[결과 복사]</b>를 클릭하여 클립보드에 즉시 담습니다.</li>
+                    <li>모든 연산은 브라우저 내부에서 수행되므로 개인정보나 비밀 토큰도 외부 유출 위험 없이 안전하게 변환할 수 있습니다.</li>
+                </ol>
             </div>
         </div>
 
-        <div class="converter-grid">
-            <div class="panel-box">
-                <div class="panel-header">
-                    <span class="panel-title" id="input-title">입력 텍스트 (원본)</span>
+        <div class="main-container">
+            <div class="tab-group">
+                <div class="tab-sub-group">
+                    <button class="tab-btn active" onclick="setMode('base64-encode', this)">Base64 인코드</button>
+                    <button class="tab-btn" onclick="setMode('base64-decode', this)">Base64 디코드</button>
+                    <button class="tab-btn" onclick="setMode('url-encode', this)">URL 인코드</button>
+                    <button class="tab-btn" onclick="setMode('url-decode', this)">URL 디코드</button>
+                    <button class="tab-btn" onclick="setMode('html-encode', this)">HTML 엔티티</button>
                 </div>
-                <textarea id="input-text" class="code-textarea" placeholder="변환할 내용을 입력하거나 [샘플 불러오기]를 눌러보세요."></textarea>
+                <div class="tab-sub-group">
+                    <button class="tab-btn" onclick="loadSampleText()">샘플 불러오기</button>
+                    <button class="tab-btn" onclick="clearInput()">초기화</button>
+                </div>
             </div>
 
-            <div class="panel-box">
-                <div class="panel-header">
-                    <span class="panel-title" id="output-title">변환 결과 (Base64 인코드)</span>
-                    <button class="btn-mini btn-mini-primary" onclick="copyOutput()">결과 복사</button>
+            <div class="converter-grid">
+                <div class="panel-box">
+                    <div class="panel-header">
+                        <span class="panel-title" id="input-title">입력 텍스트 (원본)</span>
+                    </div>
+                    <textarea id="input-text" class="code-textarea" placeholder="변환할 내용을 입력하거나 [샘플 불러오기]를 눌러보세요."></textarea>
                 </div>
-                <textarea id="output-text" class="code-textarea" placeholder="변환 결과가 여기에 표시됩니다." readonly></textarea>
+
+                <div class="panel-box">
+                    <div class="panel-header">
+                        <span class="panel-title" id="output-title">변환 결과 (Base64 인코드)</span>
+                        <button class="btn-mini btn-mini-primary" onclick="copyOutput()">결과 복사</button>
+                    </div>
+                    <textarea id="output-text" class="code-textarea" placeholder="변환 결과가 여기에 표시됩니다." readonly></textarea>
+                </div>
             </div>
+
+            <!-- [애드센스 승인용 고유 텍스트 & 실무 원리 가이드 영역] -->
+            <article class="seo-article-box">
+                <h2>Base64 및 URL 인코딩 변환기의 실무 활용과 동작 원리</h2>
+                <p><strong>DevWorKit Base64 & URL 변환기</strong>는 웹 개발, API 연동, 데이터 전송 중 빈번하게 마주하는 이진 데이터(Binary Data) 인코딩 오류와 특수문자 파싱 문제를 브라우저 환경에서 즉시 해결해 주는 유틸리티입니다.</p>
+
+                <h3>1. Base64 인코딩의 구조와 한글(UTF-8) 깨짐 원인</h3>
+                <p>Base64는 8비트 이진 데이터를 공통으로 인쇄 가능한 64개의 ASCII 문자셋(<code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>+</code>, <code>/</code>)으로 변환하여 메일 프로토콜이나 HTTP 헤더 등에서 데이터 유실을 방지합니다. 그러나 자바스크립트의 기본 내장 함수 <code>btoa()</code>는 문자당 1바이트(ASCII)만 처리하도록 설계되어 있습니다. 한글과 같은 다국어 유니코드는 문자당 2~3바이트를 차지하므로, 사전 인코딩(URI Component 변환 등) 단계를 거치지 않으면 데이터 유실이나 <code>InvalidCharacterError</code>가 발생합니다. 본 도구는 이러한 한글 깨짐 이슈를 완벽하게 예방하도록 구현되어 있습니다.</p>
+
+                <h3>2. URL 인코딩과 HTML 엔티티 변환의 필요성</h3>
+                <p>웹 주소(URL)에는 공백, 앰퍼샌드(<code>&</code>), 물음표(<code>?</code>) 등 특수한 의미를 갖는 제어 문자들이 포함될 수 없습니다. 따라서 <code>encodeURIComponent</code> 함수를 통해 안전한 퍼센트 인코딩(Percent Encoding) 형태로 변환해야 서버가 파라미터를 정상 인식합니다. 또한 HTML 문서 내에서 태그 문자와 충돌하는 특수문자를 안전하게 출력하기 위한 엔티티 변환 기능도 함께 제공합니다.</p>
+
+                <h3>3. 자주 묻는 질문 (FAQ)</h3>
+                <div class="faq-item">
+                    <div class="faq-q">Q. API 토큰이나 비밀번호를 변환할 때 외부 서버로 데이터가 전송되나요?</div>
+                    <div class="faq-a">A. 전혀 전송되지 않습니다. DevWorKit의 모든 인코딩 및 디코딩 연산은 사용자의 웹 브라우저 로컬(Client-Side JavaScript) 환경에서만 100% 처리되며, 외부 서버나 데이터베이스로 텍스트를 저장하거나 전송하지 않으므로 보안상 안전합니다.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">Q. 손상되거나 잘못된 형식의 Base64 코드를 넣으면 어떻게 되나요?</div>
+                    <div class="faq-a">A. 패딩(Padding, <code>=</code>) 개수가 맞지 않거나 64진법 외의 문자가 포함된 잘못된 Base64 문자열을 디코딩할 경우, 프로그램 내부 예외 처리를 통해 에러 메시지를 실시간으로 출력하여 디버깅을 돕습니다.</div>
+                </div>
+
+                <!-- 최하단 실무 심화 가이드 이동 배너 -->
+                <div class="guide-nav-banner">
+                    <span class="guide-nav-text">📘 Base64 동작 원리와 한글 깨짐 해결법이 궁금하신가요?</span>
+                    <a href="../guide/coder-guide.html" class="guide-nav-btn">실무 가이드 보기 →</a>
+                </div>
+            </article>
         </div>
     </div>
-</div>
 
-<div class="bottom-ad-box">
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-3823705730142714"
-         data-ad-slot="3894691126"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-</div>
+    <div class="bottom-ad-box">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3823705730142714" data-ad-slot="3894691126" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
 
-<script>
-    let currentMode = 'base64-encode';
-    const inputUndoStack = [];
-    const inputRedoStack = [];
-    let inputTimer = null;
+    <script>
+        let currentMode = 'base64-encode';
+        const inputUndoStack = [];
+        const inputRedoStack = [];
+        let inputTimer = null;
 
-    function recordInputHistory() {
-        const el = document.getElementById('input-text');
-        if (!el) return;
-        const state = { val: el.value, selStart: el.selectionStart, selEnd: el.selectionEnd, scrollTop: el.scrollTop };
-        if (inputUndoStack.length === 0 || inputUndoStack[inputUndoStack.length - 1].val !== state.val) {
-            inputUndoStack.push(state);
-            if (inputUndoStack.length > 50) inputUndoStack.shift();
-            inputRedoStack.length = 0;
-        }
-    }
-
-    function handleInputEvent() {
-        processConversion();
-        clearTimeout(inputTimer);
-        inputTimer = setTimeout(() => { recordInputHistory(); }, 300);
-    }
-
-    function handleInputKeyDown(e) {
-        const isCtrl = e.ctrlKey || e.metaKey;
-        const key = e.key.toLowerCase();
-        const el = document.getElementById('input-text');
-
-        if (isCtrl && key === 'z' && !e.shiftKey) {
-            if (inputUndoStack.length > 1) {
-                e.preventDefault();
-                const current = inputUndoStack.pop();
-                inputRedoStack.push(current);
-                applyInputState(el, inputUndoStack[inputUndoStack.length - 1]);
-            }
-        } else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
-            if (inputRedoStack.length > 0) {
-                e.preventDefault();
-                const next = inputRedoStack.pop();
-                inputUndoStack.push(next);
-                applyInputState(el, next);
+        function recordInputHistory() {
+            const el = document.getElementById('input-text');
+            if (!el) return;
+            const state = {
+                val: el.value,
+                selStart: el.selectionStart,
+                selEnd: el.selectionEnd,
+                scrollTop: el.scrollTop
+            };
+            if (inputUndoStack.length === 0 || inputUndoStack[inputUndoStack.length - 1].val !== state.val) {
+                inputUndoStack.push(state);
+                if (inputUndoStack.length > 50) inputUndoStack.shift();
+                inputRedoStack.length = 0;
             }
         }
-    }
 
-    function applyInputState(el, state) {
-        el.value = state.val;
-        processConversion();
-        setTimeout(() => {
-            el.focus();
-            el.setSelectionRange(state.selStart, state.selEnd);
-            el.scrollTop = state.scrollTop;
-        }, 0);
-    }
-
-    function loadSampleText() {
-        const sample = `안녕하세요! Developer Work Kit (DWK) 개발 유틸리티 도구 모음입니다.\n특수문자 테스트: <script>alert('Hello World!');<\/script>\nURL 테스트: https://developerworkkit.github.io/?tool=coder&category=dev`;
-        const el = document.getElementById('input-text');
-        el.value = sample;
-        recordInputHistory();
-        processConversion();
-    }
-
-    function setMode(mode, btn) {
-        currentMode = mode;
-        if (btn) {
-            document.querySelectorAll('.tab-sub-group .tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+        function handleInputEvent() {
+            processConversion();
+            clearTimeout(inputTimer);
+            inputTimer = setTimeout(() => {
+                recordInputHistory();
+            }, 300);
         }
-        const titleMap = {
-            'base64-encode': '변환 결과 (Base64 인코드)',
-            'base64-decode': '변환 결과 (Base64 디코드)',
-            'url-encode': '변환 결과 (URL 인코드)',
-            'url-decode': '변환 결과 (URL 디코드)',
-            'html-encode': '변환 결과 (HTML 엔티티)'
+
+        function handleInputKeyDown(e) {
+            const isCtrl = e.ctrlKey || e.metaKey;
+            const key = e.key.toLowerCase();
+            const el = document.getElementById('input-text');
+
+            if (isCtrl && key === 'z' && !e.shiftKey) {
+                if (inputUndoStack.length > 1) {
+                    e.preventDefault();
+                    const current = inputUndoStack.pop();
+                    inputRedoStack.push(current);
+                    applyInputState(el, inputUndoStack[inputUndoStack.length - 1]);
+                }
+            } else if ((isCtrl && key === 'y') || (isCtrl && e.shiftKey && key === 'z')) {
+                if (inputRedoStack.length > 0) {
+                    e.preventDefault();
+                    const next = inputRedoStack.pop();
+                    inputUndoStack.push(next);
+                    applyInputState(el, next);
+                }
+            }
+        }
+
+        function applyInputState(el, state) {
+            el.value = state.val;
+            processConversion();
+            setTimeout(() => {
+                el.focus();
+                el.setSelectionRange(state.selStart, state.selEnd);
+                el.scrollTop = state.scrollTop;
+            }, 0);
+        }
+
+        function loadSampleText() {
+            const sample = `안녕하세요! Developer Work Kit (DWK) 개발 유틸리티 도구 모음입니다.\n특수문자 테스트: <script>alert('Hello World!');<\/script>\nURL 테스트: https://developerworkkit.github.io/?tool=coder&category=dev`;
+            const el = document.getElementById('input-text');
+            el.value = sample;
+            recordInputHistory();
+            processConversion();
+        }
+
+        function setMode(mode, btn) {
+            currentMode = mode;
+            if (btn) {
+                document.querySelectorAll('.tab-sub-group .tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+            const titleMap = {
+                'base64-encode': '변환 결과 (Base64 인코드)',
+                'base64-decode': '변환 결과 (Base64 디코드)',
+                'url-encode': '변환 결과 (URL 인코드)',
+                'url-decode': '변환 결과 (URL 디코드)',
+                'html-encode': '변환 결과 (HTML 엔티티)'
+            };
+            document.getElementById('output-title').innerText = titleMap[mode] || '변환 결과';
+            processConversion();
+        }
+
+        function utf8ToBase64(str) {
+            return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)));
+        }
+
+        function base64ToUtf8(str) {
+            return decodeURIComponent(atob(str).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+        }
+
+        function processConversion() {
+            const input = document.getElementById('input-text').value;
+            const outputEl = document.getElementById('output-text');
+            if (!input) {
+                outputEl.value = '';
+                return;
+            }
+
+            try {
+                switch (currentMode) {
+                    case 'base64-encode':
+                        outputEl.value = utf8ToBase64(input);
+                        break;
+                    case 'base64-decode':
+                        outputEl.value = base64ToUtf8(input.trim());
+                        break;
+                    case 'url-encode':
+                        outputEl.value = encodeURIComponent(input);
+                        break;
+                    case 'url-decode':
+                        outputEl.value = decodeURIComponent(input);
+                        break;
+                    case 'html-encode':
+                        outputEl.value = input.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                        break;
+                }
+            } catch (e) {
+                outputEl.value = '변환 오류: 올바른 형식의 데이터가 아닙니다.\n(' + e.message + ')';
+            }
+        }
+
+        function clearInput() {
+            const inputEl = document.getElementById('input-text');
+            if (!inputEl.value) return;
+            inputEl.value = '';
+            document.getElementById('output-text').value = '';
+            recordInputHistory();
+            inputEl.focus();
+        }
+
+        function copyOutput() {
+            const output = document.getElementById('output-text').value;
+            if (!output) {
+                alert('복사할 결과가 없습니다.');
+                return;
+            }
+            navigator.clipboard.writeText(output).then(() => {
+                alert('변환 결과가 클립보드에 복사되었습니다!');
+            });
+        }
+
+        window.onload = () => {
+            const inputEl = document.getElementById('input-text');
+            inputEl.addEventListener('input', handleInputEvent);
+            inputEl.addEventListener('keydown', handleInputKeyDown);
+            recordInputHistory();
         };
-        document.getElementById('output-title').innerText = titleMap[mode] || '변환 결과';
-        processConversion();
-    }
-
-    function utf8ToBase64(str) {
-        return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)));
-    }
-
-    function base64ToUtf8(str) {
-        return decodeURIComponent(atob(str).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-    }
-
-    function processConversion() {
-        const input = document.getElementById('input-text').value;
-        const outputEl = document.getElementById('output-text');
-        if (!input) { outputEl.value = ''; return; }
-
-        try {
-            switch (currentMode) {
-                case 'base64-encode': outputEl.value = utf8ToBase64(input); break;
-                case 'base64-decode': outputEl.value = base64ToUtf8(input.trim()); break;
-                case 'url-encode': outputEl.value = encodeURIComponent(input); break;
-                case 'url-decode': outputEl.value = decodeURIComponent(input); break;
-                case 'html-encode':
-                    outputEl.value = input.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-                    break;
-            }
-        } catch (e) {
-            outputEl.value = '변환 오류: 올바른 형식의 데이터가 아닙니다.\n(' + e.message + ')';
-        }
-    }
-
-    function clearInput() {
-        const inputEl = document.getElementById('input-text');
-        if (!inputEl.value) return;
-        inputEl.value = '';
-        document.getElementById('output-text').value = '';
-        recordInputHistory();
-        inputEl.focus();
-    }
-
-    function copyOutput() {
-        const output = document.getElementById('output-text').value;
-        if (!output) { alert('복사할 결과가 없습니다.'); return; }
-        navigator.clipboard.writeText(output).then(() => {
-            alert('변환 결과가 클립보드에 복사되었습니다!');
-        });
-    }
-
-    window.onload = () => {
-        const inputEl = document.getElementById('input-text');
-        inputEl.addEventListener('input', handleInputEvent);
-        inputEl.addEventListener('keydown', handleInputKeyDown);
-        recordInputHistory();
-    };
-</script>
-<div id="dwk-footer"></div>
-<script src="../nav.js"></script>
+    </script>
+    <div id="dwk-footer"></div>
+    <script src="../nav.js"></script>
 </body>
+
 </html>
