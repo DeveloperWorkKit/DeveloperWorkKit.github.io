@@ -105,25 +105,25 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://developerworkkit.github.io/blog/base64-guide.html</loc>
+    <loc>https://developerworkkit.github.io/blog/coder-guide.html</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://developerworkkit.github.io/blog/json-format-guide.html</loc>
+    <loc>https://developerworkkit.github.io/blog/json-guide.html</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://developerworkkit.github.io/blog/regex-extract-guide.html</loc>
+    <loc>https://developerworkkit.github.io/blog/strget-guide.html</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://developerworkkit.github.io/blog/timestamp-guide.html</loc>
+    <loc>https://developerworkkit.github.io/blog/time-guide.html</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -135,7 +135,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://developerworkkit.github.io/blog/code-formatter-guide.html</loc>
+    <loc>https://developerworkkit.github.io/blog/beautify-guide.html</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -147,7 +147,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://developerworkkit.github.io/blog/wcag-color-contrast-guide.html</loc>
+    <loc>https://developerworkkit.github.io/blog/color-guide.html</loc>
     <lastmod>2026-08-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
