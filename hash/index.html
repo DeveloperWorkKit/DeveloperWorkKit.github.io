@@ -4,15 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UUID & 해시 생성기 | DevWorKit</title>
+    <title>UUID & 해시 생성기 (Hash Generator) | DevWorKit</title>
+    <meta name="description" content="표준 UUID v4 고유 식별자 일괄 생성 및 Web Crypto API 기반의 실시간 SHA-256, SHA-512, SHA-1 단방향 암호화 해시 변환기">
+    <link rel="stylesheet" href="../nav.css">
     <style>
         :root {
-            --primary-blue: #007bff;
-            --primary-blue-hover: #0056b3;
-            --bg-light: #f8f9fa;
-            --border-color: #dee2e6;
-            --text-main: #333333;
-            --text-muted: #666666;
+            --primary-emerald: #059669;
+            --primary-emerald-hover: #047857;
+            --bg-light: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
         }
 
         body {
@@ -26,40 +28,10 @@
             min-height: 100vh;
         }
 
-        header {
-            border-bottom: 1px solid var(--border-color);
-            padding: 20px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .logo-badge {
-            background: #4f46e5;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .logo-text {
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: #111111;
-        }
-
         .page-wrapper {
             display: block;
             max-width: 1100px;
-            margin: 20px auto 40px auto;
+            margin: 30px auto 40px auto;
             padding: 0 20px;
             box-sizing: border-box;
             width: 100%;
@@ -69,25 +41,46 @@
             margin-bottom: 25px;
         }
 
-        .intro-title {
-            font-size: 22px;
+        .intro-header-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        /* 시스템/디자인 카테고리 초록색 뱃지 */
+        .tool-tag-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11.5px;
             font-weight: 800;
-            color: #111827;
-            margin: 0 0 6px 0;
+            letter-spacing: -0.2px;
+            background-color: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        .intro-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
             letter-spacing: -0.5px;
         }
 
         .intro-desc {
-            font-size: 14px;
+            font-size: 14.5px;
             color: var(--text-muted);
             margin: 0 0 16px 0;
+            line-height: 1.6;
         }
 
         .guide-box {
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 16px 20px;
+            border-radius: 10px;
+            padding: 18px 22px;
             font-size: 13.5px;
             color: #334155;
             line-height: 1.6;
@@ -106,49 +99,14 @@
         }
 
         .guide-list li {
-            margin-bottom: 4px;
-        }
-
-        .guide-banner-row {
-            margin-top: 14px;
-            padding-top: 12px;
-            border-top: 1px dashed #cbd5e1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-            color: #475569;
-            white-space: nowrap;
-        }
-
-        .guide-banner-text {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .guide-banner-btn {
-            color: #2563eb;
-            font-weight: 700;
-            text-decoration: none;
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            padding: 5px 12px;
-            border-radius: 6px;
-            white-space: nowrap;
-            margin-left: 12px;
-            flex-shrink: 0;
-            display: inline-block;
-        }
-
-        .guide-banner-btn:hover {
-            background: #dbeafe;
+            margin-bottom: 5px;
         }
 
         .generator-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
+            align-items: stretch;
         }
 
         @media (max-width: 850px) {
@@ -159,48 +117,73 @@
 
         .tool-panel {
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
+            border-radius: 10px;
+            padding: 22px;
             background-color: #ffffff;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
+            box-sizing: border-box;
+            height: 100%;
         }
 
         .panel-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            min-height: 32px;
         }
 
         .panel-title {
             font-size: 15px;
-            font-weight: 700;
-            color: #111827;
+            font-weight: 800;
+            color: #0f172a;
         }
 
         .control-row {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             align-items: center;
             flex-wrap: wrap;
         }
 
+        .select-count {
+            padding: 5px 8px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            outline: none;
+            background: #fff;
+        }
+
+        .check-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            user-select: none;
+        }
+
         .btn-action {
-            background-color: var(--primary-blue);
+            background-color: var(--primary-emerald);
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 6px 14px;
             font-size: 13px;
             font-weight: 700;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
             transition: background 0.15s;
         }
 
         .btn-action:hover {
-            background-color: var(--primary-blue-hover);
+            background-color: var(--primary-emerald-hover);
         }
 
         .btn-copy {
@@ -209,9 +192,10 @@
             border: none;
             padding: 5px 12px;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             border-radius: 4px;
             cursor: pointer;
+            transition: background 0.15s;
         }
 
         .btn-copy:hover {
@@ -220,45 +204,65 @@
 
         textarea.code-box {
             width: 100%;
-            height: 220px;
-            padding: 12px;
+            height: 240px;
+            padding: 12px 14px;
             font-size: 13.5px;
-            line-height: 1.5;
-            font-family: "Consolas", monospace;
+            line-height: 1.6;
+            font-family: Consolas, "Courier New", monospace;
+            color: #0f172a;
             border: 1px solid var(--border-color);
             border-radius: 6px;
             box-sizing: border-box;
             resize: vertical;
             outline: none;
+            background: #fff;
+            transition: border-color 0.15s;
         }
 
         textarea.code-box:focus {
-            border-color: var(--primary-blue);
+            border-color: var(--primary-emerald);
+        }
+
+        .input-text {
+            width: 100%;
+            padding: 9px 12px;
+            font-size: 13.5px;
+            font-family: Consolas, monospace;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            outline: none;
+            color: #0f172a;
+            transition: border-color 0.15s;
+        }
+
+        .input-text:focus {
+            border-color: var(--primary-emerald);
         }
 
         .hash-result-group {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            margin-top: 4px;
+            gap: 10px;
+            margin-top: 2px;
         }
 
         .hash-item {
             background-color: var(--bg-light);
             border: 1px solid var(--border-color);
-            border-radius: 5px;
-            padding: 8px 10px;
+            border-radius: 6px;
+            padding: 10px 12px;
             font-size: 12.5px;
-            font-family: "Consolas", monospace;
+            font-family: Consolas, monospace;
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            gap: 4px;
         }
 
         .hash-label {
             font-size: 11.5px;
-            font-weight: bold;
-            color: var(--text-muted);
+            font-weight: 700;
+            color: #64748b;
         }
 
         .hash-val-row {
@@ -266,43 +270,181 @@
             justify-content: space-between;
             align-items: center;
             word-break: break-all;
+            gap: 8px;
+        }
+
+        .hash-val-row span {
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        .btn-copy-mini {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #334155;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: all 0.1s;
+        }
+
+        .btn-copy-mini:hover {
+            background-color: #e2e8f0;
+            color: var(--primary-emerald);
+        }
+
+        /* [SEO & 애드센스 고유 콘텐츠 보강 섹션] */
+        .seo-article-box {
+            margin-top: 48px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 36px 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            line-height: 1.8;
+            color: #334155;
+        }
+
+        .seo-article-box h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 16px 0;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+            letter-spacing: -0.4px;
+        }
+
+        .seo-article-box h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 24px 0 8px 0;
+        }
+
+        .seo-article-box p {
+            font-size: 14.5px;
+            margin: 0 0 14px 0;
+        }
+
+        .seo-article-box ul {
+            font-size: 14px;
+            padding-left: 20px;
+            margin: 8px 0 20px 0;
+        }
+
+        .seo-article-box li {
+            margin-bottom: 6px;
+        }
+
+        .faq-item {
+            margin-top: 16px;
+            padding: 14px 18px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .faq-q {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 14.5px;
+            margin-bottom: 6px;
+        }
+
+        .faq-a {
+            font-size: 14px;
+            color: #475569;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* 최하단 실무 가이드 연결 배너 */
+        .guide-nav-banner {
+            margin-top: 28px;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .guide-nav-text {
+            font-size: 14px;
+            color: #065f46;
+            font-weight: 700;
+        }
+
+        .guide-nav-btn {
+            background: #059669;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: background-color 0.15s;
+        }
+
+        .guide-nav-btn:hover {
+            background: #047857;
+        }
+
+        @media (max-width: 640px) {
+            .guide-nav-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .guide-nav-btn {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
         }
 
         .bottom-ad-box {
             max-width: 1100px;
             width: 100%;
-            margin: 25px auto 10px auto;
+            margin: 30px auto 10px auto;
             text-align: center;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .bottom-ad-box ins.adsbygoogle[data-ad-status="unfilled"],
+        .bottom-ad-box ins.adsbygoogle:empty {
+            display: none !important;
         }
     </style>
 </head>
 
 <body>
 
-    <header>
-        <div class="logo-area">
-            <span class="logo-badge">HASH</span>
-            <span class="logo-text">UUID & 해시 생성기</span>
-        </div>
-    </header>
-
     <div class="page-wrapper">
         <div class="intro-section">
-            <h2 class="intro-title">개발 테스트용 UUID 식별자 및 안전한 단방향 암호화 해시 생성기입니다.</h2>
-            <p class="intro-desc">UUID v4 표준 생성 및 SHA-256, SHA-512 해시 값을 브라우저 내부 Web Crypto API로 계산합니다.</p>
+            <div class="intro-header-row">
+                <span class="tool-tag-badge">HASH</span>
+                <h1 class="intro-title">UUID & 해시 생성기</h1>
+            </div>
+            <p class="intro-desc">개발 테스트용 고유 식별자(UUID v4) 발급 및 W3C Web Crypto API 기반의 단방향 암호화 해시(SHA-256, SHA-512)를 실시간 계산합니다.</p>
 
             <div class="guide-box">
                 <strong>UUID & 해시 생성기 사용 방법 안내:</strong>
                 <ol class="guide-list">
-                    <li>좌측에서 생성할 개수(1~50개)를 선택하고 <b>[UUID 생성]</b>을 클릭하여 고유 식별자를 발급받습니다.</li>
-                    <li>우측에 문자열을 입력하면 <b>SHA-256, SHA-512, SHA-1</b> 암호화 해시가 실시간으로 자동 산출됩니다.</li>
-                    <li>모든 연산은 클라이언트 사이드에서 즉시 실행되어 입력 데이터가 외부 서버로 전송되지 않습니다.</li>
+                    <li>좌측 패널에서 생성할 개수(1~30개)와 대문자, 하이픈 제거 옵션을 설정한 뒤 <b>[생성 ▶]</b>을 클릭하여 UUID를 발급합니다.</li>
+                    <li>우측 패널 입력창에 텍스트를 입력하면 <b>SHA-256, SHA-512, SHA-1</b> 해시값이 브라우저 내부에서 실시간으로 자동 산출됩니다.</li>
+                    <li>각 항목의 <b>[복사]</b> 버튼을 누르면 클립보드에 결과 문자열이 즉시 저장됩니다.</li>
+                    <li>모든 연산은 100% 브라우저 메모리상에서만 수행되므로 민감한 비밀번호나 토큰도 외부 유출 위험 없이 안전하게 처리됩니다.</li>
                 </ol>
-
-                <div class="guide-banner-row">
-                    <span class="guide-banner-text">📘 <span style="font-weight: 700; color: #0f172a;">SHA-256 단방향 암호화와 UUID v4 생성 원리</span>가 궁금하신가요?</span>
-                    <a href="../guide/hash-guide.html" class="guide-banner-btn">실무 가이드 보기 →</a>
-                </div>
             </div>
         </div>
 
@@ -310,49 +452,85 @@
             <!-- 1. UUID v4 생성기 -->
             <div class="tool-panel">
                 <div class="panel-header">
-                    <span class="panel-title">1. UUID v4 생성기</span>
+                    <span class="panel-title">1. UUID v4 고유 식별자 생성기</span>
                     <button class="btn-copy" onclick="copyUUIDs()">전체 복사</button>
                 </div>
                 <div class="control-row">
-                    <label style="font-size: 13px;">생성 개수:
-                        <select id="uuid-count" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc;">
+                    <label style="font-size: 13px; font-weight: 700; color: #475569;">개수:
+                        <select id="uuid-count" class="select-count">
                             <option value="1">1개</option>
                             <option value="5" selected>5개</option>
                             <option value="10">10개</option>
                             <option value="30">30개</option>
                         </select>
                     </label>
-                    <label style="font-size: 13px;"><input type="checkbox" id="uuid-upper"> 대문자</label>
-                    <label style="font-size: 13px;"><input type="checkbox" id="uuid-nohyphen"> 하이픈 제거</label>
-                    <button class="btn-action" style="padding: 5px 12px; margin-left: auto;" onclick="generateUUIDs()">생성 ▶</button>
+                    <label class="check-label"><input type="checkbox" id="uuid-upper"> 대문자</label>
+                    <label class="check-label"><input type="checkbox" id="uuid-nohyphen"> 하이픈 제거</label>
+                    <button class="btn-action" style="margin-left: auto;" onclick="generateUUIDs()">생성 ▶</button>
                 </div>
-                <textarea id="uuid-output" class="code-box" placeholder="생성된 UUID가 여기에 표시됩니다." readonly></textarea>
+                <textarea id="uuid-output" class="code-box" placeholder="생성된 UUID 목록이 여기에 표시됩니다." readonly></textarea>
             </div>
 
             <!-- 2. 해시(Hash) 생성기 -->
             <div class="tool-panel">
                 <div class="panel-header">
-                    <span class="panel-title">2. SHA 해시 생성기</span>
+                    <span class="panel-title">2. SHA 단방향 암호화 해시 생성기</span>
                     <button class="btn-action" style="padding: 4px 10px; font-size: 12px;" onclick="loadHashSample()">샘플 불러오기</button>
                 </div>
-                <input type="text" id="hash-input" class="input-text" style="padding: 8px 10px; font-size: 13.5px; border: 1px solid #ccc; border-radius: 5px; width:100%; box-sizing:border-box; outline:none;" placeholder="해시를 생성할 문자열을 입력하세요." oninput="calculateHashes()">
+                <input type="text" id="hash-input" class="input-text" placeholder="해시를 생성할 문자열을 입력하세요..." oninput="calculateHashes()">
 
                 <div class="hash-result-group">
                     <div class="hash-item">
-                        <span class="hash-label">SHA-256 (표준 보안 해시)</span>
-                        <div class="hash-val-row"><span id="res-sha256">-</span> <button class="btn-copy" style="padding: 2px 6px; font-size: 11px;" onclick="copyHashText('res-sha256')">복사</button></div>
+                        <span class="hash-label">SHA-256 (표준 보안 해시 - 64자리)</span>
+                        <div class="hash-val-row"><span id="res-sha256">-</span> <button class="btn-copy-mini" onclick="copyHashText('res-sha256')">복사</button></div>
                     </div>
                     <div class="hash-item">
-                        <span class="hash-label">SHA-512 (고강도 보안 해시)</span>
-                        <div class="hash-val-row"><span id="res-sha512">-</span> <button class="btn-copy" style="padding: 2px 6px; font-size: 11px;" onclick="copyHashText('res-sha512')">복사</button></div>
+                        <span class="hash-label">SHA-512 (고강도 보안 해시 - 128자리)</span>
+                        <div class="hash-val-row"><span id="res-sha512">-</span> <button class="btn-copy-mini" onclick="copyHashText('res-sha512')">복사</button></div>
                     </div>
                     <div class="hash-item">
-                        <span class="hash-label">SHA-1 (레거시 해시)</span>
-                        <div class="hash-val-row"><span id="res-sha1">-</span> <button class="btn-copy" style="padding: 2px 6px; font-size: 11px;" onclick="copyHashText('res-sha1')">복사</button></div>
+                        <span class="hash-label">SHA-1 (레거시 무결성 검증 - 40자리)</span>
+                        <div class="hash-val-row"><span id="res-sha1">-</span> <button class="btn-copy-mini" onclick="copyHashText('res-sha1')">복사</button></div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- [애드센스 승인용 고유 텍스트 & 실무 원리 가이드 영역] -->
+        <article class="seo-article-box">
+            <h2>고유 식별자(UUID) 생성 메커니즘과 단방향 암호화 해시(SHA)의 원리</h2>
+            <p><strong>DevWorKit UUID & 해시 생성기</strong>는 분산 데이터베이스 환경의 기본키(Primary Key) 설계, 파일 다운로드 위변조 검증, 비밀번호 단방향 암호화 처리 등 백엔드 및 인프라 설계 시 빈번하게 요구되는 고유값 및 체크섬 데이터를 안전하게 발급하는 브라우저 유틸리티입니다.</p>
+
+            <h3>1. UUID 버전 4(v4)의 122비트 난수 엔트로피와 충돌 확률</h3>
+            <p>UUID(Universally Unique Identifier)는 중앙 통제 서버가 없는 분산 시스템에서도 중복되지 않는 고유한 ID를 부여하기 위해 IETF RFC 4122 표준으로 제정되었습니다. 총 128비트 길이 중 버전(4)과 변형(Variant) 비트를 제외한 <strong>122비트가 완전한 암호학적 의사 난수(CSPRNG)</strong>로 채워집니다.</p>
+            <ul>
+                <li><strong>천문학적인 경우의 수:</strong> $2^{122} \approx 5.3 \times 10^{36}$개의 서로 다른 UUID 생성이 가능하며, 매초 10억 개의 UUID를 100년 동안 생성하더라도 단 1건의 충돌이 발생할 확률은 $10^{-15}$ 이하로 사실상 0에 수렴합니다.</li>
+                <li><strong>하드웨어 엔트로피 연동:</strong> 일반적인 <code>Math.random()</code>은 시드 예측이 가능하여 보안상 취약하지만, 본 도구는 브라우저 네이티브 <code>crypto.randomUUID()</code>를 호출하여 운영체제의 하드웨어 엔트로피 풀을 기반으로 안전한 식별자를 발행합니다.</li>
+            </ul>
+
+            <h3>2. SHA-256 암호화 해시의 단방향성(One-Way)과 눈태 효과(Avalanche Effect)</h3>
+            <p>SHA-256은 미국 국립표준기술연구소(NIST)가 제정한 FIPS 180-4 표준 해시 함수입니다. 임의의 길이를 가진 입력값을 64라운드의 비트 연산(Ch, Maj, $\Sigma$, $\sigma$)을 거쳐 항상 고정된 256비트(16진수 64자리) 문자열로 압축합니다.</p>
+            <ul>
+                <li><strong>역산 불가능성(Pre-image Resistance):</strong> 해시 결과값만 보고 원래의 입력 평문을 도출하는 것은 수학적으로 불가능하여 비밀번호 저장 및 블록체인 블록 검증에 필수적으로 활용됩니다.</li>
+                <li><strong>엄격한 눈태 효과:</strong> 입력값 중 단 1비트(문자 하나, 마침표 하나)만 변경되더라도 완전히 다른 형태의 64자리 해시값이 출력되므로 소프트웨어 바이너리 파일의 무결성 검증에 최적화되어 있습니다.</li>
+            </ul>
+
+            <h3>3. 자주 묻는 질문 (FAQ)</h3>
+            <div class="faq-item">
+                <div class="faq-q">Q. 입력한 비밀번호나 민감한 문자열이 외부 서버로 전송되나요?</div>
+                <div class="faq-a">A. 전혀 전송되지 않습니다. DevWorKit은 W3C 표준인 브라우저 네이티브 <code>crypto.subtle.digest()</code> API를 사용합니다. 모든 해시 계산은 사용자의 로컬 PC CPU와 웹 브라우저 메모리 안에서만 밀리초 단위로 수행되며 네트워크 트래픽을 일체 발생시키지 않습니다.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">Q. 데이터베이스 Primary Key로 UUID v4를 사용할 때 주의할 점은 무엇인가요?</div>
+                <div class="faq-a">A. UUID v4는 완전한 무작위 난수이므로 시간순 정렬이 되지 않아 RDBMS(B-Tree 인덱스)의 클러스터드 인덱스로 사용할 경우 인덱스 페이지 분할(Page Split)이 발생할 수 있습니다. 시간 순 정렬이 중요한 대규모 트랜잭션 테이블의 경우 UUID v7이나 ULID 도입을 고려하는 것이 좋습니다.</div>
+            </div>
+
+            <!-- 최하단 실무 심화 가이드 이동 배너 -->
+            <div class="guide-nav-banner">
+                <span class="guide-nav-text">📘 단방향 암호화 해시(SHA-256)와 UUID v4 원리 완벽 가이드가 필요하신가요?</span>
+                <a href="../guide/hash-guide.html" class="guide-nav-btn">실무 가이드 보기 →</a>
+            </div>
+        </article>
     </div>
 
     <div class="bottom-ad-box">
@@ -370,11 +548,14 @@
             const results = [];
 
             for (let i = 0; i < count; i++) {
-                let u = crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                    const r = Math.random() * 16 | 0,
-                        v = c === 'x' ? r : (r & 0x3 | 0x8);
-                    return v.toString(16);
-                });
+                let u = (typeof crypto !== 'undefined' && crypto.randomUUID) ?
+                    crypto.randomUUID() :
+                    'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                        const r = Math.random() * 16 | 0,
+                            v = c === 'x' ? r : (r & 0x3 | 0x8);
+                        return v.toString(16);
+                    });
+
                 if (noHyphen) u = u.replace(/-/g, '');
                 if (isUpper) u = u.toUpperCase();
                 results.push(u);
@@ -398,9 +579,13 @@
                 return;
             }
 
-            document.getElementById('res-sha256').innerText = await hashString('SHA-256', text);
-            document.getElementById('res-sha512').innerText = await hashString('SHA-512', text);
-            document.getElementById('res-sha1').innerText = await hashString('SHA-1', text);
+            try {
+                document.getElementById('res-sha256').innerText = await hashString('SHA-256', text);
+                document.getElementById('res-sha512').innerText = await hashString('SHA-512', text);
+                document.getElementById('res-sha1').innerText = await hashString('SHA-1', text);
+            } catch (err) {
+                document.getElementById('res-sha256').innerText = '해시 연산 오류';
+            }
         }
 
         function loadHashSample() {
@@ -411,13 +596,13 @@
         function copyUUIDs() {
             const val = document.getElementById('uuid-output').value;
             if (!val) return;
-            navigator.clipboard.writeText(val).then(() => alert('UUID 목록이 복사되었습니다!'));
+            navigator.clipboard.writeText(val).then(() => alert('UUID 목록이 클립보드에 복사되었습니다!'));
         }
 
         function copyHashText(id) {
             const val = document.getElementById(id).innerText;
             if (!val || val === '-') return;
-            navigator.clipboard.writeText(val).then(() => alert('해시 값이 복사되었습니다!'));
+            navigator.clipboard.writeText(val).then(() => alert('해시 값이 복사되었습니다: ' + val));
         }
 
         window.onload = () => {
