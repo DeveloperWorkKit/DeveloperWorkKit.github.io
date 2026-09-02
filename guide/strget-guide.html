@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>정규표현식(Regex)을 이용한 이메일·전화번호 추출 가이드 | DevWorKit</title>
-  <meta name="description" content="비정형 텍스트 뭉치에서 원하는 패턴의 문자열만 정규식으로 정확히 파싱하는 실전 패턴을 설명합니다.">
+  <meta name="description" content="비정형 텍스트 뭉치에서 원하는 패턴의 문자열만 정규식으로 정확히 파싱하는 실무 기법과 트러블슈팅 가이드">
   <link rel="stylesheet" href="../nav.css">
   <style>
     body {
@@ -61,21 +61,34 @@
       padding-bottom: 20px;
       letter-spacing: -0.5px;
     }
-    .article-section { margin-bottom: 32px; }
+    .article-section { margin-bottom: 36px; }
     .article-section h2 {
       font-size: 19px;
       font-weight: 700;
       color: #1e293b;
-      margin: 0 0 12px 0;
+      margin: 0 0 14px 0;
+    }
+    .article-section h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 20px 0 8px 0;
     }
     .article-section p {
       font-size: 14.5px;
-      line-height: 1.75;
+      line-height: 1.8;
       color: #475569;
-      margin: 0 0 12px 0;
+      margin: 0 0 14px 0;
     }
+    .article-section ul {
+      font-size: 14.5px;
+      line-height: 1.8;
+      color: #475569;
+      padding-left: 20px;
+      margin: 8px 0 16px 0;
+    }
+    .article-section li { margin-bottom: 6px; }
     
-    /* 코드 블록 줄바꿈 & 서식 최적화 */
     .code-block {
       background: #0f172a;
       color: #f8fafc;
@@ -84,18 +97,17 @@
       font-family: Consolas, Monaco, "Courier New", monospace;
       font-size: 13px;
       overflow-x: auto;
-      margin: 14px 0;
+      margin: 16px 0;
       line-height: 1.6;
       white-space: pre;
     }
 
-    /* 텍스트/문서 카테고리 파스텔 틴트 도구 배너 */
     .tool-banner {
       background: #f0f9ff;
       border: 1px solid #bae6fd;
       border-radius: 8px;
       padding: 18px 20px;
-      margin-top: 28px;
+      margin-top: 36px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -137,26 +149,50 @@
       <h1 class="article-title">정규표현식(Regex)을 이용한 이메일·전화번호 추출 가이드</h1>
 
       <section class="article-section">
-        <h2>1. 정규표현식(Regular Expression)의 필요성</h2>
-        <p>대용량 로그 파일이나 비정형 텍스트 문서 뭉치에서 특정 규칙을 가진 데이터(이메일, 한국 휴대폰 번호, IP 주소, URL 등)만 선별적으로 추출할 때 정규표현식은 가장 빠르고 강력한 도구입니다.</p>
+        <h2>1. 비정형 텍스트 파싱에서 정규표현식이 필수적인 이유</h2>
+        <p>실무 환경에서 마주하는 대다수의 데이터는 깔끔하게 정돈된 엑셀이나 데이터베이스 테이블 형태가 아닙니다. 고객센터에 인입된 상담 문의 글, 이메일 스레드, 서버 로그 파일, PDF 추출 텍스트 등은 줄바꿈과 띄어쓰기가 제각각인 비정형(Unstructured) 상태로 존재합니다.</p>
+        <p>이러한 비정형 뭉치에서 수작업으로 마우스를 드래그하여 이메일이나 전화번호를 하나씩 복사하는 작업은 극도로 비효율적이며 누락이 발생하기 쉽습니다. 정규표현식(Regular Expression)은 문자열이 가진 고유한 "형태(Pattern)"를 수학적 규칙으로 정의하여 수만 줄의 텍스트에서 원하는 데이터만 밀리초 단위로 정확히 집어내는 핵심 도구입니다.</p>
       </section>
 
       <section class="article-section">
-        <h2>2. 실무 필수 정규식 패턴 모음</h2>
-        <p>실제 업무 및 데이터 전처리에서 가장 많이 사용되는 핵심 정규표현식 패턴입니다:</p>
-        <div class="code-block">// 1. 이메일 주소 추출 패턴
-const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+        <h2>2. 실무 필수 정규표현식 패턴 3대장</h2>
+        <p>업무 현장에서 가장 자주 활용되는 3가지 핵심 추출 패턴의 구체적인 구조와 원리입니다:</p>
+        
+        <h3>① 이메일 주소 일괄 추출</h3>
+        <p>현대 이메일 계정은 일반 영문자 외에도 점(.), 언더바(_), 플러스(+) 기호 등 다양한 특수문자를 허용합니다. 이를 포괄하는 표준 RFC 5322 호환 실무 패턴입니다.</p>
+        <div class="code-block">// 이메일 추출 정규식
+const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;</div>
+        <ul>
+          <li><code>[a-zA-Z0-9._%+-]+</code>: 계정명(Local Part)에 사용되는 영문, 숫자 및 허용 특수문자 1회 이상 매칭</li>
+          <li><code>@</code>: 계정과 도메인을 구분하는 필수 골뱅이 기호</li>
+          <li><code>[a-zA-Z0-9.-]+</code>: 서브도메인을 포함한 호스트 도메인명 매칭</li>
+          <li><code>\.[a-zA-Z]{2,}</code>: 최상위 도메인(.com, .io, .kr 등 최소 2글자 이상의 TLD) 탐색</li>
+        </ul>
 
-// 2. 한국 휴대폰 번호 추출 패턴 (010-XXXX-XXXX)
-const phoneRegex = /01[016789]-?\d{3,4}-?\d{4}/g;
+        <h3>② 국내 전화번호 및 휴대폰 번호 추출</h3>
+        <p>010뿐만 아니라 02(서울), 031(경기) 등 지역번호 및 070 인터넷 전화까지 유연하게 포괄하는 패턴입니다.</p>
+        <div class="code-block">// 하이픈 포함 및 미포함 국내 전화번호 추출 패턴
+const phoneRegex = /0\d{1,2}-?\d{3,4}-?\d{4}/g;</div>
+        <p>중간의 <code>-?</code> 표현을 통해 하이픈이 정상적으로 들어간 연락처(010-1234-5678)와 구분자 없이 붙어 있는 번호(01012345678)를 모두 빈틈없이 검출합니다.</p>
 
-// 3. IPv4 주소 추출 패턴
-const ipRegex = /\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/g;</div>
+        <h3>③ IPv4 네트워크 주소 및 접속 IP 추출</h3>
+        <div class="code-block">// 서버 액세스 로그 내 IPv4 주소 파싱 패턴
+const ipRegex = /\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g;</div>
+        <p>단순한 숫자 3자리 조합이 아니라 0부터 255까지의 유효 옥텟 범위를 검증하여 로그 뭉치에서 실제 통신 IP만 정확히 선별합니다.</p>
       </section>
 
       <section class="article-section">
-        <h2>3. 무료 온라인 문자열 추출기 활용</h2>
-        <p>텍스트 문서를 복사해 붙여넣으면 중복을 자동으로 제거하고 엑셀 표(TSV) 형식으로 1초 만에 일괄 추출해 복사할 수 있습니다.</p>
+        <h2>3. 실무 정규식 작성 시 반드시 피해야 할 함정 (트러블슈팅)</h2>
+        <p>정규식을 잘못 작성하면 성능 저하(Catastrophic Backtracking)나 데이터 왜곡이 발생할 수 있습니다. 다음 두 가지 원칙을 지켜야 합니다:</p>
+        <ul>
+          <li><strong>탐욕적 매칭(Greedy Matching)의 위험:</strong> <code>.*</code> 표현은 가능한 한 가장 긴 문자열을 한꺼번에 삼켜버립니다. 원하는 패턴 뒤에 <code>.*?</code>를 붙여 게으른 매칭(Lazy)을 적용하거나 구체적인 부정 문자셋(예: <code>[^"]*</code>)을 사용하는 것이 안전합니다.</li>
+          <li><strong>글로벌(g) 플래그와 상태 초기화:</strong> 자바스크립트의 <code>RegExp.test()</code>나 <code>exec()</code>는 전역 탐색 시 내부적으로 <code>lastIndex</code> 포인터를 유지합니다. 루프를 돌릴 때 포인터를 0으로 초기화하지 않으면 매칭 결과가 홀수 번째마다 누락되는 현상이 발생하므로 주의해야 합니다.</li>
+        </ul>
+      </section>
+
+      <section class="article-section">
+        <h2>4. 무료 온라인 문자열 추출기 활용</h2>
+        <p>복잡한 정규식 문법을 외우지 않고도 브라우저에서 즉시 데이터를 추출하고 싶다면 DevWorKit의 실시간 추출기를 활용할 수 있습니다. 수만 자의 문서를 복사해 붙여넣으면 중복을 자동으로 제거하고 엑셀 표(TSV) 형식으로 1초 만에 깔끔하게 추출됩니다.</p>
         <div class="tool-banner">
           <span class="tool-banner-text">🛠️ DevWorKit 실시간 문자열 추출기 사용해보기</span>
           <a href="../strget/" class="tool-banner-btn">도구로 이동 →</a>
