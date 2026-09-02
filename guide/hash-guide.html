@@ -1,152 +1,310 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>단방향 암호화 해시(SHA-256)와 UUID v4 원리 정리 - DevWorkKit</title>
-  <meta name="description" content="SHA-256 단방향 암호화 알고리즘의 원리와 충돌 없는 고유 식별자 생성을 위한 UUID v4 생성 규칙을 정리합니다.">
-  <link rel="stylesheet" href="../style.css">
-  <style>
-    body {
-      background-color: #f8fafc;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      color: #334155;
-    }
-    .article-container {
-      max-width: 860px;
-      margin: 40px auto 80px auto;
-      padding: 0 20px;
-    }
-    .back-link {
-      display: inline-block;
-      margin-bottom: 20px;
-      color: #64748b;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-    }
-    .back-link:hover { color: #2563eb; }
-    .article-card {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      padding: 40px 48px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    }
-    .article-badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 700;
-      color: #ffffff;
-      background-color: #6366f1;
-      margin-bottom: 16px;
-    }
-    .article-title {
-      font-size: 28px;
-      font-weight: 800;
-      color: #0f172a;
-      line-height: 1.35;
-      margin: 0 0 24px 0;
-      border-bottom: 2px solid #f1f5f9;
-      padding-bottom: 20px;
-    }
-    .article-section { margin-bottom: 32px; }
-    .article-section h2 {
-      font-size: 20px;
-      font-weight: 700;
-      color: #1e293b;
-      margin: 0 0 12px 0;
-    }
-    .article-section p {
-      font-size: 15px;
-      line-height: 1.75;
-      color: #475569;
-      margin: 0 0 12px 0;
-    }
-    .code-block {
-      background: #1e293b;
-      color: #f8fafc;
-      padding: 16px;
-      border-radius: 8px;
-      font-family: Consolas, Monaco, "Courier New", Courier, monospace;
-      font-size: 13px;
-      overflow-x: auto;
-      margin: 14px 0;
-      line-height: 1.5;
-    }
-    .tool-banner {
-      background: #eef2ff;
-      border: 1px solid #c7d2fe;
-      border-radius: 8px;
-      padding: 18px 20px;
-      margin-top: 28px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .tool-banner-text {
-      font-size: 14px;
-      color: #3730a3;
-      font-weight: 600;
-    }
-    .tool-banner-btn {
-      background: #6366f1;
-      color: #ffffff;
-      padding: 8px 16px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    .tool-banner-btn:hover { background: #4f46e5; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>단방향 암호화 해시(SHA-256)와 UUID v4 원리 완벽 가이드 | DevWorKit</title>
+    <meta name="description" content="SHA-256 단방향 암호화 알고리즘의 내부 라운드 압축 및 눈태 효과 원리, 레인보우 테이블 방어 전략과 충돌 없는 분산 고유 식별자 UUID v4 생성 규칙 완벽 정리">
+    <link rel="stylesheet" href="../nav.css">
+    <style>
+        body {
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #334155;
+        }
+
+        .article-container {
+            max-width: 860px;
+            margin: 40px auto 80px auto;
+            padding: 0 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: color 0.15s;
+        }
+
+        .back-link:hover {
+            color: #059669;
+        }
+
+        .article-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 40px 48px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 시스템/디자인 카테고리 초록색 뱃지 */
+        .article-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+            background-color: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+            margin-bottom: 16px;
+        }
+
+        .article-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.35;
+            margin: 0 0 24px 0;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .article-section {
+            margin-bottom: 36px;
+        }
+
+        .article-section h2 {
+            font-size: 19px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 14px 0;
+        }
+
+        .article-section h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 20px 0 8px 0;
+        }
+
+        .article-section p {
+            font-size: 14.5px;
+            line-height: 1.85;
+            color: #475569;
+            margin: 0 0 14px 0;
+        }
+
+        .article-section ul {
+            color: #475569;
+            font-size: 14.5px;
+            line-height: 1.85;
+            padding-left: 20px;
+            margin: 8px 0 16px 0;
+        }
+
+        .article-section li {
+            margin-bottom: 6px;
+        }
+
+        .code-block {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 18px 20px;
+            border-radius: 8px;
+            font-family: Consolas, Monaco, "Courier New", monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 16px 0;
+            line-height: 1.6;
+            white-space: pre;
+        }
+
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 18px 0;
+            font-size: 13.5px;
+        }
+
+        .table-custom th,
+        .table-custom td {
+            border: 1px solid #cbd5e1;
+            padding: 10px 14px;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        .table-custom th {
+            background: #f1f5f9;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        /* 시스템/디자인 카테고리 초록색 도구 배너 */
+        .tool-banner {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin-top: 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .tool-banner-text {
+            font-size: 14px;
+            color: #065f46;
+            font-weight: 700;
+        }
+
+        .tool-banner-btn {
+            background: #059669;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: background-color 0.15s;
+        }
+
+        .tool-banner-btn:hover {
+            background: #047857;
+        }
+
+        @media (max-width: 640px) {
+            .article-card {
+                padding: 24px 20px;
+            }
+
+            .article-title {
+                font-size: 22px;
+            }
+
+            .tool-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .tool-banner-btn {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-  <div id="dwk-nav"></div>
+    <main class="article-container">
+        <a href="index.html" class="back-link">← 가이드 목록으로 돌아가기</a>
 
-  <main class="article-container">
-    <a href="index.html" class="back-link">← 블로그 목록으로 돌아가기</a>
-    
-    <article class="article-card">
-      <span class="article-badge">HASH</span>
-      <h1 class="article-title">단방향 암호화 해시(SHA-256)와 UUID v4 원리 정리</h1>
+        <article class="article-card">
+            <span class="article-badge">HASH</span>
+            <h1 class="article-title">단방향 암호화 해시(SHA-256)와 UUID v4 원리 완벽 가이드</h1>
 
-      <section class="article-section">
-        <h2>1. 단방향 해시 함수(SHA-256)란?</h2>
-        <p>해시 함수는 임의의 길이를 가진 입력 데이터를 고정된 길이의 16진수 문자열로 변환하는 알고리즘입니다. SHA-256은 256비트(64자리 16진수) 해시값을 출력하며, 결과값으로 원래 평문을 역산하는 것이 수학적으로 불가능하여 비밀번호 검증 및 데이터 무결성 체크에 표준으로 사용됩니다.</p>
-      </section>
+            <section class="article-section">
+                <h2>1. 단방향 암호화 해시(Cryptographic Hash)의 개념과 수학적 특성</h2>
+                <p>암호학에서 해시 함수는 임의의 크기를 갖는 가변 길이의 원시 데이터를 입력받아, 사전에 정해진 고정된 길이의 비트 배열(Digest)로 변환하는 수학적 알고리즘입니다. 일반적인 대칭키/비대칭키 암호화가 복호화(Decryption)를 전제로 하는 것과 달리, **단방향 해시 함수는 출력된 다이제스트로부터 원본 평문을 복원하는 역산이 불가능**하도록 설계되어 있습니다.</p>
+                <p>안전한 암호학적 해시 함수로 인정받기 위해서는 다음과 같은 3대 핵심 성질을 완벽히 만족해야 합니다:</p>
+                <ul>
+                    <li><strong>제1 역상 저항성(Pre-image Resistance):</strong> 주어진 해시 결과값 $h$에 대해, $H(m) = h$를 만족하는 원본 메시지 $m$을 계산으로 찾아내는 것이 불가능해야 합니다.</li>
+                    <li><strong>제2 역상 저항성(Second Pre-image Resistance):</strong> 특정 입력값 $m_1$이 주어졌을 때, 동일한 해시값을 갖는 또 다른 입력값 $m_2$($H(m_1) = H(m_2)$)를 인위적으로 조작해 내는 것이 불가능해야 합니다.</li>
+                    <li><strong>충돌 저항성(Collision Resistance):</strong> 서로 다른 임의의 두 입력값이 우연히 같은 해시값을 출력하는 쌍을 찾아내는 것이 수학적으로 불가능해야 합니다.</li>
+                </ul>
+            </section>
 
-      <section class="article-section">
-        <h2>2. 고유 식별자 UUID v4의 무작위 생성 원리</h2>
-        <p>UUID(Universally Unique Identifier)는 중앙 통제 시스템 없이도 고유성을 보장하는 128비트 식별자입니다. 버전 4(UUID v4)는 암호학적으로 안전한 의사 난수(CSPRNG)를 기반으로 생성되며, 중복될 확률이 사실상 0에 수렴하여 분산 시스템의 Primary Key로 널리 사용됩니다.</p>
-        <div class="code-block">
-// 웹 표준 Web Crypto API를 사용한 안전한 SHA-256 해시 생성 예제
-async function generateSHA256(message) {
-  const msgBuffer = new TextEncoder().encode(message);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
-        </div>
-      </section>
+            <section class="article-section">
+                <h2>2. SHA-256 알고리즘의 내부 동작 파이프라인과 눈태 효과</h2>
+                <p>미국 국립표준기술연구소(NIST)의 FIPS 180-4 표준으로 제정된 SHA-256(Secure Hash Algorithm 256-bit)은 512비트 단위의 블록으로 데이터를 분할하여 64회의 복잡한 라운드 연산(압축 함수)을 수행합니다.</p>
+                <p>이 과정에서 비트 단위 논리 연산(AND, XOR, NOT)과 회전(Rotate Right), 덧셈 연산($\text{mod } 2^{32}$)이 얽히며 강력한 **눈태 효과(Avalanche Effect)**가 발생합니다. 원본 텍스트에서 단 1비트의 점 하나만 바뀌거나 공백 하나가 추가되어도, 최종 출력되는 64자리 16진수 다이제스트는 원본과의 유사성을 전혀 찾아볼 수 없는 100% 무작위 패턴으로 뒤바뀌게 됩니다. 이러한 성질 덕분에 SHA-256은 대용량 파일의 다운로드 무결성 검증과 비트코인 블록체인의 작업 증명(PoW) 코어로 채택되었습니다.</p>
 
-      <section class="article-section">
-        <h2>3. 무료 온라인 UUID & 해시 생성기 활용</h2>
-        <p>브라우저 메모리 안에서 외부 서버 전송 없이 즉시 UUID v4 생성 및 SHA-256/SHA-512 해시값을 안전하게 산출할 수 있습니다.</p>
-        <div class="tool-banner">
-          <span class="tool-banner-text">🛠️ DevWorkKit 실시간 UUID & 해시 생성기 사용해보기</span>
-          <a href="../hash/" class="tool-banner-btn">도구로 이동 →</a>
-        </div>
-      </section>
-    </article>
-  </main>
+                <table class="table-custom">
+                    <thead>
+                        <tr>
+                            <th>알고리즘</th>
+                            <th>출력 다이제스트 길이</th>
+                            <th>충돌 안전성</th>
+                            <th>실무 권장 용도</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>SHA-1</strong></td>
+                            <td>160비트 (40자리 Hex)</td>
+                            <td>취약 (구글 SHAttered 충돌 증명)</td>
+                            <td>Git 커밋 식별자(레거시), 일반 무결성 체크 (보안용 사용 금지)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SHA-256</strong></td>
+                            <td>256비트 (64자리 Hex)</td>
+                            <td>매우 안전 (현재 업계 표준)</td>
+                            <td>사용자 비밀번호 저장, API 토큰 서명, 블록체인 블록 해시</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SHA-512</strong></td>
+                            <td>512비트 (128자리 Hex)</td>
+                            <td>극도로 안전 (군사/금융급 보안)</td>
+                            <td>고보안 전자서명, 64비트 하드웨어 아키텍처 고속 연산</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
 
-  <script src="../nav.js"></script>
+            <section class="article-section">
+                <h2>3. 실무 비밀번호 보안: 레인보우 테이블 공격과 Salt(솔트)의 필요성</h2>
+                <p>단방향 해시라 할지라도 단순 해싱(<code>SHA-256("password123")</code>)만 적용할 경우 보안상 매우 치명적인 취약점이 발생합니다. 해커들이 자주 쓰이는 수십억 개의 비밀번호와 그에 대응하는 해시값을 미리 계산해 둔 거대한 역색인 데이터베이스인 **레인보우 테이블(Rainbow Table)**에 조회하면 1초 만에 원래 비밀번호가 노출되기 때문입니다.</p>
+                <p>이를 방어하기 위해 실무 백엔드 시스템에서는 사용자마다 고유한 무작위 난수 바이트인 **Salt(솔트)**를 생성하여 원본 비밀번호 앞뒤에 결합한 후 해싱을 수행합니다. 솔트가 추가되면 동일한 비밀번호를 사용하는 사용자라 할지라도 완전히 다른 해시값이 생성되므로 레인보우 테이블 공격이 원천적으로 무력화됩니다.</p>
+            </section>
+
+            <section class="article-section">
+                <h2>4. 분산 시스템의 심장: UUID v4의 엔트로피와 충돌 확률 분석</h2>
+                <p>UUID(Universally Unique Identifier)는 중앙 데이터베이스의 순차적 시퀀스(Auto Increment ID)에 의존하지 않고, 분산된 서버 노드들이 독립적으로 충돌 없는 고유 기본키(Primary Key)를 발행하기 위해 RFC 4122 표준으로 정립되었습니다.</p>
+                <p>가장 널리 쓰이는 <strong>UUID 버전 4(v4)</strong>는 128비트 길이의 이진수 중 버전(4)과 변형(Variant) 비트 6개를 제외한 **122비트를 완전한 난수**로 채웁니다:</p>
+
+                <div class="code-block">// UUID v4 8-4-4-4-12 표준 표기 구조
+// 128비트 = 16바이트 = 32개의 16진수 문자
+xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
+              ^    ^
+              |    +-- y는 변형 비트 (8, 9, a, b 중 하나)
+              +------- 4는 UUID 버전 번호 (v4)</div>
+
+                <p>122비트 난수가 가질 수 있는 총 조합 수는 $2^{122} \approx 5.3 \times 10^{36}$개에 달합니다. 생일 역설(Birthday Paradox) 공식에 따라 1%의 확률로 중복(충돌)이 발생하려면 약 $2.71 \times 10^{18}$개(270경 개)의 UUID를 생성해야 합니다. 이는 전 세계 인구가 매초 수억 개의 UUID를 평생 동안 쉼 없이 발급해도 단 1건의 충돌도 마주치기 힘든 천문학적인 안전성입니다.</p>
+            </section>
+
+            <section class="article-section">
+                <h2>5. 브라우저 Web Crypto API를 통한 하드웨어 CSPRNG 난수 생성</h2>
+                <p>웹 프론트엔드 환경에서 <code>Math.random()</code>을 이용해 UUID를 만들면 의사 난수 생성기(PRNG)의 내부 시드 패턴이 노출되어 식별자가 예측당할 위험이 있습니다.</p>
+                <p>모던 브라우저에서는 운영체제 커널의 하드웨어 노이즈 엔트로피(마우스 움직임, CPU 타이머 지터 등)를 공급받는 **Web Crypto API**를 표준으로 지원합니다. 이를 통해 외부 라이브러리 없이도 브라우저 메모리 안에서 초고속으로 암호학적으로 안전한 UUID와 해시값을 생성할 수 있습니다.</p>
+
+                <div class="code-block">// [Web Crypto API를 활용한 안전한 해시 연산 함수]
+async function computeSafeSHA256(plainText) {
+    const encoder = new TextEncoder();
+    const dataBuffer = encoder.encode(plainText);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}</div>
+            </section>
+
+            <section class="article-section">
+                <h2>6. DevWorKit 온라인 UUID & 해시 생성기 활용</h2>
+                <p>별도의 라이브러리 설치나 백엔드 연동 없이 브라우저 상에서 즉시 대량의 UUID v4를 발급하고, 문자열의 SHA-256/512 해시 다이제스트를 1초 만에 검증할 수 있습니다. 100% 클라이언트 로컬 연산으로 동작하여 민감한 개발 토큰이나 패스워드도 유출 위험 없이 안전하게 처리됩니다.</p>
+
+                <div class="tool-banner">
+                    <span class="tool-banner-text">🛠️ DevWorKit 실시간 UUID & 해시 생성기 사용해보기</span>
+                    <a href="../hash/" class="tool-banner-btn">도구로 이동 →</a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <div id="dwk-footer"></div>
+    <script src="../nav.js"></script>
 </body>
+
 </html>
