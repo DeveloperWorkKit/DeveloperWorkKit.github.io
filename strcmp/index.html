@@ -394,6 +394,7 @@
             background-color: #ffffff;
             overflow: visible;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            min-height: 120px;
         }
 
         .result-header {
@@ -510,7 +511,6 @@
             opacity: 0.9;
         }
 
-        /* 스플릿 드롭다운 복사 버튼 컴포넌트 */
         .split-btn-container {
             position: relative;
             display: inline-flex;
@@ -561,6 +561,7 @@
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
             z-index: 1000;
             min-width: 175px;
+            max-width: 90vw;
             padding: 6px 0;
         }
 
@@ -603,7 +604,6 @@
             margin: 5px 0;
         }
 
-        /* SEO & 가이드 영역 */
         .seo-article-box {
             margin-top: 48px;
             background: #ffffff;
@@ -854,6 +854,9 @@
         let lastLeftLines = -1,
             lastRightLines = -1;
 
+        // 순수 토큰 기반 복사를 위한 모델 보관소
+        let parsedDiffLines = [];
+
         function recordHistory(side) {
             const el = document.getElementById(`text-${side}`);
             if (!el) return;
@@ -980,38 +983,63 @@
             if (document.getElementById('similarity-dashboard').style.display === 'flex') executeDiffCheckerEngine();
         }
 
+        function closeCopyMenu() {
+            const menu = document.getElementById('copy-dropdown-menu');
+            if (menu && menu.classList.contains('show')) {
+                menu.classList.remove('show');
+            }
+        }
+
         function toggleCopyMenu(e) {
             e.stopPropagation();
             const menu = document.getElementById('copy-dropdown-menu');
             menu.classList.toggle('show');
         }
 
-        // 드롭다운 외부 클릭 시 닫기
-        window.addEventListener('click', (e) => {
-            const menu = document.getElementById('copy-dropdown-menu');
-            if (menu && menu.classList.contains('show')) {
-                menu.classList.remove('show');
+        window.addEventListener('click', () => closeCopyMenu());
+
+        function getSafeDiffEngine() {
+            if (typeof window.diff_match_patch === 'function') {
+                return window.diff_match_patch;
             }
-        });
+            try {
+                if (typeof diff_match_patch === 'function') {
+                    return diff_match_patch;
+                }
+            } catch (e) {}
+            return null;
+        }
 
         function executeDiffCheckerEngine() {
+            const EngineClass = getSafeDiffEngine();
+            const tableBody = document.getElementById('diff-table-body');
+            const dashboard = document.getElementById('similarity-dashboard');
+            const splitBtn = document.getElementById('split-btn-box');
+
+            if (!EngineClass) {
+                alert("Diff 엔진 라이브러리(CDN)를 불러오지 못했습니다.\n네트워크 연결 상태를 확인해주세요.");
+                tableBody.innerHTML = '<div class="diff-row"><div class="diff-num">!</div><div class="diff-text row-empty" style="color:#ef4444;">엔진 로드 실패: diff_match_patch 라이브러리를 찾을 수 없습니다.</div></div>';
+                dashboard.style.display = 'none';
+                if (splitBtn) splitBtn.style.display = 'none';
+                return;
+            }
+
             let sourceLeft = document.getElementById('text-left').value;
             let sourceRight = document.getElementById('text-right').value;
-            const tableBody = document.getElementById('diff-table-body'),
-                dashboard = document.getElementById('similarity-dashboard'),
-                splitBtn = document.getElementById('split-btn-box');
 
             if (!sourceLeft && !sourceRight) {
                 tableBody.innerHTML = '<div class="diff-row"><div class="diff-num">-</div><div class="diff-text row-empty">입력된 데이터가 없습니다.</div></div>';
                 dashboard.style.display = 'none';
                 if (splitBtn) splitBtn.style.display = 'none';
+                parsedDiffLines = [];
                 return;
             }
-            const EngineClass = window.diff_match_patch || diff_match_patch;
+
             const ignoreSpace = document.getElementById('chk-ignore-space').checked;
             const ignoreCase = document.getElementById('chk-ignore-case').checked;
-            let cleanLeft = sourceLeft.replace(/\r/g, ''),
-                cleanRight = sourceRight.replace(/\r/g, '');
+            let cleanLeft = sourceLeft.replace(/\r/g, '');
+            let cleanRight = sourceRight.replace(/\r/g, '');
+
             if (ignoreSpace) {
                 cleanLeft = cleanLeft.replace(/[ \t]+/g, ' ');
                 cleanRight = cleanRight.replace(/[ \t]+/g, ' ');
@@ -1022,10 +1050,11 @@
             }
 
             try {
-                const dmp = new EngineClass(),
-                    diffs = dmp.diff_main(cleanLeft, cleanRight);
+                const dmp = new EngineClass();
+                const diffs = dmp.diff_main(cleanLeft, cleanRight);
                 dmp.diff_cleanupSemantic(diffs);
                 dmp.diff_cleanupEfficiency(diffs);
+
                 let common = 0,
                     del = 0,
                     ins = 0;
@@ -1040,36 +1069,58 @@
                 document.getElementById('val-match-detail').innerText = `공통 글자 수: ${common.toLocaleString()}자 / 최대 분량: ${maxLen.toLocaleString()}자`;
                 dashboard.style.display = 'flex';
 
-                let lines = [""],
-                    currentLineIdx = 0,
-                    lineChangeStatus = [false];
+                parsedDiffLines = [{
+                    lineNum: 1,
+                    hasChange: false,
+                    tokens: []
+                }];
+                let curLine = parsedDiffLines[0];
+
                 diffs.forEach(part => {
-                    part[1].split('\n').forEach((seg, sIdx) => {
+                    const type = part[0];
+                    const segs = part[1].split('\n');
+
+                    segs.forEach((seg, sIdx) => {
                         if (sIdx > 0) {
-                            currentLineIdx++;
-                            lines[currentLineIdx] = "";
-                            lineChangeStatus[currentLineIdx] = false;
+                            parsedDiffLines.push({
+                                lineNum: parsedDiffLines.length + 1,
+                                hasChange: false,
+                                tokens: []
+                            });
+                            curLine = parsedDiffLines[parsedDiffLines.length - 1];
                         }
                         if (!seg) return;
-                        const text = seg.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                        if (part[0] === 0) lines[currentLineIdx] += text;
-                        else {
-                            lineChangeStatus[currentLineIdx] = true;
-                            lines[currentLineIdx] += part[0] === 1 ? `<ins>${text}</ins>` : `<del>${text}</del>`;
-                        }
+
+                        if (type !== 0) curLine.hasChange = true;
+                        curLine.tokens.push({
+                            type,
+                            text: seg
+                        });
                     });
                 });
 
+                const showOnly = document.getElementById('chk-only-changes').checked;
                 let tableHtml = "";
-                lines.forEach((content, idx) => {
-                    const isChanged = lineChangeStatus[idx];
-                    tableHtml += `<div class="${isChanged ? "diff-row row-modified" : "diff-row"}" data-changed="${isChanged}">
-                    <div class="diff-num">${idx + 1}</div><div class="diff-text">${content || " "}</div></div>`;
+
+                parsedDiffLines.forEach(item => {
+                    let rowHtml = "";
+                    item.tokens.forEach(tok => {
+                        const escaped = tok.text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                        if (tok.type === 0) rowHtml += escaped;
+                        else if (tok.type === -1) rowHtml += `<del>${escaped}</del>`;
+                        else if (tok.type === 1) rowHtml += `<ins>${escaped}</ins>`;
+                    });
+
+                    const shouldHide = showOnly && !item.hasChange;
+                    tableHtml += `<div class="${item.hasChange ? "diff-row row-modified" : "diff-row"}${shouldHide ? " hide" : ""}" data-changed="${item.hasChange}">
+                        <div class="diff-num">${item.lineNum}</div><div class="diff-text">${rowHtml || " "}</div></div>`;
                 });
+
                 tableBody.innerHTML = tableHtml;
                 toggleChangesFilter();
+
             } catch (err) {
-                tableBody.innerHTML = '<div class="diff-row"><div class="diff-num">-</div><div class="diff-text row-empty">연산 오류 발생</div></div>';
+                tableBody.innerHTML = '<div class="diff-row"><div class="diff-num">!</div><div class="diff-text row-empty">연산 오류 발생: ' + err.message + '</div></div>';
                 dashboard.style.display = 'none';
                 if (splitBtn) splitBtn.style.display = 'none';
             }
@@ -1078,51 +1129,66 @@
         function toggleChangesFilter() {
             const showOnly = document.getElementById('chk-only-changes').checked;
             document.querySelectorAll('#diff-table-body .diff-row').forEach(row => {
-                if (showOnly && row.getAttribute('data-changed') !== 'true' && row.querySelector('.diff-num').innerText !== '-') row.classList.add('hide');
-                else row.classList.remove('hide');
+                if (showOnly && row.getAttribute('data-changed') !== 'true' && row.querySelector('.diff-num').innerText !== '-') {
+                    row.classList.add('hide');
+                } else {
+                    row.classList.remove('hide');
+                }
             });
             const splitBtn = document.getElementById('split-btn-box');
             if (splitBtn) splitBtn.style.display = showOnly ? 'inline-flex' : 'none';
         }
 
         function copySelectiveDiffResult(mode) {
-            const rows = document.querySelectorAll('#diff-table-body .diff-row');
+            closeCopyMenu();
+            if (!parsedDiffLines || parsedDiffLines.length === 0) {
+                alert("복사할 비교 결과 데이터가 없습니다.");
+                return;
+            }
+
+            const showOnly = document.getElementById('chk-only-changes').checked;
             let acc = [];
 
-            rows.forEach(row => {
-                if (row.classList.contains('hide')) return;
-                const textNode = row.querySelector('.diff-text');
-                const numNode = row.querySelector('.diff-num');
+            parsedDiffLines.forEach(item => {
+                if (showOnly && !item.hasChange) return;
 
-                if (textNode && !textNode.classList.contains('row-empty')) {
-                    const clone = textNode.cloneNode(true);
-                    const lineNum = numNode ? numNode.innerText.trim() : '';
-
-                    if (mode === 'combo') {
-                        const dels = Array.from(clone.querySelectorAll('del')).map(d => d.innerText).join(' ');
-                        const inss = Array.from(clone.querySelectorAll('ins')).map(i => i.innerText).join(' ');
-
-                        if (dels || inss) {
-                            acc.push(`[Ln ${lineNum}]`);
-                            if (dels) acc.push(`- 삭제: ${dels}`);
-                            if (inss) acc.push(`+ 추가: ${inss}`);
-                            acc.push('');
-                        }
-                    } else if (mode === 'ins') {
-                        clone.querySelectorAll('del').forEach(d => d.remove());
-                        acc.push(clone.innerText);
-                    } else if (mode === 'del') {
-                        clone.querySelectorAll('ins').forEach(i => i.remove());
-                        acc.push(clone.innerText);
-                    } else if (mode === 'ins-only') {
-                        clone.querySelectorAll('ins').forEach(i => acc.push(i.innerText));
-                    } else if (mode === 'del-only') {
-                        clone.querySelectorAll('del').forEach(d => acc.push(d.innerText));
-                    } else if (mode === 'all') {
-                        clone.querySelectorAll('del').forEach(d => d.replaceWith(`[-${d.innerText}-]`));
-                        clone.querySelectorAll('ins').forEach(i => i.replaceWith(`[+${i.innerText}+]`));
-                        acc.push(`${lineNum ? lineNum + ': ' : ''}${clone.innerText}`);
+                if (mode === 'combo') {
+                    if (item.hasChange) {
+                        const dels = item.tokens.filter(t => t.type === -1).map(t => (t.text.trim() === '' && t.text.length > 0 ? '(공백)' : t.text)).join(' ');
+                        const inss = item.tokens.filter(t => t.type === 1).map(t => (t.text.trim() === '' && t.text.length > 0 ? '(공백)' : t.text)).join(' ');
+                        acc.push(`[Ln ${item.lineNum}]`);
+                        if (dels) acc.push(`- 삭제: ${dels}`);
+                        if (inss) acc.push(`+ 추가: ${inss}`);
+                        acc.push('');
                     }
+                } else if (mode === 'ins') {
+                    const lineStr = item.tokens.filter(t => t.type !== -1).map(t => t.text).join('');
+                    acc.push(lineStr);
+                } else if (mode === 'del') {
+                    const lineStr = item.tokens.filter(t => t.type !== 1).map(t => t.text).join('');
+                    acc.push(lineStr);
+                } else if (mode === 'ins-only') {
+                    const inss = item.tokens.filter(t => t.type === 1)
+                        .map(t => (t.text.trim() === '' && t.text.length > 0 ? '(공백)' : t.text)).join(' ');
+                    if (inss) acc.push(inss);
+                } else if (mode === 'del-only') {
+                    const dels = item.tokens.filter(t => t.type === -1)
+                        .map(t => (t.text.trim() === '' && t.text.length > 0 ? '(공백)' : t.text)).join(' ');
+                    if (dels) acc.push(dels);
+                } else if (mode === 'all') {
+                    let fullLine = "";
+                    item.tokens.forEach(tok => {
+                        if (tok.type === 0) {
+                            fullLine += tok.text;
+                        } else if (tok.type === -1) {
+                            const val = (tok.text.trim() === '' && tok.text.length > 0) ? '(공백)' : tok.text;
+                            fullLine += `[-${val}-]`;
+                        } else if (tok.type === 1) {
+                            const val = (tok.text.trim() === '' && tok.text.length > 0) ? '(공백)' : tok.text;
+                            fullLine += `[+${val}+]`;
+                        }
+                    });
+                    acc.push(`${item.lineNum}: ${fullLine}`);
                 }
             });
 
