@@ -392,7 +392,7 @@
             border: 1px solid var(--border-color);
             border-radius: 10px;
             background-color: #ffffff;
-            overflow: hidden;
+            overflow: visible;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
         }
 
@@ -408,6 +408,8 @@
             flex-wrap: wrap;
             gap: 10px;
             color: #0f172a;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
         }
 
         .diff-table {
@@ -417,6 +419,9 @@
             font-size: 13px;
             line-height: 1.8;
             background-color: #ffffff;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            overflow: hidden;
         }
 
         .diff-row {
@@ -480,7 +485,8 @@
 
         .copy-btn-group {
             display: flex;
-            gap: 6px;
+            gap: 8px;
+            align-items: center;
             flex-wrap: wrap;
         }
 
@@ -491,41 +497,113 @@
             font-weight: 700;
             border-radius: 4px;
             cursor: pointer;
-            display: none;
             transition: opacity 0.15s;
-        }
-
-        .btn-orange-mode {
-            background-color: #ea580c;
-            color: white;
-        }
-
-        .btn-red-mode {
-            background-color: #dc2626;
-            color: white;
-        }
-
-        .btn-teal-mode {
-            background-color: #0d9488;
-            color: white;
-        }
-
-        .btn-green-mode {
-            background-color: #16a34a;
-            color: white;
         }
 
         .btn-all-mode {
             background-color: #64748b;
             color: white;
-            display: block !important;
+            display: block;
         }
 
-        .btn-copy-action:hover {
+        .btn-all-mode:hover {
             opacity: 0.9;
         }
 
-        /* [SEO & 애드센스 고유 콘텐츠 보강 섹션] */
+        /* 스플릿 드롭다운 복사 버튼 컴포넌트 */
+        .split-btn-container {
+            position: relative;
+            display: inline-flex;
+            vertical-align: middle;
+        }
+
+        .btn-main-copy {
+            background-color: #ea580c;
+            color: #ffffff;
+            border: 1px solid #c2410c;
+            border-right: none;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-dropdown-toggle {
+            background-color: #ea580c;
+            color: #ffffff;
+            border: 1px solid #c2410c;
+            padding: 6px 8px;
+            font-size: 11px;
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            cursor: pointer;
+            border-left: 1px solid rgba(255, 255, 255, 0.3);
+            transition: background 0.15s;
+        }
+
+        .btn-main-copy:hover,
+        .btn-dropdown-toggle:hover {
+            background-color: #c2410c;
+        }
+
+        .copy-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 5px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+            z-index: 1000;
+            min-width: 175px;
+            padding: 6px 0;
+        }
+
+        .copy-dropdown-menu.show {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dropdown-group-title {
+            font-size: 11px;
+            color: #94a3b8;
+            padding: 4px 12px;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+            user-select: none;
+        }
+
+        .copy-dropdown-menu button {
+            background: none;
+            border: none;
+            text-align: left;
+            padding: 7px 12px;
+            font-size: 12px;
+            color: #334155;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            box-sizing: border-box;
+            transition: background 0.12s;
+        }
+
+        .copy-dropdown-menu button:hover {
+            background-color: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: #e2e8f0;
+            margin: 5px 0;
+        }
+
+        /* SEO & 가이드 영역 */
         .seo-article-box {
             margin-top: 48px;
             background: #ffffff;
@@ -697,10 +775,23 @@
                 <div class="result-header">
                     <span>차이점 비교 결과 (Diff Result)</span>
                     <div class="copy-btn-group">
-                        <button id="btn-copy-del" class="btn-copy-action btn-orange-mode" onclick="copySelectiveDiffResult('del')">[원본] 변경된 줄 전체 복사</button>
-                        <button id="btn-copy-del-only" class="btn-copy-action btn-red-mode" onclick="copySelectiveDiffResult('del-only')">[원본] 지워진 글자만 복사</button>
-                        <button id="btn-copy-ins" class="btn-copy-action btn-teal-mode" onclick="copySelectiveDiffResult('ins')">[수정본] 변경된 줄 전체 복사</button>
-                        <button id="btn-copy-ins-only" class="btn-copy-action btn-green-mode" onclick="copySelectiveDiffResult('ins-only')">[수정본] 추가된 글자만 복사</button>
+                        <div class="split-btn-container" id="split-btn-box" style="display: none;">
+                            <button class="btn-main-copy" onclick="copySelectiveDiffResult('combo')">
+                                변경점 요약 복사
+                            </button>
+                            <button class="btn-dropdown-toggle" onclick="toggleCopyMenu(event)">
+                                ▾
+                            </button>
+                            <div class="copy-dropdown-menu" id="copy-dropdown-menu">
+                                <div class="dropdown-group-title">원본 기준</div>
+                                <button onclick="copySelectiveDiffResult('del')">[원본] 변경된 줄 전체</button>
+                                <button onclick="copySelectiveDiffResult('del-only')">[원본] 지워진 글자만</button>
+                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-group-title">수정본 기준</div>
+                                <button onclick="copySelectiveDiffResult('ins')">[수정본] 변경된 줄 전체</button>
+                                <button onclick="copySelectiveDiffResult('ins-only')">[수정본] 추가된 글자만</button>
+                            </div>
+                        </div>
                         <button class="btn-copy-action btn-all-mode" onclick="copySelectiveDiffResult('all')">비교 결과 전체 복사</button>
                     </div>
                 </div>
@@ -712,21 +803,20 @@
                 </div>
             </div>
 
-            <!-- [애드센스 승인용 고유 텍스트 & 실무 원리 가이드 영역] -->
             <article class="seo-article-box">
                 <h2>텍스트 및 소스코드 비교기(Diff Checker)의 동작 원리</h2>
                 <p><strong>DevWorKit 텍스트 & 코드 비교기</strong>는 두 개의 문서나 소스코드 파일 간의 차이점(Diff)을 실시간으로 추적하여 삭제된 부분(빨간색 취소선)과 추가된 부분(초록색 밑줄)을 시각화해 주는 웹 기반 대조 유틸리티입니다.</p>
 
                 <h3>1. Myers Diff 알고리즘 기반 단어/라인 단위 비교</h3>
-                <p>본 도구는 Git 등 현대 버전 관리 시스템에서 표준으로 사용하는 <strong>Myers Diff 알고리즘</strong>을 클라이언트 사이드 자바스크립트 엔진으로 최적화하여 동작합니다. 단순히 줄 전체가 같은지 다른지를 판별하는 수준을 넘어, 특정 문장 내부에서 어떤 단어와 공백, 부호가 수정되었는지를 정밀하게 감지합니다.</p>
+                <p>본 도구는 Git 등 현대 버전 관리 시스템에서 표준으로 사용하는 <strong>Myers Diff 알고리즘</strong>을 클라이언트 사이드 자바스크립트 엔진으로 최적화하여 동작합니다. 특정 문장 내부에서 어떤 단어와 공백, 부호가 수정되었는지를 정밀하게 감지합니다.</p>
                 <ul>
-                    <li><strong>문서 일치율(Similarity Ratio) 계산:</strong> 두 문서 간의 공통 문자열 길이와 전체 텍스트 길이를 수학적으로 연산하여 최종 일치율(%)을 제공합니다.</li>
-                    <li><strong>선택적 변경 사항 필터링:</strong> '변경된 줄만 필터링해서 보기' 옵션을 활성화하면 변경이 없는 수백 줄의 코드를 숨기고 수정된 라인만 집중 검토할 수 있습니다.</li>
-                    <li><strong>공백 및 대소문자 무시 옵션:</strong> 탭(Tab)과 스페이스(Space)의 단순 혼용이나 영문 대소문자 변경으로 인한 불필요한 차이점 경고를 유연하게 배제할 수 있습니다.</li>
+                    <li><strong>문서 일치율(Similarity Ratio) 계산:</strong> 두 문서 간의 공통 문자열 길이와 전체 텍스트 길이를 연산하여 일치율(%)을 제공합니다.</li>
+                    <li><strong>선택적 변경 사항 필터링:</strong> '변경된 줄만 필터링해서 보기' 옵션을 활성화하면 수정된 라인만 집중 검토할 수 있습니다.</li>
+                    <li><strong>공백 및 대소문자 무시 옵션:</strong> 탭/스페이스 단순 혼용이나 영문 대소문자 차이를 유연하게 배제할 수 있습니다.</li>
                 </ul>
 
                 <h3>2. 실무 활용 팁: 코드 리뷰와 계약서 수정 검토</h3>
-                <p>개발자는 로컬 환경에서 Git 커밋 전 임시 스니펫 대조나 API JSON 응답 값의 변화를 추적할 때 유용하며, 일반 사무직 및 기획자는 약관, 계약서, 기안서의 초안과 수정본 간 문구 변동 사항을 누락 없이 파악할 때 효과적입니다.</p>
+                <p>개발자는 로컬 환경에서 임시 스니펫 대조나 API JSON 응답 값의 변화를 추적할 때 유용하며, 일반 사무직 및 기획자는 약관, 계약서 초안과 수정본 간 문구 변동 사항을 누락 없이 파악할 때 효과적입니다.</p>
 
                 <h3>3. 자주 묻는 질문 (FAQ)</h3>
                 <div class="faq-item">
@@ -735,7 +825,7 @@
                 </div>
                 <div class="faq-item">
                     <div class="faq-q">Q. 추가되거나 삭제된 부분만 따로 모아서 복사할 수 있나요?</div>
-                    <div class="faq-a">A. 네, 가능합니다. <strong>[변경된 줄만 필터링해서 보기]</strong>를 체크하면 우측 상단에 <strong>[수정본] 추가된 글자만 복사</strong> 또는 <strong>[원본] 지워진 글자만 복사</strong> 버튼이 활성화되어 필요한 데이터만 클립보드로 추출할 수 있습니다.</div>
+                    <div class="faq-a">A. 네, 가능합니다. <strong>[변경점 요약 복사]</strong> 옆의 화살표 버튼(▾)을 누르면 원본 기준 지워진 글자, 수정본 기준 추가된 글자만 분리하여 추출할 수 있습니다.</div>
                 </div>
             </article>
         </div>
@@ -890,14 +980,31 @@
             if (document.getElementById('similarity-dashboard').style.display === 'flex') executeDiffCheckerEngine();
         }
 
+        function toggleCopyMenu(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('copy-dropdown-menu');
+            menu.classList.toggle('show');
+        }
+
+        // 드롭다운 외부 클릭 시 닫기
+        window.addEventListener('click', (e) => {
+            const menu = document.getElementById('copy-dropdown-menu');
+            if (menu && menu.classList.contains('show')) {
+                menu.classList.remove('show');
+            }
+        });
+
         function executeDiffCheckerEngine() {
             let sourceLeft = document.getElementById('text-left').value;
             let sourceRight = document.getElementById('text-right').value;
             const tableBody = document.getElementById('diff-table-body'),
-                dashboard = document.getElementById('similarity-dashboard');
+                dashboard = document.getElementById('similarity-dashboard'),
+                splitBtn = document.getElementById('split-btn-box');
+
             if (!sourceLeft && !sourceRight) {
                 tableBody.innerHTML = '<div class="diff-row"><div class="diff-num">-</div><div class="diff-text row-empty">입력된 데이터가 없습니다.</div></div>';
                 dashboard.style.display = 'none';
+                if (splitBtn) splitBtn.style.display = 'none';
                 return;
             }
             const EngineClass = window.diff_match_patch || diff_match_patch;
@@ -964,6 +1071,7 @@
             } catch (err) {
                 tableBody.innerHTML = '<div class="diff-row"><div class="diff-num">-</div><div class="diff-text row-empty">연산 오류 발생</div></div>';
                 dashboard.style.display = 'none';
+                if (splitBtn) splitBtn.style.display = 'none';
             }
         }
 
@@ -973,18 +1081,34 @@
                 if (showOnly && row.getAttribute('data-changed') !== 'true' && row.querySelector('.diff-num').innerText !== '-') row.classList.add('hide');
                 else row.classList.remove('hide');
             });
-            document.querySelectorAll('.btn-orange-mode, .btn-red-mode, .btn-teal-mode, .btn-green-mode').forEach(b => b.style.display = showOnly ? 'block' : 'none');
+            const splitBtn = document.getElementById('split-btn-box');
+            if (splitBtn) splitBtn.style.display = showOnly ? 'inline-flex' : 'none';
         }
 
         function copySelectiveDiffResult(mode) {
             const rows = document.querySelectorAll('#diff-table-body .diff-row');
             let acc = [];
+
             rows.forEach(row => {
                 if (row.classList.contains('hide')) return;
                 const textNode = row.querySelector('.diff-text');
+                const numNode = row.querySelector('.diff-num');
+
                 if (textNode && !textNode.classList.contains('row-empty')) {
                     const clone = textNode.cloneNode(true);
-                    if (mode === 'ins') {
+                    const lineNum = numNode ? numNode.innerText.trim() : '';
+
+                    if (mode === 'combo') {
+                        const dels = Array.from(clone.querySelectorAll('del')).map(d => d.innerText).join(' ');
+                        const inss = Array.from(clone.querySelectorAll('ins')).map(i => i.innerText).join(' ');
+
+                        if (dels || inss) {
+                            acc.push(`[Ln ${lineNum}]`);
+                            if (dels) acc.push(`- 삭제: ${dels}`);
+                            if (inss) acc.push(`+ 추가: ${inss}`);
+                            acc.push('');
+                        }
+                    } else if (mode === 'ins') {
                         clone.querySelectorAll('del').forEach(d => d.remove());
                         acc.push(clone.innerText);
                     } else if (mode === 'del') {
@@ -994,16 +1118,19 @@
                         clone.querySelectorAll('ins').forEach(i => acc.push(i.innerText));
                     } else if (mode === 'del-only') {
                         clone.querySelectorAll('del').forEach(d => acc.push(d.innerText));
-                    } else {
-                        acc.push(clone.innerText);
+                    } else if (mode === 'all') {
+                        clone.querySelectorAll('del').forEach(d => d.replaceWith(`[-${d.innerText}-]`));
+                        clone.querySelectorAll('ins').forEach(i => i.replaceWith(`[+${i.innerText}+]`));
+                        acc.push(`${lineNum ? lineNum + ': ' : ''}${clone.innerText}`);
                     }
                 }
             });
+
             if (!acc.length) {
                 alert("복사할 내용이 없습니다.");
                 return;
             }
-            navigator.clipboard.writeText(acc.join('\n')).then(() => alert("복사되었습니다!"));
+            navigator.clipboard.writeText(acc.join('\n')).then(() => alert("클립보드에 복사되었습니다!"));
         }
 
         window.onload = () => {
