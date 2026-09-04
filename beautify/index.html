@@ -196,7 +196,6 @@
             height: 100%;
         }
 
-        /* 좌우 헤더 높이 및 수직 축 완전 일치 */
         .panel-header {
             display: flex;
             justify-content: space-between;
@@ -355,7 +354,6 @@
             background: #e2e8f0;
         }
 
-        /* [SEO & 애드센스 고유 콘텐츠 보강 섹션] */
         .seo-article-box {
             margin-top: 48px;
             background: #ffffff;
@@ -642,6 +640,7 @@
         const codeUndoStack = [];
         const codeRedoStack = [];
         let codeHistoryTimer = null;
+        let formatDebounceTimer = null;
 
         function recordCodeHistory() {
             const el = document.getElementById('raw-code');
@@ -700,10 +699,13 @@
         }
 
         function handleCodeInput() {
+            updateInputStatus();
+
             if (document.getElementById('auto-update').checked) {
-                runFormat();
-            } else {
-                updateInputStatus();
+                clearTimeout(formatDebounceTimer);
+                formatDebounceTimer = setTimeout(() => {
+                    runFormat();
+                }, 200);
             }
 
             clearTimeout(codeHistoryTimer);
@@ -855,6 +857,13 @@
             updateLineNumbers('formatted-code', 'output-line-numbers', false);
         }
 
+        function getSafeBeautifyEngine(type) {
+            if (type === 'html' && typeof window.html_beautify === 'function') return window.html_beautify;
+            if (type === 'js' && typeof window.js_beautify === 'function') return window.js_beautify;
+            if (type === 'css' && typeof window.css_beautify === 'function') return window.css_beautify;
+            return null;
+        }
+
         function runFormat() {
             const raw = document.getElementById('raw-code').value;
             const out = document.getElementById('formatted-code');
@@ -871,6 +880,12 @@
                 return;
             }
 
+            const beautifyFn = getSafeBeautifyEngine(currentLang);
+            if (!beautifyFn) {
+                out.value = '포맷터 엔진(js-beautify CDN) 로드 실패\n네트워크 상태나 광고 차단기 설정을 확인해주세요.';
+                return;
+            }
+
             const indentVal = document.getElementById('indent-select').value;
             const opts = {
                 indent_size: indentVal === 'tab' ? 1 : parseInt(indentVal),
@@ -881,13 +896,7 @@
             };
 
             try {
-                if (currentLang === 'html' && window.html_beautify) {
-                    out.value = html_beautify(raw, opts);
-                } else if (currentLang === 'js' && window.js_beautify) {
-                    out.value = js_beautify(raw, opts);
-                } else if (currentLang === 'css' && window.css_beautify) {
-                    out.value = css_beautify(raw, opts);
-                }
+                out.value = beautifyFn(raw, opts);
             } catch (e) {
                 out.value = '코드 정렬 오류:\n' + e.message;
             }
@@ -967,15 +976,18 @@
             URL.revokeObjectURL(url);
         }
 
+        // [수정 완료]: 샘플 로드 시 디바운스 대기 없이 즉시 동기 실행하도록 변경
         function loadSample() {
             const el = document.getElementById('raw-code');
+            clearTimeout(formatDebounceTimer); // 대기 중이던 디바운스 즉시 취소
             el.value = samples[currentLang] || '';
             recordCodeHistory();
-            runFormat();
+            runFormat(); // 즉시 동기 실행
         }
 
         function clearAll() {
             const el = document.getElementById('raw-code');
+            clearTimeout(formatDebounceTimer);
             el.value = '';
             document.getElementById('formatted-code').value = '';
             recordCodeHistory();
