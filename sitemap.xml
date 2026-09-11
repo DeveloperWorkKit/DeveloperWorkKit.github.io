@@ -93,61 +93,61 @@
 
   <!-- 3. 기술 블로그 허브 및 가이드 9종 -->
   <url>
-    <loc>https://developerworkkit.github.io/blog/</loc>
+    <loc>https://developerworkkit.github.io/guide/</loc>
     <lastmod>2026-08-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://developerworkkit.github.io/blog/markdown-guide.html</loc>
+    <loc>https://developerworkkit.github.io/guide/markdown-guide.html</loc>
     <lastmod>2026-08-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://developerworkkit.github.io/blog/coder-guide.html</loc>
+    <loc>https://developerworkkit.github.io/guide/coder-guide.html</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://developerworkkit.github.io/blog/json-guide.html</loc>
+    <loc>https://developerworkkit.github.io/guide/json-guide.html</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://developerworkkit.github.io/blog/strget-guide.html</loc>
+    <loc>https://developerworkkit.github.io/guide/strget-guide.html</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://developerworkkit.github.io/blog/time-guide.html</loc>
+    <loc>https://developerworkkit.github.io/guide/time-guide.html</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://developerworkkit.github.io/blog/hash-guide.html</loc>
+    <loc>https://developerworkkit.github.io/guide/hash-guide.html</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://developerworkkit.github.io/blog/beautify-guide.html</loc>
+    <loc>https://developerworkkit.github.io/guide/beautify-guide.html</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://developerworkkit.github.io/blog/cron-guide.html</loc>
+    <loc>https://developerworkkit.github.io/guide/cron-guide.html</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://developerworkkit.github.io/blog/color-guide.html</loc>
+    <loc>https://developerworkkit.github.io/guide/color-guide.html</loc>
     <lastmod>2026-08-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
