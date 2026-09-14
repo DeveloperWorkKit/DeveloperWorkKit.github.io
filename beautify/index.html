@@ -815,12 +815,13 @@
             }
             try {
                 localStorage.setItem('dwk_preview_html', raw);
-                window.open('./view.html', '_blank');
+                const win = window.open('./view.html', '_blank');
+                // 브라우저 차단 시 안내
+                if (!win) alert('팝업 차단을 해제해주세요.');
             } catch (e) {
-                // 용량 초과 등의 예외 시 Blob URL 폴백
-                const blob = new Blob([raw], { type: 'text/html;charset=utf-8' });
-                const blobUrl = URL.createObjectURL(blob);
-                window.open(blobUrl, '_blank');
+                // 5MB 용량 초과 시 세션 기반 백업
+                sessionStorage.setItem('dwk_preview_html', raw);
+                window.open('./view.html', '_blank');
             }
         }
 
