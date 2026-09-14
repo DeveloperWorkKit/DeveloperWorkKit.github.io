@@ -26,7 +26,7 @@
         /* 플로팅 컨트롤 바 (기본 위치 하향: top 26px) */
         .viewer-floating-bar {
             position: fixed;
-            top: 26px;
+            top: 60px;
             right: 20px;
             z-index: 2147483647;
             display: flex;
@@ -267,6 +267,12 @@
             if (isActive) {
                 const area = document.getElementById('source-view-area');
                 area.value = currentHtmlCode;
+                
+                // 드래그(선택)를 걸지 않고, 스크롤과 커서를 맨 첫 줄(0, 0)로 정렬
+                area.setSelectionRange(0, 0);
+                area.scrollTop = 0;
+                area.scrollLeft = 0;
+
                 setTimeout(() => {
                     area.focus();
                 }, 50);
