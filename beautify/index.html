@@ -808,18 +808,19 @@
         }
 
         function openInNewTab() {
-            const raw = document.getElementById('raw-code').value;
+            const raw = document.getElementById('formatted-code').value || document.getElementById('raw-code').value;
             if (!raw.trim()) {
                 alert('전체화면으로 실행할 HTML 코드가 없습니다.');
                 return;
             }
-            const newWin = window.open('', '_blank');
-            if (newWin) {
-                newWin.document.open();
-                newWin.document.write(raw);
-                newWin.document.close();
-            } else {
-                alert('브라우저 팝업 차단을 해제해주세요.');
+            try {
+                localStorage.setItem('dwk_preview_html', raw);
+                window.open('./view.html', '_blank');
+            } catch (e) {
+                // 용량 초과 등의 예외 시 Blob URL 폴백
+                const blob = new Blob([raw], { type: 'text/html;charset=utf-8' });
+                const blobUrl = URL.createObjectURL(blob);
+                window.open(blobUrl, '_blank');
             }
         }
 
