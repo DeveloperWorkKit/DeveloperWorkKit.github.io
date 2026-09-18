@@ -241,28 +241,72 @@
         .find-btn:hover { background: #e2e8f0; }
         .find-count-badge { font-size: 11px; color: #64748b; font-weight: 600; min-width: 45px; }
 
-        .source-textarea {
+        /* 에디터 컨테이너 (백드롭 + 텍스트에어리어 겹침 레이아웃) */
+        .editor-stage {
+            position: relative;
             flex: 1;
             width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        /* 💡 뒤편에서 노란색 형광펜을 그려주는 백드롭 레이어 */
+        .source-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 16px;
+            box-sizing: border-box;
+            font-family: Consolas, Monaco, "Courier New", monospace !important;
+            font-size: 13px !important;
+            line-height: 20.8px !important;
+            white-space: pre;
+            overflow: hidden;
+            color: transparent;
+            pointer-events: none;
+            user-select: none;
+            z-index: 1;
+        }
+
+        /* 검색된 일치 단어 전체 (밝은 노란색 형광펜) */
+        .source-backdrop mark.search-match {
+            background-color: #fef08a !important; /* Yellow-200 */
+            color: transparent !important;
+            border-radius: 2px;
+        }
+
+        /* 현재 선택된 활성 단어 (쨍한 주황/호박색 형광펜) */
+        .source-backdrop mark.search-match.current {
+            background-color: #f59e0b !important; /* Amber-500 */
+            box-shadow: 0 0 0 1px #b45309;
+        }
+
+        /* 앞단의 실제 편집 textarea (배경 투명화) */
+        .source-textarea {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
             border: none;
             padding: 16px;
             box-sizing: border-box;
-            font-family: Consolas, Monaco, "Courier New", monospace;
-            font-size: 13px;
-            line-height: 1.6;
+            font-family: Consolas, Monaco, "Courier New", monospace !important;
+            font-size: 13px !important;
+            line-height: 20.8px !important;
             color: #0f172a;
-            background: #ffffff;
+            background: transparent !important;
             resize: none;
             outline: none;
             white-space: pre;
             overflow: auto;
             tab-size: 4;
-        }
-
-        /* 💡 포커스를 잃어도 형광펜(Selection)이 선명하게 남아있도록 강제 스타일 지정 */
-        .source-textarea::selection {
-            background-color: #0284c7 !important;
-            color: #ffffff !important;
+            z-index: 2;
         }
 
         .btn-modal-action {
@@ -317,7 +361,12 @@
                 <button type="button" class="find-btn" onclick="closeFindBar()" style="margin-left:auto;">닫기 (Esc)</button>
             </div>
 
-            <textarea id="source-view-area" class="source-textarea" spellcheck="false" placeholder="HTML 코드를 입력하면 실시간으로 반영됩니다..."></textarea>
+            <div class="editor-stage">
+                <!-- 형광펜 레이어 -->
+                <div id="source-backdrop" class="source-backdrop"></div>
+                <!-- 실제 코드 에디터 -->
+                <textarea id="source-view-area" class="source-textarea" spellcheck="false" placeholder="HTML 코드를 입력하면 실시간으로 반영됩니다..."></textarea>
+            </div>
         </div>
     </div>
 
@@ -431,10 +480,28 @@
         }
 
         // ==========================================
-        // 🔍 [모달 전용 인앱 검색 엔진 - 포커스 보존 & 형광펜 동기화]
+        // 🔍 [오버레이 기반 리얼 노란색 형광펜 검색 엔진]
         // ==========================================
         let findMatches = [];
         let currentFindIdx = -1;
+
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        // 스크롤 완벽 1:1 미러링 동기화
+        function syncBackdropScroll() {
+            const area = document.getElementById('source-view-area');
+            const backdrop = document.getElementById('source-backdrop');
+            if (area && backdrop) {
+                backdrop.scrollTop = area.scrollTop;
+                backdrop.scrollLeft = area.scrollLeft;
+            }
+        }
 
         function openFindBar() {
             const bar = document.getElementById('modal-find-bar');
@@ -459,6 +526,11 @@
         function closeFindBar() {
             const bar = document.getElementById('modal-find-bar');
             if (bar) bar.classList.remove('active');
+            
+            // 형광펜 흔적 제거
+            const backdrop = document.getElementById('source-backdrop');
+            if (backdrop) backdrop.innerHTML = '';
+
             const area = document.getElementById('source-view-area');
             if (area) area.focus();
         }
@@ -466,8 +538,9 @@
         function executeFind() {
             const input = document.getElementById('find-input');
             const area = document.getElementById('source-view-area');
+            const backdrop = document.getElementById('source-backdrop');
             const countBadge = document.getElementById('find-count');
-            if (!input || !area || !countBadge) return;
+            if (!input || !area || !backdrop || !countBadge) return;
 
             const query = input.value;
             findMatches = [];
@@ -475,61 +548,81 @@
 
             if (!query) {
                 countBadge.innerText = '0/0';
+                backdrop.innerHTML = '';
                 return;
             }
 
-            const text = area.value.toLowerCase();
+            const rawText = area.value;
             const q = query.toLowerCase();
+            const textLower = rawText.toLowerCase();
             let from = 0;
 
-            while (from <= text.length - q.length) {
-                const idx = text.indexOf(q, from);
+            while (from <= textLower.length - q.length) {
+                const idx = textLower.indexOf(q, from);
                 if (idx === -1) break;
-                findMatches.push(idx);
+                findMatches.push({ start: idx, len: q.length });
                 from = idx + q.length;
             }
 
             if (findMatches.length > 0) {
                 const curPos = area.selectionStart;
-                let nearest = findMatches.findIndex(pos => pos >= curPos);
+                let nearest = findMatches.findIndex(m => m.start >= curPos);
                 currentFindIdx = nearest !== -1 ? nearest : 0;
-                highlightCurrentMatch(false);
+                renderHighlights();
             } else {
                 countBadge.innerText = '0/0';
+                backdrop.innerHTML = '';
             }
         }
 
         function navigateFind(direction) {
             if (findMatches.length === 0) return;
             currentFindIdx = (currentFindIdx + direction + findMatches.length) % findMatches.length;
-            highlightCurrentMatch(false);
+            renderHighlights();
         }
 
-        function highlightCurrentMatch(focusEditor = false) {
-            if (currentFindIdx < 0 || currentFindIdx >= findMatches.length) return;
-
+        // 🎨 백드롭에 실제 노란색(전체) / 주황색(현재) 형광펜 마킹 주입
+        function renderHighlights() {
             const area = document.getElementById('source-view-area');
+            const backdrop = document.getElementById('source-backdrop');
             const input = document.getElementById('find-input');
             const countBadge = document.getElementById('find-count');
-            const matchPos = findMatches[currentFindIdx];
-            const qLen = input.value.length;
+            if (!area || !backdrop || !input) return;
 
             countBadge.innerText = `${currentFindIdx + 1}/${findMatches.length}`;
 
-            // 에디터 영역 스크롤 자동 이동
-            const textBefore = area.value.substring(0, matchPos);
-            const lineNum = textBefore.split('\n').length;
-            const approxScrollTop = (lineNum - 6) * 20.8;
-            area.scrollTop = Math.max(0, approxScrollTop);
+            const rawText = area.value;
+            let html = '';
+            let lastIdx = 0;
 
-            // 포커스를 뺏지 않고 셀렉션 범위를 설정하여 파란색 형광펜 활성화
-            area.setSelectionRange(matchPos, matchPos + qLen);
-            
-            if (focusEditor) {
-                area.focus();
-            } else {
-                input.focus();
+            findMatches.forEach((m, idx) => {
+                // 이전 일반 텍스트
+                html += escapeHtml(rawText.substring(lastIdx, m.start));
+                
+                // 일치 텍스트 (현재 선택된 단어는 active/주황색, 나머지는 일반 노란색)
+                const matchedStr = escapeHtml(rawText.substring(m.start, m.start + m.len));
+                const isCurrent = idx === currentFindIdx;
+                html += `<mark class="search-match ${isCurrent ? 'current' : ''}">${matchedStr}</mark>`;
+                
+                lastIdx = m.start + m.len;
+            });
+
+            // 남은 끝 텍스트
+            html += escapeHtml(rawText.substring(lastIdx));
+            backdrop.innerHTML = html;
+
+            // 현재 일치 지점으로 에디터 스크롤 부드럽게 정렬
+            if (currentFindIdx >= 0 && currentFindIdx < findMatches.length) {
+                const target = findMatches[currentFindIdx];
+                const textBefore = rawText.substring(0, target.start);
+                const lineNum = textBefore.split('\n').length;
+                const approxScrollTop = Math.max(0, (lineNum - 6) * 20.8);
+                area.scrollTop = approxScrollTop;
+                syncBackdropScroll();
             }
+
+            // 검색창 포커스 계속 유지
+            input.focus();
         }
 
         function setupLiveEditor() {
@@ -551,6 +644,9 @@
                 }
             };
 
+            // 에디터 스크롤할 때 형광펜 레이어도 함께 스크롤
+            area.addEventListener('scroll', syncBackdropScroll);
+
             area.addEventListener('input', () => {
                 if (badge) {
                     badge.innerText = '반영 중...';
@@ -558,6 +654,12 @@
                 }
                 clearTimeout(saveDebounceTimer);
                 saveDebounceTimer = setTimeout(applyChanges, 150);
+
+                // 코드 타이핑 중 검색창이 켜져 있다면 형광펜 위치도 실시간 재계산
+                const findBar = document.getElementById('modal-find-bar');
+                if (findBar && findBar.classList.contains('active')) {
+                    executeFind();
+                }
             });
 
             area.addEventListener('keydown', (e) => {
