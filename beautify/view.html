@@ -352,9 +352,9 @@
                 </div>
             </div>
 
-            <!-- 모달 전용 인앱 검색 바 -->
+            <!-- 모달 전용 인앱 검색 바 (브라우저 자동완성 팝업 완벽 차단) -->
             <div id="modal-find-bar" class="modal-find-box">
-                <input type="text" id="find-input" class="find-input" placeholder="코드 검색 (Enter: 다음, Shift+Enter: 이전)">
+                <input type="text" id="find-input" class="find-input" placeholder="코드 검색 (Enter: 다음, Shift+Enter: 이전)" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true">
                 <span id="find-count" class="find-count-badge">0/0</span>
                 <button type="button" class="find-btn" onclick="navigateFind(-1)">▲ 이전</button>
                 <button type="button" class="find-btn" onclick="navigateFind(1)">▼ 다음</button>
