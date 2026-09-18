@@ -6,6 +6,12 @@
     <title>웹 뷰어 미리보기 | DevWorKit</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>">
     <style>
+        :root {
+            --primary-blue: #0284c7;
+            --primary-blue-hover: #0369a1;
+            --border-color: #e2e8f0;
+        }
+
         html, body {
             margin: 0;
             padding: 0;
@@ -27,9 +33,50 @@
             pointer-events: none !important;
         }
 
+        /* 🔘 누락되었던 버튼 공통 스타일 완전 복구 (버튼 투명화/사라짐 방지) */
+        .btn {
+            padding: 7px 12px;
+            font-size: 12.5px;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            background-color: #ffffff;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #334155;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.15s;
+        }
+        .btn:hover { background-color: #f1f5f9; }
+        .btn-sm { padding: 4px 8px; font-size: 11.5px; white-space: nowrap; }
+        .btn-primary {
+            background-color: var(--primary-blue) !important;
+            color: #ffffff !important;
+            border-color: var(--primary-blue) !important;
+            display: inline-flex !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        .btn-primary:hover { background-color: var(--primary-blue-hover) !important; }
+        .btn-run-big {
+            width: 100% !important;
+            padding: 11px !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            justify-content: center !important;
+            border-radius: 6px !important;
+            margin-top: 8px !important;
+            display: flex !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            flex-shrink: 0 !important;
+        }
+
+        /* 툴바 스타일 */
         .viewer-floating-bar {
             position: fixed;
-            top: 60px;
+            top: 26px;
             right: 20px;
             z-index: 2147483647;
             display: flex;
@@ -60,10 +107,7 @@
             transition: color 0.15s;
         }
 
-        .drag-handle:hover {
-            color: #38bdf8;
-        }
-
+        .drag-handle:hover { color: #38bdf8; }
         .viewer-floating-bar.dragging {
             cursor: grabbing !important;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
@@ -90,6 +134,7 @@
             color: #38bdf8;
         }
 
+        /* 모달 오버레이 */
         .source-modal-overlay {
             display: none;
             position: fixed;
@@ -103,9 +148,7 @@
             box-sizing: border-box;
         }
 
-        .source-modal-overlay.active {
-            display: flex;
-        }
+        .source-modal-overlay.active { display: flex; }
 
         .source-modal-card {
             background: #ffffff;
@@ -151,17 +194,10 @@
             transition: all 0.2s;
         }
 
-        .save-status-badge.saved {
-            background: #dcfce7;
-            color: #166534;
-        }
+        .save-status-badge.saved { background: #dcfce7; color: #166534; }
+        .save-status-badge.editing { background: #fef3c7; color: #92400e; }
 
-        .save-status-badge.editing {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        /* 🔍 Ctrl+F 시에만 열리는 전용 인앱 검색 바 */
+        /* 🔍 Ctrl+F 검색 바 */
         .modal-find-box {
             display: none;
             align-items: center;
@@ -169,13 +205,10 @@
             background: #f1f5f9;
             padding: 6px 16px;
             border-bottom: 1px solid #cbd5e1;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04);
             font-size: 12px;
         }
 
-        .modal-find-box.active {
-            display: flex;
-        }
+        .modal-find-box.active { display: flex; }
 
         .find-input {
             padding: 5px 8px;
@@ -205,16 +238,8 @@
             transition: all 0.15s;
         }
 
-        .find-btn:hover {
-            background: #e2e8f0;
-        }
-
-        .find-count-badge {
-            font-size: 11px;
-            color: #64748b;
-            font-weight: 600;
-            min-width: 45px;
-        }
+        .find-btn:hover { background: #e2e8f0; }
+        .find-count-badge { font-size: 11px; color: #64748b; font-weight: 600; min-width: 45px; }
 
         .source-textarea {
             flex: 1;
@@ -234,6 +259,12 @@
             tab-size: 4;
         }
 
+        /* 💡 포커스를 잃어도 형광펜(Selection)이 선명하게 남아있도록 강제 스타일 지정 */
+        .source-textarea::selection {
+            background-color: #0284c7 !important;
+            color: #ffffff !important;
+        }
+
         .btn-modal-action {
             padding: 6px 12px;
             font-size: 12px;
@@ -246,29 +277,11 @@
             transition: all 0.15s;
         }
 
-        .btn-modal-action:hover {
-            background: #f1f5f9;
-        }
-
-        .btn-modal-primary {
-            background: #0284c7;
-            color: #ffffff;
-            border-color: #0284c7;
-        }
-
-        .btn-modal-primary:hover {
-            background: #0369a1;
-        }
-
-        .btn-modal-danger {
-            background: #fef2f2;
-            color: #b91c1c;
-            border-color: #fecaca;
-        }
-
-        .btn-modal-danger:hover {
-            background: #fee2e2;
-        }
+        .btn-modal-action:hover { background: #f1f5f9; }
+        .btn-modal-primary { background: #0284c7; color: #ffffff; border-color: #0284c7; }
+        .btn-modal-primary:hover { background: #0369a1; }
+        .btn-modal-danger { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+        .btn-modal-danger:hover { background: #fee2e2; }
     </style>
 </head>
 <body>
@@ -289,13 +302,13 @@
                     <span class="save-status-badge" id="save-status-badge">동기화됨</span>
                 </div>
                 <div style="display: flex; gap: 6px;">
-                    <button class="btn-modal-action btn-modal-danger" onclick="resetToOriginal()" title="사용자 편집 내용을 지우고 뷰티파이어 원본 코드로 되돌립니다.">↩️ 원본 복원</button>
+                    <button class="btn-modal-action btn-modal-danger" onclick="resetToOriginal()" title="수정 내용을 지우고 뷰티파이어 원본 코드로 되돌립니다.">↩️ 원본 복원</button>
                     <button class="btn-modal-action btn-modal-primary" id="btn-modal-copy" onclick="copySourceCode()">전체 복사</button>
                     <button class="btn-modal-action" onclick="toggleSourceModal()">닫기 (Esc)</button>
                 </div>
             </div>
 
-            <!-- 평소에는 숨겨져 있다가 모달에서 Ctrl+F를 누를 때만 열림 -->
+            <!-- 모달 전용 인앱 검색 바 -->
             <div id="modal-find-bar" class="modal-find-box">
                 <input type="text" id="find-input" class="find-input" placeholder="코드 검색 (Enter: 다음, Shift+Enter: 이전)">
                 <span id="find-count" class="find-count-badge">0/0</span>
@@ -418,7 +431,7 @@
         }
 
         // ==========================================
-        // 🔍 [모달 전용 인앱 검색 엔진]
+        // 🔍 [모달 전용 인앱 검색 엔진 - 포커스 보존 & 형광펜 동기화]
         // ==========================================
         let findMatches = [];
         let currentFindIdx = -1;
@@ -480,7 +493,6 @@
                 const curPos = area.selectionStart;
                 let nearest = findMatches.findIndex(pos => pos >= curPos);
                 currentFindIdx = nearest !== -1 ? nearest : 0;
-                // 타이핑 중에는 포커스를 뺏지 않고 스크롤/위치만 미리보기
                 highlightCurrentMatch(false);
             } else {
                 countBadge.innerText = '0/0';
@@ -493,7 +505,6 @@
             highlightCurrentMatch(false);
         }
 
-        // keepFocusInInput 파라미터로 검색창의 포커스를 안전하게 지킴
         function highlightCurrentMatch(focusEditor = false) {
             if (currentFindIdx < 0 || currentFindIdx >= findMatches.length) return;
 
@@ -511,12 +522,12 @@
             const approxScrollTop = (lineNum - 6) * 20.8;
             area.scrollTop = Math.max(0, approxScrollTop);
 
-            // 본문 텍스트 선택 범위를 잡되, focusEditor가 true일 때만 포커스를 넘김
+            // 포커스를 뺏지 않고 셀렉션 범위를 설정하여 파란색 형광펜 활성화
             area.setSelectionRange(matchPos, matchPos + qLen);
+            
             if (focusEditor) {
                 area.focus();
             } else {
-                // 검색창 포커스 원상복구 유지
                 input.focus();
             }
         }
@@ -576,14 +587,12 @@
             const modal = document.getElementById('source-modal');
             const isModalOpen = modal && modal.classList.contains('active');
 
-            // 1. 모달이 열려 있을 때 Ctrl+F 누르면 브라우저 검색을 막고 모달 검색창 활성화
             if (isCtrl && (e.key === 'f' || e.key === 'F') && isModalOpen) {
                 e.preventDefault();
                 openFindBar();
                 return;
             }
 
-            // 2. Esc 처리: 검색창이 열려 있으면 검색창 먼저 닫고, 없으면 모달 닫기
             if (e.key === 'Escape') {
                 const findBar = document.getElementById('modal-find-bar');
                 if (findBar && findBar.classList.contains('active')) {
