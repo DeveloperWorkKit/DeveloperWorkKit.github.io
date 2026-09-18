@@ -23,14 +23,13 @@
             display: block;
         }
 
-        /* 플로팅 툴바 드래그 중 iframe이 마우스 포인터를 뺏어가지 못하도록 방어 */
         body.is-dragging-toolbar #render-frame {
             pointer-events: none !important;
         }
 
         .viewer-floating-bar {
             position: fixed;
-            top: 60px;
+            top: 26px;
             right: 20px;
             z-index: 2147483647;
             display: flex;
@@ -181,7 +180,7 @@
         }
 
         .btn-modal-action {
-            padding: 6px 14px;
+            padding: 6px 12px;
             font-size: 12px;
             font-weight: 700;
             border-radius: 6px;
@@ -205,19 +204,30 @@
         .btn-modal-primary:hover {
             background: #0369a1;
         }
+
+        .btn-modal-danger {
+            background: #fef2f2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+
+        .btn-modal-danger:hover {
+            background: #fee2e2;
+        }
     </style>
 </head>
 <body>
 
     <iframe id="render-frame" sandbox="allow-scripts allow-modals allow-same-origin allow-forms allow-popups"></iframe>
 
+    <!-- 상단 플로팅 툴바: [원본 복원] 제거 완료 -->
     <div class="viewer-floating-bar" id="floating-toolbar">
         <div class="drag-handle" id="drag-handle" title="마우스로 끌어서 원하는 위치로 이동">⠿</div>
         <button class="viewer-btn" onclick="toggleSourceModal()">✏️ HTML 소스 편집</button>
         <button class="viewer-btn" id="btn-quick-copy" onclick="copySourceCode()">📋 코드 복사</button>
-        <button class="viewer-btn" onclick="resetToOriginal()" title="사용자 편집 내용을 지우고 뷰티파이어 원본 코드로 되돌립니다.">↩️ 원본 복원</button>
     </div>
 
+    <!-- 소스코드 모달창: 헤더 내부에 [↩️ 원본 복원] 버튼 추가 -->
     <div class="source-modal-overlay" id="source-modal" onclick="closeModalOnBackdrop(event)">
         <div class="source-modal-card">
             <div class="source-modal-header">
@@ -225,7 +235,8 @@
                     <span class="source-modal-title">HTML 소스코드 편집</span>
                     <span class="save-status-badge" id="save-status-badge">동기화됨</span>
                 </div>
-                <div style="display: flex; gap: 8px;">
+                <div style="display: flex; gap: 6px;">
+                    <button class="btn-modal-action btn-modal-danger" onclick="resetToOriginal()" title="사용자 편집 내용을 지우고 뷰티파이어 원본 코드로 되돌립니다.">↩️ 원본 복원</button>
                     <button class="btn-modal-action btn-modal-primary" id="btn-modal-copy" onclick="copySourceCode()">전체 복사</button>
                     <button class="btn-modal-action" onclick="toggleSourceModal()">닫기 (Esc)</button>
                 </div>
@@ -240,7 +251,6 @@
         let currentHtmlCode = '';
         let saveDebounceTimer = null;
 
-        // 1. 순수 원본 가져오기 (절대 덮어쓰지 않음)
         function getOriginalCode() {
             try {
                 const local = localStorage.getItem(STORAGE_KEY);
@@ -253,7 +263,6 @@
             return '';
         }
 
-        // 2. 현재 상태 읽기: 사용자 수정본(USER_EDIT_KEY)이 있으면 1순위, 없으면 원본(STORAGE_KEY) 로드
         function getStoredCode() {
             try {
                 const edited = localStorage.getItem(USER_EDIT_KEY) || sessionStorage.getItem(USER_EDIT_KEY);
@@ -262,14 +271,12 @@
             return getOriginalCode();
         }
 
-        // 3. 사용자 수정본 저장: STORAGE_KEY는 절대 건드리지 않고 오직 USER_EDIT_KEY에만 안전 기록!
         function persistCode(code) {
             if (!code || !code.trim()) return;
             try { localStorage.setItem(USER_EDIT_KEY, code); } catch (e) {}
             try { sessionStorage.setItem(USER_EDIT_KEY, code); } catch (e) {}
         }
 
-        // 4. 화면 주입
         function renderToFrame(code) {
             const frame = document.getElementById('render-frame');
             if (!frame) return;
@@ -286,15 +293,15 @@
             renderToFrame(currentHtmlCode);
         }
 
-        // 5. ↩️ 원본 복원: 사용자 수정본(USER_EDIT_KEY)만 즉시 파기하고 원본으로 100% 롤백
+        // 모달창 내부의 [↩️ 원본 복원] 함수
         function resetToOriginal() {
             const original = getOriginalCode();
             if (!original) {
-                alert('되돌릴 원본 데이터가 존재하지 않습니다. 부모 창에서 다시 실행해주세요.');
+                alert('되돌릴 원본 데이터가 존재하지 않습니다.');
                 return;
             }
 
-            if (confirm('수정한 작업 내용을 모두 취소하고 최초 원본 코드로 되돌리시겠습니까?')) {
+            if (confirm('수정한 모든 작업 내용을 버리고 최초 원본 코드로 되돌리시겠습니까?')) {
                 try { localStorage.removeItem(USER_EDIT_KEY); } catch (e) {}
                 try { sessionStorage.removeItem(USER_EDIT_KEY); } catch (e) {}
 
@@ -346,7 +353,6 @@
             });
         }
 
-        // 5. 모달 편집 시 100% 즉시 실시간 화면 반영 & 자동 저장 엔진
         function setupLiveEditor() {
             const area = document.getElementById('source-view-area');
             const badge = document.getElementById('save-status-badge');
@@ -366,7 +372,6 @@
                 }
             };
 
-            // 타이핑할 때마다 0.15초 내로 즉시 화면 및 스토리지 동기화
             area.addEventListener('input', () => {
                 if (badge) {
                     badge.innerText = '반영 중...';
@@ -376,7 +381,6 @@
                 saveDebounceTimer = setTimeout(applyChanges, 150);
             });
 
-            // Tab 키 입력 시 포커스 이동 대신 4칸 들여쓰기 공백 삽입
             area.addEventListener('keydown', (e) => {
                 if (e.key === 'Tab') {
                     e.preventDefault();
@@ -388,10 +392,9 @@
                 }
             });
 
-            // 포커스를 잃거나 닫을 때 즉시 반영
             area.addEventListener('change', applyChanges);
 
-            // F5 새로고침이나 창 닫기 직전 안전 저장 (빈 문자열이면 저장 무시하여 데이터 보호)
+            // F5 새로고침 직전: 모달 수정 내용 또는 현재 화면 상태를 스토리지에 확정 저장
             window.addEventListener('beforeunload', () => {
                 if (area && area.value && area.value.trim().length > 0) {
                     persistCode(area.value);
@@ -410,7 +413,6 @@
             }
         });
 
-        // 플로팅 툴바 드래그 이동 엔진
         (function enableDragging() {
             const toolbar = document.getElementById('floating-toolbar');
             const handle = document.getElementById('drag-handle');
