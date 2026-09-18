@@ -161,6 +161,61 @@
             color: #92400e;
         }
 
+        /* 🔍 Ctrl+F 시에만 열리는 전용 인앱 검색 바 */
+        .modal-find-box {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            background: #f1f5f9;
+            padding: 6px 16px;
+            border-bottom: 1px solid #cbd5e1;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04);
+            font-size: 12px;
+        }
+
+        .modal-find-box.active {
+            display: flex;
+        }
+
+        .find-input {
+            padding: 5px 8px;
+            font-size: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            outline: none;
+            width: 220px;
+            background: #ffffff;
+            color: #0f172a;
+        }
+
+        .find-input:focus {
+            border-color: #0284c7;
+            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+        }
+
+        .find-btn {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 700;
+            color: #334155;
+            transition: all 0.15s;
+        }
+
+        .find-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .find-count-badge {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 600;
+            min-width: 45px;
+        }
+
         .source-textarea {
             flex: 1;
             width: 100%;
@@ -220,14 +275,12 @@
 
     <iframe id="render-frame" sandbox="allow-scripts allow-modals allow-same-origin allow-forms allow-popups"></iframe>
 
-    <!-- 상단 플로팅 툴바: [원본 복원] 제거 완료 -->
     <div class="viewer-floating-bar" id="floating-toolbar">
         <div class="drag-handle" id="drag-handle" title="마우스로 끌어서 원하는 위치로 이동">⠿</div>
         <button class="viewer-btn" onclick="toggleSourceModal()">✏️ HTML 소스 편집</button>
         <button class="viewer-btn" id="btn-quick-copy" onclick="copySourceCode()">📋 코드 복사</button>
     </div>
 
-    <!-- 소스코드 모달창: 헤더 내부에 [↩️ 원본 복원] 버튼 추가 -->
     <div class="source-modal-overlay" id="source-modal" onclick="closeModalOnBackdrop(event)">
         <div class="source-modal-card">
             <div class="source-modal-header">
@@ -241,6 +294,16 @@
                     <button class="btn-modal-action" onclick="toggleSourceModal()">닫기 (Esc)</button>
                 </div>
             </div>
+
+            <!-- 평소에는 숨겨져 있다가 모달에서 Ctrl+F를 누를 때만 열림 -->
+            <div id="modal-find-bar" class="modal-find-box">
+                <input type="text" id="find-input" class="find-input" placeholder="코드 검색 (Enter: 다음, Shift+Enter: 이전)">
+                <span id="find-count" class="find-count-badge">0/0</span>
+                <button type="button" class="find-btn" onclick="navigateFind(-1)">▲ 이전</button>
+                <button type="button" class="find-btn" onclick="navigateFind(1)">▼ 다음</button>
+                <button type="button" class="find-btn" onclick="closeFindBar()" style="margin-left:auto;">닫기 (Esc)</button>
+            </div>
+
             <textarea id="source-view-area" class="source-textarea" spellcheck="false" placeholder="HTML 코드를 입력하면 실시간으로 반영됩니다..."></textarea>
         </div>
     </div>
@@ -293,7 +356,6 @@
             renderToFrame(currentHtmlCode);
         }
 
-        // 모달창 내부의 [↩️ 원본 복원] 함수
         function resetToOriginal() {
             const original = getOriginalCode();
             if (!original) {
@@ -330,6 +392,8 @@
                 area.scrollTop = 0;
                 area.scrollLeft = 0;
                 setTimeout(() => area.focus(), 50);
+            } else {
+                closeFindBar();
             }
         }
 
@@ -351,6 +415,101 @@
                     if (modalBtn) modalBtn.innerText = '전체 복사';
                 }, 1500);
             });
+        }
+
+        // ==========================================
+        // 🔍 [모달 전용 인앱 검색 엔진]
+        // ==========================================
+        let findMatches = [];
+        let currentFindIdx = -1;
+
+        function openFindBar() {
+            const bar = document.getElementById('modal-find-bar');
+            const input = document.getElementById('find-input');
+            if (!bar || !input) return;
+
+            bar.classList.add('active');
+            
+            const area = document.getElementById('source-view-area');
+            if (area) {
+                const sel = area.value.substring(area.selectionStart, area.selectionEnd);
+                if (sel && sel.length < 50 && !sel.includes('\n')) {
+                    input.value = sel;
+                }
+            }
+
+            input.focus();
+            input.select();
+            executeFind();
+        }
+
+        function closeFindBar() {
+            const bar = document.getElementById('modal-find-bar');
+            if (bar) bar.classList.remove('active');
+            const area = document.getElementById('source-view-area');
+            if (area) area.focus();
+        }
+
+        function executeFind() {
+            const input = document.getElementById('find-input');
+            const area = document.getElementById('source-view-area');
+            const countBadge = document.getElementById('find-count');
+            if (!input || !area || !countBadge) return;
+
+            const query = input.value;
+            findMatches = [];
+            currentFindIdx = -1;
+
+            if (!query) {
+                countBadge.innerText = '0/0';
+                return;
+            }
+
+            const text = area.value.toLowerCase();
+            const q = query.toLowerCase();
+            let from = 0;
+
+            while (from <= text.length - q.length) {
+                const idx = text.indexOf(q, from);
+                if (idx === -1) break;
+                findMatches.push(idx);
+                from = idx + q.length;
+            }
+
+            if (findMatches.length > 0) {
+                const curPos = area.selectionStart;
+                let nearest = findMatches.findIndex(pos => pos >= curPos);
+                currentFindIdx = nearest !== -1 ? nearest : 0;
+                highlightCurrentMatch();
+            } else {
+                countBadge.innerText = '0/0';
+            }
+        }
+
+        function navigateFind(direction) {
+            if (findMatches.length === 0) return;
+            currentFindIdx = (currentFindIdx + direction + findMatches.length) % findMatches.length;
+            highlightCurrentMatch();
+        }
+
+        function highlightCurrentMatch() {
+            if (currentFindIdx < 0 || currentFindIdx >= findMatches.length) return;
+
+            const area = document.getElementById('source-view-area');
+            const input = document.getElementById('find-input');
+            const countBadge = document.getElementById('find-count');
+            const matchPos = findMatches[currentFindIdx];
+            const qLen = input.value.length;
+
+            countBadge.innerText = `${currentFindIdx + 1}/${findMatches.length}`;
+
+            area.focus();
+            area.setSelectionRange(matchPos, matchPos + qLen);
+
+            const textBefore = area.value.substring(0, matchPos);
+            const lineNum = textBefore.split('\n').length;
+            const approxScrollTop = (lineNum - 5) * 20.8;
+            area.scrollTop = Math.max(0, approxScrollTop);
         }
 
         function setupLiveEditor() {
@@ -394,7 +553,6 @@
 
             area.addEventListener('change', applyChanges);
 
-            // F5 새로고침 직전: 모달 수정 내용 또는 현재 화면 상태를 스토리지에 확정 저장
             window.addEventListener('beforeunload', () => {
                 if (area && area.value && area.value.trim().length > 0) {
                     persistCode(area.value);
@@ -405,9 +563,26 @@
         }
 
         window.addEventListener('keydown', (e) => {
+            const isCtrl = e.ctrlKey || e.metaKey;
+            const modal = document.getElementById('source-modal');
+            const isModalOpen = modal && modal.classList.contains('active');
+
+            // 1. 모달이 열려 있을 때 Ctrl+F 누르면 브라우저 검색을 막고 모달 검색창 활성화
+            if (isCtrl && (e.key === 'f' || e.key === 'F') && isModalOpen) {
+                e.preventDefault();
+                openFindBar();
+                return;
+            }
+
+            // 2. Esc 처리: 검색창이 열려 있으면 검색창 먼저 닫고, 없으면 모달 닫기
             if (e.key === 'Escape') {
-                const modal = document.getElementById('source-modal');
-                if (modal && modal.classList.contains('active')) {
+                const findBar = document.getElementById('modal-find-bar');
+                if (findBar && findBar.classList.contains('active')) {
+                    e.preventDefault();
+                    closeFindBar();
+                    return;
+                }
+                if (isModalOpen) {
                     modal.classList.remove('active');
                 }
             }
@@ -485,6 +660,17 @@
         window.addEventListener('DOMContentLoaded', () => {
             loadCode();
             setupLiveEditor();
+
+            const findInput = document.getElementById('find-input');
+            if (findInput) {
+                findInput.addEventListener('input', executeFind);
+                findInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        navigateFind(e.shiftKey ? -1 : 1);
+                    }
+                });
+            }
         });
     </script>
 </body>
