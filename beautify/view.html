@@ -29,7 +29,7 @@
 
         .viewer-floating-bar {
             position: fixed;
-            top: 26px;
+            top: 60px;
             right: 20px;
             z-index: 2147483647;
             display: flex;
@@ -480,7 +480,8 @@
                 const curPos = area.selectionStart;
                 let nearest = findMatches.findIndex(pos => pos >= curPos);
                 currentFindIdx = nearest !== -1 ? nearest : 0;
-                highlightCurrentMatch();
+                // 타이핑 중에는 포커스를 뺏지 않고 스크롤/위치만 미리보기
+                highlightCurrentMatch(false);
             } else {
                 countBadge.innerText = '0/0';
             }
@@ -489,10 +490,11 @@
         function navigateFind(direction) {
             if (findMatches.length === 0) return;
             currentFindIdx = (currentFindIdx + direction + findMatches.length) % findMatches.length;
-            highlightCurrentMatch();
+            highlightCurrentMatch(false);
         }
 
-        function highlightCurrentMatch() {
+        // keepFocusInInput 파라미터로 검색창의 포커스를 안전하게 지킴
+        function highlightCurrentMatch(focusEditor = false) {
             if (currentFindIdx < 0 || currentFindIdx >= findMatches.length) return;
 
             const area = document.getElementById('source-view-area');
@@ -503,13 +505,20 @@
 
             countBadge.innerText = `${currentFindIdx + 1}/${findMatches.length}`;
 
-            area.focus();
-            area.setSelectionRange(matchPos, matchPos + qLen);
-
+            // 에디터 영역 스크롤 자동 이동
             const textBefore = area.value.substring(0, matchPos);
             const lineNum = textBefore.split('\n').length;
-            const approxScrollTop = (lineNum - 5) * 20.8;
+            const approxScrollTop = (lineNum - 6) * 20.8;
             area.scrollTop = Math.max(0, approxScrollTop);
+
+            // 본문 텍스트 선택 범위를 잡되, focusEditor가 true일 때만 포커스를 넘김
+            area.setSelectionRange(matchPos, matchPos + qLen);
+            if (focusEditor) {
+                area.focus();
+            } else {
+                // 검색창 포커스 원상복구 유지
+                input.focus();
+            }
         }
 
         function setupLiveEditor() {
