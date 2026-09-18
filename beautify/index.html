@@ -813,13 +813,16 @@
                 alert('전체화면으로 실행할 HTML 코드가 없습니다.');
                 return;
             }
+
+            // 🚨 이전 view.html에서 F5를 누르며 박제되었던 오래된 수정 캐시를 즉시 삭제
+            try { localStorage.removeItem('dwk_user_edited_html'); } catch (e) {}
+            try { sessionStorage.removeItem('dwk_user_edited_html'); } catch (e) {}
+
             try {
                 localStorage.setItem('dwk_preview_html', raw);
                 const win = window.open('./view.html', '_blank');
-                // 브라우저 차단 시 안내
                 if (!win) alert('팝업 차단을 해제해주세요.');
             } catch (e) {
-                // 5MB 용량 초과 시 세션 기반 백업
                 sessionStorage.setItem('dwk_preview_html', raw);
                 window.open('./view.html', '_blank');
             }
@@ -978,13 +981,12 @@
             URL.revokeObjectURL(url);
         }
 
-        // [수정 완료]: 샘플 로드 시 디바운스 대기 없이 즉시 동기 실행하도록 변경
         function loadSample() {
             const el = document.getElementById('raw-code');
-            clearTimeout(formatDebounceTimer); // 대기 중이던 디바운스 즉시 취소
+            clearTimeout(formatDebounceTimer);
             el.value = samples[currentLang] || '';
             recordCodeHistory();
-            runFormat(); // 즉시 동기 실행
+            runFormat();
         }
 
         function clearAll() {
