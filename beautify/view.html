@@ -23,10 +23,9 @@
             display: block;
         }
 
-        /* 플로팅 컨트롤 바 (기본 위치 하향: top 26px) */
         .viewer-floating-bar {
             position: fixed;
-            top: 60px;
+            top: 26px;
             right: 20px;
             z-index: 2147483647;
             display: flex;
@@ -66,10 +65,6 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
         }
 
-        .viewer-floating-bar.dragging .drag-handle {
-            cursor: grabbing !important;
-        }
-
         .viewer-btn {
             background: transparent;
             border: none;
@@ -91,7 +86,6 @@
             color: #38bdf8;
         }
 
-        /* 소스코드 모달 오버레이 */
         .source-modal-overlay {
             display: none;
             position: fixed;
@@ -212,7 +206,6 @@
 
     <iframe id="render-frame" sandbox="allow-scripts allow-modals allow-same-origin allow-forms allow-popups"></iframe>
 
-    <!-- 자유 이동 플로팅 툴바 -->
     <div class="viewer-floating-bar" id="floating-toolbar">
         <div class="drag-handle" id="drag-handle" title="마우스로 끌어서 원하는 위치로 이동">⠿</div>
         <button class="viewer-btn" onclick="toggleSourceModal()">✏️ HTML 소스 편집</button>
@@ -220,7 +213,6 @@
         <button class="viewer-btn" onclick="reloadPreview()" title="화면 새로고침">🔄 새로고침</button>
     </div>
 
-    <!-- 소스코드 직접 편집 & 자동저장 모달창 -->
     <div class="source-modal-overlay" id="source-modal" onclick="closeModalOnBackdrop(event)">
         <div class="source-modal-card">
             <div class="source-modal-header">
@@ -233,23 +225,52 @@
                     <button class="btn-modal-action" onclick="toggleSourceModal()">닫기 (Esc)</button>
                 </div>
             </div>
-            <!-- readonly 제거: 자유롭게 편집 가능 -->
-            <textarea id="source-view-area" class="source-textarea" spellcheck="false" placeholder="HTML 코드를 입력하면 실시간으로 자동 저장 및 렌더링됩니다..."></textarea>
+            <textarea id="source-view-area" class="source-textarea" spellcheck="false" placeholder="HTML 코드를 입력하면 실시간으로 반영됩니다..."></textarea>
         </div>
     </div>
 
     <script>
+        const STORAGE_KEY = 'dwk_preview_html';
         let currentHtmlCode = '';
         let saveDebounceTimer = null;
 
-        function loadCode() {
-            currentHtmlCode = localStorage.getItem('dwk_preview_html') || 
-                              sessionStorage.getItem('dwk_preview_html') || 
-                              '<div style="padding:40px; text-align:center; color:#64748b; font-family:sans-serif;">렌더링할 HTML 데이터가 없습니다.</div>';
-            
-            lastRenderedCode = currentHtmlCode;
+        // 1. 스토리지 안전 읽기 (localStorage 우선, 실패 시 sessionStorage 탐색)
+        function getStoredCode() {
+            try {
+                const local = localStorage.getItem(STORAGE_KEY);
+                if (local && local.trim().length > 0) return local;
+            } catch (e) {}
+
+            try {
+                const session = sessionStorage.getItem(STORAGE_KEY);
+                if (session && session.trim().length > 0) return session;
+            } catch (e) {}
+
+            return '';
+        }
+
+        // 2. 스토리지 강제 양방향 동시 쓰기
+        function persistCode(code) {
+            if (!code || !code.trim()) return;
+            try { localStorage.setItem(STORAGE_KEY, code); } catch (e) {}
+            try { sessionStorage.setItem(STORAGE_KEY, code); } catch (e) {}
+        }
+
+        // 3. 화면에 HTML 코드 즉각 주입
+        function renderToFrame(code) {
             const frame = document.getElementById('render-frame');
-            frame.srcdoc = currentHtmlCode;
+            if (!frame) return;
+
+            const fallback = '<div style="padding:40px; text-align:center; color:#64748b; font-family:sans-serif; line-height:1.6;">' +
+                             '<h3>렌더링할 HTML 데이터가 없습니다.</h3>' +
+                             '<p>원본 뷰티파이어 화면에서 [⛶ 전체화면]을 다시 눌러 실행해주세요.</p></div>';
+
+            frame.srcdoc = (code && code.trim().length > 0) ? code : fallback;
+        }
+
+        function loadCode() {
+            currentHtmlCode = getStoredCode();
+            renderToFrame(currentHtmlCode);
         }
 
         function reloadPreview() {
@@ -268,15 +289,10 @@
             if (isActive) {
                 const area = document.getElementById('source-view-area');
                 area.value = currentHtmlCode;
-                
-                // 드래그(선택)를 걸지 않고, 스크롤과 커서를 맨 첫 줄(0, 0)로 정렬
                 area.setSelectionRange(0, 0);
                 area.scrollTop = 0;
                 area.scrollLeft = 0;
-
-                setTimeout(() => {
-                    area.focus();
-                }, 50);
+                setTimeout(() => area.focus(), 50);
             }
         }
 
@@ -300,45 +316,19 @@
             });
         }
 
-        // 즉시 스토리지에 동기화하는 함수
-        function forceSaveCurrentCode() {
-            const area = document.getElementById('source-view-area');
-            if (!area) return;
-            currentHtmlCode = area.value;
-            try {
-                localStorage.setItem('dwk_preview_html', currentHtmlCode);
-            } catch (err) {
-                sessionStorage.setItem('dwk_preview_html', currentHtmlCode);
-            }
-        }
-
-        // ==========================================
-        // 💾 [안전 가드 탑재] 모달 내 코드 편집 시 자동 역저장 & 상태 보존
-        // ==========================================
-        let lastRenderedCode = '';
-
+        // 4. 모달 편집 시 100% 즉시 실시간 화면 반영 & 자동 저장 엔진
         function setupLiveEditor() {
             const area = document.getElementById('source-view-area');
             const badge = document.getElementById('save-status-badge');
             if (!area) return;
 
-            const executeSave = () => {
-                const newCode = area.value;
-                // 내용이 비어있거나 기존과 동일하면 iframe을 재렌더링(리로드)하지 않음!
-                if (!newCode || newCode === lastRenderedCode) return;
+            const applyChanges = () => {
+                const val = area.value;
+                if (!val || !val.trim()) return;
 
-                currentHtmlCode = newCode;
-                lastRenderedCode = newCode;
-
-                try {
-                    localStorage.setItem('dwk_preview_html', currentHtmlCode);
-                } catch (err) {
-                    sessionStorage.setItem('dwk_preview_html', currentHtmlCode);
-                }
-
-                // 내용이 '실제로 바뀌었을 때만' iframe 갱신
-                const frame = document.getElementById('render-frame');
-                if (frame) frame.srcdoc = currentHtmlCode;
+                currentHtmlCode = val;
+                persistCode(currentHtmlCode);
+                renderToFrame(currentHtmlCode);
 
                 if (badge) {
                     badge.innerText = '자동 저장됨 (F5 유지)';
@@ -346,21 +336,25 @@
                 }
             };
 
-            // 1. 타이핑 중에만 디바운스 저장
+            // 타이핑할 때마다 0.15초 내로 즉시 화면 및 스토리지 동기화
             area.addEventListener('input', () => {
                 if (badge) {
-                    badge.innerText = '저장 중...';
+                    badge.innerText = '반영 중...';
                     badge.className = 'save-status-badge editing';
                 }
                 clearTimeout(saveDebounceTimer);
-                saveDebounceTimer = setTimeout(executeSave, 300);
+                saveDebounceTimer = setTimeout(applyChanges, 150);
             });
 
-            // 2. 모달 닫기나 포커스 아웃 시: 값이 실제로 바뀌었을 때만 동기화
-            area.addEventListener('change', executeSave);
+            // 포커스를 잃거나 닫을 때 즉시 반영
+            area.addEventListener('change', applyChanges);
 
-            // 3. 새로고침 직전 강제 저장
-            window.addEventListener('beforeunload', forceSaveCurrentCode);
+            // 새로고침이나 창 닫기 직전 강제 저장
+            window.addEventListener('beforeunload', () => {
+                if (area.value && area.value.trim().length > 0) {
+                    persistCode(area.value);
+                }
+            });
         }
 
         window.addEventListener('keydown', (e) => {
@@ -372,7 +366,7 @@
             }
         });
 
-        // 플로팅 툴바 자유 드래그 이동 엔진
+        // 플로팅 툴바 드래그 이동 로직
         (function enableDragging() {
             const toolbar = document.getElementById('floating-toolbar');
             const handle = document.getElementById('drag-handle');
