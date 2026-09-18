@@ -240,40 +240,36 @@
         let currentHtmlCode = '';
         let saveDebounceTimer = null;
 
-        // 1. 스토리지 안전 읽기 (사용자가 직접 수정한 코드가 있으면 최우선 로드)
+        // 1. 순수 원본 가져오기 (절대 덮어쓰지 않음)
+        function getOriginalCode() {
+            try {
+                const local = localStorage.getItem(STORAGE_KEY);
+                if (local && local.trim().length > 0) return local;
+            } catch (e) {}
+            try {
+                const session = sessionStorage.getItem(STORAGE_KEY);
+                if (session && session.trim().length > 0) return session;
+            } catch (e) {}
+            return '';
+        }
+
+        // 2. 현재 상태 읽기: 사용자 수정본(USER_EDIT_KEY)이 있으면 1순위, 없으면 원본(STORAGE_KEY) 로드
         function getStoredCode() {
             try {
                 const edited = localStorage.getItem(USER_EDIT_KEY) || sessionStorage.getItem(USER_EDIT_KEY);
                 if (edited && edited.trim().length > 0) return edited;
             } catch (e) {}
-
-            try {
-                const local = localStorage.getItem(STORAGE_KEY);
-                if (local && local.trim().length > 0) return local;
-            } catch (e) {}
-
-            try {
-                const session = sessionStorage.getItem(STORAGE_KEY);
-                if (session && session.trim().length > 0) return session;
-            } catch (e) {}
-
-            return '';
+            return getOriginalCode();
         }
 
-        // 2. 스토리지 강제 양방향 동시 쓰기 (사용자 편집 전용 키에도 영구 동기화)
+        // 3. 사용자 수정본 저장: STORAGE_KEY는 절대 건드리지 않고 오직 USER_EDIT_KEY에만 안전 기록!
         function persistCode(code) {
             if (!code || !code.trim()) return;
-            try { 
-                localStorage.setItem(STORAGE_KEY, code); 
-                localStorage.setItem(USER_EDIT_KEY, code);
-            } catch (e) {}
-            try { 
-                sessionStorage.setItem(STORAGE_KEY, code); 
-                sessionStorage.setItem(USER_EDIT_KEY, code);
-            } catch (e) {}
+            try { localStorage.setItem(USER_EDIT_KEY, code); } catch (e) {}
+            try { sessionStorage.setItem(USER_EDIT_KEY, code); } catch (e) {}
         }
 
-        // 3. 화면에 HTML 코드 즉각 주입
+        // 4. 화면 주입
         function renderToFrame(code) {
             const frame = document.getElementById('render-frame');
             if (!frame) return;
@@ -290,12 +286,11 @@
             renderToFrame(currentHtmlCode);
         }
 
-        // 4. ↩️ 사용자 편집 내역을 삭제하고 뷰티파이어 원본 코드로 되돌리는 함수
+        // 5. ↩️ 원본 복원: 사용자 수정본(USER_EDIT_KEY)만 즉시 파기하고 원본으로 100% 롤백
         function resetToOriginal() {
-            const hasUserEdit = localStorage.getItem(USER_EDIT_KEY) || sessionStorage.getItem(USER_EDIT_KEY);
-            
-            if (!hasUserEdit) {
-                alert('현재 이미 원본 코드 상태입니다.');
+            const original = getOriginalCode();
+            if (!original) {
+                alert('되돌릴 원본 데이터가 존재하지 않습니다. 부모 창에서 다시 실행해주세요.');
                 return;
             }
 
@@ -303,7 +298,8 @@
                 try { localStorage.removeItem(USER_EDIT_KEY); } catch (e) {}
                 try { sessionStorage.removeItem(USER_EDIT_KEY); } catch (e) {}
 
-                loadCode();
+                currentHtmlCode = original;
+                renderToFrame(currentHtmlCode);
 
                 const area = document.getElementById('source-view-area');
                 if (area) area.value = currentHtmlCode;
@@ -395,10 +391,13 @@
             // 포커스를 잃거나 닫을 때 즉시 반영
             area.addEventListener('change', applyChanges);
 
-            // 새로고침이나 창 닫기 직전 강제 플러시 저장
+            // F5 새로고침이나 창 닫기 직전 안전 저장 (빈 문자열이면 저장 무시하여 데이터 보호)
             window.addEventListener('beforeunload', () => {
-                const codeToSave = (area && area.value && area.value.trim().length > 0) ? area.value : currentHtmlCode;
-                persistCode(codeToSave);
+                if (area && area.value && area.value.trim().length > 0) {
+                    persistCode(area.value);
+                } else if (currentHtmlCode && currentHtmlCode.trim().length > 0) {
+                    persistCode(currentHtmlCode);
+                }
             });
         }
 
