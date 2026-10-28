@@ -344,6 +344,53 @@
         .bottom-ad-box ins.adsbygoogle:empty {
             display: none !important;
         }
+    
+        .guide-nav-banner {
+            margin-top: 28px;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .guide-nav-text {
+            font-size: 14px;
+            color: #065f46;
+            font-weight: 700;
+        }
+
+        .guide-nav-btn {
+            background: #059669;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: background-color 0.15s;
+        }
+
+        .guide-nav-btn:hover {
+            background: #047857;
+        }
+
+        @media (max-width: 640px) {
+            .guide-nav-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .guide-nav-btn {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/davidshimjs-qrcodejs@0.0.2/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
@@ -447,6 +494,11 @@
                 <div class="faq-q">Q. 인쇄용 포스터나 명함에 넣을 때 권장되는 여백(Quiet Zone) 규격은?</div>
                 <div class="faq-a">A. QR 코드 주변에는 최소 4모듈(점 4개 크기) 이상의 흰색 빈 여백인 **콰이어트 존(Quiet Zone)**을 반드시 확보해야 합니다. 주변 그래픽 요소나 배경색이 QR 패턴과 맞닿으면 리더기가 테두리 경계를 인식하지 못해 스캔 인식이 실패할 수 있습니다.</div>
             </div>
+                <!-- 최하단 실무 심화 가이드 이동 배너 -->
+                <div class="guide-nav-banner">
+                    <span class="guide-nav-text">📘 인쇄용 QR 스캔 실패를 막는 제작 체크포인트가 궁금하신가요?</span>
+                    <a href="../guide/qr-guide.html" class="guide-nav-btn">실무 가이드 보기 →</a>
+                </div>
         </article>
     </div>
 

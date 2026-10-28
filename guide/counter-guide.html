@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>글자수·바이트 계산 기준 완벽 가이드: EUC-KR vs UTF-8 차이와 제출용 서식 실무 | DevWorKit</title>
+    <meta name="description" content="EUC-KR과 UTF-8 한글 바이트 차이, 공백 포함·제외 글자수 기준, 줄바꿈 처리, 자바스크립트 바이트 계산 코드와 제출 전 체크리스트 완벽 정리 가이드">
+    <link rel="stylesheet" href="../nav.css">
+    <style>
+        body {
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #334155;
+        }
+
+        .article-container {
+            max-width: 860px;
+            margin: 40px auto 80px auto;
+            padding: 0 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: color 0.15s;
+        }
+
+        .back-link:hover {
+            color: #0284c7;
+        }
+
+        .article-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 40px 48px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 텍스트/문서 카테고리 파스텔 스카이블루 카테고리 뱃지 */
+        .article-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+            margin-bottom: 16px;
+        }
+
+        .article-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.35;
+            margin: 0 0 24px 0;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .article-section {
+            margin-bottom: 36px;
+        }
+
+        .article-section h2 {
+            font-size: 19px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 14px 0;
+        }
+
+        .article-section h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 20px 0 8px 0;
+        }
+
+        .article-section p {
+            font-size: 14.5px;
+            line-height: 1.85;
+            color: #475569;
+            margin: 0 0 14px 0;
+        }
+
+        .article-section ul {
+            color: #475569;
+            font-size: 14.5px;
+            line-height: 1.85;
+            padding-left: 20px;
+            margin: 8px 0 16px 0;
+        }
+
+        .article-section li {
+            margin-bottom: 6px;
+        }
+
+        .code-block {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 18px 20px;
+            border-radius: 8px;
+            font-family: Consolas, Monaco, "Courier New", monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 16px 0;
+            line-height: 1.6;
+            white-space: pre;
+        }
+
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 18px 0;
+            font-size: 13.5px;
+        }
+
+        .table-custom th,
+        .table-custom td {
+            border: 1px solid #cbd5e1;
+            padding: 10px 14px;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        .table-custom th {
+            background: #f1f5f9;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        /* 텍스트/문서 카테고리 파스텔 스카이블루 카테고리 도구 배너 */
+        .tool-banner {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin-top: 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .tool-banner-text {
+            font-size: 14px;
+            color: #0369a1;
+            font-weight: 700;
+        }
+
+        .tool-banner-btn {
+            background: #0284c7;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: background-color 0.15s;
+        }
+
+        .tool-banner-btn:hover {
+            background: #0369a1;
+        }
+
+        @media (max-width: 640px) {
+            .article-card {
+                padding: 24px 20px;
+            }
+
+            .article-title {
+                font-size: 22px;
+            }
+
+            .tool-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .tool-banner-btn {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="article-container">
+        <a href="index.html" class="back-link">← 가이드 목록으로 돌아가기</a>
+
+        <article class="article-card">
+            <span class="article-badge">COUNTER</span>
+            <h1 class="article-title">글자수·바이트 계산 기준 완벽 가이드: EUC-KR vs UTF-8 차이와 제출용 서식 실무</h1>
+
+            <section class="article-section">
+                <h2>1. 글자수와 바이트 수는 왜 서로 다른 숫자인가</h2>
+                <p>글자수는 사람이 눈으로 세는 문자의 개수이고, 바이트 수는 그 문자를 컴퓨터가 특정 인코딩으로 저장할 때 차지하는 메모리 크기입니다. 영문과 숫자는 어떤 인코딩에서든 1글자가 1바이트이지만, 한글은 인코딩 방식에 따라 차지하는 바이트가 달라지기 때문에 같은 문장도 "몇 바이트인가"는 기준 인코딩 없이는 답할 수 없습니다.</p>
+<table class="table-custom"><thead><tr><th>문자 종류</th><th>EUC-KR (CP949)</th><th>UTF-8</th></tr></thead><tbody><tr><td>한글 완성형 (가, 힣 등)</td><td>2바이트</td><td>3바이트</td></tr><tr><td>영문 · 숫자 · 공백</td><td>1바이트</td><td>1바이트</td></tr><tr><td>줄바꿈 (LF / CRLF)</td><td>1바이트 / 2바이트</td><td>1바이트 / 2바이트</td></tr><tr><td>이모지 (😀 등)</td><td>표현 불가</td><td>4바이트</td></tr></tbody></table>
+                <p>엄밀히 말해 EUC-KR 완성형은 2,350자만 수록하며, 현대 한글 11,172자를 모두 2바이트로 표현하도록 확장한 것이 CP949(MS949)입니다. 국내 레거시 시스템의 "EUC-KR 기준 바이트"는 대부분 이 확장 규격을 가리킵니다.</p>
+            </section>
+
+            <section class="article-section">
+                <h2>2. 공공기관·레거시 시스템에서 바이트 제한이 쓰이는 이유</h2>
+                <p>채용 사이트, 행정 서식, 정부 지원사업 신청서처럼 오래된 시스템은 입력 항목을 데이터베이스 컬럼의 <strong>바이트 길이</strong>로 제한하는 경우가 많습니다. 예를 들어 Oracle의 <code>VARCHAR2(1000 BYTE)</code> 컬럼은 글자 수가 아니라 바이트 수를 기준으로 입력을 제한합니다.</p>
+                <p>같은 1,000바이트 제한이라도 EUC-KR 환경에서는 한글 약 500자, UTF-8 환경에서는 한글 약 333자까지만 입력할 수 있습니다. 시스템이 어느 인코딩을 쓰는지 알 수 없다면, 더 엄격한 UTF-8 기준(한글 3바이트)으로 분량을 맞춰 두는 편이 초과 오류를 피하는 안전한 방법입니다.</p>
+            </section>
+
+            <section class="article-section">
+                <h2>3. 자바스크립트로 바이트 수 계산하기</h2>
+                <p><code>String.length</code>는 바이트가 아니라 UTF-16 코드 유닛 개수를 반환하므로 바이트 계산에는 쓸 수 없습니다. 브라우저에 내장된 <code>TextEncoder</code>를 사용하면 UTF-8 바이트 수를 정확히 구할 수 있고, EUC-KR 바이트는 ASCII 여부로 근사 계산합니다.</p>
+<div class="code-block">// UTF-8 바이트 수 (브라우저 내장 TextEncoder 활용)
+function utf8Bytes(str) {
+    return new TextEncoder().encode(str).length;
+}
+
+// EUC-KR(CP949) 근사 바이트 수: ASCII는 1바이트, 그 외 문자는 2바이트로 계산
+function euckrBytes(str) {
+    let bytes = 0;
+    for (const ch of str) {
+        bytes += ch.charCodeAt(0) &lt;= 0x7f ? 1 : 2;
+    }
+    return bytes;
+}</div>
+                <p>EUC-KR 계산은 근사치입니다. 이모지처럼 CP949에 없는 문자는 실제로는 저장 자체가 불가능하며, 시스템에 따라 물음표(?)로 치환되거나 오류가 발생합니다.</p>
+            </section>
+
+            <section class="article-section">
+                <h2>4. 공백과 줄바꿈 처리에서 생기는 차이</h2>
+                <p>글자수 기준에는 "공백 포함"과 "공백 제외" 두 가지가 있고, 제출처가 어느 쪽인지 명시하지 않은 경우가 많습니다. 문장 사이의 띄어쓰기만으로도 수십 자 차이가 나므로 두 값을 모두 확인해 두어야 합니다.</p>
+                <p>줄바꿈도 주의해야 합니다. 자바스크립트의 <code>textarea.value</code>는 줄바꿈을 LF 1글자로 보지만, HTML 폼은 제출 시 줄바꿈을 CRLF(2글자)로 정규화합니다. 그래서 화면의 글자수 표시와 서버가 받은 길이가 줄 수만큼 어긋나는 일이 생깁니다. 문단 구분이 많은 글일수록 분량에 여유를 두고 작성하세요.</p>
+            </section>
+
+            <section class="article-section">
+                <h2>5. 제출 전 체크리스트</h2>
+                <ul>
+                    <li>공고문에서 기준 단위(글자수인지 바이트인지)와 공백 포함 여부를 먼저 확인합니다.</li>
+                    <li>바이트 기준이라면 EUC-KR과 UTF-8 값을 모두 확인하고, 더 큰 값이 제한 안에 들어오도록 맞춥니다.</li>
+                    <li>줄바꿈 때문에 늘어날 수 있는 분량을 감안해 제한의 90~95% 선에서 마무리합니다.</li>
+                    <li>이모지, 특수기호, 서로 다른 문서 프로그램에서 복사된 숨은 서식 문자는 가급적 제거합니다.</li>
+                    <li>워드프로세서마다 글자수 산정 방식이 다르므로, 최종 확인은 실제 제출 화면의 입력창에서 한 번 더 합니다.</li>
+                </ul>
+            </section>
+
+            <section class="article-section">
+                <h2>6. DevWorKit 글자수 &amp; 바이트 계산기 활용</h2>
+                <p>공백 포함·제외 글자수와 EUC-KR/UTF-8 바이트 수를 한 화면에서 동시에 확인할 수 있습니다. 모든 계산은 브라우저 안에서만 이루어지므로 제출 전 자기소개서 같은 개인 문서도 안전하게 점검할 수 있습니다.</p>
+
+                <div class="tool-banner">
+                    <span class="tool-banner-text">🛠️ DevWorKit 실시간 글자수 &amp; 바이트 계산기 사용해보기</span>
+                    <a href="../counter/" class="tool-banner-btn">도구로 이동 →</a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <div id="dwk-footer"></div>
+    <script src="../nav.js"></script>
+</body>
+
+</html>

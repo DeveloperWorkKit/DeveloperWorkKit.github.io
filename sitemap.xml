@@ -3,7 +3,7 @@
   <!-- 1. 메인 허브 (최우선) -->
   <url>
     <loc>https://developerworkkit.github.io/</loc>
-    <lastmod>2026-08-27</lastmod>
+    <lastmod>2026-10-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -12,31 +12,31 @@
   <!-- [텍스트 / 문서 도구군] -->
   <url>
     <loc>https://developerworkkit.github.io/strget/</loc>
-    <lastmod>2026-08-25</lastmod>
+    <lastmod>2026-10-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://developerworkkit.github.io/counter/</loc>
-    <lastmod>2026-08-25</lastmod>
+    <lastmod>2026-10-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://developerworkkit.github.io/strcmp/</loc>
-    <lastmod>2026-08-25</lastmod>
+    <lastmod>2026-10-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://developerworkkit.github.io/markdown/</loc>
-    <lastmod>2026-08-27</lastmod>
+    <lastmod>2026-10-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://developerworkkit.github.io/fsee/</loc>
-    <lastmod>2026-08-25</lastmod>
+    <lastmod>2026-10-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -44,7 +44,7 @@
   <!-- [개발 / 데이터 도구군] -->
   <url>
     <loc>https://developerworkkit.github.io/coder/</loc>
-    <lastmod>2026-08-25</lastmod>
+    <lastmod>2026-10-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -56,37 +56,37 @@
   </url>
   <url>
     <loc>https://developerworkkit.github.io/json/</loc>
-    <lastmod>2026-08-25</lastmod>
+    <lastmod>2026-10-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://developerworkkit.github.io/time/</loc>
-    <lastmod>2026-08-25</lastmod>
+    <lastmod>2026-10-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://developerworkkit.github.io/hash/</loc>
-    <lastmod>2026-08-25</lastmod>
+    <lastmod>2026-10-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://developerworkkit.github.io/qr/</loc>
-    <lastmod>2026-08-25</lastmod>
+    <lastmod>2026-10-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://developerworkkit.github.io/cron/</loc>
-    <lastmod>2026-08-25</lastmod>
+    <lastmod>2026-10-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://developerworkkit.github.io/color/</loc>
-    <lastmod>2026-08-27</lastmod>
+    <lastmod>2026-10-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -94,7 +94,7 @@
   <!-- 3. 기술 블로그 허브 및 가이드 9종 -->
   <url>
     <loc>https://developerworkkit.github.io/guide/</loc>
-    <lastmod>2026-08-27</lastmod>
+    <lastmod>2026-10-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -153,6 +153,30 @@
     <priority>0.8</priority>
   </url>
 
+  <url>
+    <loc>https://developerworkkit.github.io/guide/counter-guide.html</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://developerworkkit.github.io/guide/fsee-guide.html</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://developerworkkit.github.io/guide/qr-guide.html</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://developerworkkit.github.io/guide/strcmp-guide.html</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
   <!-- 4. 일반 문서 -->
   <url>
     <loc>https://developerworkkit.github.io/privacy.html</loc>
@@ -162,7 +186,7 @@
   </url>
   <url>
     <loc>https://developerworkkit.github.io/about.html</loc>
-    <lastmod>2026-08-25</lastmod>
+    <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>

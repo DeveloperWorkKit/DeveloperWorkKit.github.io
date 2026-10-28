@@ -1,22 +1,30 @@
 // nav.js - DevWorKit 글로벌 내비게이션 & 파스텔 틴트 뱃지 엔진
 (function() {
     const HOST_URL = 'https://developerworkkit.github.io';
+    const escAttr = s => String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+    const DEFAULT_TITLE = '직장인 업무 치트키 알려드릴까요? | devworkkit';
+    const DEFAULT_DESC = '추출/변환/편집... 일일이 검색할 필요 없이 한 번에 해결!';
+    const descEl = document.querySelector('meta[name="description"]');
+    const PAGE_TITLE = escAttr(document.title || DEFAULT_TITLE);
+    const PAGE_DESC = escAttr((descEl && descEl.content) || DEFAULT_DESC);
+    const PAGE_URL = escAttr(HOST_URL + location.pathname);
 
     // 1. 공통 메타태그 및 외부 nav.css 동적 주입 (오픈그래프 및 트위터 카드 포함)
     const commonHeadHTML = `
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>">
         <meta property="og:type" content="website">
-        <meta property="og:url" content="${HOST_URL}/">
+        <meta property="og:url" content="${PAGE_URL}">
         <meta property="og:site_name" content="DevWorKit">
-        <meta property="og:title" content="직장인 업무 치트키 알려드릴까요? | devworkkit">
-        <meta property="og:description" content="추출/변환/편집... 일일이 검색할 필요 없이 한 번에 해결!">
+        <meta property="og:title" content="${PAGE_TITLE}">
+        <meta property="og:description" content="${PAGE_DESC}">
         <meta property="og:image" content="${HOST_URL}/og-image.png">
         <meta property="og:image:width" content="1200">
         <meta property="og:image:height" content="630">
         <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="직장인 업무 치트키 알려드릴까요? | devworkkit">
-        <meta name="twitter:description" content="추출/변환/편집... 일일이 검색할 필요 없이 한 번에 해결!">
+        <meta name="twitter:title" content="${PAGE_TITLE}">
+        <meta name="twitter:description" content="${PAGE_DESC}">
         <meta name="twitter:image" content="${HOST_URL}/og-image.png">
+        <link rel="canonical" href="${PAGE_URL}">
         <link rel="stylesheet" href="${HOST_URL}/nav.css">
     `;
     document.head.insertAdjacentHTML('beforeend', commonHeadHTML);

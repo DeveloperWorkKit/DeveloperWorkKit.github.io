@@ -401,6 +401,53 @@
         .bottom-ad-box ins.adsbygoogle:empty {
             display: none !important;
         }
+    
+        .guide-nav-banner {
+            margin-top: 28px;
+            background: #f5f3ff;
+            border: 1px solid #ddd6fe;
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .guide-nav-text {
+            font-size: 14px;
+            color: #6d28d9;
+            font-weight: 700;
+        }
+
+        .guide-nav-btn {
+            background: #7c3aed;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: background-color 0.15s;
+        }
+
+        .guide-nav-btn:hover {
+            background: #6d28d9;
+        }
+
+        @media (max-width: 640px) {
+            .guide-nav-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .guide-nav-btn {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
@@ -473,6 +520,11 @@
                 <div class="faq-item">
                     <div class="faq-q">Q. 수만 개 이상의 파일이 들어 있는 대형 폴더도 처리가 가능한가요?</div>
                     <div class="faq-a">A. 네, 처리 가능합니다. <strong>[폴더 선택]</strong> 버튼 클릭 시 비동기 제너레이터(Async Iterator) 패턴을 적용하여 브라우저 멈춤 현상(Freezing) 없이 수만 개의 파일 경로를 순차적으로 스캔하고 SheetJS 엔진을 통해 엑셀 바이너리를 생성합니다.</div>
+                </div>
+                <!-- 최하단 실무 심화 가이드 이동 배너 -->
+                <div class="guide-nav-banner">
+                    <span class="guide-nav-text">📘 인수인계·감사자료용 폴더 구조 문서화 노하우가 궁금하신가요?</span>
+                    <a href="../guide/fsee-guide.html" class="guide-nav-btn">실무 가이드 보기 →</a>
                 </div>
             </article>
         </div>

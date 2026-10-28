@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR 코드 생성 원리와 오류 정정 레벨, 인쇄 품질 실무 가이드 | DevWorKit</title>
+    <meta name="description" content="QR 코드의 구조와 Reed-Solomon 오류 정정 레벨(L/M/Q/H), 로고 삽입 시 주의점, 데이터 용량과 인쇄 크기·여백 기준 및 배포 전 스캔 검증 체크리스트 정리 가이드">
+    <link rel="stylesheet" href="../nav.css">
+    <style>
+        body {
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #334155;
+        }
+
+        .article-container {
+            max-width: 860px;
+            margin: 40px auto 80px auto;
+            padding: 0 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: color 0.15s;
+        }
+
+        .back-link:hover {
+            color: #059669;
+        }
+
+        .article-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 40px 48px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 시스템/유틸 카테고리 에메랄드 카테고리 뱃지 */
+        .article-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+            background-color: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+            margin-bottom: 16px;
+        }
+
+        .article-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.35;
+            margin: 0 0 24px 0;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .article-section {
+            margin-bottom: 36px;
+        }
+
+        .article-section h2 {
+            font-size: 19px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 14px 0;
+        }
+
+        .article-section h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 20px 0 8px 0;
+        }
+
+        .article-section p {
+            font-size: 14.5px;
+            line-height: 1.85;
+            color: #475569;
+            margin: 0 0 14px 0;
+        }
+
+        .article-section ul {
+            color: #475569;
+            font-size: 14.5px;
+            line-height: 1.85;
+            padding-left: 20px;
+            margin: 8px 0 16px 0;
+        }
+
+        .article-section li {
+            margin-bottom: 6px;
+        }
+
+        .code-block {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 18px 20px;
+            border-radius: 8px;
+            font-family: Consolas, Monaco, "Courier New", monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 16px 0;
+            line-height: 1.6;
+            white-space: pre;
+        }
+
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 18px 0;
+            font-size: 13.5px;
+        }
+
+        .table-custom th,
+        .table-custom td {
+            border: 1px solid #cbd5e1;
+            padding: 10px 14px;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        .table-custom th {
+            background: #f1f5f9;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        /* 시스템/유틸 카테고리 에메랄드 카테고리 도구 배너 */
+        .tool-banner {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin-top: 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .tool-banner-text {
+            font-size: 14px;
+            color: #065f46;
+            font-weight: 700;
+        }
+
+        .tool-banner-btn {
+            background: #059669;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: background-color 0.15s;
+        }
+
+        .tool-banner-btn:hover {
+            background: #047857;
+        }
+
+        @media (max-width: 640px) {
+            .article-card {
+                padding: 24px 20px;
+            }
+
+            .article-title {
+                font-size: 22px;
+            }
+
+            .tool-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .tool-banner-btn {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="article-container">
+        <a href="index.html" class="back-link">← 가이드 목록으로 돌아가기</a>
+
+        <article class="article-card">
+            <span class="article-badge">QR</span>
+            <h1 class="article-title">QR 코드 생성 원리와 오류 정정 레벨, 인쇄 품질 실무 가이드</h1>
+
+            <section class="article-section">
+                <h2>1. QR 코드의 구조와 동작 원리</h2>
+                <p>QR 코드는 1994년 일본의 덴소 웨이브(Denso Wave)가 자동차 부품 관리를 위해 개발한 2차원 바코드입니다. 가로·세로 양방향으로 정보를 담기 때문에 1차원 바코드보다 훨씬 많은 데이터를 저장할 수 있고, 어느 방향에서 읽어도 인식됩니다.</p>
+                <ul>
+                    <li><strong>파인더 패턴:</strong> 세 모서리의 큰 사각형 무늬로, 스캐너가 QR 코드의 위치와 회전 방향을 찾는 기준입니다.</li>
+                    <li><strong>타이밍 · 얼라인먼트 패턴:</strong> 모듈 간격을 맞추고 비스듬히 찍은 이미지의 왜곡을 보정합니다.</li>
+                    <li><strong>포맷 정보:</strong> 오류 정정 수준과 마스크 패턴이 기록됩니다.</li>
+                    <li><strong>데이터 + 오류 정정 코드워드:</strong> 실제 내용과 복원용 중복 정보가 함께 저장됩니다.</li>
+                </ul>
+                <p>버전은 1(21×21 모듈)부터 40(177×177 모듈)까지 있으며, 담는 데이터가 많을수록 높은 버전이 선택되어 격자가 촘촘해집니다.</p>
+            </section>
+
+            <section class="article-section">
+                <h2>2. 오류 정정 레벨(ECC)과 로고 삽입의 관계</h2>
+                <p>QR 코드는 리드-솔로몬(Reed-Solomon) 오류 정정 부호를 사용해, 일부가 훼손되거나 가려져도 데이터를 복원합니다. 복원 능력은 4단계로 나뉩니다.</p>
+<table class="table-custom"><thead><tr><th>레벨</th><th>복원 가능 비율</th><th>특징</th></tr></thead><tbody><tr><td><strong>L</strong></td><td>약 7%</td><td>데이터 용량이 가장 큼. 깨끗한 환경에서만 권장</td></tr><tr><td><strong>M</strong></td><td>약 15%</td><td>가장 널리 쓰이는 기본값</td></tr><tr><td><strong>Q</strong></td><td>약 25%</td><td>작은 로고를 넣거나 인쇄 훼손 가능성이 있을 때</td></tr><tr><td><strong>H</strong></td><td>약 30%</td><td>복원력이 가장 높지만 같은 내용도 격자가 더 촘촘해짐</td></tr></tbody></table>
+                <p>중앙에 로고를 넣으면 그만큼 데이터 모듈이 가려지므로, 오류 정정 용량 일부를 로고가 차지하는 셈입니다. 로고를 넣는다면 Q 이상으로 생성하고, 로고 크기는 중앙의 작은 영역(대략 전체 면적의 20% 이하)으로 제한하는 것이 안전합니다. 이 수치는 경험적인 권장치이므로 반드시 실제 기기로 스캔 테스트를 해야 합니다.</p>
+            </section>
+
+            <section class="article-section">
+                <h2>3. 데이터 용량과 URL 길이가 스캔 성공률에 미치는 영향</h2>
+                <p>QR 코드는 저장하는 데이터 종류(모드)에 따라 용량이 다릅니다. 버전 40, 오류 정정 L 기준으로 숫자만 저장하면 최대 7,089자, 영숫자는 4,296자, 8비트 바이트(한글 포함 일반 텍스트)는 2,953바이트까지 담을 수 있습니다.</p>
+                <p>용량의 한계에 가까울수록 모듈이 작아져 스마트폰 카메라가 읽기 어려워집니다. 길고 복잡한 URL은 쿼리스트링을 줄이거나 짧은 주소로 정리해 모듈 수를 줄이는 것이 인식률에 도움이 됩니다. 다만 외부 단축 URL 서비스를 쓴다면, 해당 서비스가 종료될 경우 이미 인쇄된 QR 코드가 모두 무용지물이 된다는 점을 고려해야 합니다.</p>
+            </section>
+
+            <section class="article-section">
+                <h2>4. 인쇄·배치 품질 기준</h2>
+                <ul>
+                    <li><strong>여백(Quiet Zone):</strong> 규격상 QR 코드 바깥에 최소 4모듈 너비의 빈 공간이 필요합니다. 다른 디자인 요소가 바짝 붙으면 스캐너가 경계를 인식하지 못합니다.</li>
+                    <li><strong>명암 대비:</strong> 어두운 모듈과 밝은 배경의 대비가 충분해야 합니다. 색을 반전시킨 QR 코드는 일부 스캐너에서 인식되지 않습니다.</li>
+                    <li><strong>크기:</strong> 스캔 거리의 약 1/10 정도를 기준으로 삼는 것이 일반적인 경험칙입니다. 명함처럼 가까이서 찍는 인쇄물은 한 변 2cm 이상을 권장합니다.</li>
+                    <li><strong>재질:</strong> 광택 코팅 면은 조명 반사로 인식이 어려울 수 있어 가능하면 무광 면에 배치합니다.</li>
+                    <li><strong>파일 형식:</strong> 인쇄물에는 확대해도 깨지지 않는 벡터(SVG) 이미지를 사용하는 것이 안전합니다.</li>
+                </ul>
+            </section>
+
+            <section class="article-section">
+                <h2>5. 배포 전 검증 체크리스트</h2>
+                <ul>
+                    <li>인쇄 예정 크기로 출력한 시안을 서로 다른 기종의 스마트폰 카메라 2~3대로 직접 스캔합니다.</li>
+                    <li>연결 주소가 <code>https</code>로 시작하는지, 접속 시 오류 없이 열리는지 확인합니다.</li>
+                    <li>인쇄 후 변경할 수 없으므로, 연결 대상 페이지의 주소가 장기간 유지될 수 있는지 점검합니다.</li>
+                    <li>화면 미리보기의 스캔 성공은 실제 인쇄물의 조명·거리 조건과 다르므로 최종 판단 기준으로 삼지 않습니다.</li>
+                </ul>
+            </section>
+
+            <section class="article-section">
+                <h2>6. DevWorKit QR 코드 생성기 &amp; 스캐너 활용</h2>
+                <p>주소나 텍스트를 입력해 QR 코드를 만들고, 중앙 로고 삽입과 이미지 저장까지 한 화면에서 처리할 수 있으며, 가지고 있는 QR 이미지를 올려 내용을 역으로 읽어볼 수도 있습니다. 모든 생성과 스캔은 브라우저 안에서만 이루어집니다.</p>
+
+                <div class="tool-banner">
+                    <span class="tool-banner-text">🛠️ DevWorKit 실시간 QR 코드 생성기 사용해보기</span>
+                    <a href="../qr/" class="tool-banner-btn">도구로 이동 →</a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <div id="dwk-footer"></div>
+    <script src="../nav.js"></script>
+</body>
+
+</html>

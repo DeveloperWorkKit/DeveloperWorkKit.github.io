@@ -682,6 +682,53 @@
         .bottom-ad-box ins.adsbygoogle:empty {
             display: none !important;
         }
+    
+        .guide-nav-banner {
+            margin-top: 28px;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .guide-nav-text {
+            font-size: 14px;
+            color: #0369a1;
+            font-weight: 700;
+        }
+
+        .guide-nav-btn {
+            background: #0284c7;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: background-color 0.15s;
+        }
+
+        .guide-nav-btn:hover {
+            background: #0369a1;
+        }
+
+        @media (max-width: 640px) {
+            .guide-nav-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .guide-nav-btn {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script>
 </head>
@@ -826,6 +873,11 @@
                 <div class="faq-item">
                     <div class="faq-q">Q. 추가되거나 삭제된 부분만 따로 모아서 복사할 수 있나요?</div>
                     <div class="faq-a">A. 네, 가능합니다. <strong>[변경점 요약 복사]</strong> 옆의 화살표 버튼(▾)을 누르면 원본 기준 지워진 글자, 수정본 기준 추가된 글자만 분리하여 추출할 수 있습니다.</div>
+                </div>
+                <!-- 최하단 실무 심화 가이드 이동 배너 -->
+                <div class="guide-nav-banner">
+                    <span class="guide-nav-text">📘 라인·단어 단위 Diff 비교와 계약서·코드 대조 팁이 궁금하신가요?</span>
+                    <a href="../guide/strcmp-guide.html" class="guide-nav-btn">실무 가이드 보기 →</a>
                 </div>
             </article>
         </div>

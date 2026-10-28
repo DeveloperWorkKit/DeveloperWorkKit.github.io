@@ -353,6 +353,53 @@
         .bottom-ad-box ins.adsbygoogle:empty {
             display: none !important;
         }
+    
+        .guide-nav-banner {
+            margin-top: 28px;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .guide-nav-text {
+            font-size: 14px;
+            color: #0369a1;
+            font-weight: 700;
+        }
+
+        .guide-nav-btn {
+            background: #0284c7;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: background-color 0.15s;
+        }
+
+        .guide-nav-btn:hover {
+            background: #0369a1;
+        }
+
+        @media (max-width: 640px) {
+            .guide-nav-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .guide-nav-btn {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+        }
     </style>
 </head>
 
@@ -446,6 +493,11 @@
                 <div class="faq-item">
                     <div class="faq-q">Q. 음성 읽기 도중 속도나 목소리를 변경할 수 있나요?</div>
                     <div class="faq-a">A. 본 도구는 웹 표준 Web Speech API를 활용하므로 사이트 자체 컨트롤러 내에서 직접 목소리 톤을 변경하는 UI는 제공하지 않습니다. 다만, <strong>사용 중인 운영체제(Windows/macOS)의 접근성 설정</strong>이나 브라우저 내장 음성 설정을 통해 음성 속도와 기본 톤을 사용자 취향에 맞게 변경하실 수 있습니다.</div>
+                </div>
+                <!-- 최하단 실무 심화 가이드 이동 배너 -->
+                <div class="guide-nav-banner">
+                    <span class="guide-nav-text">📘 EUC-KR와 UTF-8 바이트 차이, 제출용 글자수 기준이 궁금하신가요?</span>
+                    <a href="../guide/counter-guide.html" class="guide-nav-btn">실무 가이드 보기 →</a>
                 </div>
             </article>
         </div>
