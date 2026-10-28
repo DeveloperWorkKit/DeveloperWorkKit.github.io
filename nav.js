@@ -7,7 +7,7 @@
     const descEl = document.querySelector('meta[name="description"]');
     const PAGE_TITLE = escAttr(document.title || DEFAULT_TITLE);
     const PAGE_DESC = escAttr((descEl && descEl.content) || DEFAULT_DESC);
-    const PAGE_URL = escAttr(HOST_URL + location.pathname);
+    const PAGE_URL = escAttr(HOST_URL + location.pathname.replace(/index\.html$/, ''));
 
     // 1. 공통 메타태그 및 외부 nav.css 동적 주입 (오픈그래프 및 트위터 카드 포함)
     const commonHeadHTML = `
