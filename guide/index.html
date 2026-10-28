@@ -1,233 +1,431 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DevWorKit 실무 기술 가이드</title>
-  <meta name="description" content="개발자와 직장인을 위한 웹 도구 활용법 및 실무 데이터 처리 가이드">
-  <link rel="stylesheet" href="../style.css">
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background-color: #f8fafc;
-    }
-    .guide-container {
-      max-width: 1080px;
-      margin: 40px auto 80px auto;
-      padding: 0 20px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-    .guide-header {
-      margin-bottom: 30px;
-      border-bottom: 2px solid #e2e8f0;
-      padding-bottom: 15px;
-    }
-    .guide-header h1 {
-      font-size: 26px;
-      color: #0f172a;
-      margin: 10px 0 0 0;
-    }
-    .guide-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 24px;
-    }
-    .guide-card {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: transform 0.2s, box-shadow 0.2s;
-      text-decoration: none;
-      box-sizing: border-box;
-    }
-    .guide-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.06);
-      border-color: #cbd5e1;
-    }
-    
-    .guide-card .card-badge {
-      display: inline-block !important;
-      align-self: flex-start !important;
-      padding: 4px 10px !important;
-      border-radius: 6px !important;
-      font-size: 11px !important;
-      font-weight: 800 !important;
-      letter-spacing: 0.5px !important;
-      margin: 0 0 12px 0 !important; 
-      line-height: 1.2 !important;
-      border: 1px solid transparent !important;
-    }
 
-    /* 메인 페이지와 동일한 3가지 역할별 소프트 틴트 색상 연동 */
-    .badge-cat-text { background-color: #e0f2fe !important; color: #0369a1 !important; border-color: #bae6fd !important; }
-    .badge-cat-data { background-color: #ede9fe !important; color: #6d28d9 !important; border-color: #ddd6fe !important; }
-    .badge-cat-util { background-color: #ccfbf1 !important; color: #0f766e !important; border-color: #99f6e4 !important; }
-    
-    .guide-card .card-title {
-      font-size: 17px !important;
-      font-weight: 700 !important;
-      color: #1e293b !important;
-      margin: 0 0 10px 0 !important;
-      line-height: 1.4 !important;
-      min-height: 48px !important;
-      display: flex !important;
-      align-items: flex-start !important;
-    }
-    .guide-card .card-desc {
-      font-size: 14px !important;
-      color: #64748b !important;
-      line-height: 1.6 !important;
-      margin: 0 0 18px 0 !important;
-      flex-grow: 1 !important;
-    }
-    .guide-card .card-link-text {
-      font-size: 13px !important;
-      font-weight: 600 !important;
-      color: #2563eb !important;
-      display: inline-flex !important;
-      align-items: center !important;
-    }
-  </style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevWorKit 실무 기술 가이드</title>
+    <meta name="description" content="개발자와 직장인을 위한 웹 도구 활용법 및 실무 데이터 처리 가이드">
+
+    <style>
+        :root {
+            --primary-blue: #0284c7;
+            --bg-light: #f8f9fa;
+            --border-color: #e5e7eb;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-main);
+            background-color: #fdfdfd;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 80px 20px 32px 20px;
+        }
+
+        .hub-badge {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+
+        .hero-title {
+            font-size: 40px;
+            font-weight: 900;
+            letter-spacing: -1px;
+            color: #111827;
+            margin: 0 0 12px 0;
+        }
+
+        .hero-desc {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin: 0 auto;
+            max-width: 600px;
+        }
+
+        .control-section {
+            max-width: 680px;
+            width: 100%;
+            margin: 32px auto 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .search-box-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 18px 14px 44px;
+            font-size: 14.5px;
+            border: 1px solid #d1d5db;
+            border-radius: 30px;
+            outline: none;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            color: #111827;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+        }
+
+        .filter-chip-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-chip {
+            border: 1px solid #e5e7eb;
+            background-color: #ffffff;
+            color: #4b5563;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        .filter-chip:hover {
+            background-color: #f3f4f6;
+            color: #111827;
+        }
+
+        .filter-chip.active {
+            background-color: #0f172a;
+            color: #ffffff;
+            border-color: #0f172a;
+        }
+
+        .hub-container {
+            max-width: 1160px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px 20px 80px 20px;
+            box-sizing: border-box;
+            flex: 1;
+        }
+
+        .card-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 24px;
+            width: 100%;
+        }
+
+        .tool-link {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex: 0 0 calc((100% - 48px) / 3);
+            max-width: calc((100% - 48px) / 3);
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        @media (max-width: 960px) {
+            .hero-title {
+                font-size: 32px;
+            }
+
+            .tool-link {
+                flex: 0 0 calc((100% - 24px) / 2);
+                max-width: calc((100% - 24px) / 2);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .tool-link {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+
+            .hero-section {
+                padding: 60px 16px 24px 16px;
+            }
+        }
+
+        .tool-card {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 28px 24px;
+            width: 100%;
+            box-sizing: border-box;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
+            border-color: #cbd5e1;
+        }
+
+        .card-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 9px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            align-self: flex-start;
+            letter-spacing: 0.5px;
+            border: 1px solid transparent;
+        }
+
+        .badge-cat-text {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border-color: #bae6fd;
+        }
+
+        .badge-cat-data {
+            background-color: #ede9fe;
+            color: #6d28d9;
+            border-color: #ddd6fe;
+        }
+
+        .badge-cat-util {
+            background-color: #ccfbf1;
+            color: #0f766e;
+            border-color: #99f6e4;
+        }
+
+        .tool-card h3 {
+            font-size: 19px;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 10px 0;
+            letter-spacing: -0.4px;
+        }
+
+        .tool-card p {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        #no-result-msg {
+            display: none;
+            text-align: center;
+            padding: 50px 20px;
+            color: #9ca3af;
+            font-size: 15px;
+            width: 100%;
+        }
+    </style>
 </head>
+
 <body>
 
-  <div id="dwk-nav"></div>
+    <section class="hero-section">
+        <span class="hub-badge">DWK GUIDE</span>
+        <h1 class="hero-title">실무 기술 가이드</h1>
+        <p class="hero-desc">도구별 동작 원리와 실무 활용 노하우를 정리한 DevWorKit 기술 가이드 모음</p>
 
-  <div class="guide-container">
-    <div class="guide-header">
-      <a href="../index.html" style="color: #64748b; font-size: 13px; text-decoration: none;">← DevWorKit 홈으로</a>
-      <h1>DWK 실무 기술 가이드</h1>
-    </div>
-
-    <div class="guide-grid">
-      <!-- 텍스트 / 문서 도구군 -->
-      <a href="strget-guide.html" class="guide-card">
-        <div>
-          <span class="card-badge badge-cat-text">STRGET</span>
-          <h2 class="card-title">정규표현식(Regex)을 이용한 이메일·전화번호 추출 가이드</h2>
-          <p class="card-desc">비정형 텍스트 뭉치에서 원하는 패턴의 문자열만 정규식으로 정확히 파싱하는 실전 패턴을 설명합니다.</p>
+        <div class="control-section">
+            <div class="search-box-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="tool-search" class="search-input" placeholder="필요한 가이드를 검색하세요 (예: JSON, Base64, 정규식, 글자수...)" oninput="filterTools()">
+            </div>
+            <div class="filter-chip-group">
+                <button class="filter-chip active" onclick="setCategory('all', this)">전체보기</button>
+                <button class="filter-chip" onclick="setCategory('text', this)">텍스트 / 문서</button>
+                <button class="filter-chip" onclick="setCategory('data', this)">개발 / 데이터</button>
+                <button class="filter-chip" onclick="setCategory('util', this)">시스템 / 디자인</button>
+            </div>
         </div>
-        <span class="card-link-text">가이드 읽기 →</span>
-      </a>
+    </section>
 
-      <a href="counter-guide.html" class="guide-card">
-        <div>
-          <span class="card-badge badge-cat-text">COUNTER</span>
-          <h2 class="card-title">글자수·바이트 계산 기준 완벽 가이드: EUC-KR vs UTF-8 차이와 제출용 서식 실무</h2>
-          <p class="card-desc">EUC-KR과 UTF-8의 한글 바이트 차이, 공백·줄바꿈 처리 기준, 제출 전 체크리스트를 정리합니다.</p>
+    <main class="hub-container">
+        <div class="card-grid" id="card-grid">
+            <a href="strget-guide.html" class="tool-link" data-category="text" data-keywords="문자열 추출기 strget 정규식 이메일 전화번호 regex extract 가이드 guide">
+                <div class="tool-card">
+                    <span class="card-badge badge-cat-text">STRGET</span>
+                    <h3>정규표현식(Regex)을 이용한 이메일·전화번호 추출 가이드</h3>
+                    <p>비정형 텍스트 뭉치에서 원하는 패턴의 문자열만 정규식으로 정확히 파싱하는 실전 패턴을 설명합니다.</p>
+                </div>
+            </a>
+
+            <a href="counter-guide.html" class="tool-link" data-category="text" data-keywords="글자수 바이트 계산기 counter byte length 한글 euckr utf8 가이드 guide">
+                <div class="tool-card">
+                    <span class="card-badge badge-cat-text">COUNTER</span>
+                    <h3>글자수·바이트 계산 기준 완벽 가이드: EUC-KR vs UTF-8 차이와 제출용 서식 실무</h3>
+                    <p>EUC-KR과 UTF-8의 한글 바이트 차이, 공백·줄바꿈 처리 기준, 제출 전 체크리스트를 정리합니다.</p>
+                </div>
+            </a>
+
+            <a href="strcmp-guide.html" class="tool-link" data-category="text" data-keywords="텍스트 코드 비교기 strcmp diff 문자열 차이점 비교 대조 code compare 가이드 guide">
+                <div class="tool-card">
+                    <span class="card-badge badge-cat-text">STRCMP</span>
+                    <h3>텍스트·코드 비교(Diff) 알고리즘 원리와 실무 활용 가이드</h3>
+                    <p>LCS 기반 Diff 원리와 라인·단어 단위 비교의 차이, 공백·줄바꿈으로 생기는 가짜 차이를 정리합니다.</p>
+                </div>
+            </a>
+
+            <a href="markdown-guide.html" class="tool-link" data-category="text" data-keywords="마크다운 실시간 에디터 markdown editor latex mermaid katex checklist 가이드 guide">
+                <div class="tool-card">
+                    <span class="card-badge badge-cat-text">MARKDOWN</span>
+                    <h3>마크다운(Markdown) 기초부터 확장 문법까지 완벽 가이드</h3>
+                    <p>기본 서식, 체크리스트, 표(Table)부터 LaTeX 수학 수식과 Mermaid 다이어그램까지 마크다운 실전 활용법을 총정리합니다.</p>
+                </div>
+            </a>
+
+            <a href="fsee-guide.html" class="tool-link" data-category="data" data-keywords="폴더 구조 엑셀 변환기 fsee tree folder directory zip excel 스프레드시트 가이드 guide">
+                <div class="tool-card">
+                    <span class="card-badge badge-cat-data">FSEE</span>
+                    <h3>폴더 구조를 엑셀 트리 문서로 변환하는 원리와 실무 활용 가이드</h3>
+                    <p>디렉터리 트리 평탄화 원리와 ZIP 구조 읽기, 인수인계·감사 자료용 엑셀 문서화 팁을 설명합니다.</p>
+                </div>
+            </a>
+
+            <a href="coder-guide.html" class="tool-link" data-category="data" data-keywords="base64 url 변환기 coder 인코딩 디코딩 encoding decoding uri html entity 가이드 guide">
+                <div class="tool-card">
+                    <span class="card-badge badge-cat-data">CODER</span>
+                    <h3>Base64 인코딩 원리와 실무 한글 깨짐 해결법</h3>
+                    <p>Base64의 내부 동작 원리와 웹 통신 중 발생하는 UTF-8 한글 깨짐 문제의 원인 및 해결 코드를 정리합니다.</p>
+                </div>
+            </a>
+
+            <a href="beautify-guide.html" class="tool-link" data-category="data" data-keywords="코드 뷰티파이어 뷰어 beautify html css javascript js formatter 정렬 압축 minify 가이드 guide">
+                <div class="tool-card">
+                    <span class="card-badge badge-cat-data">BEAUTIFY</span>
+                    <h3>코드 뷰티파이어의 동작 원리와 들여쓰기 표준 가이드</h3>
+                    <p>엉킨 소스코드를 깔끔하게 정돈하는 AST 파싱 원리와 HTML/JS 들여쓰기(2칸 vs 4칸) 표준 규칙을 정리합니다.</p>
+                </div>
+            </a>
+
+            <a href="json-guide.html" class="tool-link" data-category="data" data-keywords="json 포맷터 검사기 json formatter validator json format parse 가이드 guide">
+                <div class="tool-card">
+                    <span class="card-badge badge-cat-data">JSON</span>
+                    <h3>JSON 유효성 검사와 구조적 데이터 파싱 팁</h3>
+                    <p>대용량 JSON 트러블슈팅과 구문 오류(Syntax Error)를 빠르게 진단하는 실무 노하우를 알아봅니다.</p>
+                </div>
+            </a>
+
+            <a href="time-guide.html" class="tool-link" data-category="util" data-keywords="타임스탬프 변환기 time unix timestamp epoch kst utc 시간 날짜 date 가이드 guide">
+                <div class="tool-card">
+                    <span class="card-badge badge-cat-util">TIME</span>
+                    <h3>Unix Epoch Timestamp 개념과 시간대 변환 가이드</h3>
+                    <p>10자리 초와 13자리 밀리초의 차이점, 그리고 KST/UTC 시간대 상호 변환 시 주의사항을 정리합니다.</p>
+                </div>
+            </a>
+
+            <a href="hash-guide.html" class="tool-link" data-category="util" data-keywords="uuid 해시 생성기 hash sha256 sha512 md5 암호화 식별자 unique id 가이드 guide">
+                <div class="tool-card">
+                    <span class="card-badge badge-cat-util">HASH</span>
+                    <h3>단방향 암호화 해시(SHA-256)와 UUID v4 원리 정리</h3>
+                    <p>데이터 무결성 검증을 위한 SHA-256 해시 알고리즘과 고유 식별자 생성을 위한 UUID v4 원리를 설명합니다.</p>
+                </div>
+            </a>
+
+            <a href="qr-guide.html" class="tool-link" data-category="util" data-keywords="qr 코드 생성기 qr qrcode 큐알코드 생성기 generator vector svg png 가이드 guide">
+                <div class="tool-card">
+                    <span class="card-badge badge-cat-util">QR</span>
+                    <h3>QR 코드 생성 원리와 오류 정정 레벨, 인쇄 품질 실무 가이드</h3>
+                    <p>오류 정정 레벨(L/M/Q/H)과 로고 삽입, 데이터 용량, 인쇄 크기·여백 기준을 정리합니다.</p>
+                </div>
+            </a>
+
+            <a href="cron-guide.html" class="tool-link" data-category="util" data-keywords="크론탭 주기 생성기 cron crontab linux 스케줄러 스케줄링 정기작업 expression 가이드 guide">
+                <div class="tool-card">
+                    <span class="card-badge badge-cat-util">CRON</span>
+                    <h3>리눅스 크론탭 문법 완벽 정복과 실무 스케줄러 가이드</h3>
+                    <p>5개 필드(분 시 일 월 요일)의 동작 규칙과 특수 문자(*, /, -, ,) 활용법, 실무 에러 방어 팁을 정리합니다.</p>
+                </div>
+            </a>
+
+            <a href="color-guide.html" class="tool-link" data-category="util" data-keywords="웹 색상 스튜디오 ui 가독성 color contrast wcag 명도대비 대비비 palette 색상표 가이드 guide">
+                <div class="tool-card">
+                    <span class="card-badge badge-cat-util">COLOR</span>
+                    <h3>웹 접근성(WCAG 2.1) 명도 대비비 기준과 실무 UI 배색 가이드</h3>
+                    <p>W3C WCAG 2.1 AA/AAA 기준 명도 대비비 계산 공식과 주 텍스트, 본문, 배경색 3채널의 실무 배색 원리를 정리합니다.</p>
+                </div>
+            </a>
+
+            <div id="no-result-msg">검색된 가이드가 없습니다. 다른 키워드로 검색해 보세요.</div>
         </div>
-        <span class="card-link-text">가이드 읽기 →</span>
-      </a>
+    </main>
 
-      <a href="strcmp-guide.html" class="guide-card">
-        <div>
-          <span class="card-badge badge-cat-text">STRCMP</span>
-          <h2 class="card-title">텍스트·코드 비교(Diff) 알고리즘 원리와 실무 활용 가이드</h2>
-          <p class="card-desc">LCS 기반 Diff 원리와 라인·단어 단위 비교의 차이, 공백·줄바꿈으로 생기는 가짜 차이를 정리합니다.</p>
-        </div>
-        <span class="card-link-text">가이드 읽기 →</span>
-      </a>
+    <script>
+        let currentCategory = 'all';
 
-      <a href="markdown-guide.html" class="guide-card">
-        <div>
-          <span class="card-badge badge-cat-text">MARKDOWN</span>
-          <h2 class="card-title">마크다운(Markdown) 기초부터 확장 문법까지 완벽 가이드</h2>
-          <p class="card-desc">기본 서식, 체크리스트, 표(Table)부터 LaTeX 수학 수식과 Mermaid 다이어그램까지 마크다운 실전 활용법을 총정리합니다.</p>
-        </div>
-        <span class="card-link-text">가이드 읽기 →</span>
-      </a>
+        function setCategory(cat, btn) {
+            currentCategory = cat;
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            filterTools();
+        }
 
-      <!-- 개발 / 데이터 도구군 -->
-      <a href="fsee-guide.html" class="guide-card">
-        <div>
-          <span class="card-badge badge-cat-data">FSEE</span>
-          <h2 class="card-title">폴더 구조를 엑셀 트리 문서로 변환하는 원리와 실무 활용 가이드</h2>
-          <p class="card-desc">디렉터리 트리 평탄화 원리와 ZIP 구조 읽기, 인수인계·감사 자료용 엑셀 문서화 팁을 설명합니다.</p>
-        </div>
-        <span class="card-link-text">가이드 읽기 →</span>
-      </a>
+        function filterTools() {
+            const query = document.getElementById('tool-search').value.trim().toLowerCase();
+            const cards = document.querySelectorAll('.tool-link');
+            let visibleCount = 0;
 
-      <a href="coder-guide.html" class="guide-card">
-        <div>
-          <span class="card-badge badge-cat-data">CODER</span>
-          <h2 class="card-title">Base64 인코딩 원리와 실무 한글 깨짐 해결법</h2>
-          <p class="card-desc">Base64의 내부 동작 원리와 웹 통신 중 발생하는 UTF-8 한글 깨짐 문제의 원인 및 해결 코드를 정리합니다.</p>
-        </div>
-        <span class="card-link-text">가이드 읽기 →</span>
-      </a>
+            cards.forEach(card => {
+                const cardCat = card.getAttribute('data-category');
+                const keywords = card.getAttribute('data-keywords').toLowerCase();
+                const cardTitle = card.querySelector('h3').innerText.toLowerCase();
+                const cardDesc = card.querySelector('p').innerText.toLowerCase();
 
-      <a href="beautify-guide.html" class="guide-card">
-        <div>
-          <span class="card-badge badge-cat-data">BEAUTIFY</span>
-          <h2 class="card-title">코드 뷰티파이어의 동작 원리와 들여쓰기 표준 가이드</h2>
-          <p class="card-desc">엉킨 소스코드를 깔끔하게 정돈하는 AST 파싱 원리와 HTML/JS 들여쓰기(2칸 vs 4칸) 표준 규칙을 정리합니다.</p>
-        </div>
-        <span class="card-link-text">가이드 읽기 →</span>
-      </a>
+                const matchesCat = (currentCategory === 'all' || cardCat === currentCategory);
+                const matchesSearch = query === '' || keywords.includes(query) || cardTitle.includes(query) || cardDesc.includes(query);
 
-      <a href="json-guide.html" class="guide-card">
-        <div>
-          <span class="card-badge badge-cat-data">JSON</span>
-          <h2 class="card-title">JSON 유효성 검사와 구조적 데이터 파싱 팁</h2>
-          <p class="card-desc">대용량 JSON 트러블슈팅과 구문 오류(Syntax Error)를 빠르게 진단하는 실무 노하우를 알아봅니다.</p>
-        </div>
-        <span class="card-link-text">가이드 읽기 →</span>
-      </a>
+                if (matchesCat && matchesSearch) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
 
-      <!-- 시스템 / 디자인 유틸군 -->
-      <a href="time-guide.html" class="guide-card">
-        <div>
-          <span class="card-badge badge-cat-util">TIME</span>
-          <h2 class="card-title">Unix Epoch Timestamp 개념과 시간대 변환 가이드</h2>
-          <p class="card-desc">10자리 초와 13자리 밀리초의 차이점, 그리고 KST/UTC 시간대 상호 변환 시 주의사항을 정리합니다.</p>
-        </div>
-        <span class="card-link-text">가이드 읽기 →</span>
-      </a>
-
-      <a href="hash-guide.html" class="guide-card">
-        <div>
-          <span class="card-badge badge-cat-util">HASH</span>
-          <h2 class="card-title">단방향 암호화 해시(SHA-256)와 UUID v4 원리 정리</h2>
-          <p class="card-desc">데이터 무결성 검증을 위한 SHA-256 해시 알고리즘과 고유 식별자 생성을 위한 UUID v4 원리를 설명합니다.</p>
-        </div>
-        <span class="card-link-text">가이드 읽기 →</span>
-      </a>
-
-      <a href="qr-guide.html" class="guide-card">
-        <div>
-          <span class="card-badge badge-cat-util">QR</span>
-          <h2 class="card-title">QR 코드 생성 원리와 오류 정정 레벨, 인쇄 품질 실무 가이드</h2>
-          <p class="card-desc">오류 정정 레벨(L/M/Q/H)과 로고 삽입, 데이터 용량, 인쇄 크기·여백 기준을 정리합니다.</p>
-        </div>
-        <span class="card-link-text">가이드 읽기 →</span>
-      </a>
-
-      <a href="cron-guide.html" class="guide-card">
-        <div>
-          <span class="card-badge badge-cat-util">CRON</span>
-          <h2 class="card-title">리눅스 크론탭 문법 완벽 정복과 실무 스케줄러 가이드</h2>
-          <p class="card-desc">5개 필드(분 시 일 월 요일)의 동작 규칙과 특수 문자(*, /, -, ,) 활용법, 실무 에러 방어 팁을 정리합니다.</p>
-        </div>
-        <span class="card-link-text">가이드 읽기 →</span>
-      </a>
-
-      <a href="color-guide.html" class="guide-card">
-        <div>
-          <span class="card-badge badge-cat-util">COLOR</span>
-          <h2 class="card-title">웹 접근성(WCAG 2.1) 명도 대비비 기준과 실무 UI 배색 가이드</h2>
-          <p class="card-desc">W3C WCAG 2.1 AA/AAA 기준 명도 대비비 계산 공식과 주 텍스트, 본문, 배경색 3채널의 실무 배색 원리를 정리합니다.</p>
-        </div>
-        <span class="card-link-text">가이드 읽기 →</span>
-      </a>
-    </div>
-  </div>
-
-  <script src="../nav.js"></script>
+            const noResult = document.getElementById('no-result-msg');
+            noResult.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+    </script>
+    <script src="../nav.js"></script>
 </body>
+
 </html>
