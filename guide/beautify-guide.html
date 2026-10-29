@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>코드 뷰티파이어(Beautifier)의 동작 원리와 들여쓰기 표준 가이드 | DevWorKit</title>
-    <meta name="description" content="코드 뷰티파이어의 AST 구문 분석 원리부터 2칸 vs 4칸 들여쓰기 표준 규격, Minify 압축 최적화 기술까지 완벽 정리 실무 가이드">
+    <meta name="description" content="코드 뷰티파이어의 토큰 분석 원리와 AST 기반 포맷터와의 차이부터 2칸 vs 4칸 들여쓰기 표준 규격, Minify 압축 최적화 기술까지 완벽 정리 실무 가이드">
     <link rel="stylesheet" href="../nav.css">
     <style>
         body {
@@ -213,18 +213,18 @@
             </section>
 
             <section class="article-section">
-                <h2>2. 뷰티파이어의 내부 파이프라인: AST(추상 구문 트리) 파싱</h2>
-                <p>많은 초급 개발자가 뷰티파이어를 단순한 정규표현식(Regex) 기반의 문자열 치환기로 오해하곤 합니다. 그러나 단순 치환 방식은 <code>console.log("if (a > 0) {")</code>과 같이 문자열 리터럴 내부에 포함된 코드 유사 텍스트까지 잘못 건드려 문법 에러를 유발합니다. 전문적인 포맷터 엔진(js-beautify, Prettier 등)은 다음과 같은 3단계 컴파일러 파이프라인을 거칩니다:</p>
+                <h2>2. 토큰 기반 포맷터와 AST 기반 포맷터: 동작 원리의 차이</h2>
+                <p>많은 초급 개발자가 뷰티파이어를 단순한 정규표현식(Regex) 기반의 문자열 치환기로 오해하곤 합니다. 그러나 단순 치환 방식은 <code>console.log("if (a > 0) {")</code>과 같이 문자열 리터럴 내부에 포함된 코드 유사 텍스트까지 잘못 건드려 문법 에러를 유발합니다. 전문적인 포맷터는 코드를 먼저 토큰(Token)으로 분해한다는 공통점이 있지만, 그 이후 처리 방식에 따라 크게 두 갈래로 나뉩니다:</p>
                 <ul>
-                    <li><strong>어휘 분석 (Lexical Analysis / Tokenizing):</strong> 원시 코드 텍스트를 순회하며 키워드(<code>function</code>, <code>if</code>), 식별자, 연산자, 문자열, 주석 등의 원자 단위인 '토큰(Token)' 스트림으로 분해합니다.</li>
-                    <li><strong>구문 분석 (Syntax Analysis & AST 구성):</strong> 토큰들의 계층적 문맥을 해석하여 중첩 스코프와 조건문, 반복문 관계를 나타내는 트리 구조인 <strong>AST(Abstract Syntax Tree)</strong>를 메모리상에 빌드합니다.</li>
-                    <li><strong>코드 재생성 (Code Generation & Pretty Printing):</strong> 구축된 트리를 루트부터 탐색하면서, 사전 정의된 들여쓰기 규칙(2칸/4칸/탭)과 연산자 전후 공백 규격에 맞춰 새로운 문자열로 직렬화(Serialize)하여 출력합니다.</li>
+                    <li><strong>토큰 기반 포맷터 (js-beautify 등):</strong> 원시 코드를 키워드(<code>function</code>, <code>if</code>), 식별자, 연산자, 문자열, 주석 같은 토큰 스트림으로 분해한 뒤, 중괄호 깊이와 직전 토큰 같은 상태를 추적하면서 줄바꿈과 들여쓰기만 다시 배치합니다. 트리 구조를 만들지 않아 가볍고 빠르며, 문법이 완전하지 않은 코드도 어느 정도 정렬할 수 있습니다.</li>
+                    <li><strong>AST 기반 포맷터 (Prettier 등):</strong> 토큰을 문법 규칙에 따라 해석해 <strong>AST(Abstract Syntax Tree, 추상 구문 트리)</strong>를 메모리에 만들고, 이 트리를 규칙에 맞춰 처음부터 다시 출력합니다. 팀 전체가 동일한 결과를 얻기 쉽지만, 문법 오류가 있으면 파싱 단계에서 실패합니다.</li>
+                    <li><strong>공통 마무리 단계 (출력):</strong> 어느 방식이든 사전에 정한 들여쓰기 규칙(2칸/4칸/탭)과 연산자 전후 공백 규격에 맞춰 새로운 문자열로 직렬화(Serialize)해 출력합니다.</li>
                 </ul>
 
                 <div class="code-block">// [난독화 및 압축된 원본 코드 예시]
 function processUserData(u,auth){if(!u||!auth){return null;}const r={id:u.id,role:u.role||"guest"};return r;}
 
-// [AST 파싱을 거쳐 4칸 인덴트로 복원된 표준 코드]
+// [토큰 분석을 거쳐 4칸 인덴트로 복원된 표준 코드]
 function processUserData(u, auth) {
     if (!u || !auth) {
         return null;
@@ -265,19 +265,25 @@ function processUserData(u, auth) {
                             <td>Go (gofmt 공식 표준), 일부 C 임베디드</td>
                             <td>파일 내에 탭 문자(<code>\t</code>) 1바이트만 저장되므로 용량이 절약되며, 개발자 각자가 IDE 설정에서 원하는 너비(2칸, 4칸, 8칸)로 자유롭게 렌더링할 수 있는 접근성(Accessibility)의 이점이 있습니다.</td>
                         </tr>
+                        <tr>
+                            <td><strong>4 Spaces</strong></td>
+                            <td>PowerShell (.ps1, .psm1)</td>
+                            <td>PowerShell 커뮤니티 스타일 가이드(The PowerShell Best Practices and Style Guide)는 4칸 들여쓰기와 여는 중괄호를 같은 줄에 두는 방식을 권장합니다. 줄바꿈이 곧 문장의 끝이라서 중괄호·파이프(<code>|</code>)·백틱(<code>`</code>) 줄 이음 위치에 맞춰 들여쓰기가 달라지는 점이 특징입니다.</td>
+                        </tr>
                     </tbody>
                 </table>
             </section>
 
             <section class="article-section">
                 <h2>4. 압축(Minify)과 정렬(Beautify)의 실무 적용과 주의점</h2>
-                <p>상용 프로덕션 환경에 웹 애플리케이션을 배포할 때는 네트워크 전송 속도 향상과 로딩 시간 단축을 위해 불필요한 공백, 개행, 주석을 전부 제거하는 <strong>Minify(코드 경량화)</strong> 처리를 수행합니다. 본 도구의 <code>⚡ 압축 (Minify)</code> 기능은 배포 직전 파일의 용량을 최대 40~60%까지 즉각 경량화해 줍니다.</p>
+                <p>상용 프로덕션 환경에 웹 애플리케이션을 배포할 때는 네트워크 전송 속도 향상과 로딩 시간 단축을 위해 불필요한 공백, 개행, 주석을 전부 제거하는 <strong>Minify(코드 경량화)</strong> 처리를 수행합니다. 본 도구의 <code>⚡ 압축 (Minify)</code> 기능은 주석과 불필요한 공백을 제거해 용량을 줄여 줍니다. 문자열·정규식·템플릿 리터럴 내부는 그대로 보존하며, 절감되는 폭은 코드에 들어 있는 주석과 들여쓰기의 양에 따라 다릅니다. 변수명 단축이나 난독화는 하지 않으므로, 운영 배포용 번들에는 Terser나 esbuild 같은 전문 도구를 함께 사용하는 것을 권장합니다.</p>
                 <p>반대로 외부에서 배포된 서드파티 스크립트나 CDN 라이브러리를 디버깅할 때는 압축된 한 줄 코드를 읽을 수 없으므로, <strong>뷰티파이어를 통해 가독성을 복원한 후 실시간 렌더링 뷰어로 UI 동작을 검증</strong>하는 것이 일반적인 실무 워크플로우입니다.</p>
+                <p><strong>PowerShell은 예외입니다.</strong> 줄바꿈이 문장을 구분하기 때문에 자바스크립트처럼 한 줄로 합치면 동작이 달라질 수 있습니다. 그래서 PowerShell 압축은 주석, 빈 줄, 들여쓰기만 제거하고 줄 구조는 유지하는 것이 안전합니다. 또한 한국어 Windows의 Windows PowerShell 5.1은 BOM이 없는 UTF-8 스크립트를 ANSI(CP949)로 읽어 한글 문자열이 깨질 수 있으므로, 한글이 포함된 <code>.ps1</code> 파일은 UTF-8 BOM과 함께 저장하는 것이 좋습니다.</p>
             </section>
 
             <section class="article-section">
                 <h2>5. DevWorKit 온라인 코드 뷰티파이어 & 웹 뷰어 활용</h2>
-                <p>별도의 Node.js 환경이나 VS Code 확장 플러그인을 설치하지 않고도 웹 브라우저 메모리상에서 HTML, CSS, JavaScript 코드를 즉각 정렬하고 한 줄로 압축할 수 있습니다. 특히 HTML 모드에서는 <strong>우측 샌드박스 화면 미리보기 및 새 창 전체화면 기능</strong>을 통해 작성된 마크업의 실제 렌더링 결과를 1초 만에 테스트할 수 있습니다.</p>
+                <p>별도의 Node.js 환경이나 VS Code 확장 플러그인을 설치하지 않고도 웹 브라우저 메모리상에서 HTML, CSS, JavaScript, PowerShell 코드를 즉각 정렬하고 압축할 수 있습니다. 특히 HTML 모드에서는 <strong>우측 샌드박스 화면 미리보기 및 새 창 전체화면 기능</strong>을 통해 작성된 마크업의 실제 렌더링 결과를 1초 만에 테스트할 수 있습니다.</p>
 
                 <div class="tool-banner">
                     <span class="tool-banner-text">🛠️ DevWorKit 실시간 코드 뷰티파이어 & 웹 뷰어 사용해보기</span>

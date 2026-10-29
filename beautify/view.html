@@ -465,18 +465,38 @@
             }
         }
 
-        function copySourceCode() {
+        async function copySourceCode() {
             if (!currentHtmlCode) return;
-            navigator.clipboard.writeText(currentHtmlCode).then(() => {
-                const copyBtn = document.getElementById('btn-quick-copy');
-                const modalBtn = document.getElementById('btn-modal-copy');
-                if (copyBtn) copyBtn.innerText = '✅ 복사 완료!';
-                if (modalBtn) modalBtn.innerText = '✅ 복사 완료!';
-                setTimeout(() => {
-                    if (copyBtn) copyBtn.innerText = '📋 코드 복사';
-                    if (modalBtn) modalBtn.innerText = '전체 복사';
-                }, 1500);
-            });
+            let copied = false;
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(currentHtmlCode);
+                    copied = true;
+                }
+            } catch (e) {}
+            if (!copied) {
+                const ta = document.createElement('textarea');
+                ta.value = currentHtmlCode;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.focus();
+                ta.select();
+                try { copied = document.execCommand('copy'); } catch (e) {}
+                document.body.removeChild(ta);
+            }
+            if (!copied) {
+                alert('복사에 실패했습니다. 소스 보기 창에서 직접 선택해 복사해 주세요.');
+                return;
+            }
+            const copyBtn = document.getElementById('btn-quick-copy');
+            const modalBtn = document.getElementById('btn-modal-copy');
+            if (copyBtn) copyBtn.innerText = '✅ 복사 완료!';
+            if (modalBtn) modalBtn.innerText = '✅ 복사 완료!';
+            setTimeout(() => {
+                if (copyBtn) copyBtn.innerText = '📋 코드 복사';
+                if (modalBtn) modalBtn.innerText = '전체 복사';
+            }, 1500);
         }
 
         // ==========================================

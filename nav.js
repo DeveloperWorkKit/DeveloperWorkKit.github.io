@@ -70,7 +70,7 @@
             name: '코드 뷰티파이어 & 뷰어',
             tag: 'BEAUTIFY',
             url: `${HOST_URL}/beautify/`,
-            keywords: 'html css javascript js formatter 정렬 압축'
+            keywords: 'html css javascript js powershell ps1 파워쉘 formatter 정렬 압축'
         },
         {
             name: 'JSON 포맷터 & 검사기',
