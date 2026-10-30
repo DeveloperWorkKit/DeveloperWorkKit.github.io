@@ -210,7 +210,7 @@
             <section class="article-section">
                 <h2>1. 현대 소프트웨어 아키텍처에서 JSON의 위상과 본질</h2>
                 <p>JSON(JavaScript Object Notation)은 2000년대 초반 더글라스 크록포드(Douglas Crockford)에 의해 정립된 경량 텍스트 기반 데이터 교환 포맷입니다. 초기 웹 환경을 지배하던 XML은 엄격한 시작 태그와 종료 태그 구조, 무거운 스키마 정의 파일(XSD), 복잡한 네임스페이스로 인해 네트워크 패킷 오버헤드가 매우 컸습니다. 반면 JSON은 키-값 쌍(Key-Value Pair)과 순서가 있는 리스트(Array)라는 인간에게 가장 직관적인 두 가지 자료구조만을 채택하여 페이로드 크기를 획기적으로 줄였습니다.</p>
-                <p>오늘날 JSON은 단순한 웹 브라우저 통신을 넘어 마이크로서비스 아키텍처(MSA) 간의 gRPC 및 REST API 페이로드, MongoDB와 PostgreSQL 같은 현대 데이터베이스의 비정형 문서 저장소, 그리고 도커(Docker)나 쿠버네티스(Kubernetes) 환경설정의 표준 규격으로 자리 잡았습니다. 그러나 프로그래밍 언어의 런타임 메모리 객체와 달리, 네트워크 케이블을 통과하는 JSON은 완전한 "순수 문자열(String)"입니다. 따라서 송신 측의 직렬화(Serialization)와 수신 측의 역직렬화(Deserialization) 과정에서 단 1글자의 문법 위반만 존재해도 전체 파싱 프로세스가 멈추고 서버 장애로 이어지는 엄격성을 지니고 있습니다.</p>
+                <p>오늘날 JSON은 단순한 웹 브라우저 통신을 넘어 마이크로서비스 아키텍처(MSA) 간의 REST API 페이로드, MongoDB와 PostgreSQL(JSONB) 같은 데이터베이스의 문서 저장 형식, 그리고 <code>package.json</code>, <code>tsconfig.json</code>, 도커(Docker)의 <code>daemon.json</code> 같은 각종 설정 파일의 표준 규격으로 자리 잡았습니다. 그러나 프로그래밍 언어의 런타임 메모리 객체와 달리, 네트워크 케이블을 통과하는 JSON은 완전한 "순수 문자열(String)"입니다. 따라서 송신 측의 직렬화(Serialization)와 수신 측의 역직렬화(Deserialization) 과정에서 단 1글자의 문법 위반만 존재해도 전체 파싱 프로세스가 멈추고 서버 장애로 이어지는 엄격성을 지니고 있습니다.</p>
             </section>
 
             <section class="article-section">
@@ -229,7 +229,7 @@
                         <tr>
                             <td><strong>Trailing Comma (후행 쉼표)</strong></td>
                             <td><code>{"name": "DevWorKit", "id": 1,}</code></td>
-                            <td><code>{"name": "DevWorKit", "id": 1}</code><br>자바스크립트와 파이썬에서는 배열/객체 끝의 쉼표를 허용하지만, JSON 표준 명세에서는 다음 요소가 올 것을 전제하므로 파서가 즉시단절(SyntaxError)됩니다.</td>
+                            <td><code>{"name": "DevWorKit", "id": 1}</code><br>자바스크립트와 파이썬에서는 배열/객체 끝의 쉼표를 허용하지만, JSON 표준 명세에서는 다음 요소가 올 것을 전제하므로 파서가 즉시 오류(SyntaxError)를 냅니다.</td>
                         </tr>
                         <tr>
                             <td><strong>따옴표 규격 위반</strong></td>
@@ -252,12 +252,12 @@
 
             <section class="article-section">
                 <h2>3. 정밀도 손실(BigInt)과 자바스크립트 파서의 내부 한계</h2>
-                <p>실무에서 금융 거래 ID, 트위터 트윗 Snowflake ID, 데이터베이스의 64비트 정수(BIGINT) 기본키를 처리할 때 매우 치명적인 버그가 발생합니다. 자바스크립트 엔진의 기본 파서인 <code>JSON.parse()</code>는 모든 숫자를 IEEE 754 배정밀도 부동소수점(64비트 Float)으로 변환합니다.</p>
+                <p>실무에서 금융 거래 ID, X(구 트위터)의 Snowflake ID, 데이터베이스의 64비트 정수(BIGINT) 기본키를 처리할 때 매우 치명적인 버그가 발생합니다. 자바스크립트 엔진의 기본 파서인 <code>JSON.parse()</code>는 모든 숫자를 IEEE 754 배정밀도 부동소수점(64비트 Float)으로 변환합니다.</p>
                 <p>이 방식은 <code>-(2^53 - 1)</code>부터 <code>2^53 - 1</code>(정확히 <code>9,007,199,254,740,991</code>) 사이의 정수만 안전하게 표현할 수 있습니다. 만약 서버에서 <code>{"orderId": 9007199254740993}</code>과 같이 16자리 이상의 정수를 전송하면, 브라우저가 이를 파싱하는 순간 끝자리가 <code>...992</code>로 왜곡되어 결제 실패나 데이터 불일치가 발생합니다. 따라서 실무 백엔드 엔지니어는 64비트 정수를 JSON으로 직렬화할 때 반드시 <strong>문자열(String) 형태(<code>"orderId": "9007199254740993"</code>)</strong>로 감싸서 송수신하는 것이 불문율입니다.</p>
             </section>
 
             <section class="article-section">
-                <h2>4. TypeScript 인터페이스 자동 추론 및 AST 역공학의 원리</h2>
+                <h2>4. TypeScript 인터페이스 자동 추론의 원리</h2>
                 <p>현대 웹 개발에서 프론트엔드 엔지니어가 백엔드로부터 수신한 JSON 응답을 다룰 때 가장 먼저 수행하는 작업은 데이터 구조에 대응하는 <strong>TypeScript Type 또는 Interface</strong>를 작성하는 것입니다. 수십 개의 필드를 수작업으로 타이핑하는 것은 상당한 시간 낭비와 인적 실수를 유발합니다.</p>
                 <p>본 도구의 <code>TypeScript 변환</code> 엔진은 단순 정규식 치환이 아닌, 파싱된 JSON 트리를 재귀적(Recursive)으로 탐색하여 타입을 유추합니다:</p>
                 <ul>
@@ -267,36 +267,36 @@
                 </ul>
 
                 <div class="code-block">// [수신된 실제 백엔드 API 응답 데이터]
-                    {
-                    "projectId": 4096,
-                    "projectName": "DevWorKit Core",
-                    "isProduction": true,
-                    "maintainers": ["Kim", "Lee"],
-                    "metrics": {
-                    "dailyActiveUsers": 12500,
-                    "uptimePercent": 99.98
-                    }
-                    }
+{
+  "projectId": 4096,
+  "projectName": "DevWorKit Core",
+  "isProduction": true,
+  "maintainers": ["Kim", "Lee"],
+  "metrics": {
+    "dailyActiveUsers": 12500,
+    "uptimePercent": 99.98
+  }
+}
 
-                    // [엔진에 의해 실시간으로 자동 추론된 TypeScript Interface]
-                    export interface Metrics {
-                    dailyActiveUsers: number;
-                    uptimePercent: number;
-                    }
+// [엔진에 의해 실시간으로 자동 추론된 TypeScript Interface]
+export interface Metrics {
+  dailyActiveUsers: number;
+  uptimePercent: number;
+}
 
-                    export interface RootObject {
-                    projectId: number;
-                    projectName: string;
-                    isProduction: boolean;
-                    maintainers: string[];
-                    metrics: Metrics;
-                    }</div>
+export interface RootObject {
+  projectId: number;
+  projectName: string;
+  isProduction: boolean;
+  maintainers: string[];
+  metrics: Metrics;
+}</div>
             </section>
 
             <section class="article-section">
                 <h2>5. 대용량 JSON 포맷팅(Beautify)과 압축(Minify) 성능 최적화</h2>
                 <p>수 메가바이트(MB)에 달하는 방대한 로그 데이터나 JSON 덤프 파일을 처리할 때, 브라우저 UI 스레드가 멈추는 프리징(Freezing) 현상이 자주 발생합니다. 이는 자바스크립트 레벨에서 문자열 연결(Concatenation)을 반복할 때 발생하는 가비지 컬렉터(GC) 부하 때문입니다.</p>
-                <p>본 도구는 V8 자바스크립트 엔진의 C++ 네이티브 바인딩 메서드인 <code>JSON.stringify(obj, null, space)</code>를 직접 호출하여 메모리 복사를 최소화합니다. 개발 및 디버깅 환경에서는 가독성을 높여주는 <strong>2칸/4칸 인덴트</strong>를 사용하고, 프로덕션 배포 및 네트워크 페이로드 최적화 시에는 공백과 줄바꿈을 완벽히 소거하는 <strong>1줄 압축(Minify)</strong>을 적용함으로써 페이로드 용량을 30~50%까지 절감할 수 있습니다.</p>
+                <p>본 도구는 브라우저에 내장된(native) <code>JSON.stringify(obj, null, space)</code>를 직접 호출해, 직접 문자열을 이어 붙이는 방식보다 효율적으로 포맷팅합니다. 개발 및 디버깅 환경에서는 가독성을 높여주는 <strong>2칸/4칸 인덴트</strong>를 사용하고, 프로덕션 배포 및 네트워크 페이로드 최적화 시에는 공백과 줄바꿈을 완벽히 소거하는 <strong>1줄 압축(Minify)</strong>을 적용함으로써 페이로드 용량을 줄일 수 있습니다(절감 폭은 데이터 구조와 들여쓰기 양에 따라 다릅니다).</p>
             </section>
 
             <section class="article-section">

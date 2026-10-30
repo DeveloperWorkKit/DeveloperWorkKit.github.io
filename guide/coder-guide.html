@@ -196,7 +196,7 @@
                 <h2>2. 3바이트를 4바이트로 쪼개는 Base64 수학적 변환 원리</h2>
                 <p>Base64의 핵심 원리는 3바이트(24비트) 크기의 데이터 묶음을 6비트씩 4개로 쪼개어 각각을 64진법 인덱스로 매핑하는 것입니다.</p>
                 <ul>
-                    <li><strong>비트 팽창:</strong> 3바이트 데이터가 4바이트 문자로 늘어나기 때문에, Base64로 인코딩된 데이터의 용량은 원본 대비 약 **33% 증가**합니다.</li>
+                    <li><strong>비트 팽창:</strong> 3바이트 데이터가 4바이트 문자로 늘어나기 때문에, Base64로 인코딩된 데이터의 용량은 원본 대비 약 <strong>33% 증가</strong>합니다.</li>
                     <li><strong>패딩(Padding):</strong> 원본 바이트가 3바이트로 딱 떨어지지 않고 1바이트나 2바이트가 남을 경우, 부족한 빈자리를 비트 0으로 채우고 끝에 등호 기호(<code>=</code> 또는 <code>==</code>)를 붙여 패딩 처리를 수행합니다.</li>
                 </ul>
             </section>
@@ -204,7 +204,7 @@
             <section class="article-section">
                 <h2>3. 자바스크립트 환경에서 한글(UTF-8) 깨짐이 발생하는 결정적 원인</h2>
                 <p>웹 프론트엔드 개발 시 가장 흔하게 겪는 실수가 브라우저 내장 함수인 <code>window.btoa()</code>를 한글 문자열에 바로 사용하는 것입니다. <code>btoa()</code>는 엄격하게 라틴 1바이트(ISO-8859-1) 문자셋만 지원하도록 구현되어 있습니다.</p>
-                <p>UTF-8 환경에서 한글은 글자당 2~3바이트를 차지하므로, 이를 그대로 <code>btoa()</code>에 넣으면 바이트 범위를 초과하여 <code>InvalidCharacterError</code> 예외가 발생하거나 디코딩 시 복원이 불가능한 문자로 깨지게 됩니다. 따라서 문자열을 먼저 URI 컴포넌트 형식으로 바이트 직렬화한 뒤 Base64로 변환해야 합니다.</p>
+                <p>UTF-8 환경에서 한글은 글자당 3바이트를 차지하므로, 이를 그대로 <code>btoa()</code>에 넣으면 바이트 범위를 초과하여 <code>InvalidCharacterError</code> 예외가 발생하거나 디코딩 시 복원이 불가능한 문자로 깨지게 됩니다. 따라서 문자열을 먼저 URI 컴포넌트 형식으로 바이트 직렬화한 뒤 Base64로 변환해야 합니다.</p>
                 <div class="code-block">// 실무 표준: 한글(UTF-8) 깨짐 없는 안전한 Base64 인코딩 함수
 function safeBase64Encode(str) {
     return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => {

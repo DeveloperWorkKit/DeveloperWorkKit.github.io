@@ -214,7 +214,7 @@
 
             <section class="article-section">
                 <h2>2. 실무 개발에서 가장 흔한 타임스탬프 자릿수 혼동 (초 vs 밀리초)</h2>
-                <p>소프트웨어 엔지니어링 실무에서 가장 빈번하게 마주치는 시간 관련 버그는 바로 **타임스탬프의 자릿수 단위 불일치**입니다. 시스템 환경과 프로그래밍 언어에 따라 기준 단위가 완전히 상이합니다:</p>
+                <p>소프트웨어 엔지니어링 실무에서 가장 빈번하게 마주치는 시간 관련 버그는 바로 <strong>타임스탬프의 자릿수 단위 불일치</strong>입니다. 시스템 환경과 프로그래밍 언어에 따라 기준 단위가 완전히 상이합니다:</p>
 
                 <table class="table-custom">
                     <thead>
@@ -250,24 +250,35 @@
                 <p>가장 치명적인 실수는 백엔드 API에서 전달받은 10자리(초) 타임스탬프를 자바스크립트의 <code>new Date(timestamp)</code>에 그대로 넘기는 경우입니다. 자바스크립트는 인자값을 13자리 밀리초로 기대하므로, 1,000배 작은 값이 전달되어 화면에 '1970년 1월 21일'과 같이 에포크 직후의 엉뚱한 과거 시점이 렌더링됩니다. 따라서 프론트엔드 연산 전 <strong>11자리 이하인 경우 반드시 1,000을 곱해주는 전처리</strong>가 필수적입니다.</p>
 
                 <div class="code-block">// 실무 표준 자바스크립트 타임스탬프 안전 파싱 함수
-                    function parseTimestampSafe(rawTimestamp) {
-                    let ts = Number(rawTimestamp);
-                    if (isNaN(ts)) return null;
+function parseTimestampSafe(rawTimestamp) {
+    let ts = Number(rawTimestamp);
+    if (isNaN(ts)) return null;
 
-                    // 10자리(초 단위) 입력 시 13자리(밀리초)로 자동 승격 보정
-                    if (String(rawTimestamp).length <= 11) { ts=ts * 1000; } const date=new Date(ts); return { kst: date.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }), utc: date.toUTCString(), iso: date.toISOString(), rawEpochMs: ts }; }</div>
+    // 10자리(초 단위) 입력 시 13자리(밀리초)로 자동 승격 보정
+    if (String(rawTimestamp).length &lt;= 11) {
+        ts = ts * 1000;
+    }
+
+    const date = new Date(ts);
+    return {
+        kst: date.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }),
+        utc: date.toUTCString(),
+        iso: date.toISOString(),
+        rawEpochMs: ts
+    };
+}</div>
             </section>
 
             <section class="article-section">
                 <h2>3. UTC 오프셋과 한국 표준시(KST, UTC+09:00)의 시간 연산</h2>
                 <p>타임스탬프 자체는 타임존 개념이 없는 절대적인 찰나의 순간이지만, 이를 사람의 눈으로 확인할 수 있는 날짜 문자열로 렌더링할 때는 반드시 타임존 오프셋(Offset)이 더해져야 합니다.</p>
-                <p>한국 표준시(KST)는 그리니치 천문대 기준인 UTC보다 **9시간 빠른 <code>UTC+09:00</code>**을 고정 사용합니다. 초 단위로는 <code>32,400초</code>, 밀리초 단위로는 <code>32,400,000ms</code>의 시차가 발생합니다. 만약 백엔드 데이터베이스에 날짜 문자열을 기록할 때 로컬 시간대를 명시하지 않고 <code>2026-03-01 10:00:00</code>으로만 저장하면, 해외 서버 인프라(AWS 기본 UTC 환경)에서 9시간이 차감된 새벽 1시로 잘못 계산되는 장애가 발생합니다. 따라서 REST API 통신 시에는 항상 유닉스 정수 타임스탬프나 <code>2026-03-01T10:00:00+09:00</code> 형태의 <strong>ISO 8601 표준 포맷</strong>으로 교환해야 합니다.</p>
+                <p>한국 표준시(KST)는 그리니치 천문대 기준인 UTC보다 <strong>9시간 빠른 <code>UTC+09:00</code></strong>을 고정 사용합니다. 초 단위로는 <code>32,400초</code>, 밀리초 단위로는 <code>32,400,000ms</code>의 시차가 발생합니다. 만약 백엔드 데이터베이스에 날짜 문자열을 기록할 때 로컬 시간대를 명시하지 않고 <code>2026-03-01 10:00:00</code>으로만 저장하면, 해외 서버 인프라(AWS 기본 UTC 환경)에서 9시간이 차감된 새벽 1시로 잘못 계산되는 장애가 발생합니다. 따라서 REST API 통신 시에는 항상 유닉스 정수 타임스탬프나 <code>2026-03-01T10:00:00+09:00</code> 형태의 <strong>ISO 8601 표준 포맷</strong>으로 교환해야 합니다.</p>
             </section>
 
             <section class="article-section">
                 <h2>4. 2038년 문제(Year 2038 Problem / Y2038)의 기술적 본질</h2>
-                <p>컴퓨팅 역사에서 Y2K(밀레니엄 버그)에 비견되는 중요한 구조적 한계가 바로 <strong>2038년 문제</strong>입니다. 초기 유닉스 C 언어 표준에서 타임스탬프를 저장하는 <code>time_t</code> 데이터 타입을 **32비트 부호 있는 정수(signed 32-bit int)**로 정의했기 때문에 발생합니다.</p>
-                <p>32비트 부호 있는 정수가 표현할 수 있는 최댓값은 $2^{31}-1 = 2,147,483,647$입니다. 이 숫자는 정확히 <strong>2038년 1월 19일 03:14:07 UTC</strong>를 가리킵니다. 1초가 더 흐르는 순간 최상위 비트(MSB)가 1로 바뀌며 음수 최솟값($-2,147,483,648$)으로 오버플로우되어, 시스템 시간이 1901년 12월 13일 20:45:52로 회귀하게 됩니다. 오늘날 대부분의 운영체제와 64비트 아키텍처는 <code>time_t</code>를 64비트 정수로 확장하여 약 2,920억 년 동안 안전한 구조를 확보했습니다.</p>
+                <p>컴퓨팅 역사에서 Y2K(밀레니엄 버그)에 비견되는 중요한 구조적 한계가 바로 <strong>2038년 문제</strong>입니다. 초기 유닉스 C 언어 표준에서 타임스탬프를 저장하는 <code>time_t</code> 데이터 타입을 <strong>32비트 부호 있는 정수(signed 32-bit int)</strong>로 정의했기 때문에 발생합니다.</p>
+                <p>32비트 부호 있는 정수가 표현할 수 있는 최댓값은 2<sup>31</sup>−1 = 2,147,483,647입니다. 이 숫자는 정확히 <strong>2038년 1월 19일 03:14:07 UTC</strong>를 가리킵니다. 1초가 더 흐르는 순간 최상위 비트(MSB)가 1로 바뀌며 음수 최솟값(−2,147,483,648)으로 오버플로우되어, 시스템 시간이 1901년 12월 13일 20:45:52로 회귀하게 됩니다. 오늘날 대부분의 운영체제와 64비트 아키텍처는 <code>time_t</code>를 64비트 정수로 확장하여 약 2,920억 년 동안 안전한 구조를 확보했습니다.</p>
             </section>
 
             <section class="article-section">
