@@ -505,9 +505,13 @@
             opacity: 1;
         }
 </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.8/beautify.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.8/beautify-css.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.8/beautify-html.min.js"></script>
+    <!-- js-beautify: 내 사이트(./lib)에서 먼저 불러오고, 파일이 없거나 실패하면 CDN으로 대체합니다 -->
+    <script src="./lib/beautify.min.js"></script>
+    <script>window.js_beautify || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.8/beautify.min.js"><\/script>');</script>
+    <script src="./lib/beautify-css.min.js"></script>
+    <script>window.css_beautify || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.8/beautify-css.min.js"><\/script>');</script>
+    <script src="./lib/beautify-html.min.js"></script>
+    <script>window.html_beautify || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.8/beautify-html.min.js"><\/script>');</script>
 </head>
 
 <body>
