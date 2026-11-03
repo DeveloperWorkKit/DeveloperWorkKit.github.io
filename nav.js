@@ -29,6 +29,15 @@
     `;
     document.head.insertAdjacentHTML('beforeend', commonHeadHTML);
 
+    // 구글 애드센스 로더: 페이지 <head>에 같은 스크립트가 이미 있으면 중복 삽입하지 않습니다.
+    if (!document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]')) {
+        const adScript = document.createElement('script');
+        adScript.async = true;
+        adScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3823705730142714';
+        adScript.crossOrigin = 'anonymous';
+        document.head.appendChild(adScript);
+    }
+
     // 2. 13개 전체 도구 데이터베이스
     const TOOLS_DATA = [{
             name: '문자열 추출기',
