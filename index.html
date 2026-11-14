@@ -4,11 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3823705730142714"
-         crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script>
+
     <meta name="description" content="직장인·개발자를 위한 무료 웹 도구 13종. 문자열 추출, 글자수·바이트 계산, 텍스트 비교, JSON·Base64 변환, 크론탭, QR 등을 브라우저에서 바로 처리하며 입력한 데이터는 서버로 전송되지 않습니다.">
-    <meta name="naver-site-verification" content="fd3112aef37ff006d2bdeb46052b030ecfe14395" />
+    <meta name="naver-site-verification" content="fd3112aef37ff006d2bdeb46052b030ecfe14395">
+
     <title>DevWorKit | 직장인 & 개발자 생산성 툴킷</title>
 
     <!-- 오픈그래프 (카카오톡, 슬랙, 페이스북 등) -->
@@ -26,6 +29,8 @@
     <meta name="twitter:title" content="직장인 업무 치트키 알려드릴까요? | devworkkit">
     <meta name="twitter:description" content="추출/변환/편집... 일일이 검색할 필요 없이 한 번에 해결!">
     <meta name="twitter:image" content="https://developerworkkit.github.io/og-image.png">
+
+    <!-- Canonical은 공통 nav.js에서 페이지 URL을 기준으로 관리합니다. -->
 
     <style>
         :root {
@@ -290,6 +295,7 @@
                 <span class="search-icon">🔍</span>
                 <input type="text" id="tool-search" class="search-input" placeholder="필요한 도구를 검색하세요 (예: JSON, Base64, 정규식, 글자수...)" oninput="filterTools()">
             </div>
+
             <div class="filter-chip-group">
                 <button class="filter-chip active" onclick="setCategory('all', this)">전체보기</button>
                 <button class="filter-chip" onclick="setCategory('text', this)">텍스트 / 문서</button>
@@ -301,6 +307,7 @@
 
     <main class="hub-container">
         <div class="card-grid" id="card-grid">
+
             <a href="./strget/" class="tool-link" data-category="text" data-keywords="문자열 추출기 strget 정규식 이메일 전화번호 regex extract">
                 <div class="tool-card">
                     <span class="card-badge badge-cat-text">STRGET</span>
@@ -412,28 +419,44 @@
     <script>
         let currentCategory = 'all';
 
-        function setCategory(cat, btn) {
-            currentCategory = cat;
-            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
+        function setCategory(category, button) {
+            currentCategory = category;
+
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+
+            if (button) {
+                button.classList.add('active');
+            }
+
             filterTools();
         }
 
         function filterTools() {
-            const query = document.getElementById('tool-search').value.trim().toLowerCase();
+            const searchInput = document.getElementById('tool-search');
+            const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
             const cards = document.querySelectorAll('.tool-link');
             let visibleCount = 0;
 
             cards.forEach(card => {
-                const cardCat = card.getAttribute('data-category');
-                const keywords = card.getAttribute('data-keywords').toLowerCase();
-                const cardTitle = card.querySelector('h3').innerText.toLowerCase();
-                const cardDesc = card.querySelector('p').innerText.toLowerCase();
+                const cardCategory = card.getAttribute('data-category') || '';
+                const keywords = (card.getAttribute('data-keywords') || '').toLowerCase();
+                const titleElement = card.querySelector('h3');
+                const descriptionElement = card.querySelector('p');
 
-                const matchesCat = (currentCategory === 'all' || cardCat === currentCategory);
-                const matchesSearch = query === '' || keywords.includes(query) || cardTitle.includes(query) || cardDesc.includes(query);
+                const cardTitle = titleElement ? titleElement.innerText.toLowerCase() : '';
+                const cardDescription = descriptionElement ? descriptionElement.innerText.toLowerCase() : '';
 
-                if (matchesCat && matchesSearch) {
+                const matchesCategory = (currentCategory === 'all' || cardCategory === currentCategory);
+                const matchesSearch = (
+                    query === '' ||
+                    keywords.includes(query) ||
+                    cardTitle.includes(query) ||
+                    cardDescription.includes(query)
+                );
+
+                if (matchesCategory && matchesSearch) {
                     card.style.display = 'flex';
                     visibleCount++;
                 } else {
@@ -441,10 +464,14 @@
                 }
             });
 
-            const noResult = document.getElementById('no-result-msg');
-            noResult.style.display = visibleCount === 0 ? 'block' : 'none';
+            const noResultMessage = document.getElementById('no-result-msg');
+
+            if (noResultMessage) {
+                noResultMessage.style.display = visibleCount === 0 ? 'block' : 'none';
+            }
         }
     </script>
+
     <script src="./nav.js"></script>
 </body>
 
