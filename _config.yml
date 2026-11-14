@@ -1,0 +1,8 @@
+# DevWorKit GitHub Pages 설정
+
+url: "https://developerworkkit.github.io"
+baseurl: ""
+
+# 기존 URL을 새로운 URL로 연결하는 플러그인
+plugins:
+  - jekyll-redirect-from
